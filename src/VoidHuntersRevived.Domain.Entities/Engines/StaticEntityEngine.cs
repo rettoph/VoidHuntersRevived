@@ -9,14 +9,9 @@ using VoidHuntersRevived.Domain.Entities.Services;
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
     [AutoLoad]
-    internal sealed class EntityTypeStaticComponentsEngine : BasicEngine, IQueryingEntitiesEngine, IReactOnAddEx<InstanceEntity>
+    internal sealed class StaticEntityEngine : BasicEngine, IQueryingEntitiesEngine, IReactOnAddEx<InstanceEntity>
     {
-
-
         private static Dictionary<string, ExclusiveGroup> _exclusiveGroups = new Dictionary<string, ExclusiveGroup>();
-
-        public EntitiesDB entitiesDB { get; set; } = default!;
-
         private static ExclusiveGroupStruct GetExclusiveGroupStruct(VoidHuntersEntityDescriptor descriptor)
         {
             if (_exclusiveGroups.TryGetValue(descriptor.Name, out ExclusiveGroup? exclusiveGroup))
@@ -30,7 +25,9 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             return exclusiveGroup;
         }
 
-        public EntityTypeStaticComponentsEngine(EnginesRoot enginesRoot, EntityTypeService entityTypes)
+        public EntitiesDB entitiesDB { get; set; } = default!;
+
+        public StaticEntityEngine(EnginesRoot enginesRoot, EntityTypeService entityTypes)
         {
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
 

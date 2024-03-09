@@ -19,12 +19,12 @@ namespace VoidHuntersRevived.Domain.Client.Services
         private readonly PrimitiveBatch<VertexPositionColor> _tracePrimitiveBatch;
         private readonly IResourceProvider _resources;
         private readonly IScreen _screen;
-        private readonly PrimitiveBatch<VertexVisible, VisibleEffect> _primitiveBatch;
+        private readonly PrimitiveBatch<VertexStaticVisible, VisibleEffect> _primitiveBatch;
 
         public VisibleRenderingService(
             Camera2D camera,
             PrimitiveBatch<VertexPositionColor> tracePrimitiveBatch,
-            PrimitiveBatch<VertexVisible, VisibleEffect> fillPrimitiveBatch,
+            PrimitiveBatch<VertexStaticVisible, VisibleEffect> fillPrimitiveBatch,
             IResourceProvider resources,
             IScreen screen)
         {
@@ -40,8 +40,6 @@ namespace VoidHuntersRevived.Domain.Client.Services
         {
             _primitiveBatch.BlendState = BlendState.NonPremultiplied;
             _primitiveBatch.Begin(_camera);
-            _primitiveBatch.Effect.PrimaryColor = primaryColor;
-            _primitiveBatch.Effect.SecondaryColor = secondaryColor;
 
             float scale = 2 / (-_camera.Zoom - 2) + 1;
             _primitiveBatch.Effect.TraceScale = scale;
@@ -145,7 +143,7 @@ namespace VoidHuntersRevived.Domain.Client.Services
 
         private void GetTraceVertexIndex(ref Matrix transformation, ref Vector2 trace, bool outer, out short index)
         {
-            ref VertexVisible vertex = ref _primitiveBatch.NextVertex(out index);
+            ref VertexStaticVisible vertex = ref _primitiveBatch.NextVertex(out index);
             Vector2.Transform(ref trace, ref transformation, out vertex.Position);
             vertex.Outer = outer;
         }
@@ -155,17 +153,17 @@ namespace VoidHuntersRevived.Domain.Client.Services
             _primitiveBatch.EnsureCapacity(shape.Vertices.count);
 
 
-            ref VertexVisible v1 = ref _primitiveBatch.NextVertex(out _indexBuffer[0]);
+            ref VertexStaticVisible v1 = ref _primitiveBatch.NextVertex(out _indexBuffer[0]);
             Vector2.Transform(ref shape.Vertices[0], ref transformation, out v1.Position);
             v1.Trace = false;
 
-            ref VertexVisible v2 = ref _primitiveBatch.NextVertex(out _indexBuffer[1]);
+            ref VertexStaticVisible v2 = ref _primitiveBatch.NextVertex(out _indexBuffer[1]);
             Vector2.Transform(ref shape.Vertices[1], ref transformation, out v2.Position);
             v2.Trace = false;
 
             for (int i = 2; i < shape.Vertices.count; i++)
             {
-                ref VertexVisible v3 = ref _primitiveBatch.NextVertex(out _indexBuffer[2]);
+                ref VertexStaticVisible v3 = ref _primitiveBatch.NextVertex(out _indexBuffer[2]);
                 Vector2.Transform(ref shape.Vertices[i], ref transformation, out v3.Position);
                 v3.Trace = false;
 

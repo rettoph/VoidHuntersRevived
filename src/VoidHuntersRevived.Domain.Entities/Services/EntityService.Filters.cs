@@ -12,5 +12,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             return ref filter;
         }
+
+        public ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
+            where T : unmanaged, IEntityComponent
+        {
+            ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(filterId);
+
+            return ref filter;
+        }
     }
 }

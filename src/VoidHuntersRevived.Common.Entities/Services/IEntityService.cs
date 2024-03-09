@@ -45,6 +45,9 @@ namespace VoidHuntersRevived.Common.Entities.Services
         #region Filters
         ref EntityFilterCollection GetFilter<T>(EntityId id, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent;
+
+        ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
+            where T : unmanaged, IEntityComponent;
         #endregion
 
         #region Querying

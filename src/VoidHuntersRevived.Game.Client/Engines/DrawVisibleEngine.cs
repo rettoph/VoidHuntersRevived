@@ -10,6 +10,7 @@ using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
@@ -21,7 +22,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [GuppyFilter<LocalGameGuppy>]
     [SimulationFilter(SimulationType.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal sealed class DrawVisibleEngine : BasicEngine, IStepEngine<GameTimeTeam>
+    internal sealed class DrawVisibleEngine : BasicEngine, IStepEngine<GameTimeTeam>, IStepEngine<GameTime>
     {
         private readonly short[] _indexBuffer;
         private readonly IVisibleRenderingService _visibleRenderingService;
@@ -89,6 +90,31 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     }
                 }
                 _visibleRenderingService.End();
+            }
+        }
+
+        public void Step(in GameTime param)
+        {
+            foreach (var ((statics, static_visibles, static_count), static_group) in _entities.QueryEntities<StaticEntity, Visible>())
+            {
+                for (int i_static = 0; i_static < static_count; i_static++)
+                {
+                    Visible static_visible = static_visibles[i_static];
+                    ref var instance_filter = ref _entities.GetFilter<EntityId>(statics[i_static].InstanceEntitiesFilterId);
+
+                    foreach (var (instances_indices, instances_group) in instance_filter)
+                    {
+                        var (locations, _) = _entities.QueryEntities<Location>(instances_group);
+
+                        for (int instance_i = 0; instance_i < instances_indices.count; instance_i++)
+                        {
+                            uint index = instances_indices[instance_i];
+                            Location location = locations[index];
+
+
+                        }
+                    }
+                }
             }
         }
     }

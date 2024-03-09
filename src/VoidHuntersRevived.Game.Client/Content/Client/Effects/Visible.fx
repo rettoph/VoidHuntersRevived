@@ -1,19 +1,27 @@
 ﻿#define VS_SHADERMODEL vs_5_0 
 #define PS_SHADERMODEL ps_5_0 
 
-static const int IsTraceFlag = 1 << 0;
-static const int IsOuterFlag = 1 << 1;
+static const uint RMask = 0x000000ff;
+static const uint GMask = 0x0000ff00;
+static const uint BMask = 0x00ff0000;
+static const uint AMask = 0xff000000;
+static const uint IsTraceFlag = 0x00000001;
+static const uint IsOuterFlag = 0x00000002;
 
 matrix WorldViewProjection;
-float4 PrimaryColor;
-float4 SecondaryColor;
 float TraceScale;
 float TraceDiffusionScale;
 
-struct VertexShaderInput
+struct VertexShaderStaticInput
 {
-    float2 Position : TEXCOORD0;
-    int Flags : TEXCOORD1;
+    float2 Position : POSITION0;
+    uint Flags : BLENDINDICES0;
+};
+
+struct VertexShaderInstanceInput
+{
+    uint PrimaryColor : COLOR0;
+    uint SecondaryColor : COLOR1;
 };
 
 struct VertexShaderOutput
@@ -23,22 +31,36 @@ struct VertexShaderOutput
     float Depth : TEXCOORD0;
 };
 
-VertexShaderOutput MainVS(in VertexShaderInput input)
+float ByteToFloat(uint byte)
+{
+    return ((float) byte) / ((float) 255);
+}
+
+float4 UnpackColor(uint packed)
+{
+    return float4(
+        ByteToFloat((packed & RMask) >> 0),
+        ByteToFloat((packed & GMask) >> 8),
+        ByteToFloat((packed & BMask) >> 16),
+        ByteToFloat((packed & AMask) >> 24));
+}
+
+VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, VertexShaderInstanceInput instanceInput)
 {
     VertexShaderOutput output = (VertexShaderOutput) 0;
 
-    output.Position = mul(float4(input.Position, 0, 1), WorldViewProjection);
+    output.Position = mul(float4(staticInput.Position, 0, 1), WorldViewProjection);
 
-    if ((input.Flags & IsTraceFlag) == 0)
+    if ((staticInput.Flags & IsTraceFlag) == 0)
     {
-        output.Color = PrimaryColor;
+        output.Color = UnpackColor(instanceInput.PrimaryColor);
         output.Depth = 0.0f;
     }
     else
     {
-        output.Color = SecondaryColor;
+        output.Color = UnpackColor(instanceInput.SecondaryColor);
         
-        if ((input.Flags & IsOuterFlag) == 0)
+        if ((staticInput.Flags & IsOuterFlag) == 0)
         {
             output.Depth = 0.0f;
         }

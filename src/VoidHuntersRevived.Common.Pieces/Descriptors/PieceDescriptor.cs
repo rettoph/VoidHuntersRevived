@@ -18,7 +18,8 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
                 new ComponentManager<Plug, PlugComponentSerializer>(in Plug.Default),
                 new ComponentManager<Coupling, CouplingComponentSerializer>(),
                 new ComponentManager<Node, NodeComponentSerializer>(),
-                new ComponentManager<Rigid, RigidComponentSerializer>()
+                new ComponentManager<Rigid, RigidComponentSerializer>(),
+                new ComponentManager<ColorPalette, ColorPaletteComponentSerializer>()
             });
 
             this.WithStaticComponents(new IComponentBuilder[]
