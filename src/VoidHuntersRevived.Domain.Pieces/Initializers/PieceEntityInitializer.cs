@@ -6,14 +6,14 @@ using VoidHuntersRevived.Common.Pieces;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Services;
 
-namespace VoidHuntersRevived.Domain.Pieces.Providers
+namespace VoidHuntersRevived.Domain.Pieces.Initializers
 {
     [AutoLoad]
-    internal class PieceEntityInitializerProvider : IEntityInitializerProvider
+    internal class PieceEntityInitializer : IEntityInitializer
     {
         private readonly IPieceTypeService _pieces;
 
-        public PieceEntityInitializerProvider(IPieceTypeService pieces)
+        public PieceEntityInitializer(IPieceTypeService pieces)
         {
             _pieces = pieces;
         }

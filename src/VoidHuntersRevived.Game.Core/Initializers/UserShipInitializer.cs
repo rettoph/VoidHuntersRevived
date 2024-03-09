@@ -8,10 +8,10 @@ using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Constants;
 using VoidHuntersRevived.Common.Ships.Components;
 
-namespace VoidHuntersRevived.Game.Core.Providers
+namespace VoidHuntersRevived.Game.Core.Initializers
 {
     [AutoLoad]
-    internal sealed class EntityInitializerProvider : IEntityInitializerProvider
+    internal sealed class UserShipInitializer : IEntityInitializer
     {
         public void Initialize(IEntityTypeInitializerBuilderService builder)
         {
@@ -30,18 +30,6 @@ namespace VoidHuntersRevived.Game.Core.Providers
                     {
                         Enabled = true,
                         Radius = (Fix64)25
-                    });
-                });
-            });
-
-            builder.Configure(EntityTypes.Chain, configuration =>
-            {
-                configuration.InitializeInstance((IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-                {
-                    initializer.Init(new Collision()
-                    {
-                        Categories = CollisionGroups.FreeFloatingCategories,
-                        CollidesWith = CollisionGroups.FreeFloatingCollidesWith
                     });
                 });
             });

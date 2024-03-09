@@ -4,8 +4,8 @@ using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Providers
 {
-    [Service<IEntityInitializerProvider>(ServiceLifetime.Scoped, true)]
-    public interface IEntityInitializerProvider
+    [Service<IEntityInitializer>(ServiceLifetime.Scoped, true)]
+    public interface IEntityInitializer
     {
         void Initialize(IEntityTypeInitializerBuilderService builder);
     }

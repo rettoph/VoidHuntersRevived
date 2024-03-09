@@ -92,6 +92,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private void FillVisibleRecursive(EntityId id)
         {
+            return;
+
             ref EntityStatus status = ref _entities.QueryById<EntityStatus>(id, out GroupIndex groupIndex);
 
             if (!status.IsSpawned)

@@ -1,6 +1,5 @@
 ﻿using Guppy.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Initializers;
 using VoidHuntersRevived.Common.Entities.Providers;
 using VoidHuntersRevived.Common.Entities.Services;
@@ -11,26 +10,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         private Dictionary<IEntityType, IEntityTypeInitializer> _initializers;
 
-        public EntityTypeInitializerService(IFiltered<IEntityInitializerProvider> providers)
+        public EntityTypeInitializerService(IFiltered<IEntityInitializer> providers)
         {
             EntityTypeInitializerBuilderService builder = new EntityTypeInitializerBuilderService();
-            foreach (IEntityInitializerProvider provider in providers.Instances)
+            foreach (IEntityInitializer provider in providers.Instances)
             {
                 provider.Initialize(builder);
             }
 
             _initializers = builder.Build();
-        }
-
-        public IEntityInitializerBuilder Configure<TDescriptor>()
-            where TDescriptor : VoidHuntersEntityDescriptor
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEntityInitializerBuilder Configure(IEntityType type)
-        {
-            throw new NotImplementedException();
         }
 
         public IEntityTypeInitializer Get(IEntityType type)

@@ -5,9 +5,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed class EntityTypeService : IEntityTypeService
     {
+        private Dictionary<Id<IEntityType>, IEntityType> _types;
+
+        public EntityTypeService(IEntityTypeInitializerService initializers)
+        {
+            _types = initializers.GetAll().ToDictionary(x => x.Type.Id, x => x.Type);
+        }
+
         public IEntityType GetById(Id<IEntityType> id)
         {
-            throw new NotImplementedException();
+            return _types[id];
         }
     }
 }
