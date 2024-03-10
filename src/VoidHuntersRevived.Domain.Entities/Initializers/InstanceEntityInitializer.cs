@@ -12,6 +12,8 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
     {
         public IEntityType[] ExplicitEntityTypes => Array.Empty<IEntityType>();
 
+        public int Order => int.MinValue;
+
         public InstanceEntityInitializer()
         {
         }

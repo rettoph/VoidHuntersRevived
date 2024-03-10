@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
 using VoidHuntersRevived.Common.Pieces.Serialization.Components;
 
@@ -27,13 +26,6 @@ namespace VoidHuntersRevived.Common.Pieces.Descriptors
             {
                 new ComponentBuilder<Visible>()
             });
-
-            this.WithPostInitializer(this.PostInitialize);
-        }
-
-        private void PostInitialize(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
-        {
-            initializer.Init<ColorPalette>(new ColorPalette(Color.Red, Color.Green));
         }
     }
 }

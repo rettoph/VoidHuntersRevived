@@ -1,12 +1,22 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
-using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Initializers
 {
     [Service<IEntityInitializer>(ServiceLifetime.Scoped, true)]
     public interface IEntityInitializer
     {
+        /// <summary>
+        /// Initializers are built in ascending order for initialization,
+        /// descendin for disposing.
+        /// 
+        /// I dont love the use of a magic number, especially
+        /// because a single initializer may define many delegates.
+        /// 
+        /// This may somehow change in the future.
+        /// </summary>
+        int Order { get; }
+
         /// <summary>
         /// Provides explicit <see cref="IEntityType"/> instances to be registered at runtime.
         /// If a <see cref="IEntityType"/> is not registered then an initializer for it will

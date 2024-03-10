@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
         {
             this.Type = type;
 
-            foreach (IEntityInitializer initializer in initializers)
+            foreach (IEntityInitializer initializer in initializers.OrderBy(x => x.Order))
             {
                 InstanceEntityInitializerDelegate? initializerInstanceInitializer = initializer.InstanceInitializer(this.Type);
                 if (initializerInstanceInitializer is not null)
@@ -27,16 +27,19 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                     InstanceEntityInitializer += initializerInstanceInitializer;
                 }
 
-                DisposeEntityInitializerDelegate? initializerInstanceDisposer = initializer.InstanceDisposer(this.Type);
-                if (initializerInstanceDisposer is not null)
-                {
-                    InstanceEntityDisposer += initializerInstanceDisposer;
-                }
-
                 StaticEntityInitializerDelegate? initializerStaticInitializer = initializer.StaticInitializer(this.Type);
                 if (initializerStaticInitializer is not null)
                 {
                     StaticEntityInitializer += initializerStaticInitializer;
+                }
+            }
+
+            foreach (IEntityInitializer initializer in initializers.OrderByDescending(x => x.Order))
+            {
+                DisposeEntityInitializerDelegate? initializerInstanceDisposer = initializer.InstanceDisposer(this.Type);
+                if (initializerInstanceDisposer is not null)
+                {
+                    InstanceEntityDisposer += initializerInstanceDisposer;
                 }
 
                 DisposeEntityInitializerDelegate? initializerStaticDisposer = initializer.StaticDisposer(this.Type);
@@ -76,8 +79,6 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
         {
             initializer.Init<Id<IEntityType>>(this.Type.Id);
             InstanceEntityInitializer(entities, ref initializer, in id);
-
-            this.Type.Descriptor.PostInitialize(entities, ref initializer, in id);
         }
 
         public void InitializeStatic(ref EntityInitializer initializer)

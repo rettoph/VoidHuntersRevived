@@ -1,10 +1,4 @@
 ﻿using Autofac;
-using Autofac.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Common.Entities.Initializers
@@ -18,6 +12,8 @@ namespace VoidHuntersRevived.Common.Entities.Initializers
         private readonly List<KeyValuePair<Func<IEntityType, bool>, StaticEntityInitializerDelegate>> _staticInitializers;
         private readonly List<KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>> _staticDisposers;
 
+        public int Order { get; set; }
+
         IEntityType[] IEntityInitializer.ExplicitEntityTypes => _explicitTypes.ToArray();
 
         public BaseEntityInitializer(params IEntityType[] explicitTypes)
@@ -29,6 +25,8 @@ namespace VoidHuntersRevived.Common.Entities.Initializers
             _instanceDisposers = new List<KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>>();
             _staticInitializers = new List<KeyValuePair<Func<IEntityType, bool>, StaticEntityInitializerDelegate>>();
             _staticDisposers = new List<KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>>();
+
+            this.Order = 0;
         }
 
         protected BaseEntityInitializer WithExplicitType(IEntityType entityType)
@@ -40,7 +38,7 @@ namespace VoidHuntersRevived.Common.Entities.Initializers
 
         protected BaseEntityInitializer WithInstanceInitializer(Func<IEntityType, bool> entityTypeFilter, InstanceEntityInitializerDelegate? initializer)
         {
-            if(initializer is null)
+            if (initializer is null)
             {
                 return this;
             }
@@ -136,7 +134,7 @@ namespace VoidHuntersRevived.Common.Entities.Initializers
 
         bool IEntityInitializer.ShouldInitialize(IEntityType entityType)
         {
-            if(_explicitTypes.Contains(entityType))
+            if (_explicitTypes.Contains(entityType))
             {
                 return true;
             }
@@ -156,9 +154,9 @@ namespace VoidHuntersRevived.Common.Entities.Initializers
         {
             DisposeEntityInitializerDelegate? result = default;
 
-            foreach((Func<IEntityType, bool> filter, DisposeEntityInitializerDelegate disposer) in _instanceDisposers)
+            foreach ((Func<IEntityType, bool> filter, DisposeEntityInitializerDelegate disposer) in _instanceDisposers)
             {
-                if(filter(entityType))
+                if (filter(entityType))
                 {
                     result += disposer;
                 }

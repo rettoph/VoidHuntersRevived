@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Core.Utilities;
-using VoidHuntersRevived.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
@@ -12,7 +11,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         private DynamicEntityDescriptor<StaticEntityDescriptor> _staticDescriptor;
         private DynamicEntityDescriptor<InstanceEntityDescriptor> _instanceDescriptor;
         private readonly List<ComponentManager> _componentManagers;
-        private InstanceEntityInitializerDelegate? _postInitializer;
         private Id<VoidHuntersEntityDescriptor>? _id;
         private string? _name;
 
@@ -63,13 +61,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             return this;
         }
 
-        protected VoidHuntersEntityDescriptor WithPostInitializer(InstanceEntityInitializerDelegate initializer)
-        {
-            _postInitializer += initializer;
-
-            return this;
-        }
-
         public bool HasAll(params Type[] componentTypes)
         {
             foreach (Type componentType in componentTypes)
@@ -81,11 +72,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             }
 
             return true;
-        }
-
-        internal void PostInitialize(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
-        {
-            _postInitializer?.Invoke(entities, ref initializer, in id);
         }
 
         public override bool Equals(object? obj)
