@@ -52,6 +52,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public override void Initialize(ISimulation simulation)
         {
             base.Initialize(simulation);
+
+            foreach (var ((visibles, zIndices, count), _) in _entities.QueryEntities<Visible, zIndex>())
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    ref Visible visible = ref visibles[i];
+                }
+            }
         }
 
         public void Step(in GameTimeTeam _param)

@@ -8,26 +8,45 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
     public static class StaticEntityHelper
     {
-        private static uint _id = 0;
-        private static readonly Dictionary<IEntityType, (EGID, StaticEntity, InstanceEntity)> _components = new Dictionary<IEntityType, (EGID, StaticEntity, InstanceEntity)>();
-
-        public static (EGID, StaticEntity, InstanceEntity) GetComponents(IEntityType entityType)
+        public class StaticEntityData
         {
-            ref (EGID egid, StaticEntity @static, InstanceEntity instance) components = ref CollectionsMarshal.GetValueRefOrAddDefault(_components, entityType, out bool exists);
+            public EGID EGID { get; }
+            public StaticEntity StaticComponent { get; }
+            public InstanceEntity InstanceComponent { get; set; }
+
+            public StaticEntityData(EGID eGID, StaticEntity staticComponent, InstanceEntity instanceComponent)
+            {
+                this.EGID = eGID;
+                this.StaticComponent = staticComponent;
+                this.InstanceComponent = instanceComponent;
+            }
+        }
+
+        private static uint _id = 0;
+        private static readonly Dictionary<IEntityType, StaticEntityData> _data = new Dictionary<IEntityType, StaticEntityData>();
+
+        public static StaticEntityData GetData(IEntityType entityType)
+        {
+            ref StaticEntityData? data = ref CollectionsMarshal.GetValueRefOrAddDefault(_data, entityType, out bool exists);
             if (exists)
             {
-                return components;
+                return data!;
             }
 
             ExclusiveGroupStruct group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{entityType.GetType().Name}.Static");
             EGID egid = new EGID(_id++, group);
             CombinedFilterID filter = new CombinedFilterID((int)egid.entityID, StaticEntity.InstanceEntitiesFilterContextId);
 
-            components.egid = egid;
-            components.@static = new StaticEntity(filter);
-            components.instance = new InstanceEntity(egid, filter);
+            data = new StaticEntityData(egid, new StaticEntity(filter), new InstanceEntity(default, filter));
 
-            return components;
+            return data;
+        }
+
+        public static void SetGroupIndex(IEntityType entityType, GroupIndex groupIndex)
+        {
+            StaticEntityData data = StaticEntityHelper.GetData(entityType);
+
+            data.InstanceComponent = new InstanceEntity(groupIndex, data.InstanceComponent.FilterId);
         }
     }
 }

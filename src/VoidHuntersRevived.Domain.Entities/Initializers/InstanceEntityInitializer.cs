@@ -25,11 +25,11 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
 
         public InstanceEntityInitializerDelegate? InstanceInitializer(IEntityType entityType)
         {
-            var (_, _, instance) = StaticEntityHelper.GetComponents(entityType);
+            var data = StaticEntityHelper.GetData(entityType);
 
             return (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
-                initializer.Init(instance);
+                initializer.Init(data.InstanceComponent);
             };
         }
 
