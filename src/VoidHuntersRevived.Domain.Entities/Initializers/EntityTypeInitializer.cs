@@ -7,11 +7,11 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
 {
     internal sealed class EntityTypeInitializer : IEntityTypeInitializer
     {
-        public event InstanceEntityInitializerDelegate InstanceEntityInitializer;
-        public event StaticEntityInitializerDelegate StaticEntityInitializer;
+        public InstanceEntityInitializerDelegate InstanceEntityInitializer;
+        public StaticEntityInitializerDelegate StaticEntityInitializer;
 
-        public event DisposeEntityInitializerDelegate InstanceEntityDisposer;
-        public event DisposeEntityInitializerDelegate StaticEntityDisposer;
+        public DisposeEntityInitializerDelegate InstanceEntityDisposer;
+        public DisposeEntityInitializerDelegate StaticEntityDisposer;
 
         public IEntityType Type { get; }
 
@@ -21,10 +21,29 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
 
             foreach (IEntityInitializer initializer in initializers)
             {
-                InstanceEntityInitializer += initializer.InstanceInitializer(this.Type);
-                InstanceEntityDisposer += initializer.InstanceDisposer(this.Type);
-                StaticEntityInitializer += initializer.StaticInitializer(this.Type);
-                StaticEntityDisposer += initializer.StaticDisposer(this.Type);
+                InstanceEntityInitializerDelegate? initializerInstanceInitializer = initializer.InstanceInitializer(this.Type);
+                if (initializerInstanceInitializer is not null)
+                {
+                    InstanceEntityInitializer += initializerInstanceInitializer;
+                }
+
+                DisposeEntityInitializerDelegate? initializerInstanceDisposer = initializer.InstanceDisposer(this.Type);
+                if (initializerInstanceDisposer is not null)
+                {
+                    InstanceEntityDisposer += initializerInstanceDisposer;
+                }
+
+                StaticEntityInitializerDelegate? initializerStaticInitializer = initializer.StaticInitializer(this.Type);
+                if (initializerStaticInitializer is not null)
+                {
+                    StaticEntityInitializer += initializerStaticInitializer;
+                }
+
+                DisposeEntityInitializerDelegate? initializerStaticDisposer = initializer.StaticDisposer(this.Type);
+                if (initializerStaticDisposer is not null)
+                {
+                    StaticEntityDisposer += initializerStaticDisposer;
+                }
             }
 
             if (InstanceEntityInitializer is null)

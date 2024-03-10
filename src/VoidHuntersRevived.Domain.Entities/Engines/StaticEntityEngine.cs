@@ -2,53 +2,41 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Common.Entities.Initializers;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Entities.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
     [AutoLoad]
     internal sealed class StaticEntityEngine : BasicEngine, IQueryingEntitiesEngine, IReactOnAddEx<InstanceEntity>
     {
-        private static Dictionary<string, ExclusiveGroup> _exclusiveGroups = new Dictionary<string, ExclusiveGroup>();
-        private static ExclusiveGroupStruct GetExclusiveGroupStruct(VoidHuntersEntityDescriptor descriptor)
-        {
-            if (_exclusiveGroups.TryGetValue(descriptor.Name, out ExclusiveGroup? exclusiveGroup))
-            {
-                return exclusiveGroup;
-            }
-
-            exclusiveGroup = new ExclusiveGroup($"{descriptor.Name}.Static");
-            _exclusiveGroups.Add(descriptor.Name, exclusiveGroup);
-
-            return exclusiveGroup;
-        }
-
         public EntitiesDB entitiesDB { get; set; } = default!;
 
         public StaticEntityEngine(EnginesRoot enginesRoot, IEntityTypeInitializerService entityTypeInitializers)
         {
+            // Automatically create all static entities
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
 
-            uint id = 0;
             foreach (IEntityTypeInitializer typeInitializer in entityTypeInitializers.GetAll())
             {
-                EGID staticEgid = new EGID(id++, GetExclusiveGroupStruct(typeInitializer.Type.Descriptor));
-                CombinedFilterID instanceEntitiesFilterId = new CombinedFilterID((int)id, StaticEntity.InstanceEntitiesFilterContextId);
+                var (egid, @static, _) = StaticEntityHelper.GetComponents(typeInitializer.Type);
 
-                EntityInitializer entityInitializer = factory.BuildEntity(staticEgid, typeInitializer.Type.Descriptor.StaticDescriptor);
-                entityInitializer.Init(new StaticEntity(instanceEntitiesFilterId));
+                EntityInitializer entityInitializer = factory.BuildEntity(egid, typeInitializer.Type.Descriptor.StaticDescriptor);
+                entityInitializer.Init(@static);
 
                 typeInitializer.InitializeStatic(ref entityInitializer);
-                typeInitializer.InstanceEntityInitializer += (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-                {
-                    initializer.Init(new InstanceEntity(staticEgid, instanceEntitiesFilterId));
-                };
             }
         }
 
+        /// <summary>
+        /// Automatically add instance entities to their respective
+        /// static filters.
+        /// </summary>
+        /// <param name="rangeOfEntities"></param>
+        /// <param name="entities"></param>
+        /// <param name="groupID"></param>
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<InstanceEntity> entities, ExclusiveGroupStruct groupID)
         {
             var (instances, ids, _) = entities;
