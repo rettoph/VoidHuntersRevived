@@ -2,7 +2,7 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Physics.Components;
 
-namespace VoidHuntersRevived.Common.Pieces.Components
+namespace VoidHuntersRevived.Common.Pieces.Components.Instance
 {
     [PolymorphicJsonType<IPieceComponent>(nameof(Plug))]
     public struct Plug : IEntityComponent, IPieceComponent

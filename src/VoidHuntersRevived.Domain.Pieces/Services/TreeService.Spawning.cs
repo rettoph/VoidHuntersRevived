@@ -6,7 +6,7 @@ using VoidHuntersRevived.Common.Entities.Options;
 using VoidHuntersRevived.Common.Entities.Serialization;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Instance;
 using VoidHuntersRevived.Common.Pieces.Descriptors;
 using VoidHuntersRevived.Common.Pieces.Extensions.Entities;
 

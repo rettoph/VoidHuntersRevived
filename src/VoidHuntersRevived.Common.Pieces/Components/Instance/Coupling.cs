@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Pieces.Components
+namespace VoidHuntersRevived.Common.Pieces.Components.Instance
 {
     public struct Coupling : IEntityComponent
     {

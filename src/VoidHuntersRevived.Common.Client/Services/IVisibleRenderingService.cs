@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Static;
 
 namespace VoidHuntersRevived.Common.Client.Services
 {

@@ -5,7 +5,7 @@ using VoidHuntersRevived.Common.Core.Extensions.System;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 
-namespace VoidHuntersRevived.Common.Pieces.Components
+namespace VoidHuntersRevived.Common.Pieces.Components.Instance
 {
     [PolymorphicJsonType<IPieceComponent>(nameof(Rigid))]
     public struct Rigid : IEntityComponent, IDisposable, IPieceComponent
@@ -15,12 +15,12 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
         public void Dispose()
         {
-            for (int i = 0; i < this.Shapes.count; i++)
+            for (int i = 0; i < Shapes.count; i++)
             {
-                this.Shapes[i].Dispose();
+                Shapes[i].Dispose();
             }
 
-            this.Shapes.Dispose();
+            Shapes.Dispose();
         }
 
         public static Rigid Polygon(Fix64 density, int sides)

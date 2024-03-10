@@ -1,6 +1,6 @@
 ﻿using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Physics.Descriptors;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Instance;
 using VoidHuntersRevived.Common.Pieces.Serialization.Components;
 
 namespace VoidHuntersRevived.Common.Pieces.Descriptors

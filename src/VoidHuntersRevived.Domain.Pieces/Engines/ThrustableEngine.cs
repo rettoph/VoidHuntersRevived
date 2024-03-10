@@ -9,7 +9,7 @@ using VoidHuntersRevived.Common.Entities.Engines;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics;
 using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Instance;
 using VoidHuntersRevived.Common.Pieces.Enums;
 using VoidHuntersRevived.Common.Pieces.Events;
 using VoidHuntersRevived.Common.Ships.Components;

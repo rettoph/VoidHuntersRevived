@@ -4,6 +4,7 @@ using VoidHuntersRevived.Common.Core.Utilities;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Instance;
 
 namespace VoidHuntersRevived.Common.Pieces.Extensions.Entities
 {

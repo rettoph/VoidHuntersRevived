@@ -6,7 +6,7 @@ using VoidHuntersRevived.Common.Core.Extensions.System;
 using VoidHuntersRevived.Common.Core.Helpers;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 
-namespace VoidHuntersRevived.Common.Pieces.Components
+namespace VoidHuntersRevived.Common.Pieces.Components.Static
 {
     [PolymorphicJsonType<IPieceComponent>(nameof(Visible))]
     public struct Visible : IDisposable, IPieceComponent

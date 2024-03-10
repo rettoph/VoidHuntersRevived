@@ -1,6 +1,6 @@
 ﻿using VoidHuntersRevived.Common.FixedPoint.Utilities;
 using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Instance;
 
 namespace VoidHuntersRevived.Common.Pieces
 {

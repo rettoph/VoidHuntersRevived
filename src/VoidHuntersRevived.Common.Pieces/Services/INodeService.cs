@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Common.Pieces.Components;
+﻿using VoidHuntersRevived.Common.Pieces.Components.Instance;
 
 namespace VoidHuntersRevived.Common.Pieces.Services
 {

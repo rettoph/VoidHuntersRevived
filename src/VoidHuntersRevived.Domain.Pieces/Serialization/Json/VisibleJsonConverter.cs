@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Static;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {

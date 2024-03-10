@@ -5,7 +5,7 @@ using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
 using VoidHuntersRevived.Common.Physics.Components;
 
-namespace VoidHuntersRevived.Common.Pieces.Components
+namespace VoidHuntersRevived.Common.Pieces.Components.Instance
 {
     public struct Node : IEntityComponent
     {
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                     return _transformation;
                 }
 
-                _transformation = FixMatrixHelper.FastMultiplyTransformations(this.LocalLocation.Transformation, _worldTransformation);
+                _transformation = FixMatrixHelper.FastMultiplyTransformations(LocalLocation.Transformation, _worldTransformation);
                 _dirtyTransformation = false;
 
                 return _transformation;
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
                     return _xnaTransformation;
                 }
 
-                _xnaTransformation = this.Transformation.ToTransformationXnaMatrix();
+                _xnaTransformation = Transformation.ToTransformationXnaMatrix();
                 _dirtyXnaTransformation = false;
 
                 return _xnaTransformation;
@@ -53,8 +53,8 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
         public Node(EntityId id, EntityId treeId)
         {
-            this.Id = id;
-            this.TreeId = treeId;
+            Id = id;
+            TreeId = treeId;
 
             _dirtyTransformation = true;
             _dirtyXnaTransformation = true;

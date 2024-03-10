@@ -3,7 +3,7 @@ using Svelto.ECS;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common.Pieces.Enums;
 
-namespace VoidHuntersRevived.Common.Pieces.Components
+namespace VoidHuntersRevived.Common.Pieces.Components.Instance
 {
     [PolymorphicJsonType<IPieceComponent>(nameof(Thrustable))]
     public struct Thrustable : IEntityComponent, IPieceComponent

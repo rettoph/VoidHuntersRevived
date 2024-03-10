@@ -7,7 +7,7 @@ using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces.Utilities;
 
-namespace VoidHuntersRevived.Common.Pieces.Components
+namespace VoidHuntersRevived.Common.Pieces.Components.Instance
 {
     [AutoDisposeComponent<Location>(AutoDisposeScope.Type)]
     [AutoDisposeComponent<SocketId>(AutoDisposeScope.Instance)]
@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Common.Pieces.Components
 
         public void Dispose()
         {
-            this.Items.Dispose();
+            Items.Dispose();
         }
 
         public static Sockets<Location> Polygon(int sides)

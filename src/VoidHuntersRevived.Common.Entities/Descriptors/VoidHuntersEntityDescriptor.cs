@@ -1,6 +1,4 @@
-﻿using Guppy.Resources;
-using Microsoft.Xna.Framework;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Core.Utilities;
 
@@ -16,9 +14,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
 
         public Id<VoidHuntersEntityDescriptor> Id => _id ??= HashBuilder<VoidHuntersEntityDescriptor, VhId>.Instance.CalculateId(VhId.HashString(this.GetType().AssemblyQualifiedName ?? throw new NotImplementedException()));
         public string Name => _name ??= this.GetType().Name;
-        public Resource<Color> PrimaryColor { get; } = Resources.Colors.None;
-        public Resource<Color> SecondaryColor { get; } = Resources.Colors.None;
-        public int Order { get; } = 0;
 
         public IComponentBuilder[] componentsToBuild => _instanceDescriptor.componentsToBuild;
 
@@ -26,19 +21,11 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
 
         public IEntityDescriptor StaticDescriptor => _staticDescriptor;
 
-        protected VoidHuntersEntityDescriptor() : this(Resources.Colors.None, Resources.Colors.None, 0)
-        {
-
-        }
-        protected unsafe VoidHuntersEntityDescriptor(Resource<Color> primaryColor, Resource<Color> secondaryColor, int order)
+        protected VoidHuntersEntityDescriptor()
         {
             _staticDescriptor = DynamicEntityDescriptor<StaticEntityDescriptor>.CreateDynamicEntityDescriptor();
             _instanceDescriptor = DynamicEntityDescriptor<InstanceEntityDescriptor>.CreateDynamicEntityDescriptor();
             _componentManagers = new List<ComponentManager>();
-
-            this.PrimaryColor = primaryColor;
-            this.SecondaryColor = secondaryColor;
-            this.Order = order;
         }
 
         protected VoidHuntersEntityDescriptor WithInstanceComponents(ComponentManager[] managers)

@@ -7,14 +7,11 @@ using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
-using System.Drawing;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.FixedPoint.Utilities;
 using VoidHuntersRevived.Common.Physics.Components;
 using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Instance;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -52,37 +49,37 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTimeTeam _param)
         {
-            if (_camera.Zoom < 60)
-            {
-                return;
-            }
-
-            var bounds = _camera.Frustum.ToBounds2D();
-
-            _primitiveBatch.Begin(_camera);
-            foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
-            {
-                var (statuses, nodes, socketLocationses, count) = _entities.QueryEntities<EntityStatus, Node, Sockets<Location>>(teamDescriptorGroup.GroupId);
-                for (uint index = 0; index < count; index++)
-                {
-                    Node node = nodes[index];
-                    if (bounds.Contains(node.XnaTransformation) == false)
-                    {
-                        continue;
-                    }
-
-                    Sockets<Location> socketLocations = socketLocationses[index];
-                    for (int j = 0; j < socketLocations.Items.count; j++)
-                    {
-                        if (statuses[index].IsSpawned)
-                        {
-                            Matrix transformationMatrix = FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(socketLocations.Items[j].Transformation, node.Transformation);
-                            _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.SecondaryColor, transformationMatrix);
-                        }
-                    }
-                }
-            }
-            _primitiveBatch.End();
+            // if (_camera.Zoom < 60)
+            // {
+            //     return;
+            // }
+            // 
+            // var bounds = _camera.Frustum.ToBounds2D();
+            // 
+            // _primitiveBatch.Begin(_camera);
+            // foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
+            // {
+            //     var (statuses, nodes, socketLocationses, count) = _entities.QueryEntities<EntityStatus, Node, Sockets<Location>>(teamDescriptorGroup.GroupId);
+            //     for (uint index = 0; index < count; index++)
+            //     {
+            //         Node node = nodes[index];
+            //         if (bounds.Contains(node.XnaTransformation) == false)
+            //         {
+            //             continue;
+            //         }
+            // 
+            //         Sockets<Location> socketLocations = socketLocationses[index];
+            //         for (int j = 0; j < socketLocations.Items.count; j++)
+            //         {
+            //             if (statuses[index].IsSpawned)
+            //             {
+            //                 Matrix transformationMatrix = FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(socketLocations.Items[j].Transformation, node.Transformation);
+            //                 _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.SecondaryColor, transformationMatrix);
+            //             }
+            //         }
+            //     }
+            // }
+            // _primitiveBatch.End();
         }
     }
 }

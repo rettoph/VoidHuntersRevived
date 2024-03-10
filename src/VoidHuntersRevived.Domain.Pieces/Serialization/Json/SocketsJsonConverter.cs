@@ -1,7 +1,7 @@
 ﻿using Guppy.Serialization.Converters;
 using Svelto.DataStructures;
 using System.Text.Json;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Instance;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {

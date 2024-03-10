@@ -5,13 +5,13 @@ using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
-using System.Drawing;
 using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Services;
 using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Instance;
+using VoidHuntersRevived.Common.Pieces.Components.Static;
 using VoidHuntersRevived.Common.Simulations;
 using VoidHuntersRevived.Common.Simulations.Attributes;
 using VoidHuntersRevived.Common.Simulations.Engines;
@@ -56,41 +56,41 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTimeTeam _param)
         {
-            var bounds = _camera.Frustum.ToBounds2D();
-
-            foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
-            {
-                var (statuses, visibles, nodes, count) = _entities.QueryEntities<EntityStatus, Visible, Node>(teamDescriptorGroup.GroupId);
-
-                _visibleRenderingService.Begin(teamDescriptorGroup.PrimaryColor, teamDescriptorGroup.SecondaryColor);
-
-                for (int index = 0; index < count; index++)
-                {
-                    try
-                    {
-                        if (statuses[index].IsSpawned)
-                        {
-                            ref Node node = ref nodes[index];
-                            Matrix transformation = node.XnaTransformation;
-
-                            if (bounds.Contains(transformation))
-                            {
-                                _visibleRenderingService.Draw(in visibles[index], ref transformation);
-                            }
-                            else
-                            {
-
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        var (ids, _) = _entities.QueryEntities<EntityId>(teamDescriptorGroup.GroupId);
-                        _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleEngine), nameof(Step), ids[index].VhId.Value);
-                    }
-                }
-                _visibleRenderingService.End();
-            }
+            // var bounds = _camera.Frustum.ToBounds2D();
+            // 
+            // foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
+            // {
+            //     var (statuses, visibles, nodes, count) = _entities.QueryEntities<EntityStatus, Visible, Node>(teamDescriptorGroup.GroupId);
+            // 
+            //     _visibleRenderingService.Begin(teamDescriptorGroup.PrimaryColor, teamDescriptorGroup.SecondaryColor);
+            // 
+            //     for (int index = 0; index < count; index++)
+            //     {
+            //         try
+            //         {
+            //             if (statuses[index].IsSpawned)
+            //             {
+            //                 ref Node node = ref nodes[index];
+            //                 Matrix transformation = node.XnaTransformation;
+            // 
+            //                 if (bounds.Contains(transformation))
+            //                 {
+            //                     _visibleRenderingService.Draw(in visibles[index], ref transformation);
+            //                 }
+            //                 else
+            //                 {
+            // 
+            //                 }
+            //             }
+            //         }
+            //         catch (Exception e)
+            //         {
+            //             var (ids, _) = _entities.QueryEntities<EntityId>(teamDescriptorGroup.GroupId);
+            //             _logger.Error(e, "{ClassName}::{MethodName} - Exception attempting to fill shapes for visible {VisibleVhId}", nameof(DrawVisibleEngine), nameof(Step), ids[index].VhId.Value);
+            //         }
+            //     }
+            //     _visibleRenderingService.End();
+            // }
         }
 
         public void Step(in GameTime param)

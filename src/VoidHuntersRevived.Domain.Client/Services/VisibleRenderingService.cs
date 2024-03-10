@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Common.Client.Services;
 using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Common.Pieces.Components.Static;
 using VoidHuntersRevived.Domain.Client.Graphics.Vertices;
 using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
