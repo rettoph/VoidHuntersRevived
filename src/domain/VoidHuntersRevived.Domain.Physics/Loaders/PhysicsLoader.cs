@@ -2,7 +2,7 @@
 using Guppy.Attributes;
 using Guppy.Loaders;
 using tainicom.Aether.Physics2D.Common;
-using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Domain.Physics.Common;
 
 namespace VoidHuntersRevived.Domain.Physics.Loaders
 {

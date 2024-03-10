@@ -8,19 +8,20 @@ using Microsoft.Xna.Framework.Input;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Client.Services;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
-using VoidHuntersRevived.Common.Pieces.Components.Static;
-using VoidHuntersRevived.Common.Pieces.Services;
-using VoidHuntersRevived.Common.Ships.Services;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Client.Common.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
+using VoidHuntersRevived.Domain.Pieces.Common.Services;
+using VoidHuntersRevived.Domain.Ships.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {

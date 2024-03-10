@@ -2,15 +2,15 @@
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Initializers;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
-using VoidHuntersRevived.Common.Pieces.Components.Shared;
-using VoidHuntersRevived.Common.Pieces.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Initializers;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Shared;
+using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 
-namespace VoidHuntersRevived.Common.Pieces.Initializers
+namespace VoidHuntersRevived.Domain.Pieces.Common.Initializers
 {
     [AutoLoad]
     internal sealed class PieceInitializer : BaseEntityInitializer

@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
-namespace VoidHuntersRevived.Common.Entities
+namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public delegate void InstanceEntityInitializerDelegate(IEntityService entities, ref EntityInitializer initializer, in EntityId id);
     public delegate void StaticEntityInitializerDelegate(ref EntityInitializer initializer);

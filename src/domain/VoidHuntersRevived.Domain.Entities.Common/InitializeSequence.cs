@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Entities
+﻿namespace VoidHuntersRevived.Domain.Entities.Common
 {
     enum InitializeSequence
     {

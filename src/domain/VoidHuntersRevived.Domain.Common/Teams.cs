@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Entities;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Domain.Common
 {
     public static class Teams
     {

@@ -1,10 +1,10 @@
-﻿using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
-using VoidHuntersRevived.Common.Pieces.Descriptors;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 
-namespace VoidHuntersRevived.Common.Pieces.Services
+namespace VoidHuntersRevived.Domain.Pieces.Common.Services
 {
     public interface ITreeService
     {

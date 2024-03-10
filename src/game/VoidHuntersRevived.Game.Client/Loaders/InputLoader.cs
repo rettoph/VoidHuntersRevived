@@ -4,7 +4,7 @@ using Guppy.Game.Input;
 using Guppy.Game.Input.Enums;
 using Guppy.Loaders;
 using Microsoft.Xna.Framework.Input;
-using VoidHuntersRevived.Common.Pieces.Enums;
+using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 using VoidHuntersRevived.Game.Client.Constants;
 using VoidHuntersRevived.Game.Client.Messages;
 using VoidHuntersRevived.Game.Core.Events;

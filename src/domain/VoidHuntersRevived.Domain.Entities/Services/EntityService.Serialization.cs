@@ -1,10 +1,10 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Options;
-using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Options;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Domain.Entities.Services

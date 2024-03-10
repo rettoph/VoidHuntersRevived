@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Svelto.DataStructures;
 
-namespace VoidHuntersRevived.Common.Pieces
+namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public struct Shape : IDisposable
     {

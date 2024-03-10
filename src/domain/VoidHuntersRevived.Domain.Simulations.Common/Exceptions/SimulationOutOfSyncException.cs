@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Simulations.Exceptions
+﻿namespace VoidHuntersRevived.Domain.Simulations.Common.Exceptions
 {
     public class SimulationOutOfSyncException : Exception
     {

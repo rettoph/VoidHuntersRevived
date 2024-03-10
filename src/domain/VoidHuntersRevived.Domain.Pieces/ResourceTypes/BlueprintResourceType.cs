@@ -3,7 +3,7 @@ using Guppy.Files;
 using Guppy.Files.Services;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
-using VoidHuntersRevived.Common.Pieces;
+using VoidHuntersRevived.Domain.Pieces.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {

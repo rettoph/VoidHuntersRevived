@@ -11,10 +11,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common.Client;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Client.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Client.Engines
 {

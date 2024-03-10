@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Entities.Enums;
+﻿using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
-namespace VoidHuntersRevived.Common.Entities.Options
+namespace VoidHuntersRevived.Domain.Entities.Common.Options
 {
     public struct SerializationOptions
     {

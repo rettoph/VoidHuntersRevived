@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {

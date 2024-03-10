@@ -1,8 +1,8 @@
 ﻿using Guppy.Attributes;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {

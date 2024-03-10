@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Common.Core.Helpers
+namespace VoidHuntersRevived.Common.Helpers
 {
     public static class Vector2Helper
     {

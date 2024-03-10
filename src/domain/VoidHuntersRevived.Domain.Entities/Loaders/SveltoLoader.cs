@@ -4,9 +4,9 @@ using Guppy.Common.Providers;
 using Guppy.Loaders;
 using Svelto.ECS;
 using System.Reflection;
-using VoidHuntersRevived.Common.Entities.Attributes;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Enums;
+using VoidHuntersRevived.Domain.Entities.Common.Attributes;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders

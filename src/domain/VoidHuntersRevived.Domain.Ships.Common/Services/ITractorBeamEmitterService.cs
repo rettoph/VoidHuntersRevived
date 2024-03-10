@@ -1,10 +1,11 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 
-namespace VoidHuntersRevived.Common.Ships.Services
+namespace VoidHuntersRevived.Domain.Ships.Common.Services
 {
     public interface ITractorBeamEmitterService
     {

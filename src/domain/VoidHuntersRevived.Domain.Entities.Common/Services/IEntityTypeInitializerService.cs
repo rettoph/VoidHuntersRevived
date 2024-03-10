@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Entities.Initializers;
+﻿using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 
-namespace VoidHuntersRevived.Common.Entities.Services
+namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IEntityTypeInitializerService
     {

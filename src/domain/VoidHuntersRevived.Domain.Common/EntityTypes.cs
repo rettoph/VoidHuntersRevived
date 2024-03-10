@@ -1,8 +1,8 @@
-﻿using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Pieces.Descriptors;
-using VoidHuntersRevived.Common.Ships.Descriptors;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
+using VoidHuntersRevived.Domain.Ships.Common.Descriptors;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Domain.Common
 {
     public static class EntityTypes
     {

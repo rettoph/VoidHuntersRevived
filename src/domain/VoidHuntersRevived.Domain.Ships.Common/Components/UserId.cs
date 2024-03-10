@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Ships.Components
+namespace VoidHuntersRevived.Domain.Ships.Common.Components
 {
     public struct UserId : IEntityComponent
     {

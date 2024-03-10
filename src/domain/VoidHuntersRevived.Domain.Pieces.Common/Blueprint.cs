@@ -1,9 +1,9 @@
-﻿using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Core.Utilities;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Pieces.Extensions;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Extensions;
 
-namespace VoidHuntersRevived.Common.Pieces
+namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public sealed class Blueprint : IEntityResource<Blueprint>
     {

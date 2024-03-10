@@ -1,18 +1,19 @@
 ﻿using Guppy.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Initializers;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Pieces.Constants;
+using VoidHuntersRevived.Domain.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Initializers;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common.Constants;
 
 namespace VoidHuntersRevived.Game.Core.Initializers
 {
     [AutoLoad]
     internal class ChainInitializer : BaseEntityInitializer
     {
-        public ChainInitializer() : base([ EntityTypes.Chain ])
+        public ChainInitializer() : base()
         {
             this.WithInstanceInitializer(EntityTypes.Chain, this.InitializeChain);
         }

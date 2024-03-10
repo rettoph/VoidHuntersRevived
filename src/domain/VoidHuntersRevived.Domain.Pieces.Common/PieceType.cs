@@ -1,12 +1,12 @@
 ﻿using System.Collections.ObjectModel;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Core.Utilities;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Pieces.Components;
-using VoidHuntersRevived.Common.Pieces.Descriptors;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 
-namespace VoidHuntersRevived.Common.Pieces
+namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public sealed class PieceType
     {

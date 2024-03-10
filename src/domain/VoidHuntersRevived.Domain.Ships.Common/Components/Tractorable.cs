@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 
-namespace VoidHuntersRevived.Common.Ships.Components
+namespace VoidHuntersRevived.Domain.Ships.Common.Components
 {
     public struct Tractorable : IEntityComponent
     {

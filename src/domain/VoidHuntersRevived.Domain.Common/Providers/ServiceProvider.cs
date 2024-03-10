@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace VoidHuntersRevived.Common.Providers
+namespace VoidHuntersRevived.Domain.Common.Providers
 {
     public abstract class ServiceProvider<TKey, TService>
         where TKey : notnull

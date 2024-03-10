@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Simulations
+﻿namespace VoidHuntersRevived.Domain.Simulations.Common
 {
     [Flags]
     public enum SimulationType

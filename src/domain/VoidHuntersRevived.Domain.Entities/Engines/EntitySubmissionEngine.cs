@@ -1,8 +1,8 @@
 ﻿using Guppy.Common.Attributes;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {

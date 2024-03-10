@@ -1,6 +1,7 @@
 ﻿using Guppy.Resources;
+using VoidHuntersRevived.Common.FixedPoint;
 
-namespace VoidHuntersRevived.Common.Constants
+namespace VoidHuntersRevived.Domain.Common.Constants
 {
     public static class Settings
     {

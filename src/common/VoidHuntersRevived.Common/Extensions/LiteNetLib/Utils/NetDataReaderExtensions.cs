@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common;
 
 namespace LiteNetLib.Utils
 {

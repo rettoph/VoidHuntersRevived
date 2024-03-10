@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Common.Simulations.Engines
+namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     public interface IEventEngine : IEngine
     {

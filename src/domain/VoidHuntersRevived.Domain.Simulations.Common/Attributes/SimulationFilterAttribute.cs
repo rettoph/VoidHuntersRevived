@@ -4,7 +4,7 @@ using Guppy.Common.Extensions.Autofac;
 using Guppy.StateMachine;
 using Guppy.StateMachine.Filters;
 
-namespace VoidHuntersRevived.Common.Simulations.Attributes
+namespace VoidHuntersRevived.Domain.Simulations.Common.Attributes
 {
     public class SimulationFilterAttribute : GuppyConfigurationAttribute
     {

@@ -1,7 +1,7 @@
 ﻿using Guppy;
 using Guppy.Messaging;
 
-namespace VoidHuntersRevived.Common.Messages
+namespace VoidHuntersRevived.Domain.Common.Messages
 {
     public class Launch : Message<Launch>
     {

@@ -1,6 +1,6 @@
 ﻿using Guppy.Messaging;
 
-namespace VoidHuntersRevived.Common.Messages
+namespace VoidHuntersRevived.Domain.Common.Messages
 {
     public class Added<TItem, TContainer> : Message<Added<TItem, TContainer>>
     {

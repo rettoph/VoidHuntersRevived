@@ -3,11 +3,12 @@ using Guppy.Common.Collections;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using FixedMath64 = FixedMath.NET.Fix64;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Common.FixedPoint
 {
     public struct Fix64
     {

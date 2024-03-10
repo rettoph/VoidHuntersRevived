@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 
-namespace VoidHuntersRevived.Common.Entities
+namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public interface ITeamDescriptorGroup
     {

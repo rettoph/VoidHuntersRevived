@@ -1,7 +1,7 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
 using System.Runtime.CompilerServices;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {

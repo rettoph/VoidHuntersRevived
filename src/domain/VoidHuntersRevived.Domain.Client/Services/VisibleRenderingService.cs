@@ -4,9 +4,9 @@ using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using VoidHuntersRevived.Common.Client.Services;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components.Static;
+using VoidHuntersRevived.Domain.Client.Common.Services;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 using VoidHuntersRevived.Domain.Client.Graphics.Vertices;
 using VoidHuntersRevived.Game.Client.Graphics.Effects;
 

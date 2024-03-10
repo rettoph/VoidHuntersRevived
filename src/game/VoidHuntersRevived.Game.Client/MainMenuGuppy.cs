@@ -5,7 +5,7 @@ using Guppy.Game.MonoGame.Providers;
 using Guppy.Network;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Constants;
+using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Game.Core;
 
 namespace VoidHuntersRevived.Game.Client

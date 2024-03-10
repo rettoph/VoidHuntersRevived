@@ -3,11 +3,11 @@ using Guppy.Attributes;
 using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Services;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Client.Engines
 {

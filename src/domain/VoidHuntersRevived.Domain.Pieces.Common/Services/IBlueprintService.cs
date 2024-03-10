@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Entities.Services;
+﻿using VoidHuntersRevived.Domain.Entities.Common.Services;
 
-namespace VoidHuntersRevived.Common.Pieces.Services
+namespace VoidHuntersRevived.Domain.Pieces.Common.Services
 {
     public interface IBlueprintService : IEntityResourceService<Blueprint>
     {

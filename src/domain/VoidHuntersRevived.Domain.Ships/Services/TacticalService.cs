@@ -1,7 +1,7 @@
-﻿using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Ships.Components;
-using VoidHuntersRevived.Common.Ships.Services;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Ships.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {

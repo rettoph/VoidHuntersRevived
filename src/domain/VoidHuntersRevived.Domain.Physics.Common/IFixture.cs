@@ -1,7 +1,8 @@
-﻿using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 
-namespace VoidHuntersRevived.Common.Physics
+namespace VoidHuntersRevived.Domain.Physics.Common
 {
     public interface IFixture
     {

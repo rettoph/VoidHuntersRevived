@@ -1,7 +1,7 @@
 ﻿using Svelto.Common;
 using Svelto.DataStructures;
 
-namespace VoidHuntersRevived.Common.Core.Extensions.System
+namespace VoidHuntersRevived.Common.Extensions.System
 {
     public static class ArrayExtensions
     {

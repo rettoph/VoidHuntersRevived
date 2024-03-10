@@ -6,12 +6,12 @@ using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Core.Utilities;
-using VoidHuntersRevived.Common.Entities.Extensions;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Utilities;
 

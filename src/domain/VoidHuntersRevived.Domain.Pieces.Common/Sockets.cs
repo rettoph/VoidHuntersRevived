@@ -1,8 +1,8 @@
 ﻿using Svelto.DataStructures;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 
-namespace VoidHuntersRevived.Common.Pieces
+namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public ref struct Sockets
     {

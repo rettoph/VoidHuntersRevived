@@ -3,9 +3,9 @@ using Guppy.Common;
 using Guppy.Messaging;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {

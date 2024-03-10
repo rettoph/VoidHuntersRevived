@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Common.Core.Utilities
+namespace VoidHuntersRevived.Common.Utilities
 {
     public static class GiftWrap
     {

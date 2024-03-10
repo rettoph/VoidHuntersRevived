@@ -4,10 +4,10 @@ using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
 using Guppy.StateMachine;
 using Guppy.StateMachine.Services;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines
 {

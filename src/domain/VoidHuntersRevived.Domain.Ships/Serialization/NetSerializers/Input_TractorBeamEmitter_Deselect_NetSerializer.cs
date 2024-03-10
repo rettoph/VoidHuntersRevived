@@ -1,8 +1,8 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network;
 using LiteNetLib.Utils;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Ships.Events;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Ships.Common.Events;
 
 namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
 {

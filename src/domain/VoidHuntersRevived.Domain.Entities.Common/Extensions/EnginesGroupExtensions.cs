@@ -2,7 +2,7 @@
 using Svelto.DataStructures;
 using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Entities.Extensions
+namespace VoidHuntersRevived.Domain.Entities.Common.Extensions
 {
     public static class EnginesGroupExtensions
     {

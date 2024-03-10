@@ -1,8 +1,8 @@
-﻿using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Ships.Components;
-using VoidHuntersRevived.Common.Ships.Serialization.Components;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Ships.Common.Serialization.Components;
 
-namespace VoidHuntersRevived.Common.Ships.Descriptors
+namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
 {
     public class UserShipDescriptor : ShipDescriptor
     {

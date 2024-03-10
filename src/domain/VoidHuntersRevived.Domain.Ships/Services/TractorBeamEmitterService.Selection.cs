@@ -1,21 +1,22 @@
 ﻿using Svelto.ECS;
 using System.Diagnostics;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Options;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Physics.Extensions.FixedPoint;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
-using VoidHuntersRevived.Common.Ships.Components;
-using VoidHuntersRevived.Common.Ships.Events;
-using VoidHuntersRevived.Common.Ships.Services;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Exceptions;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Options;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Physics.Common.Extensions.FixedPoint;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Ships.Common.Events;
+using VoidHuntersRevived.Domain.Ships.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Exceptions;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {

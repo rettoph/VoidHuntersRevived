@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace VoidHuntersRevived.Common.Core.Utilities
+namespace VoidHuntersRevived.Common.Utilities
 {
     public class HashCache<T>
         where T : struct

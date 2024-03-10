@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Common.FixedPoint
 {
     /// <summary>
     /// Represents the right-handed 4x4 floating point matrix, which can store translation, scale and rotation information.

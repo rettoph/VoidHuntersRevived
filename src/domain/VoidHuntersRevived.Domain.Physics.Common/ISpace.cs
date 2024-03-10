@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 
-namespace VoidHuntersRevived.Common.Physics
+namespace VoidHuntersRevived.Domain.Physics.Common
 {
     /// <summary>
     /// Called for each fixture found in the query.

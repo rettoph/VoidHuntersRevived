@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
-namespace VoidHuntersRevived.Common.Entities.Initializers
+namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
 {
     public interface IEntityTypeInitializer : IDisposable
     {

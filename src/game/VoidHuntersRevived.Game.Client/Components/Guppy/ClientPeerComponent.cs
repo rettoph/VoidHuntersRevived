@@ -7,7 +7,7 @@ using Guppy.Game.Common.Enums;
 using Guppy.Network;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Constants;
+using VoidHuntersRevived.Domain.Common.Constants;
 
 namespace VoidHuntersRevived.Game.Client.Components.Guppy
 {

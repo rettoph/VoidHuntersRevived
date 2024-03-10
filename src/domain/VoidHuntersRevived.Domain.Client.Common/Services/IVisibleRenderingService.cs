@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Pieces.Components.Static;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 
-namespace VoidHuntersRevived.Common.Client.Services
+namespace VoidHuntersRevived.Domain.Client.Common.Services
 {
     public interface IVisibleRenderingService
     {

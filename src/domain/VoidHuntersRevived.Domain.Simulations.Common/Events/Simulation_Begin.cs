@@ -1,7 +1,7 @@
-﻿using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Core.Utilities;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Utilities;
 
-namespace VoidHuntersRevived.Common.Simulations.Events
+namespace VoidHuntersRevived.Domain.Simulations.Common.Events
 {
     public class Simulation_Begin : IInputData
     {

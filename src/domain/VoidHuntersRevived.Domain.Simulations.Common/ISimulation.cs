@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
-namespace VoidHuntersRevived.Common.Simulations
+namespace VoidHuntersRevived.Domain.Simulations.Common
 {
     public interface ISimulation
     {

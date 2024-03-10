@@ -1,11 +1,11 @@
-﻿using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Physics.Serialization.Components;
-using VoidHuntersRevived.Common.Pieces.Descriptors;
-using VoidHuntersRevived.Common.Ships.Components;
-using VoidHuntersRevived.Common.Ships.Serialization.Components;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Physics.Common.Serialization.Components;
+using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
+using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Ships.Common.Serialization.Components;
 
-namespace VoidHuntersRevived.Common.Ships.Descriptors
+namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
 {
     public abstract class ShipDescriptor : TreeDescriptor
     {

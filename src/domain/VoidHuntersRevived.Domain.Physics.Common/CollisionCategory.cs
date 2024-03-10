@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Physics
+﻿namespace VoidHuntersRevived.Domain.Physics.Common
 {
     public struct CollisionCategory
     {

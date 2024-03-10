@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Entities;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
 
-namespace VoidHuntersRevived.Common.Ships.Services
+namespace VoidHuntersRevived.Domain.Ships.Common.Services
 {
     public interface ITacticalService
     {

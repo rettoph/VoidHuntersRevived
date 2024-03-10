@@ -1,9 +1,9 @@
-﻿using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Physics.Serialization.Components;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Physics.Common.Serialization.Components;
 
-namespace VoidHuntersRevived.Common.Physics.Descriptors
+namespace VoidHuntersRevived.Domain.Physics.Common.Descriptors
 {
     public abstract class BodyDescriptor : VoidHuntersEntityDescriptor
     {

@@ -1,6 +1,6 @@
 ﻿using Guppy;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Domain.Common
 {
     public interface IVoidHuntersGameGuppy : IGuppy
     {

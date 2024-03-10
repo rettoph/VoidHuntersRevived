@@ -1,6 +1,6 @@
 ﻿using System.Collections.Specialized;
 
-namespace VoidHuntersRevived.Common.Physics
+namespace VoidHuntersRevived.Domain.Physics.Common
 {
     public struct CollisionGroup
     {

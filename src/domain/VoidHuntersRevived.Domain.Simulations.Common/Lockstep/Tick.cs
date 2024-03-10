@@ -1,8 +1,8 @@
-﻿using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Core.Utilities;
-using VoidHuntersRevived.Common.Simulations.Enums;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
-namespace VoidHuntersRevived.Common.Simulations.Lockstep
+namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
 {
     public sealed class Tick
     {

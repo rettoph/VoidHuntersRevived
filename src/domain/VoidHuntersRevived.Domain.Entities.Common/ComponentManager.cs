@@ -1,8 +1,8 @@
 ﻿using Guppy.Common;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Serialization;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 
-namespace VoidHuntersRevived.Common.Entities
+namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public abstract class ComponentManager
     {

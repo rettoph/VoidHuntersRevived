@@ -1,6 +1,6 @@
 ﻿using Standart.Hash.xxHash;
 
-namespace VoidHuntersRevived.Common.Core.Utilities
+namespace VoidHuntersRevived.Common.Utilities
 {
     public class HashBuilder<TNameSpace>
         where TNameSpace : unmanaged

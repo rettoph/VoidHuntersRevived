@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Core
+﻿namespace VoidHuntersRevived.Common
 {
     public static class NameSpace<T>
     {

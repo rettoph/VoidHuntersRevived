@@ -1,8 +1,9 @@
-﻿using VoidHuntersRevived.Common.FixedPoint.Utilities;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
+﻿using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Common.FixedPoint.Utilities;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 
-namespace VoidHuntersRevived.Common.Pieces
+namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public readonly struct Socket
     {

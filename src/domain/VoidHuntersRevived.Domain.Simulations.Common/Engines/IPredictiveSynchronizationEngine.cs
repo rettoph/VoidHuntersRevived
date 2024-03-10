@@ -1,9 +1,9 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
-namespace VoidHuntersRevived.Common.Simulations.Engines
+namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     [SimulationFilter(SimulationType.Predictive)]
     public interface IPredictiveSynchronizationEngine : IEngine

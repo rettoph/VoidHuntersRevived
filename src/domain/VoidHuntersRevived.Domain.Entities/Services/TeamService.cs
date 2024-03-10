@@ -3,9 +3,9 @@ using Guppy.Resources;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Loaders;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Loaders;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {

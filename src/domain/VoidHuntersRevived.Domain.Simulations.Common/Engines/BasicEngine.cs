@@ -2,7 +2,7 @@
 using Guppy.Enums;
 using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Simulations.Engines
+namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     [Service<IEngine>(ServiceLifetime.Scoped, true)]
     public abstract class BasicEngine<TSimulation> : ISimulationEngine<TSimulation>

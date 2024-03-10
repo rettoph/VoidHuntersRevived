@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {

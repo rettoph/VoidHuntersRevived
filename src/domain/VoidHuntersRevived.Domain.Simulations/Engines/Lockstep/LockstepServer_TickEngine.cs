@@ -4,12 +4,12 @@ using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity;
 using Serilog;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations.Engines;
-using VoidHuntersRevived.Common.Simulations.Events;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Events;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep

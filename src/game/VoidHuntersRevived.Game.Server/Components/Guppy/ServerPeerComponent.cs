@@ -10,7 +10,7 @@ using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Services;
 using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Constants;
+using VoidHuntersRevived.Domain.Common.Constants;
 
 namespace VoidHuntersRevived.Game.Server.Components.Guppy
 {

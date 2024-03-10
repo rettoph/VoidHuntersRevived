@@ -2,9 +2,9 @@
 using Guppy.Network;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Enums;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 {

@@ -2,11 +2,11 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities.Options;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Options;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
-namespace VoidHuntersRevived.Common.Entities.Serialization
+namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
     public class EntityReader : BinaryReader
     {

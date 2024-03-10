@@ -2,7 +2,8 @@
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Common.ConvexHull;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common;
 using AetherVertices = tainicom.Aether.Physics2D.Common.Vertices;
 

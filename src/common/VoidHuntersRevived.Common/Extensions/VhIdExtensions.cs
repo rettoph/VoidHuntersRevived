@@ -1,6 +1,6 @@
 ﻿using Standart.Hash.xxHash;
 
-namespace VoidHuntersRevived.Common.Core
+namespace VoidHuntersRevived.Common
 {
     public static class VhIdExtensions
     {

@@ -1,10 +1,10 @@
 ﻿using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Common.Physics;
+using VoidHuntersRevived.Domain.Physics.Common;
 
 namespace VoidHuntersRevived.Domain.Physics
 {

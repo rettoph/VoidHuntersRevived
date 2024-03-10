@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Pieces.Enums
+﻿namespace VoidHuntersRevived.Domain.Pieces.Common.Enums
 {
     [Flags]
     public enum Direction : byte

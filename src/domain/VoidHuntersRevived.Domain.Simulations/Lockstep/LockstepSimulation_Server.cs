@@ -7,12 +7,13 @@ using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Events;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
-using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Common.Constants;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Events;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {

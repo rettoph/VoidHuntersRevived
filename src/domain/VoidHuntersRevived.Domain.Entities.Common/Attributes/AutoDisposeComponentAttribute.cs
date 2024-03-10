@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Entities.Enums;
+﻿using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
-namespace VoidHuntersRevived.Common.Entities.Attributes
+namespace VoidHuntersRevived.Domain.Entities.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Struct, AllowMultiple = true)]
     public class AutoDisposeComponentAttribute : Attribute

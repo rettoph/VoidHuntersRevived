@@ -2,11 +2,11 @@
 using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;
-using VoidHuntersRevived.Common.Core.Extensions.System;
-using VoidHuntersRevived.Common.Core.Helpers;
-using VoidHuntersRevived.Common.Pieces.Utilities;
+using VoidHuntersRevived.Common.Extensions.System;
+using VoidHuntersRevived.Common.Helpers;
+using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
-namespace VoidHuntersRevived.Common.Pieces.Components.Static
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
 {
     [PolymorphicJsonType<IPieceComponent>(nameof(Visible))]
     public struct Visible : IDisposable, IPieceComponent

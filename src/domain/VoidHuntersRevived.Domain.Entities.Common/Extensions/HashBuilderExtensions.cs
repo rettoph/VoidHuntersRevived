@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Entities;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
 
-namespace VoidHuntersRevived.Common.Core.Utilities
+namespace VoidHuntersRevived.Common.Utilities
 {
     public static class HashBuilderExtensions
     {

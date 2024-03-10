@@ -1,8 +1,8 @@
 ﻿using Svelto.ECS;
 using System.Runtime.InteropServices;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 
-namespace VoidHuntersRevived.Common.Pieces
+namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public struct SocketId : IEquatable<SocketId>
     {

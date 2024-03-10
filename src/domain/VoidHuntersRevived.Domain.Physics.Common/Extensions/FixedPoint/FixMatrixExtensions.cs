@@ -1,7 +1,8 @@
-﻿using VoidHuntersRevived.Common.FixedPoint.Extensions;
-using VoidHuntersRevived.Common.Physics.Components;
+﻿using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Common.FixedPoint.Extensions;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 
-namespace VoidHuntersRevived.Common.Physics.Extensions.FixedPoint
+namespace VoidHuntersRevived.Domain.Physics.Common.Extensions.FixedPoint
 {
     public static class FixMatrixExtensions
     {

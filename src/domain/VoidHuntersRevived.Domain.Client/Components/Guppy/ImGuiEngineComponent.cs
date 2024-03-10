@@ -8,9 +8,10 @@ using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Client.Components.Guppy
 {

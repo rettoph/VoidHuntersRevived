@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Core;
+﻿using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Common.Entities.Options
+namespace VoidHuntersRevived.Domain.Entities.Common.Options
 {
     public unsafe struct DeserializationOptions
     {

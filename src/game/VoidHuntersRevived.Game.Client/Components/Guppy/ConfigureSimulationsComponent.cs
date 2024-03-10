@@ -2,8 +2,8 @@
 using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Enums;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Components.Guppy
 {

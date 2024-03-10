@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Core;
+﻿using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Common.Entities.Serialization
+namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
     public class EntityData
     {

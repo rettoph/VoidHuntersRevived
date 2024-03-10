@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Pieces
+﻿namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public interface IBlueprintPiece
     {

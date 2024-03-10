@@ -1,7 +1,7 @@
-﻿using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
-using VoidHuntersRevived.Common.Pieces.Services;
+﻿using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Pieces
         {
             if (!_pieceTypes.Value.TryGetByKey(_pieceTypeKey, out PieceType? pieceType))
             {
-                throw new ArgumentException($"Unknown {nameof(Common.Pieces.PieceType)}.{nameof(Common.Pieces.PieceType.Key)} - {_pieceTypeKey}");
+                throw new ArgumentException($"Unknown {nameof(Common.PieceType)}.{nameof(Common.PieceType.Key)} - {_pieceTypeKey}");
             }
 
             if (this.Children!.Length > 0)

@@ -1,5 +1,5 @@
-﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.FixedPoint;
+﻿using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Common.FixedPoint.FixedPoint;
 
 namespace System.Drawing
 {

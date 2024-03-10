@@ -1,11 +1,11 @@
 ﻿using Serilog;
 using Svelto.DataStructures;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Options;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Options;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
-namespace VoidHuntersRevived.Common.Entities.Serialization
+namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
     public sealed class EntityWriter : BinaryWriter
     {

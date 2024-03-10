@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
-namespace VoidHuntersRevived.Common.Simulations.Engines
+namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     public interface ITickEngine : IStepEngine<Tick>
     {

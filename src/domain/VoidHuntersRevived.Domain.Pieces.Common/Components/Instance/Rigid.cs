@@ -1,11 +1,12 @@
 ﻿using Guppy.Resources.Attributes;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Core.Extensions.System;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Pieces.Utilities;
+using VoidHuntersRevived.Common.Extensions.System;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Physics.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
-namespace VoidHuntersRevived.Common.Pieces.Components.Instance
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 {
     [PolymorphicJsonType<IPieceComponent>(nameof(Rigid))]
     public struct Rigid : IEntityComponent, IDisposable, IPieceComponent

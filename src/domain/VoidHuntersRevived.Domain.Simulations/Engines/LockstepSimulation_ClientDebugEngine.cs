@@ -1,8 +1,8 @@
 ﻿using Guppy.Attributes;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Attributes;
-using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines

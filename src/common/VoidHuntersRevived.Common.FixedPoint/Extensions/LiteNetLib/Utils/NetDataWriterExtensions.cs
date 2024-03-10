@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
 
 namespace LiteNetLib.Utils
 {

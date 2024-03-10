@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Common.Entities
+namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public interface ITeam : IEntityResource<ITeam>
     {

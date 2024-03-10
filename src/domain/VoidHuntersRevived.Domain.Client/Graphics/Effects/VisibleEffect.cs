@@ -2,7 +2,7 @@
 using Guppy.Game.MonoGame.Graphics.Effects;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework.Graphics;
-using VoidHuntersRevived.Common.Client;
+using VoidHuntersRevived.Domain.Client.Common;
 
 namespace VoidHuntersRevived.Game.Client.Graphics.Effects
 {

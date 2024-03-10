@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Common.Simulations;
+﻿using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive

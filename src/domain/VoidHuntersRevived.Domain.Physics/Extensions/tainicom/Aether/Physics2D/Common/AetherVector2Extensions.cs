@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common
 {

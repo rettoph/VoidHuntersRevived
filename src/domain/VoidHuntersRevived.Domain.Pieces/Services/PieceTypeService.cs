@@ -2,9 +2,9 @@
 using Guppy.Resources.Providers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Descriptors;
-using VoidHuntersRevived.Common.Pieces.Services;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
+using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {

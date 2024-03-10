@@ -1,8 +1,8 @@
-﻿using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Core.Utilities;
-using VoidHuntersRevived.Common.Simulations;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Simulations.Common;
 
-namespace VoidHuntersRevived.Common.Ships.Events
+namespace VoidHuntersRevived.Domain.Ships.Common.Events
 {
     public class Input_TractorBeamEmitter_Select : IInputData
     {

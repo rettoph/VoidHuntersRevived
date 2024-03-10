@@ -5,12 +5,14 @@ using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Constants;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities.Extensions;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
+using VoidHuntersRevived.Domain.Common.Constants;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {

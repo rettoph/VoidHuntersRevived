@@ -1,8 +1,8 @@
 ﻿using Svelto.DataStructures;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components.Static;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {

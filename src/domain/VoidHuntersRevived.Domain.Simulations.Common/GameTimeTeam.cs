@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 
-namespace VoidHuntersRevived.Common.Simulations
+namespace VoidHuntersRevived.Domain.Simulations.Common
 {
     public struct GameTimeTeam
     {

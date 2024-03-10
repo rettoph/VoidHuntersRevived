@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Entities.Utilities
+namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
     public static class ExclusiveGroupStructHelper
     {

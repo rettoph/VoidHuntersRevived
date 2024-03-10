@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
-using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Common.FixedPoint;
 
-namespace VoidHuntersRevived.Common.Pieces.Components.Instance
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 {
     public struct Node : IEntityComponent
     {

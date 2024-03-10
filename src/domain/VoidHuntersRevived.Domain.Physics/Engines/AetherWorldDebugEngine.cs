@@ -2,8 +2,8 @@
 using Guppy.Common;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework.Graphics;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Simulations.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines.Debug
 {

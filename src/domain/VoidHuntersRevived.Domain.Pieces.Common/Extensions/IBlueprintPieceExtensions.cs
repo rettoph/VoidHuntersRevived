@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Core;
+﻿using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Common.Pieces.Extensions
+namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions
 {
     internal static class IBlueprintPieceExtensions
     {

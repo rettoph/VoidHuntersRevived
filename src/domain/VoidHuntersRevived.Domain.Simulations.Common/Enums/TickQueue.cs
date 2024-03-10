@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Common.Simulations.Enums
+namespace VoidHuntersRevived.Domain.Simulations.Common.Enums
 {
     public enum TickQueue : byte
     {

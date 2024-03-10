@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Pieces.Components.Shared
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Shared
 {
     public struct ResourceColorScheme : IEntityComponent, IPieceComponent
     {

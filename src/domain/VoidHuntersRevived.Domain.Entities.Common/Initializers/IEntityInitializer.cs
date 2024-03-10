@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
 
-namespace VoidHuntersRevived.Common.Entities.Initializers
+namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
 {
     [Service<IEntityInitializer>(ServiceLifetime.Scoped, true)]
     public interface IEntityInitializer

@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {

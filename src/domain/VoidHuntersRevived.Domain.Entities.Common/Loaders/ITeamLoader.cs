@@ -1,8 +1,8 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
-namespace VoidHuntersRevived.Common.Entities.Loaders
+namespace VoidHuntersRevived.Domain.Entities.Common.Loaders
 {
     [Service<ITeamLoader>(ServiceLifetime.Singleton, true)]
     public interface ITeamLoader

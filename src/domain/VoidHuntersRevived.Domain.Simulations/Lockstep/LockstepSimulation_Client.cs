@@ -5,9 +5,9 @@ using Guppy.Network.Enums;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Simulations;
-using VoidHuntersRevived.Common.Simulations.Lockstep;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {

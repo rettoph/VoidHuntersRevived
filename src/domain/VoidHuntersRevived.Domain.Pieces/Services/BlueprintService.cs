@@ -1,8 +1,8 @@
 ﻿using Guppy.Resources.Providers;
 using Serilog;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Services;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {

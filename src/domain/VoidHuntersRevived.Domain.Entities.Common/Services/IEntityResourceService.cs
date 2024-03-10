@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Entities.Services
+﻿namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IEntityResourceService<T>
         where T : IEntityResource<T>

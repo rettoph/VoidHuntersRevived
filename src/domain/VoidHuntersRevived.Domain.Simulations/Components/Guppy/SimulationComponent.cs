@@ -6,7 +6,7 @@ using Guppy.Game;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common.Simulations.Services;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Components.Guppy
 {

@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Pieces.Enums;
+using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 
-namespace VoidHuntersRevived.Common.Ships.Components
+namespace VoidHuntersRevived.Domain.Ships.Common.Components
 {
     public struct Helm : IEntityComponent
     {

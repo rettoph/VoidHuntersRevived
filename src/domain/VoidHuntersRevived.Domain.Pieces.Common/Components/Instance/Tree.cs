@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 
-namespace VoidHuntersRevived.Common.Pieces.Components.Instance
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 {
     public struct Tree : IEntityComponent
     {

@@ -1,5 +1,5 @@
-﻿using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities
 {

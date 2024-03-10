@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Simulations.Lockstep
+﻿namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
 {
     public interface ILockstepSimulation : ISimulation
     {

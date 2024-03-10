@@ -1,8 +1,8 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Core.Utilities;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Utilities;
 
-namespace VoidHuntersRevived.Common.Entities.Descriptors
+namespace VoidHuntersRevived.Domain.Entities.Common.Descriptors
 {
     public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEntityResource<VoidHuntersEntityDescriptor>, IEquatable<VoidHuntersEntityDescriptor?>
     {

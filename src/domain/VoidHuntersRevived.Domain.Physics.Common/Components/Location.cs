@@ -1,7 +1,8 @@
 ﻿using Svelto.ECS;
+using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 
-namespace VoidHuntersRevived.Common.Physics.Components
+namespace VoidHuntersRevived.Domain.Physics.Common.Components
 {
     public struct Location : IEntityComponent
     {

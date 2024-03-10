@@ -1,10 +1,10 @@
-﻿using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Core.Utilities;
-using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Simulations;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Simulations.Common;
 
-namespace VoidHuntersRevived.Common.Ships.Events
+namespace VoidHuntersRevived.Domain.Ships.Common.Events
 {
     internal sealed class TractorBeamEmitter_Select : IEventData
     {

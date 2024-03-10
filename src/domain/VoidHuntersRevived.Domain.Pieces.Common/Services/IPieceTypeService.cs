@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Common.Pieces.Descriptors;
+using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 
-namespace VoidHuntersRevived.Common.Pieces.Services
+namespace VoidHuntersRevived.Domain.Pieces.Common.Services
 {
     public interface IPieceTypeService
     {

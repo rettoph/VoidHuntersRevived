@@ -2,7 +2,7 @@
 using Guppy.Network;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
-using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 {

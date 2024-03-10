@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Pieces.Components.Static
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
 {
     public struct zIndex : IEntityComponent
     {

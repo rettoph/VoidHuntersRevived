@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Physics.Components
+namespace VoidHuntersRevived.Domain.Physics.Common.Components
 {
     public struct Enabled : IEntityComponent
     {

@@ -1,9 +1,10 @@
 ﻿using Svelto.DataStructures;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Core.Extensions.System;
-using VoidHuntersRevived.Common.Core.Utilities;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Extensions.System;
+using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Common.FixedPoint;
 
-namespace VoidHuntersRevived.Common.Physics
+namespace VoidHuntersRevived.Domain.Physics.Common
 {
     public struct Polygon : IDisposable
     {

@@ -2,12 +2,13 @@
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Attributes;
-using VoidHuntersRevived.Common.Entities.Enums;
-using VoidHuntersRevived.Common.Physics.Components;
-using VoidHuntersRevived.Common.Pieces.Utilities;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common.Attributes;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
-namespace VoidHuntersRevived.Common.Pieces.Components.Instance
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 {
     [AutoDisposeComponent<Location>(AutoDisposeScope.Type)]
     [AutoDisposeComponent<SocketId>(AutoDisposeScope.Instance)]

@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Common.Entities.Services
+namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IEngineService : IDisposable
     {

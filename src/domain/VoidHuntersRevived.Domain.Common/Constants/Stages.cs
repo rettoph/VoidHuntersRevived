@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Constants
+﻿namespace VoidHuntersRevived.Domain.Common.Constants
 {
     public class Stages
     {

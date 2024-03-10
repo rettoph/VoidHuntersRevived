@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Simulations.Engines
+namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     public interface ISimulationEngine<in TSimulation> : IEngine
         where TSimulation : ISimulation

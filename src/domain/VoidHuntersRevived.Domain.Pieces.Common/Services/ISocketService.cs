@@ -1,11 +1,12 @@
 ﻿using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Pieces.Descriptors;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 
-namespace VoidHuntersRevived.Common.Pieces.Services
+namespace VoidHuntersRevived.Domain.Pieces.Common.Services
 {
     public interface ISocketService
     {

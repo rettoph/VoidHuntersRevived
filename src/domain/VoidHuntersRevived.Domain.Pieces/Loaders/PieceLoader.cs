@@ -5,9 +5,9 @@ using Guppy.Loaders;
 using Guppy.Resources.Serialization.Json.Converters;
 using Serilog;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Pieces;
-using VoidHuntersRevived.Common.Pieces.Components;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Pieces.Services;
 

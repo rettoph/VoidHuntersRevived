@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Pieces.Components
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
     public interface IPieceComponent : IEntityComponent
     {

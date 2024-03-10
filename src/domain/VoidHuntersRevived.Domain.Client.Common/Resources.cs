@@ -2,7 +2,7 @@
 using Guppy.Resources;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace VoidHuntersRevived.Common.Client
+namespace VoidHuntersRevived.Domain.Client.Common
 {
     public static class Resources
     {

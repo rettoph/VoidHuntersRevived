@@ -1,8 +1,9 @@
 ﻿using Guppy.Resources.Attributes;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Physics.Components;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 
-namespace VoidHuntersRevived.Common.Pieces.Components.Instance
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 {
     [PolymorphicJsonType<IPieceComponent>(nameof(Plug))]
     public struct Plug : IEntityComponent, IPieceComponent

@@ -1,6 +1,6 @@
 ﻿using Guppy.Game.Input;
 using Guppy.Messaging;
-using VoidHuntersRevived.Common.Pieces.Enums;
+using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Core.Events
 {

@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Common.Core;
+﻿using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {

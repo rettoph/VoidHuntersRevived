@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Physics;
+﻿using VoidHuntersRevived.Domain.Physics.Common;
 
-namespace VoidHuntersRevived.Common.Pieces.Constants
+namespace VoidHuntersRevived.Domain.Pieces.Common.Constants
 {
     public static class CollisionGroups
     {

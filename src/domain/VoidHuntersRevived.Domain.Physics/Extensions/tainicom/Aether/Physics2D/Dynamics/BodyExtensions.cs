@@ -1,4 +1,5 @@
 ﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
 
 namespace tainicom.Aether.Physics2D.Dynamics
 {

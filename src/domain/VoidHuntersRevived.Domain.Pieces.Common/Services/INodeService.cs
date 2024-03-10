@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Pieces.Components.Instance;
+﻿using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 
-namespace VoidHuntersRevived.Common.Pieces.Services
+namespace VoidHuntersRevived.Domain.Pieces.Common.Services
 {
     public interface INodeService
     {

@@ -1,8 +1,8 @@
 ﻿using Guppy.Attributes;
-using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 
-namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
+namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
 {
     [AutoLoad]
     internal sealed class ColorPaletteComponentSerializer : DoNotSerializeComponentSerializer<ColorScheme>

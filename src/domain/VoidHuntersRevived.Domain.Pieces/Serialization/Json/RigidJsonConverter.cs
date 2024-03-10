@@ -2,8 +2,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Physics;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Physics.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {

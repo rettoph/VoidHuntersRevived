@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Common.Entities.Engines
+namespace VoidHuntersRevived.Domain.Entities.Common.Engines
 {
     public interface IOnDespawnEngine<T>
         where T : unmanaged, IEntityComponent

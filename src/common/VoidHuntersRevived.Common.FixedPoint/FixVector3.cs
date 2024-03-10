@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common
+﻿namespace VoidHuntersRevived.Common.FixedPoint
 {
     public struct FixVector3
     {

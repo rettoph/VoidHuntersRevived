@@ -1,4 +1,5 @@
 ﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common;
 
 namespace tainicom.Aether.Physics2D.Common

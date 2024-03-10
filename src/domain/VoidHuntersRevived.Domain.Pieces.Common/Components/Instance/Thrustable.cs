@@ -1,9 +1,10 @@
 ﻿using Guppy.Resources.Attributes;
 using Svelto.ECS;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Common.Pieces.Enums;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 
-namespace VoidHuntersRevived.Common.Pieces.Components.Instance
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 {
     [PolymorphicJsonType<IPieceComponent>(nameof(Thrustable))]
     public struct Thrustable : IEntityComponent, IPieceComponent

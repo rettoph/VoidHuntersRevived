@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 
-namespace VoidHuntersRevived.Common.Entities.Initializers
+namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
 {
     public abstract class BaseEntityInitializer : IEntityInitializer
     {

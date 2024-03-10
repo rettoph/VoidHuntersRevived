@@ -1,11 +1,11 @@
 ﻿using Guppy.Attributes;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Options;
-using VoidHuntersRevived.Common.Entities.Serialization;
-using VoidHuntersRevived.Common.Entities.Services;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Options;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 
-namespace VoidHuntersRevived.Common.Pieces.Serialization.Components
+namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
 {
     [AutoLoad]
     public sealed class NodeComponentSerializer : ComponentSerializer<Node>

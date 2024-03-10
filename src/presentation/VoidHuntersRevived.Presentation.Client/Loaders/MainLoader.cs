@@ -12,7 +12,7 @@ using Guppy.Network.Enums;
 using Guppy.StateMachine;
 using Guppy.StateMachine.Services;
 using Serilog;
-using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Presentation.Client.Loaders
 {

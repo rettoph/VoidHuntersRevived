@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Entities.Engines
+namespace VoidHuntersRevived.Domain.Entities.Common.Engines
 {
     public interface ISimpleDebugEngine : IEngine
     {

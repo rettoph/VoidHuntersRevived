@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Runtime.InteropServices;
+using VoidHuntersRevived.Common.FixedPoint;
 
-namespace VoidHuntersRevived.Common.Pieces.Utilities
+namespace VoidHuntersRevived.Domain.Pieces.Common.Utilities
 {
     public static class PolygonHelper
     {

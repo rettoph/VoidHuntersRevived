@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Entities.Enums
+﻿namespace VoidHuntersRevived.Domain.Entities.Common.Enums
 {
     public enum EntityStatusEnum
     {

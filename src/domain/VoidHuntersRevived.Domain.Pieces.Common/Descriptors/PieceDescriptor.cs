@@ -1,12 +1,12 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Pieces.Components.Instance;
-using VoidHuntersRevived.Common.Pieces.Components.Shared;
-using VoidHuntersRevived.Common.Pieces.Components.Static;
-using VoidHuntersRevived.Common.Pieces.Serialization.Components;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Shared;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
+using VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components;
 
-namespace VoidHuntersRevived.Common.Pieces.Descriptors
+namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
 {
     public abstract class PieceDescriptor : VoidHuntersEntityDescriptor
     {

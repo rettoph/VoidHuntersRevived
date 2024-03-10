@@ -1,10 +1,10 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities.Options;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Options;
 
-namespace VoidHuntersRevived.Common.Entities.Serialization
+namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
     public abstract class ComponentSerializer
     {

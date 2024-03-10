@@ -1,9 +1,9 @@
 ﻿using Svelto.ECS;
 using System.Reflection;
-using VoidHuntersRevived.Common.Entities.Initializers;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Initializers;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
-namespace VoidHuntersRevived.Common.Entities.Utilities
+namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
     public static class EntityInitializerHelper
     {

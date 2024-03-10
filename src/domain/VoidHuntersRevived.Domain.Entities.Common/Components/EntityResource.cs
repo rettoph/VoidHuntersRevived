@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Entities.Components
+namespace VoidHuntersRevived.Domain.Entities.Common.Components
 {
     public struct EntityResource<TResource> : IEntityComponent
         where TResource : IEntityResource<TResource>

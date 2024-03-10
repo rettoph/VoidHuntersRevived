@@ -3,11 +3,11 @@ using Guppy.Common.Extensions;
 using Guppy.Common.Services;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
-using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Engines;
-using VoidHuntersRevived.Common.Entities.Extensions;
-using VoidHuntersRevived.Common.Entities.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {

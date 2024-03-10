@@ -3,7 +3,7 @@ using Guppy.Attributes;
 using Guppy.Extensions.Autofac;
 using Guppy.Providers;
 using Guppy.StateMachine;
-using VoidHuntersRevived.Common.Simulations;
+using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {

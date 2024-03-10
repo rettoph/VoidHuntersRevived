@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
-using VoidHuntersRevived.Common.Core;
+using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Common.Simulations.Services
+namespace VoidHuntersRevived.Domain.Simulations.Common.Services
 {
     public interface ISimulationService
     {

@@ -4,7 +4,7 @@
 
 using System.Runtime.Serialization;
 
-namespace VoidHuntersRevived.Common.FixedPoint
+namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
 {
     /// <summary>
     /// Describes a 2D-FixRectangle. 

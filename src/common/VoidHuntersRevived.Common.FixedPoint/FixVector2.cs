@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using XnaVector2 = Microsoft.Xna.Framework.Vector2;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Common.FixedPoint
 {
     public struct FixVector2
     {

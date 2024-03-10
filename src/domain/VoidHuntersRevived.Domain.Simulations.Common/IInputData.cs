@@ -1,6 +1,6 @@
-﻿using VoidHuntersRevived.Common.Core;
+﻿using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Common.Simulations
+namespace VoidHuntersRevived.Domain.Simulations.Common
 {
     public interface IInputData : IEventData
     {

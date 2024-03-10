@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Common.Core
+﻿using VoidHuntersRevived.Common.FixedPoint;
+
+namespace VoidHuntersRevived.Common
 {
     public class Step
     {

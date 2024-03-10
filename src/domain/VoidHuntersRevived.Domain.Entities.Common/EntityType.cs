@@ -1,7 +1,7 @@
-﻿using VoidHuntersRevived.Common.Core;
-using VoidHuntersRevived.Common.Entities.Descriptors;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 
-namespace VoidHuntersRevived.Common.Entities
+namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public abstract class EntityType : IEntityType
     {

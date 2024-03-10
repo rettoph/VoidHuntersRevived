@@ -1,5 +1,6 @@
 ﻿using Guppy.Game;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Common;
 
 namespace VoidHuntersRevived.Game.Core
 {
