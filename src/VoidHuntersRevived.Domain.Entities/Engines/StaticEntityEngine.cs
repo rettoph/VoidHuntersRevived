@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public EntitiesDB entitiesDB { get; set; } = default!;
 
-        public StaticEntityEngine(EnginesRoot enginesRoot, IEntityTypeInitializerService entityTypeInitializers, IEntityTypeService types, SimpleEntitiesSubmissionScheduler scheduler)
+        public StaticEntityEngine(EnginesRoot enginesRoot, IEntityTypeInitializerService entityTypeInitializers, IEntityTypeService types)
         {
             _types = types;
 
@@ -35,8 +35,6 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
                 typeInitializer.InitializeStatic(ref entityInitializer);
             }
-
-            scheduler.SubmitEntities();
         }
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<StaticEntity> entities, ExclusiveGroupStruct groupID)

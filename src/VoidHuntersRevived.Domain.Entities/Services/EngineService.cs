@@ -2,6 +2,7 @@
 using Guppy.Common.Extensions;
 using Guppy.Common.Services;
 using Svelto.ECS;
+using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common.Core;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Engines;
@@ -13,6 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     internal sealed class EngineService : IEngineService, IDisposable
     {
         private readonly EnginesRoot _enginesRoot;
+        private readonly SimpleEntitiesSubmissionScheduler _scheduler;
         private readonly IBulkSubscriptionService _bulkSubscriptionService;
         private IEngine[] _engines;
         private IStepGroupEngine<Step> _stepEngines;
@@ -22,10 +24,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EngineService(
             IBulkSubscriptionService bulkSubscriptionService,
             IFiltered<IEngine> engines,
-            EnginesRoot enginesRoot)
+            EnginesRoot enginesRoot, 
+            SimpleEntitiesSubmissionScheduler scheduler)
         {
             _bulkSubscriptionService = bulkSubscriptionService;
             _enginesRoot = enginesRoot;
+            _scheduler = scheduler;
             _stepEngines = null!;
             _engines = engines.Instances.ToArray();
         }
@@ -45,6 +49,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             _stepEngines = _engines.CreateSequencedStepEnginesGroup<Step, StepSequence>(StepSequence.Step);
+
+            _scheduler.SubmitEntities();
         }
 
         public void Dispose()
