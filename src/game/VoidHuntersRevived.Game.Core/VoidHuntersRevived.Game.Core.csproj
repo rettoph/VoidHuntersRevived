@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Common\VoidHuntersRevived.Domain.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Content\Common\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Descriptors\**" />
+    <EmbeddedResource Remove="Descriptors\**" />
+    <None Remove="Descriptors\**" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libraries\Guppy\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Game\Guppy.Game.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Physics.Common\VoidHuntersRevived.Domain.Physics.Common.csproj" />
+  </ItemGroup>
+  
+</Project>

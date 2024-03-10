@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Ships.Common\VoidHuntersRevived.Domain.Ships.Common.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Common\VoidHuntersRevived.Domain.Common.csproj" />
+  </ItemGroup>
+
+</Project>
