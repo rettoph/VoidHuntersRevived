@@ -38,77 +38,97 @@ namespace VoidHuntersRevived.Common.Entities.Initializers
             return this;
         }
 
-        protected BaseEntityInitializer WithInstanceInitializer(Func<IEntityType, bool> entityTypeFilter, InstanceEntityInitializerDelegate initializer)
+        protected BaseEntityInitializer WithInstanceInitializer(Func<IEntityType, bool> entityTypeFilter, InstanceEntityInitializerDelegate? initializer)
         {
+            if(initializer is null)
+            {
+                return this;
+            }
+
             _filters.Add(entityTypeFilter);
             _instanceInitializers.Add(new KeyValuePair<Func<IEntityType, bool>, InstanceEntityInitializerDelegate>(entityTypeFilter, initializer));
 
             return this;
         }
 
-        protected BaseEntityInitializer WithInstanceInitializer(IEntityType entityType, InstanceEntityInitializerDelegate initializer)
+        protected BaseEntityInitializer WithInstanceInitializer(IEntityType entityType, InstanceEntityInitializerDelegate? initializer)
         {
             return this.WithExplicitType(entityType).WithInstanceInitializer(x => x == entityType, initializer);
         }
 
-        protected BaseEntityInitializer WithInstanceInitializer<TDescriptor>(InstanceEntityInitializerDelegate initializer)
+        protected BaseEntityInitializer WithInstanceInitializer<TDescriptor>(InstanceEntityInitializerDelegate? initializer)
             where TDescriptor : VoidHuntersEntityDescriptor
         {
             return this.WithInstanceInitializer(x => x.Descriptor.GetType().IsAssignableTo<TDescriptor>(), initializer);
         }
 
-        protected BaseEntityInitializer WithInstanceDisposer(Func<IEntityType, bool> entityTypeFilter, DisposeEntityInitializerDelegate dispoers)
+        protected BaseEntityInitializer WithInstanceDisposer(Func<IEntityType, bool> entityTypeFilter, DisposeEntityInitializerDelegate? disposer)
         {
+            if (disposer is null)
+            {
+                return this;
+            }
+
             _filters.Add(entityTypeFilter);
-            _instanceDisposers.Add(new KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>(entityTypeFilter, dispoers));
+            _instanceDisposers.Add(new KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>(entityTypeFilter, disposer));
 
             return this;
         }
 
-        protected BaseEntityInitializer WithInstanceDisposer(IEntityType entityType, DisposeEntityInitializerDelegate initializer)
+        protected BaseEntityInitializer WithInstanceDisposer(IEntityType entityType, DisposeEntityInitializerDelegate? disposer)
         {
-            return this.WithExplicitType(entityType).WithInstanceDisposer(x => x == entityType, initializer);
+            return this.WithExplicitType(entityType).WithInstanceDisposer(x => x == entityType, disposer);
         }
 
-        protected BaseEntityInitializer WithInstanceDisposer<TDescriptor>(DisposeEntityInitializerDelegate initializer)
+        protected BaseEntityInitializer WithInstanceDisposer<TDescriptor>(DisposeEntityInitializerDelegate? disposer)
             where TDescriptor : VoidHuntersEntityDescriptor
         {
-            return this.WithInstanceDisposer(x => x.Descriptor.GetType().IsAssignableTo<TDescriptor>(), initializer);
+            return this.WithInstanceDisposer(x => x.Descriptor.GetType().IsAssignableTo<TDescriptor>(), disposer);
         }
 
-        protected BaseEntityInitializer WithStaticInitializer(Func<IEntityType, bool> entityTypeFilter, StaticEntityInitializerDelegate initializer)
+        protected BaseEntityInitializer WithStaticInitializer(Func<IEntityType, bool> entityTypeFilter, StaticEntityInitializerDelegate? initializer)
         {
+            if (initializer is null)
+            {
+                return this;
+            }
+
             _filters.Add(entityTypeFilter);
             _staticInitializers.Add(new KeyValuePair<Func<IEntityType, bool>, StaticEntityInitializerDelegate>(entityTypeFilter, initializer));
 
             return this;
         }
 
-        protected BaseEntityInitializer WithStaticInitializer(IEntityType entityType, StaticEntityInitializerDelegate initializer)
+        protected BaseEntityInitializer WithStaticInitializer(IEntityType entityType, StaticEntityInitializerDelegate? initializer)
         {
             return this.WithExplicitType(entityType).WithStaticInitializer(x => x == entityType, initializer);
         }
 
-        protected BaseEntityInitializer WithStaticInitializer<TDescriptor>(StaticEntityInitializerDelegate initializer)
+        protected BaseEntityInitializer WithStaticInitializer<TDescriptor>(StaticEntityInitializerDelegate? initializer)
             where TDescriptor : VoidHuntersEntityDescriptor
         {
             return this.WithStaticInitializer(x => x.Descriptor.GetType().IsAssignableTo<TDescriptor>(), initializer);
         }
 
-        protected BaseEntityInitializer WithStaticDisposer(Func<IEntityType, bool> entityTypeFilter, DisposeEntityInitializerDelegate disposer)
+        protected BaseEntityInitializer WithStaticDisposer(Func<IEntityType, bool> entityTypeFilter, DisposeEntityInitializerDelegate? disposer)
         {
+            if (disposer is null)
+            {
+                return this;
+            }
+
             _filters.Add(entityTypeFilter);
             _staticDisposers.Add(new KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>(entityTypeFilter, disposer));
 
             return this;
         }
 
-        protected BaseEntityInitializer WithStaticDisposer(IEntityType entityType, DisposeEntityInitializerDelegate disposer)
+        protected BaseEntityInitializer WithStaticDisposer(IEntityType entityType, DisposeEntityInitializerDelegate? disposer)
         {
             return this.WithExplicitType(entityType).WithStaticDisposer(x => x == entityType, disposer);
         }
 
-        protected BaseEntityInitializer WithStaticDisposer<TDescriptor>(DisposeEntityInitializerDelegate disposer)
+        protected BaseEntityInitializer WithStaticDisposer<TDescriptor>(DisposeEntityInitializerDelegate? disposer)
             where TDescriptor : VoidHuntersEntityDescriptor
         {
             return this.WithStaticDisposer(x => x.Descriptor.GetType().IsAssignableTo<TDescriptor>(), disposer);
