@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal partial class TreeService
     {
-        public EntityId Spawn(VhId sourceId, VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head, InstanceEntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head, EntityInitializerDelegate? initializerDelegate = null)
         {
             return _entities.Spawn(sourceId, tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             });
         }
 
-        public EntityId Spawn(VhId sourceId, VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, EntityData nodes, InstanceEntityInitializerDelegate initializerDelegate)
+        public EntityId Spawn(VhId sourceId, VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
             return _entities.Spawn(sourceId, tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             });
         }
 
-        public EntityId Spawn(VhId sourceId, VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, Blueprint blueprint, InstanceEntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, VhId vhid, Id<ITeam> teamId, IEntityType<TreeDescriptor> tree, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
         {
             return _entities.Spawn(sourceId, tree, vhid, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {

@@ -3,7 +3,6 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
@@ -20,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Initializers
             foreach (PieceType piece in pieces.All())
             {
                 StaticEntityInitializerDelegate? staticInitializer = EntityInitializerHelper.BuildStaticEntityInitializerDelegate(piece.StaticComponents.Values);
-                InstanceEntityInitializerDelegate? instanceInitializer = (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                InstanceEntityInitializerDelegate? instanceInitializer = (ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init(piece.Id);
                 };

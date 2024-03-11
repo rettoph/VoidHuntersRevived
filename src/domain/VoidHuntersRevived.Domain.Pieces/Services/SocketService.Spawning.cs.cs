@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal partial class SocketService : ISocketService
     {
-        public EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, InstanceEntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializerDelegate = null)
         {
             Id<ITeam> teamId = _entities.QueryById<Id<ITeam>>(socket.Node.TreeId);
             SocketVhId socketVhId = socket.Id.VhId;
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             });
         }
 
-        public EntityId Spawn(VhId sourceId, Socket socket, EntityData nodes, InstanceEntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, Socket socket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
         {
             Id<ITeam> teamId = _entities.QueryById<Id<ITeam>>(socket.Node.TreeId);
             SocketVhId socketVhId = socket.Id.VhId;

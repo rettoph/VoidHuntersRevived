@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
         public void InitializeInstance(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
         {
             initializer.Init<Id<IEntityType>>(this.Type.Id);
-            InstanceEntityInitializer(entities, ref initializer, in id);
+            InstanceEntityInitializer(ref initializer, in id);
         }
 
         public void InitializeStatic(ref EntityInitializer initializer)
@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             StaticEntityInitializer(ref initializer);
         }
 
-        private static void DefaultInstanceInitializer(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
+        private static void DefaultInstanceInitializer(ref EntityInitializer initializer, in EntityId id)
         {
             // throw new NotImplementedException();
         }

@@ -4,7 +4,6 @@ using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Constants;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
@@ -19,7 +18,7 @@ namespace VoidHuntersRevived.Game.Core.Initializers
             this.WithInstanceInitializer(EntityTypes.UserShip, this.InitializeUserShip);
         }
 
-        private void InitializeUserShip(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
+        private void InitializeUserShip(ref EntityInitializer initializer, in EntityId id)
         {
             initializer.Init(new Awake(sleepingAllowed: false));
             initializer.Init(new TractorBeamEmitter(id));

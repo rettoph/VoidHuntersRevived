@@ -16,10 +16,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Initializers
     internal sealed class PieceInitializer : BaseEntityInitializer
     {
         private readonly IResourceProvider _resources;
+        private readonly IEntityService _entities;
 
-        public PieceInitializer(IResourceProvider resources)
+        public PieceInitializer(IResourceProvider resources, IEntityService entities)
         {
             _resources = resources;
+            _entities = entities;
 
             this.WithInstanceInitializer<PieceDescriptor>(this.InitializeColorScheme);
             this.WithStaticInitializer<PieceDescriptor>(this.InitializeResourceColorScheme);
@@ -33,10 +35,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Initializers
             colors.Secondary.Value = _resources.Get(colors.Secondary.Resource);
         }
 
-        private void InitializeColorScheme(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
+        private void InitializeColorScheme(ref EntityInitializer initializer, in EntityId id)
         {
             InstanceEntity instance = initializer.Get<InstanceEntity>();
-            ResourceColorScheme defaults = entities.QueryByGroupIndex<ResourceColorScheme>(instance.StaticEntity);
+            ResourceColorScheme defaults = _entities.QueryByGroupIndex<ResourceColorScheme>(instance.StaticEntity);
 
             initializer.Init<ColorScheme>(new ColorScheme(Color.Red, Color.Green));
         }
