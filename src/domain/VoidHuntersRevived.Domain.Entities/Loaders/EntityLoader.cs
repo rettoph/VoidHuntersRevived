@@ -6,7 +6,7 @@ using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.Serialization.Json;
@@ -22,6 +22,8 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.RegisterType<TeamService>().As<ITeamService>().InstancePerLifetimeScope();
 
             builder.RegisterType<TeamDescriptorGroupService>().As<ITeamDescriptorGroupService>().InstancePerLifetimeScope();
+
+            builder.RegisterType<ComponentSerializerService>().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<EntityTypeService>().As<IEntityTypeService>().AsSelf().InstancePerLifetimeScope();
 

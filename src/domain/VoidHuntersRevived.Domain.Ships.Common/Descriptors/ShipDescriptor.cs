@@ -1,9 +1,7 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Physics.Common.Serialization.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
-using VoidHuntersRevived.Domain.Ships.Common.Serialization.Components;
 
 namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
 {
@@ -11,13 +9,12 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
     {
         public ShipDescriptor()
         {
-            this.WithInstanceComponents(new ComponentManager[]
-            {
-                new ComponentManager<PhysicsBubble, PhysicsBubbleComponentSerializer>(),
-                new ComponentManager<Helm, HelmComponentSerializer>(),
-                new ComponentManager<Tactical, TacticalComponentSerializer>(),
-                new ComponentManager<TractorBeamEmitter, TractorBeamEmitterComponentSerializer>()
-            });
+            this.WithInstanceComponents([
+                new ComponentBuilder<PhysicsBubble>(),
+                new ComponentBuilder<Helm>(),
+                new ComponentBuilder<Tactical>(),
+                new ComponentBuilder<TractorBeamEmitter>()
+            ]);
         }
     }
 }

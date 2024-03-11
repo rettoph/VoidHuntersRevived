@@ -1,7 +1,6 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
-using VoidHuntersRevived.Domain.Ships.Common.Serialization.Components;
 
 namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
 {
@@ -9,10 +8,9 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
     {
         public ChainDescriptor()
         {
-            this.WithInstanceComponents(new[]
-            {
-                new ComponentManager<Tractorable, TractorableComponentSerializer>()
-            });
+            this.WithInstanceComponents([
+                new ComponentBuilder<Tractorable>()
+            ]);
         }
     }
 }

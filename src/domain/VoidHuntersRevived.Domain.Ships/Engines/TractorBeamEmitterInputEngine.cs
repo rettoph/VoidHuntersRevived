@@ -1,11 +1,11 @@
 ﻿using Guppy.Attributes;
 using Serilog;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Ships.Common.Events;
 
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {

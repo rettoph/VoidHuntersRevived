@@ -1,10 +1,9 @@
-﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
+﻿using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Shared;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
-using VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
 {
@@ -12,12 +11,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
     {
         public HullDescriptor()
         {
-            this.WithInstanceComponents(new ComponentManager[]
-            {
+            this.WithInstanceComponents([
                 //new ComponentManager<Sockets, SocketsComponentSerializer>(),
-                new ComponentManager<Sockets<Location>, SocketLocationsComponentSerializer>(),
-                new ComponentManager<Sockets<SocketId>, SocketIdsComponentSerializer>(),
-            });
+                new ComponentBuilder<Sockets<Location>>(),
+                new ComponentBuilder<Sockets<SocketId>>(),
+            ]);
         }
 
         protected override ResourceColorScheme GetDefaultColorScheme()

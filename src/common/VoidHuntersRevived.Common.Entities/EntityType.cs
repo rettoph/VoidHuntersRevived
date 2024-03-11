@@ -1,7 +1,6 @@
-﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+﻿using VoidHuntersRevived.Common.Entities.Descriptors;
 
-namespace VoidHuntersRevived.Domain.Entities.Common
+namespace VoidHuntersRevived.Common.Entities
 {
     public abstract class EntityType : IEntityType
     {
@@ -11,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public readonly VoidHuntersEntityDescriptor Descriptor;
         public readonly string Key;
 
-        Id<IEntityType> IEntityResource<IEntityType>.Id => this.Id;
+        Id<IEntityType> IEntityType.Id => this.Id;
         VoidHuntersEntityDescriptor IEntityType.Descriptor => this.Descriptor;
         string IEntityType.Key => this.Key;
 

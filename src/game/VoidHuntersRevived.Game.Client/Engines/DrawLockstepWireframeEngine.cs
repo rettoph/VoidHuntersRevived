@@ -4,6 +4,7 @@ using Guppy.Game.Common.Enums;
 using Guppy.Messaging;
 using Serilog;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Client.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;

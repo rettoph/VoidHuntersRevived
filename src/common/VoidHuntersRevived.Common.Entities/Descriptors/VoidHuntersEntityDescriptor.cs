@@ -1,14 +1,12 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 
-namespace VoidHuntersRevived.Domain.Entities.Common.Descriptors
+namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
-    public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEntityResource<VoidHuntersEntityDescriptor>, IEquatable<VoidHuntersEntityDescriptor?>
+    public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEquatable<VoidHuntersEntityDescriptor?>
     {
         private DynamicEntityDescriptor<StaticEntityDescriptor> _staticDescriptor;
         private DynamicEntityDescriptor<InstanceEntityDescriptor> _instanceDescriptor;
-        private readonly List<ComponentManager> _componentManagers;
         private Id<VoidHuntersEntityDescriptor>? _id;
         private string? _name;
 
@@ -17,26 +15,17 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Descriptors
 
         public IComponentBuilder[] componentsToBuild => _instanceDescriptor.componentsToBuild;
 
-        public IEnumerable<ComponentManager> ComponentManagers => _componentManagers;
-
         public IEntityDescriptor StaticDescriptor => _staticDescriptor;
 
         protected VoidHuntersEntityDescriptor()
         {
             _staticDescriptor = DynamicEntityDescriptor<StaticEntityDescriptor>.CreateDynamicEntityDescriptor();
             _instanceDescriptor = DynamicEntityDescriptor<InstanceEntityDescriptor>.CreateDynamicEntityDescriptor();
-            _componentManagers = new List<ComponentManager>();
         }
 
-        protected VoidHuntersEntityDescriptor WithInstanceComponents(ComponentManager[] managers)
+        protected VoidHuntersEntityDescriptor WithInstanceComponents(IComponentBuilder[] builders)
         {
-            var builders = managers.Select(x => x.Builder).ToArray();
             _instanceDescriptor.ExtendWith(builders);
-
-            foreach (ComponentManager manager in managers)
-            {
-                _componentManagers.Add(manager);
-            }
 
             return this;
         }
@@ -52,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Descriptors
         {
             foreach (Type componentType in componentTypes)
             {
-                if (this.ComponentManagers.Any(x => x.Type == componentType) == false)
+                if (this._instanceDescriptor.componentsToBuild.Any(x => x.GetEntityComponentType() == componentType) == false)
                 {
                     return false;
                 }

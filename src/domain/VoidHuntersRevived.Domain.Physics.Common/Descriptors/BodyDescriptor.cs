@@ -1,7 +1,6 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+﻿using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Physics.Common.Serialization.Components;
 
 namespace VoidHuntersRevived.Domain.Physics.Common.Descriptors
 {
@@ -9,13 +8,12 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Descriptors
     {
         public BodyDescriptor() : base()
         {
-            this.WithInstanceComponents(new ComponentManager[]
-            {
-                new ComponentManager<Collision, CollisionComponentSerializer>(),
-                new ComponentManager<Location, LocationComponentSerializer>(new Location()),
-                new ComponentManager<Enabled, EnabledComponentSerializer>(),
-                new ComponentManager<Awake, AwakeComponentSerializer>(new Awake(true)),
-            });
+            this.WithInstanceComponents([
+                new ComponentBuilder<Collision>(),
+                new ComponentBuilder<Location>(new Location()),
+                new ComponentBuilder<Enabled>(),
+                new ComponentBuilder<Awake>(new Awake(true)),
+            ]);
         }
     }
 }

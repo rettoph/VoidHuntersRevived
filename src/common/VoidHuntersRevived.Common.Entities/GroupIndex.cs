@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Domain.Entities.Common
+namespace VoidHuntersRevived.Common.Entities
 {
     public struct GroupIndex
     {

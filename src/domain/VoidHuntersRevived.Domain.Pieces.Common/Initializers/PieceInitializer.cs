@@ -2,8 +2,8 @@
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;

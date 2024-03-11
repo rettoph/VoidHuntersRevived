@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 {

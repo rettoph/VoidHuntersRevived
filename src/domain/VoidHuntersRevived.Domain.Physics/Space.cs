@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Common;
 

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {

@@ -7,6 +7,7 @@ using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;

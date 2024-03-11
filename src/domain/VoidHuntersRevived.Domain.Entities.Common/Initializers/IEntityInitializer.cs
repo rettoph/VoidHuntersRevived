@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
 {

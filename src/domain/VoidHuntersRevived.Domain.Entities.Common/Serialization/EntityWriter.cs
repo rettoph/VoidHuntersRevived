@@ -1,7 +1,8 @@
 ﻿using Serilog;
 using Svelto.DataStructures;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 

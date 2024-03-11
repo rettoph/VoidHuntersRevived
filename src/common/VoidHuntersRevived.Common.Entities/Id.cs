@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
 
-namespace VoidHuntersRevived.Domain.Entities.Common
+namespace VoidHuntersRevived.Common.Entities
 {
     public struct Id<T> : IEntityComponent, IEquatable<Id<T>>
     {

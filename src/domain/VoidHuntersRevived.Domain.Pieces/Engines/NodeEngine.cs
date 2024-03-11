@@ -3,19 +3,18 @@ using Guppy.Common.Collections;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Utilities;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Events;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {

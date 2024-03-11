@@ -2,7 +2,7 @@
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;

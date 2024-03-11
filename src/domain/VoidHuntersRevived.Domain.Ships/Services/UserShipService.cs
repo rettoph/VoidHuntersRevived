@@ -1,7 +1,7 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Network;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;

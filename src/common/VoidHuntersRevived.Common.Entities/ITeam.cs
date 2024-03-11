@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Domain.Entities.Common
+namespace VoidHuntersRevived.Common.Entities
 {
-    public interface ITeam : IEntityResource<ITeam>
+    public interface ITeam
     {
+        Id<ITeam> Id { get; }
         string Name { get; }
         Color PrimaryColor { get; }
         Color SecondaryColor { get; }

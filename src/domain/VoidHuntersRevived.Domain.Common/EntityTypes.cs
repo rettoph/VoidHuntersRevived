@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
+﻿using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 using VoidHuntersRevived.Domain.Ships.Common.Descriptors;
 

@@ -2,15 +2,16 @@
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Utilities;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
@@ -49,6 +50,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public VoidHuntersEntityDescriptorEngine(
             ITeamDescriptorGroupService teamDescriptorGroups,
+            IComponentSerializerService serializers,
             ILifetimeScope scope,
             EnginesRoot enginesRoot,
             IEnumerable<VoidHuntersEntityDescriptor> descriptors)
@@ -59,17 +61,12 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             _onDespawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
             _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
             _teamDescriptorGroups = teamDescriptorGroups.GetAllByDescriptor(_descriptor);
-
-            _serializers = new FasterList<ComponentSerializer>(_descriptor.ComponentManagers.Count());
-            foreach (ComponentManager manager in _descriptor.ComponentManagers)
-            {
-                _serializers.Add(manager.SerializerFactory.Create(scope));
-            }
+            _serializers = serializers.GetComponentSerializers(_descriptor);
         }
 
         public void Initialize(IEngine[] engines)
         {
-            foreach (Type componentType in _descriptor.ComponentManagers.Select(x => x.Type))
+            foreach (Type componentType in _descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()))
             {
                 if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engines, out var invoker))
                 {

@@ -2,10 +2,12 @@
 using Guppy.Enums;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
+    [Service<ComponentSerializer>(ServiceLifetime.Scoped, true)]
     public abstract class ComponentSerializer
     {
         public readonly Type Type;
@@ -19,7 +21,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         public abstract void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 
-    [Service(ServiceLifetime.Scoped, null, true)]
     public abstract class ComponentSerializer<TComponent> : ComponentSerializer
         where TComponent : unmanaged, IEntityComponent
     {

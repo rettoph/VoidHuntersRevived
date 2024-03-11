@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common
 {

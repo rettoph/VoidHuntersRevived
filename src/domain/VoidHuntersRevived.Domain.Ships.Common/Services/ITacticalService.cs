@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
+﻿using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Ships.Common.Services
 {

@@ -2,16 +2,16 @@
 using Guppy.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Common.FixedPoint.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Common.FixedPoint.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {

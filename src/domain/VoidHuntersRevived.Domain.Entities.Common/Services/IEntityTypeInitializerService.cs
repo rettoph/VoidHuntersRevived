@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common.Initializers;
+﻿using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {

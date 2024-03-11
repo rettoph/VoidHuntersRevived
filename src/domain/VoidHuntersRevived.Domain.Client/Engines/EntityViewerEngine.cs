@@ -11,9 +11,10 @@ using Svelto.ECS;
 using Svelto.ECS.Internal;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -163,7 +164,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
                         result = result.Max(_objectExplorer.DrawObjectExplorer(entityId, _filter));
                     }
 
-                    foreach (Type componentType in descriptor.ComponentManagers.Select(x => x.Type))
+                    foreach (Type componentType in descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()))
                     {
                         using (_imgui.ApplyID(componentType.AssemblyQualifiedName ?? string.Empty))
                         {
@@ -217,7 +218,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
             TextFilterResult result = this.BasicFilter($"{entityId.VhId}{descriptor.Name}{type.Key}");
 
-            foreach (Type componentType in descriptor.ComponentManagers.Select(x => x.Type))
+            foreach (Type componentType in descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()))
             {
                 using (_imgui.ApplyID(componentType.AssemblyQualifiedName ?? string.Empty))
                 {

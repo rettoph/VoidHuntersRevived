@@ -1,5 +1,6 @@
 ﻿using Autofac;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
 {

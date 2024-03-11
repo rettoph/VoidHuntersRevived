@@ -1,6 +1,5 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
-using VoidHuntersRevived.Domain.Ships.Common.Serialization.Components;
 
 namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
 {
@@ -8,10 +7,9 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
     {
         public UserShipDescriptor()
         {
-            this.WithInstanceComponents(new[]
-            {
-                new ComponentManager<UserId, UserIdComponentSerializer>(),
-            });
+            this.WithInstanceComponents([
+                new ComponentBuilder<UserId>(),
+            ]);
         }
     }
 }

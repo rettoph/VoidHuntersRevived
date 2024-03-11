@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Domain.Entities.Common.Enums
+﻿namespace VoidHuntersRevived.Common.Entities.Enums
 {
     public enum EntityModificationTypeEnum : int
     {

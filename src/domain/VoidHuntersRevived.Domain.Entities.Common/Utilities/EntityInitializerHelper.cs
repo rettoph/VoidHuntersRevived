@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 using System.Reflection;
-using VoidHuntersRevived.Domain.Entities.Common.Initializers;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         {
             StaticEntityInitializerDelegate? initializer = default;
 
-            foreach(IEntityComponent component in components)
+            foreach (IEntityComponent component in components)
             {
                 initializer += BuildStaticEntityInitializerDelegate(component);
             }

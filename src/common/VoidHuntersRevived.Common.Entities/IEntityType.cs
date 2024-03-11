@@ -1,9 +1,10 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+﻿using VoidHuntersRevived.Common.Entities.Descriptors;
 
-namespace VoidHuntersRevived.Domain.Entities.Common
+namespace VoidHuntersRevived.Common.Entities
 {
-    public interface IEntityType : IEntityResource<IEntityType>
+    public interface IEntityType
     {
+        Id<IEntityType> Id { get; }
         VoidHuntersEntityDescriptor Descriptor { get; }
         string Key { get; }
     }

@@ -1,9 +1,8 @@
-﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
+﻿using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Shared;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
-using VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
 {
@@ -11,10 +10,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
     {
         public ThrusterDescriptor()
         {
-            this.WithInstanceComponents(new[]
-            {
-                new ComponentManager<Thrustable, ThrustableComponentSerializer>()
-            });
+            this.WithInstanceComponents([
+                new ComponentBuilder<Thrustable>()
+            ]);
         }
 
         protected override ResourceColorScheme GetDefaultColorScheme()

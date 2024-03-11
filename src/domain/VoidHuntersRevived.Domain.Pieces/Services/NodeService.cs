@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
+﻿using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;

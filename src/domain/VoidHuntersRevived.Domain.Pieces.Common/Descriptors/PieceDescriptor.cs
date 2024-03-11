@@ -1,10 +1,9 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Shared;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
-using VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
 {
@@ -12,15 +11,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
     {
         public PieceDescriptor()
         {
-            this.WithInstanceComponents(new ComponentManager[]
-            {
-                new ComponentManager<Id<PieceType>, PieceTypeIdComponentSerializer>(),
-                new ComponentManager<Plug, PlugComponentSerializer>(in Plug.Default),
-                new ComponentManager<Coupling, CouplingComponentSerializer>(),
-                new ComponentManager<Node, NodeComponentSerializer>(),
-                new ComponentManager<Rigid, RigidComponentSerializer>(),
-                new ComponentManager<ColorScheme, ColorPaletteComponentSerializer>()
-            });
+            this.WithInstanceComponents([
+                new ComponentBuilder<Id<PieceType>>(),
+                new ComponentBuilder<Plug>(in Plug.Default),
+                new ComponentBuilder<Coupling>(),
+                new ComponentBuilder<Node>(),
+                new ComponentBuilder<Rigid>(),
+                new ComponentBuilder<ColorScheme>()
+            ]);
 
             this.WithStaticComponents(new IComponentBuilder[]
             {

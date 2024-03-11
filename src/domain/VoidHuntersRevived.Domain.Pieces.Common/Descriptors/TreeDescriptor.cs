@@ -1,7 +1,7 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
+﻿using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Physics.Common.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
 {
@@ -9,11 +9,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
     {
         public TreeDescriptor()
         {
-            this.WithInstanceComponents(new ComponentManager[]
-            {
-                new ComponentManager<Tree, TreeComponentSerializer>(),
-                new ComponentManager<Id<Blueprint>, BlueprintIdComponentSerializer>()
-            });
+            this.WithInstanceComponents([
+                new ComponentBuilder<Tree>(),
+                new ComponentBuilder<Id<Blueprint>>()
+            ]);
         }
     }
 }

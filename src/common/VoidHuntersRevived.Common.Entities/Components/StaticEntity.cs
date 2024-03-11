@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Domain.Entities.Common.Components
+namespace VoidHuntersRevived.Common.Entities.Components
 {
     public struct StaticEntity : IEntityComponent
     {

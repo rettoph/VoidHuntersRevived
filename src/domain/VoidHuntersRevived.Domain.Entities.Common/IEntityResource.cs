@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Domain.Entities.Common
+﻿using VoidHuntersRevived.Common.Entities;
+
+namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public interface IEntityResource<T>
     {

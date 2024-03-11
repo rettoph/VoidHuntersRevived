@@ -1,8 +1,8 @@
 ﻿using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Domain.Entities.Common.Enums;
+using VoidHuntersRevived.Common.Entities.Enums;
 
-namespace VoidHuntersRevived.Domain.Entities.Common.Components
+namespace VoidHuntersRevived.Common.Entities.Components
 {
     public unsafe struct EntityStatus : IEntityComponent
     {

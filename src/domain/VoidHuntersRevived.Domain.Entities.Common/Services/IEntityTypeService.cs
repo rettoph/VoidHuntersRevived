@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Domain.Entities.Common.Services
+﻿using VoidHuntersRevived.Common.Entities;
+
+namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IEntityTypeService
     {

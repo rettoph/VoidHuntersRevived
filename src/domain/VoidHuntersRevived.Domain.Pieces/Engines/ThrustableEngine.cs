@@ -3,7 +3,7 @@ using Guppy.Common.Attributes;
 using Svelto.ECS;
 using System.Xml.Linq;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;

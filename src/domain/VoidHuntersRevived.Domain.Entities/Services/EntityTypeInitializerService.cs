@@ -1,7 +1,5 @@
 ﻿using Guppy.Common;
-using Svelto.ECS;
-using System.Linq;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Initializers;

@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\Svelto.ECS\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
+    <ProjectReference Include="..\..\common\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
 	  <ProjectReference Include="..\..\common\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
   </ItemGroup>
 
