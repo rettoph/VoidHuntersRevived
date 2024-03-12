@@ -1,8 +1,9 @@
 ﻿using Guppy.Resources;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Teams;
 
-namespace VoidHuntersRevived.Domain.Entities.Common.Services
+namespace VoidHuntersRevived.Domain.Teams.Common.Services
 {
     public interface ITeamService
     {

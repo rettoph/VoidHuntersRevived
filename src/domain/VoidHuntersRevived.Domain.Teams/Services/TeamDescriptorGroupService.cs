@@ -2,10 +2,12 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Teams;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Teams.Common;
+using VoidHuntersRevived.Domain.Teams.Common.Services;
 
-namespace VoidHuntersRevived.Domain.Entities.Services
+namespace VoidHuntersRevived.Domain.Teams.Services
 {
     internal sealed class TeamDescriptorGroupService : ITeamDescriptorGroupService
     {

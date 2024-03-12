@@ -1,8 +1,9 @@
 ﻿using Guppy.Attributes;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Loaders;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Teams.Common.Loaders;
+using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Game.Core.Loaders
 {

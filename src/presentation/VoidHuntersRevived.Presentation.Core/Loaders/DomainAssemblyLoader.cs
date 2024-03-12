@@ -7,6 +7,7 @@ using VoidHuntersRevived.Domain.Physics.Loaders;
 using VoidHuntersRevived.Domain.Pieces.Loaders;
 using VoidHuntersRevived.Domain.Ships.Loaders;
 using VoidHuntersRevived.Domain.Simulations.Loaders;
+using VoidHuntersRevived.Domain.Teams.Loaders;
 
 namespace VoidHuntersRevived.Presentation.Core.Loaders
 {
@@ -21,6 +22,7 @@ namespace VoidHuntersRevived.Presentation.Core.Loaders
             assemblies.Load(typeof(EntityLoader).Assembly);
             assemblies.Load(typeof(PieceLoader).Assembly);
             assemblies.Load(typeof(ShipLoader).Assembly);
+            assemblies.Load(typeof(TeamLoader).Assembly);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Teams;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Simulations.Common;
 

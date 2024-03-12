@@ -1,4 +1,5 @@
 ﻿using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Teams;
 
 namespace VoidHuntersRevived.Domain.Common
 {

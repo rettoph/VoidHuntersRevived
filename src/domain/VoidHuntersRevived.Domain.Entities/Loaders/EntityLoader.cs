@@ -19,10 +19,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
     {
         public void ConfigureServices(ContainerBuilder builder)
         {
-            builder.RegisterType<TeamService>().As<ITeamService>().InstancePerLifetimeScope();
-
-            builder.RegisterType<TeamDescriptorGroupService>().As<ITeamDescriptorGroupService>().InstancePerLifetimeScope();
-
             builder.RegisterType<ComponentSerializerService>().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<EntityTypeService>().As<IEntityTypeService>().AsSelf().InstancePerLifetimeScope();
@@ -44,7 +40,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.Configure<LoggerConfiguration>((scope, config) =>
             {
                 config.Destructure.AsScalar(typeof(Id<IEntityComponent>));
-                config.Destructure.AsScalar(typeof(Id<ITeam>));
                 config.Destructure.AsScalar(typeof(Id<IEntityType>));
             });
         }

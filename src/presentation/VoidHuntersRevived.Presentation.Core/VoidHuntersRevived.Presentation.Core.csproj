@@ -13,6 +13,7 @@
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Pieces\VoidHuntersRevived.Domain.Pieces.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Ships\VoidHuntersRevived.Domain.Ships.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
+    <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Teams\VoidHuntersRevived.Domain.Teams.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain\VoidHuntersRevived.Domain.csproj" />
     <ProjectReference Include="..\..\game\VoidHuntersRevived.Game.Core\VoidHuntersRevived.Game.Core.csproj" />
   </ItemGroup>

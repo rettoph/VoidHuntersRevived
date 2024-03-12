@@ -1,5 +1,6 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Teams;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Options
 {

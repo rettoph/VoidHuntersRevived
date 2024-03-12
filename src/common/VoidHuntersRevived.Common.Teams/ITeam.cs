@@ -1,0 +1,19 @@
+﻿using Guppy.Resources;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using VoidHuntersRevived.Common.Entities;
+
+namespace VoidHuntersRevived.Common.Teams
+{
+    public interface ITeam
+    {
+        Id<ITeam> Id { get; }
+        string Name { get; }
+        ResourceValue<Color> PrimaryColor { get; }
+        ResourceValue<Color> SecondaryColor { get; }
+    }
+}

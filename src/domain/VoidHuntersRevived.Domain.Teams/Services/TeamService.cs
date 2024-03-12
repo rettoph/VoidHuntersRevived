@@ -4,10 +4,11 @@ using Guppy.Resources.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Domain.Entities.Common.Loaders;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Common.Teams;
+using VoidHuntersRevived.Domain.Teams.Common.Loaders;
+using VoidHuntersRevived.Domain.Teams.Common.Services;
 
-namespace VoidHuntersRevived.Domain.Entities.Services
+namespace VoidHuntersRevived.Domain.Teams.Services
 {
     internal sealed class TeamService : ITeamService
     {

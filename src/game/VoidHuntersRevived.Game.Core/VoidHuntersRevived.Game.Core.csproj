@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Common\VoidHuntersRevived.Domain.Common.csproj" />
+    <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Teams.Common\VoidHuntersRevived.Domain.Teams.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
