@@ -22,8 +22,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             SocketVhId socketVhId = socket.Id.VhId;
             VhId treeId = socket.Node.TreeId.VhId;
 
-            return _entities.Spawn(sourceId, node, nodeVhId, teamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            return _entities.Spawn(sourceId, node, nodeVhId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
+                initializer.Init(teamId);
                 initializer.Init(new Node(id, entities.GetId(treeId)));
                 initializer.Init<Coupling>(new Coupling(
                     socketId: new SocketId(
@@ -45,11 +46,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 options: new DeserializationOptions
                 {
                     Seed = HashBuilder<SocketService, SocketVhId>.Instance.Calculate(socketVhId),
-                    TeamId = teamId,
                     Owner = socket.Node.TreeId.VhId
                 },
                 data: nodes,
-                initializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                initializer: teamId.EntityInitializer,
+                rootInitializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init<Coupling>(new Coupling(
                         socketId: new SocketId(

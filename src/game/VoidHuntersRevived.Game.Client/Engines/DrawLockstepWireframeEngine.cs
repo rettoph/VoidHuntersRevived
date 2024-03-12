@@ -4,18 +4,11 @@ using Guppy.Game.Common.Enums;
 using Guppy.Messaging;
 using Serilog;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Teams;
 using VoidHuntersRevived.Domain.Client.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Teams.Common;
-using VoidHuntersRevived.Domain.Teams.Common.Services;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Engines
@@ -30,7 +23,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly IVisibleRenderingService _visibleRenderingService;
         private readonly IEntityService _entities;
         private readonly ILogger _logger;
-        private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> _teamDescriptorGroups;
         private bool _visible;
 
         public string name { get; } = nameof(DrawLockstepWireframeEngine);
@@ -38,15 +30,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public DrawLockstepWireframeEngine(
             ILogger logger,
             IVisibleRenderingService visibleRenderingService,
-            IEntityService entities,
-            ITeamDescriptorGroupService teamDescriptorGroups)
+            IEntityService entities)
         {
             _visibleRenderingService = visibleRenderingService;
             _entities = entities;
             _indexBuffer = new short[3];
             _logger = logger;
-
-            _teamDescriptorGroups = teamDescriptorGroups.GetAllWithComponentsByTeams(typeof(Visible), typeof(Node));
         }
 
         public override void Initialize(ISimulation simulation)

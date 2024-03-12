@@ -13,19 +13,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _writer.Serialize(id, options);
         }
 
-        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data)
-        {
-            return _reader.Deserialize(sourceId, data, options);
-        }
-
-        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer)
-        {
-            return _reader.Deserialize(sourceId, data, options, initializer);
-        }
-
         public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, InstanceEntityInitializerDelegate initializer)
         {
             return _reader.Deserialize(sourceId, data, options, initializer);
+        }
+
+        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, InstanceEntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
+        {
+            return _reader.Deserialize(sourceId, data, options, initializer, rootInitializer);
+        }
+
+        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, InstanceEntityInitializerDelegate initializer, InstanceEntityInitializerDelegate rootInitializer)
+        {
+            return _reader.Deserialize(sourceId, data, options, initializer, rootInitializer);
         }
     }
 }

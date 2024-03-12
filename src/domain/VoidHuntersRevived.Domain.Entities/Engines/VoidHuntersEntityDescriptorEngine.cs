@@ -5,16 +5,12 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Teams;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Utilities;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Teams.Common;
-using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
@@ -24,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public abstract VoidHuntersEntityDescriptor Descriptor { get; }
 
-        public abstract EntityInitializer HardSpawn(in VhId sourceEventId, in VhId vhid, in Id<ITeam> teamId, out EntityId id);
+        public abstract EntityInitializer HardSpawn(in VhId sourceEventId, in VhId vhid, out EntityId id);
         public abstract void SoftSpawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
         public abstract void SoftDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
@@ -45,14 +41,12 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         private readonly FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
         private readonly FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
         private readonly FasterList<ComponentSerializer> _serializers;
-        private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup> _teamDescriptorGroups;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
         public override VoidHuntersEntityDescriptor Descriptor => _descriptor;
 
         public VoidHuntersEntityDescriptorEngine(
-            ITeamDescriptorGroupService teamDescriptorGroups,
             IComponentSerializerService serializers,
             ILifetimeScope scope,
             EnginesRoot enginesRoot,
@@ -63,7 +57,6 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             _functions = enginesRoot.GenerateEntityFunctions();
             _onDespawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
             _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
-            _teamDescriptorGroups = teamDescriptorGroups.GetAllByDescriptor(_descriptor);
             _serializers = serializers.GetComponentSerializers(_descriptor);
         }
 
@@ -99,15 +92,14 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             }
         }
 
-        public override EntityInitializer HardSpawn(in VhId sourceEventId, in VhId vhid, in Id<ITeam> teamId, out EntityId id)
+        public override EntityInitializer HardSpawn(in VhId sourceEventId, in VhId vhid, out EntityId id)
         {
-            EGID egid = new EGID(EntityId.Value++, _teamDescriptorGroups[teamId].GroupId);
+            EGID egid = new EGID(EntityId.Value++, this.Descriptor.Group);
             id = new EntityId(egid, vhid);
 
             EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor);
             initializer.Init(id);
             initializer.Init(_descriptor.Id);
-            initializer.Init(teamId);
 
             return initializer;
         }

@@ -1,13 +1,13 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Teams.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Shared;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
 {
-    public abstract class PieceDescriptor : VoidHuntersEntityDescriptor
+    public abstract class PieceDescriptor : TeamMemberEntityDescriptor
     {
         public PieceDescriptor()
         {

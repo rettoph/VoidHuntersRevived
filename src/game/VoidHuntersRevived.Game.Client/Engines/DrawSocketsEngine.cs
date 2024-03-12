@@ -7,18 +7,10 @@ using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Teams;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Pieces.Common;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Teams.Common;
-using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -32,9 +24,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly Camera2D _camera;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly PrimitiveShape _jointShape;
-        private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> _teamDescriptorGroups;
 
-        public DrawSocketsEngine(IScreen screen, IEntityService entities, ITeamDescriptorGroupService teamDescriptorGroups, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
+        public DrawSocketsEngine(IScreen screen, IEntityService entities, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
         {
             _screen = screen;
             _entities = entities;
@@ -46,8 +37,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 new Vector2(0f, 0f),
                 new Vector2(-0.05f, 0.05f),
             });
-
-            _teamDescriptorGroups = teamDescriptorGroups.GetAllWithComponentsByTeams(typeof(Sockets<SocketId>), typeof(Sockets<Location>), typeof(Node));
         }
         public string name { get; } = nameof(DrawSocketsEngine);
 

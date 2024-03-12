@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Utilities;
+using VoidHuntersRevived.Common.Entities.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Utilities
 {

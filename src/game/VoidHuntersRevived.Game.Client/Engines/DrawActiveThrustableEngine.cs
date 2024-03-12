@@ -8,21 +8,16 @@ using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Teams;
 using VoidHuntersRevived.Domain.Client.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Teams.Common;
-using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -36,7 +31,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly IEntityService _entities;
         private readonly IPieceTypeService _pieceTypes;
         private readonly ILogger _logger;
-        private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> _teamDescriptorGroups;
         private readonly IResourceProvider _resources;
         private readonly Camera2D _camera;
 
@@ -47,7 +41,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
             IVisibleRenderingService visibleRenderingService,
             IEntityService entities,
             IPieceTypeService pieceTypes,
-            ITeamDescriptorGroupService teamDescriptorGroups,
             IResourceProvider resources,
             Camera2D camera)
         {
@@ -58,8 +51,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _indexBuffer = new short[3];
             _logger = logger;
             _camera = camera;
-
-            _teamDescriptorGroups = teamDescriptorGroups.GetAllWithComponentsByTeams(typeof(Visible), typeof(Node));
         }
 
         public override void Initialize(ISimulation simulation)

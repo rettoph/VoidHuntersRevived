@@ -7,18 +7,13 @@ using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Teams;
 using VoidHuntersRevived.Domain.Client.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Teams.Common;
-using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -32,7 +27,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly IVisibleRenderingService _visibleRenderingService;
         private readonly IEntityService _entities;
         private readonly ILogger _logger;
-        private readonly Dictionary<Id<ITeam>, ITeamDescriptorGroup[]> _teamDescriptorGroups;
         private readonly Camera2D _camera;
 
         public string name { get; } = nameof(DrawVisibleEngine);
@@ -41,7 +35,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ILogger logger,
             IVisibleRenderingService visibleRenderingService,
             IEntityService entities,
-            ITeamDescriptorGroupService teamDescriptorGroups,
             Camera2D camera)
         {
             _visibleRenderingService = visibleRenderingService;
@@ -49,8 +42,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _indexBuffer = new short[3];
             _logger = logger;
             _camera = camera;
-
-            _teamDescriptorGroups = teamDescriptorGroups.GetAllWithComponentsByTeams(typeof(Visible), typeof(Node));
         }
 
         public override void Initialize(ISimulation simulation)

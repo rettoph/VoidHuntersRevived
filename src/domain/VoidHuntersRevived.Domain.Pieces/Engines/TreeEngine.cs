@@ -11,7 +11,6 @@ using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
@@ -26,19 +25,19 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private HashSet<EGID> _removedNodes = new HashSet<EGID>();
         private readonly IEntityService _entities;
-        private ITeamDescriptorGroupService _teamDescriptorGroups;
+        private readonly IEntityDescriptorService _entityDescriptors;
         private readonly ILogger _logger;
 
-        public TreeEngine(IEntityService entities, ITeamDescriptorGroupService teamDescriptorGroupService, ILogger logger)
+        public TreeEngine(IEntityService entities, IEntityDescriptorService entityDescriptors, ILogger logger)
         {
             _entities = entities;
-            _teamDescriptorGroups = teamDescriptorGroupService;
+            _entityDescriptors = entityDescriptors;
             _logger = logger;
         }
 
         public void OnSpawn(VhId sourceEventId, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
-            if (_teamDescriptorGroups.GetByGroupId(groupIndex.GroupID).Descriptor is not TreeDescriptor)
+            if (_entityDescriptors.GetByGroup(groupIndex.GroupID) is not TreeDescriptor)
             {
                 throw new Exception();
             }

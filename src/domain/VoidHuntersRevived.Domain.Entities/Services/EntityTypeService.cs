@@ -16,5 +16,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             return _types[id];
         }
+
+        public IEnumerable<IEntityType> GetAll()
+        {
+            return _types.Values;
+        }
     }
 }

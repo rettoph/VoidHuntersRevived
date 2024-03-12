@@ -3,7 +3,6 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Teams;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
@@ -19,9 +18,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         #endregion
 
         #region Entity Spawning
-        EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, Id<ITeam> teamId);
-        EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, Id<ITeam> teamId, EntityInitializerDelegate initializer);
-        EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, Id<ITeam> teamId, InstanceEntityInitializerDelegate initializer);
+        EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid);
+        EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, EntityInitializerDelegate initializer);
+        EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, InstanceEntityInitializerDelegate initializer);
 
         void Despawn(VhId sourceId, VhId vhid);
         void Despawn(VhId sourceId, EntityId id);
@@ -44,9 +43,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         #region Serialization
         EntityData Serialize(EntityId id, SerializationOptions options);
 
-        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data);
-        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer);
         EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, InstanceEntityInitializerDelegate initializer);
+        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, InstanceEntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer);
+        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, InstanceEntityInitializerDelegate initializer, InstanceEntityInitializerDelegate rootInitializer);
         #endregion
 
         #region Filters

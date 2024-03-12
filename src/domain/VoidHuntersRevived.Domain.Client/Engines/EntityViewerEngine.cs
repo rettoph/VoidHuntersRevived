@@ -1,4 +1,5 @@
-﻿using Guppy;
+﻿using Autofac;
+using Guppy;
 using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Common.Enums;
@@ -14,13 +15,10 @@ using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Teams.Common;
-using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Client.Engines
 {
@@ -34,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
         private readonly ISimulation _simulation;
         private readonly IEntityService _entities;
         private readonly IEntityTypeService _entityTypes;
-        private readonly ITeamDescriptorGroupService _teams;
+        private readonly IEntityDescriptorService _entityDescriptors;
         private readonly IImGuiObjectExplorerService _objectExplorer;
         private readonly IObjectTextFilterService _objectFilter;
         private readonly IImGui _imgui;
@@ -52,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             ISimulation simulation,
             IEntityService entities,
             IEntityTypeService entityTypes,
-            ITeamDescriptorGroupService teams,
+            IEntityDescriptorService entityDescriptors,
             IImGuiObjectExplorerService objectExplorer,
             IObjectTextFilterService objectFilter,
             IImGui imgui)
@@ -61,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             _guppy = guppy;
             _entities = entities;
             _entityTypes = entityTypes;
-            _teams = teams;
+            _entityDescriptors = entityDescriptors;
             _objectExplorer = objectExplorer;
             _imgui = imgui;
             _objectFilter = objectFilter;
@@ -93,25 +91,23 @@ namespace VoidHuntersRevived.Domain.Client.Engines
 
             _imgui.InputText("Filter", ref _filter, 255);
 
-            GroupsEnumerable<EntityId, Id<IEntityType>, EntityStatus> groups = _entities.QueryEntities<EntityId, Id<IEntityType>, EntityStatus>();
-            foreach (var ((ids, types, statuses, nativeIds, count), groupId) in groups)
+            foreach (VoidHuntersEntityDescriptor descriptor in _entityDescriptors.GetAll())
             {
-                ITeamDescriptorGroup teamDescriptorGroup = _teams.GetByGroupId(groupId);
-
-                this.RenderTeamDescriptorGroup(groupId, teamDescriptorGroup, ids, types, statuses, nativeIds, count);
+                var (ids, typeIds, statuses, nativeIds, count) = _entities.QueryEntities<EntityId, Id<IEntityType>, EntityStatus>(descriptor.Group);
+                this.RenderTeamDescriptorGroup(descriptor, ids, typeIds, statuses, nativeIds, count);
             }
 
             _imgui.End();
             //throw new NotImplementedException();
         }
 
-        private void RenderTeamDescriptorGroup(ExclusiveGroupStruct groupId, ITeamDescriptorGroup teamDescriptorGroup, Svelto.DataStructures.NB<EntityId> ids, Svelto.DataStructures.NB<Id<IEntityType>> types, Svelto.DataStructures.NB<EntityStatus> statuses, NativeEntityIDs nativeIds, int count)
+        private void RenderTeamDescriptorGroup(VoidHuntersEntityDescriptor descriptor, Svelto.DataStructures.NB<EntityId> ids, Svelto.DataStructures.NB<Id<IEntityType>> types, Svelto.DataStructures.NB<EntityStatus> statuses, NativeEntityIDs nativeIds, int count)
         {
-            using (_imgui.ApplyID($"{nameof(EntityViewerEngine)}_{nameof(ExclusiveGroupStruct)}_{groupId.id}"))
+            using (_imgui.ApplyID($"{nameof(EntityViewerEngine)}_{nameof(ExclusiveGroupStruct)}_{descriptor.Group.id}"))
             {
                 uint id = _imgui.GetID(nameof(TextFilterResult));
                 ref TextFilterResult result = ref this.GetFilterResult(id);
-                string label = $"Group: {groupId.id}, Team: {teamDescriptorGroup.Team.Name}, Descriptor: {teamDescriptorGroup.Descriptor.Name}, Count: {count}";
+                string label = $"Group: {descriptor.Group.id}, Descriptor: {descriptor.Name}, Count: {count}";
                 Vector4? color = result switch
                 {
                     TextFilterResult.NotMatched => _redBackground,
@@ -125,7 +121,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
                     _imgui.Indent();
                     for (int i = 0; i < count; i++)
                     {
-                        result = result.Max(this.RenderEntityData(ids[i], teamDescriptorGroup.Descriptor, _entityTypes.GetById(types[i]), statuses[i], nativeIds[i]));
+                        result = result.Max(this.RenderEntityData(ids[i], descriptor, _entityTypes.GetById(types[i]), statuses[i], nativeIds[i]));
                     }
                     _imgui.Unindent();
                 }
@@ -133,7 +129,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
                 {
                     for (int i = 0; i < count; i++)
                     {
-                        result = result.Max(this.FilterEntityData(ids[i], teamDescriptorGroup.Descriptor, _entityTypes.GetById(types[i])));
+                        result = result.Max(this.FilterEntityData(ids[i], descriptor, _entityTypes.GetById(types[i])));
                     }
                 }
             }
@@ -166,7 +162,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
                         result = result.Max(_objectExplorer.DrawObjectExplorer(entityId, _filter));
                     }
 
-                    foreach (Type componentType in descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()))
+                    foreach (Type componentType in descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()).Where(x => x.IsAssignableTo<IEntityComponent>()))
                     {
                         using (_imgui.ApplyID(componentType.AssemblyQualifiedName ?? string.Empty))
                         {
@@ -220,7 +216,7 @@ namespace VoidHuntersRevived.Domain.Client.Engines
             _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
             TextFilterResult result = this.BasicFilter($"{entityId.VhId}{descriptor.Name}{type.Key}");
 
-            foreach (Type componentType in descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()))
+            foreach (Type componentType in descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()).Where(x => x.IsAssignableTo<IEntityComponent>()))
             {
                 using (_imgui.ApplyID(componentType.AssemblyQualifiedName ?? string.Empty))
                 {

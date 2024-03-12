@@ -1,12 +1,7 @@
 ﻿using Svelto.ECS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
+namespace VoidHuntersRevived.Common.Entities.Utilities
 {
     public static class ExclusiveGroupStructHelper
     {
@@ -16,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         {
             ref ExclusiveGroup? group = ref CollectionsMarshal.GetValueRefOrAddDefault(_groups, name, out bool exists);
 
-            if(exists)
+            if (exists)
             {
                 return group!;
             }

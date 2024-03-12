@@ -1,5 +1,4 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Common.Entities
 {
@@ -12,6 +11,12 @@ namespace VoidHuntersRevived.Common.Entities
         public Id(VhId value)
         {
             _value = value;
+        }
+
+        public void EntityInitializer(ref EntityInitializer initializer, in EntityId id)
+        {
+            // TODO: Only call this if necessary? 
+            initializer.Init(this);
         }
 
         public override bool Equals(object? obj)

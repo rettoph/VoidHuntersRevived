@@ -1,4 +1,5 @@
 ﻿using Svelto.ECS;
+using VoidHuntersRevived.Common.Entities.Utilities;
 using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
@@ -8,19 +9,23 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         private DynamicEntityDescriptor<StaticEntityDescriptor> _staticDescriptor;
         private DynamicEntityDescriptor<InstanceEntityDescriptor> _instanceDescriptor;
         private Id<VoidHuntersEntityDescriptor>? _id;
-        private string? _name;
 
         public Id<VoidHuntersEntityDescriptor> Id => _id ??= HashBuilder<VoidHuntersEntityDescriptor, VhId>.Instance.CalculateId(VhId.HashString(this.GetType().AssemblyQualifiedName ?? throw new NotImplementedException()));
-        public string Name => _name ??= this.GetType().Name;
+        public string Name { get; }
 
         public IComponentBuilder[] componentsToBuild => _instanceDescriptor.componentsToBuild;
 
         public IEntityDescriptor StaticDescriptor => _staticDescriptor;
 
+        public ExclusiveGroupStruct Group { get; }
+
         protected VoidHuntersEntityDescriptor()
         {
             _staticDescriptor = DynamicEntityDescriptor<StaticEntityDescriptor>.CreateDynamicEntityDescriptor();
             _instanceDescriptor = DynamicEntityDescriptor<InstanceEntityDescriptor>.CreateDynamicEntityDescriptor();
+
+            this.Name = this.GetType().Name;
+            this.Group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct(this.Name);
         }
 
         protected VoidHuntersEntityDescriptor WithInstanceComponents(IComponentBuilder[] builders)

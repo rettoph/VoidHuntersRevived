@@ -1,10 +1,10 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Teams.Descriptors;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Physics.Common.Descriptors
 {
-    public abstract class BodyDescriptor : VoidHuntersEntityDescriptor
+    public abstract class BodyDescriptor : TeamMemberEntityDescriptor
     {
         public BodyDescriptor() : base()
         {

@@ -107,78 +107,40 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             return reader.ReadStruct<T>();
         }
 
-        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options)
-        {
-            VhId vhid = this.InternalDeserialize(sourceId, data, 0, options);
-
-            for (uint i = 0; i < data.Positions.Length; i++)
-            {
-                this.InternalDeserialize(sourceId, data, data.Positions[i], options);
-            }
-
-            return _entities.GetId(vhid);
-        }
-
-        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, EntityInitializerDelegate initializer)
-        {
-            VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializer);
-
-            for (uint i = 0; i < data.Positions.Length; i++)
-            {
-                this.InternalDeserialize(sourceId, data, data.Positions[i], options);
-            }
-
-            return _entities.GetId(vhid);
-        }
-
         internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, InstanceEntityInitializerDelegate initializer)
         {
             VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializer);
 
             for (uint i = 0; i < data.Positions.Length; i++)
             {
-                this.InternalDeserialize(sourceId, data, data.Positions[i], options);
+                this.InternalDeserialize(sourceId, data, data.Positions[i], options, initializer);
             }
 
             return _entities.GetId(vhid);
         }
 
-        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options)
+        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, InstanceEntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
         {
-            this.Load(data, position);
-            VhId vhid = this.ReadVhId(options.Seed);
-            Id<IEntityType> typeId = this.ReadStruct<Id<IEntityType>>();
-            IEntityType type = _types.GetById(typeId);
+            VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializer, rootInitializer);
 
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
-
-            _entities.Spawn(sourceId, type, vhid, options.TeamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            for (uint i = 0; i < data.Positions.Length; i++)
             {
-                this.Load(data, position + EntityReader.EntityHeaderSize);
-                entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
-            });
+                this.InternalDeserialize(sourceId, data, data.Positions[i], options, initializer);
+            }
 
-            return vhid;
+            return _entities.GetId(vhid);
         }
 
-        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, EntityInitializerDelegate initializerDelegate)
+        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, InstanceEntityInitializerDelegate initializer, InstanceEntityInitializerDelegate rootInitializer)
         {
-            this.Load(data, position);
-            VhId vhid = this.ReadVhId(options.Seed);
-            Id<IEntityType> typeId = this.ReadStruct<Id<IEntityType>>();
-            IEntityType type = _types.GetById(typeId);
+            VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializer, rootInitializer);
 
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
-
-            _entities.Spawn(sourceId, type, vhid, options.TeamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            for (uint i = 0; i < data.Positions.Length; i++)
             {
-                this.Load(data, position + EntityReader.EntityHeaderSize);
-                entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
+                this.InternalDeserialize(sourceId, data, data.Positions[i], options, initializer);
+            }
 
-                initializerDelegate(entities, ref initializer, in id);
-            });
-
-            return vhid;
+            return _entities.GetId(vhid);
         }
 
         private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, InstanceEntityInitializerDelegate initializerDelegate)
@@ -190,11 +152,53 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
 
-            _entities.Spawn(sourceId, type, vhid, options.TeamId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            _entities.Spawn(sourceId, type, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
                 entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
 
+                initializerDelegate(ref initializer, in id);
+            });
+
+            return vhid;
+        }
+
+        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, InstanceEntityInitializerDelegate initializerDelegate, EntityInitializerDelegate rootInitializerDelegate)
+        {
+            this.Load(data, position);
+            VhId vhid = this.ReadVhId(options.Seed);
+            Id<IEntityType> typeId = this.ReadStruct<Id<IEntityType>>();
+            IEntityType type = _types.GetById(typeId);
+
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
+
+            _entities.Spawn(sourceId, type, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            {
+                this.Load(data, position + EntityReader.EntityHeaderSize);
+                entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
+
+                rootInitializerDelegate(entities, ref initializer, in id);
+                initializerDelegate(ref initializer, in id);
+            });
+
+            return vhid;
+        }
+
+        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, InstanceEntityInitializerDelegate initializerDelegate, InstanceEntityInitializerDelegate rootInitializerDelegate)
+        {
+            this.Load(data, position);
+            VhId vhid = this.ReadVhId(options.Seed);
+            Id<IEntityType> typeId = this.ReadStruct<Id<IEntityType>>();
+            IEntityType type = _types.GetById(typeId);
+
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
+
+            _entities.Spawn(sourceId, type, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            {
+                this.Load(data, position + EntityReader.EntityHeaderSize);
+                entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
+
+                rootInitializerDelegate(ref initializer, in id);
                 initializerDelegate(ref initializer, in id);
             });
 

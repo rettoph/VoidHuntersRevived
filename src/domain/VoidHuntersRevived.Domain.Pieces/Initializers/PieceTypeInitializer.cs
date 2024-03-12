@@ -1,9 +1,8 @@
 ﻿using Guppy.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Common.Entities.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
-using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
