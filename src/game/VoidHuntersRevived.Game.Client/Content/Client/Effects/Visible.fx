@@ -58,25 +58,24 @@ VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, VertexShaderIn
     output.Position = mul(output.Position, Projection);
     // output.Position = mul(float4(staticInput.Position, 0, 1), WorldViewProjection);
     
-    output.Color = instanceInput.PrimaryColor;
-    // if ((staticInput.Flags & IsTraceFlag) == 0)
-    // {
-    //     output.Color = UnpackColor(instanceInput.PrimaryColor);
-    //     output.Depth = 0.0f;
-    // }
-    // else
-    // {
-    //     output.Color = UnpackColor(instanceInput.SecondaryColor);
-    //     
-    //     if ((staticInput.Flags & IsOuterFlag) == 0)
-    //     {
-    //         output.Depth = 0.0f;
-    //     }
-    //     else
-    //     {
-    //         output.Depth = 1.0f;
-    //     }
-    // }
+    if ((staticInput.Flags & IsTraceFlag) == 0)
+    {
+        output.Color = instanceInput.PrimaryColor;
+        output.Depth = 0.0f;
+    }
+    else
+    {
+        output.Color = instanceInput.SecondaryColor;
+        
+        if ((staticInput.Flags & IsOuterFlag) == 0)
+        {
+            output.Depth = 0.0f;
+        }
+        else
+        {
+            output.Depth = 1.0f;
+        }
+    }
     
 
     return output;
@@ -89,16 +88,16 @@ float TraceDiffusionAlpha(float depth)
 
 float4 MainPS(VertexShaderOutput input) : SV_Target0
 {    
-    // float depth = 1 - abs(input.Depth);
-    // 
-    // if (depth < TraceScale)
-    // {
-    //     return float4(0, 0, 0, 0);
-    // }
-    // else if (depth < TraceDiffusionScale)
-    // {
-    //     return input.Color * float4(1, 1, 1, TraceDiffusionAlpha(depth));
-    // }
+    float depth = 1 - abs(input.Depth);
+    
+    if (depth < TraceScale)
+    {
+        return float4(0, 0, 0, 0);
+    }
+    else if (depth < TraceDiffusionScale)
+    {
+        return input.Color * TraceDiffusionAlpha(depth);
+    }
 
 
     return input.Color;

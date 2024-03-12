@@ -13,14 +13,14 @@ namespace VoidHuntersRevived.Domain.Client.Graphics.Vertices
         private const uint IsOuterFlag = 0x00000002;
         private static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration
         (
-            new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 0),
-            new VertexElement(8, VertexElementFormat.Single, VertexElementUsage.BlendIndices, 0)
+            new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
+            new VertexElement(12, VertexElementFormat.Single, VertexElementUsage.BlendIndices, 0)
         );
 
         [FieldOffset(0)]
-        public Vector2 Position;
+        public Vector3 Position;
 
-        [FieldOffset(8)]
+        [FieldOffset(12)]
         private uint _flags;
 
         public bool Trace
@@ -53,6 +53,18 @@ namespace VoidHuntersRevived.Domain.Client.Graphics.Vertices
 
                 _flags |= IsTraceFlag;
             }
+        }
+
+        public VertexStaticVisible(Vector2 position, float zIndex)
+        {
+            this.Position = new Vector3(position, zIndex);
+        }
+
+        public VertexStaticVisible(Vector2 position, float zIndex, bool trace, bool outer)
+        {
+            this.Position = new Vector3(position, zIndex);
+            this.Trace = trace;
+            this.Outer = outer;
         }
     }
 }

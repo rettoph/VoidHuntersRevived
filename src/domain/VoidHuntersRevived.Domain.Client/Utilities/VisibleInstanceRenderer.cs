@@ -79,6 +79,7 @@ namespace VoidHuntersRevived.Domain.Client.Utilities
 
                     instanceVertex.InstanceTranformation = node.Transformation.ToTransformationXnaMatrix();
                     instanceVertex.PrimaryColor = colorScheme.Primary.Current.PackedValue;
+                    instanceVertex.SecondaryColor = colorScheme.Secondary.Current.PackedValue;
                 }
             }
 

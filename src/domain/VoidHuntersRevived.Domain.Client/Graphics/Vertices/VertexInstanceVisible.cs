@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Client.Graphics.Vertices
             new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 2),
             new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 3),
             new VertexElement(64, VertexElementFormat.Color, VertexElementUsage.Color, 0),
-            new VertexElement(80, VertexElementFormat.Color, VertexElementUsage.Color, 1)
+            new VertexElement(68, VertexElementFormat.Color, VertexElementUsage.Color, 1)
         );
 
         [FieldOffset(0)]
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Client.Graphics.Vertices
         [FieldOffset(64)]
         public uint PrimaryColor;
 
-        [FieldOffset(80)]
+        [FieldOffset(68)]
         public uint SecondaryColor;
     }
 }
