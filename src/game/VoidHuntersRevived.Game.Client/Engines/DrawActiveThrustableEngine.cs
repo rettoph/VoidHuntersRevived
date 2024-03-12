@@ -6,15 +6,12 @@ using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Domain.Client.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
-using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -27,7 +24,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal sealed class DrawActiveThrustableEngine : BasicEngine, IStepEngine<GameTimeTeam>
     {
         private readonly short[] _indexBuffer;
-        private readonly IVisibleRenderingService _visibleRenderingService;
         private readonly IEntityService _entities;
         private readonly IPieceTypeService _pieceTypes;
         private readonly ILogger _logger;
@@ -38,13 +34,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public DrawActiveThrustableEngine(
             ILogger logger,
-            IVisibleRenderingService visibleRenderingService,
             IEntityService entities,
             IPieceTypeService pieceTypes,
             IResourceProvider resources,
             Camera2D camera)
         {
-            _visibleRenderingService = visibleRenderingService;
             _resources = resources;
             _entities = entities;
             _pieceTypes = pieceTypes;
@@ -60,22 +54,22 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTimeTeam _param)
         {
-            Color activeThrustableHighlight = _resources.Get(Resources.Colors.ActiveThrustableHighlight);
-            _visibleRenderingService.Begin(activeThrustableHighlight, Color.Transparent);
-            foreach (var ((ids, helms, count), groupId) in _entities.QueryEntities<EntityId, Helm>())
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    EntityId helmId = ids[i];
-                    Helm helm = helms[i];
-
-                    ref var helmThrustables = ref _entities.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
-
-                    this.TryDrawThrustableImpulse(_param, helm.Direction, ref helmThrustables);
-                }
-            }
-
-            _visibleRenderingService.End();
+            // Color activeThrustableHighlight = _resources.Get(Resources.Colors.ActiveThrustableHighlight);
+            // _visibleRenderingService.Begin(activeThrustableHighlight, Color.Transparent);
+            // foreach (var ((ids, helms, count), groupId) in _entities.QueryEntities<EntityId, Helm>())
+            // {
+            //     for (int i = 0; i < count; i++)
+            //     {
+            //         EntityId helmId = ids[i];
+            //         Helm helm = helms[i];
+            // 
+            //         ref var helmThrustables = ref _entities.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
+            // 
+            //         this.TryDrawThrustableImpulse(_param, helm.Direction, ref helmThrustables);
+            //     }
+            // }
+            // 
+            // _visibleRenderingService.End();
         }
 
         private void TryDrawThrustableImpulse(GameTimeTeam param, Direction direction, ref EntityFilterCollection helmThrustables)

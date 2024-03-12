@@ -33,11 +33,11 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
                 return data!;
             }
 
-            ExclusiveGroupStruct group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{entityType.GetType().Name}.Static");
+            ExclusiveGroupStruct group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{entityType.Descriptor.GetType().Name}.Static");
             EGID egid = new EGID(_id++, group);
             CombinedFilterID filter = new CombinedFilterID((int)egid.entityID, StaticEntity.InstanceEntitiesFilterContextId);
 
-            data = new StaticEntityData(egid, new StaticEntity(filter), new InstanceEntity(default, filter));
+            data = new StaticEntityData(egid, new StaticEntity(filter), new InstanceEntity(default));
 
             return data;
         }
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         {
             StaticEntityData data = StaticEntityHelper.GetData(entityType);
 
-            data.InstanceComponent = new InstanceEntity(groupIndex, data.InstanceComponent.FilterId);
+            data.InstanceComponent = new InstanceEntity(groupIndex);
         }
     }
 }

@@ -125,7 +125,7 @@ namespace VoidHuntersRevived.Application.Client
         {
             base.Draw(gameTime);
 
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Random.Shared.Next(0, 2) == 0 ? Color.Black : Color.Gray);
 
             _game?.Draw(gameTime);
         }

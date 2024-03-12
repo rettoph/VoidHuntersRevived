@@ -4,7 +4,6 @@ using Guppy.Game.Common.Enums;
 using Guppy.Messaging;
 using Serilog;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Client.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
@@ -20,7 +19,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         ISubscriber<Input_Toggle_LockstepWireframe>
     {
         private readonly short[] _indexBuffer;
-        private readonly IVisibleRenderingService _visibleRenderingService;
         private readonly IEntityService _entities;
         private readonly ILogger _logger;
         private bool _visible;
@@ -29,10 +27,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public DrawLockstepWireframeEngine(
             ILogger logger,
-            IVisibleRenderingService visibleRenderingService,
             IEntityService entities)
         {
-            _visibleRenderingService = visibleRenderingService;
             _entities = entities;
             _indexBuffer = new short[3];
             _logger = logger;

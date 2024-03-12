@@ -11,10 +11,7 @@ namespace VoidHuntersRevived.Domain.Common
 
         public static class Pieces
         {
-            public static EntityType<HullDescriptor> HullSquare = new(nameof(HullSquare));
-            public static EntityType<HullDescriptor> HullTriangle = new(nameof(HullTriangle));
-
-            public static EntityType<ThrusterDescriptor> Thruster = new(nameof(Thruster));
+            public static EntityType<HullDescriptor> HullSquare = new($"Piece.Hull.Square");
         }
     }
 }

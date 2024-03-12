@@ -4,13 +4,11 @@ namespace VoidHuntersRevived.Common.Entities.Components
 {
     public struct InstanceEntity : IEntityComponent
     {
-        public readonly GroupIndex StaticEntity;
-        public readonly CombinedFilterID FilterId;
+        public readonly GroupIndex StaticEntityId;
 
-        public InstanceEntity(GroupIndex staticEntity, CombinedFilterID staticEntityInstanceEntitiesFilterId) : this()
+        public InstanceEntity(GroupIndex staticEntity) : this()
         {
-            this.StaticEntity = staticEntity;
-            this.FilterId = staticEntityInstanceEntitiesFilterId;
+            this.StaticEntityId = staticEntity;
         }
     }
 }

@@ -8,9 +8,12 @@ namespace VoidHuntersRevived.Common.Entities.Components
 
         public readonly CombinedFilterID InstanceEntitiesFilterId;
 
+        public int InstanceEntitiesCount;
+
         public StaticEntity(CombinedFilterID instanceEntitiesFilterId)
         {
-            InstanceEntitiesFilterId = instanceEntitiesFilterId;
+            this.InstanceEntitiesCount = 0;
+            this.InstanceEntitiesFilterId = instanceEntitiesFilterId;
         }
     }
 }

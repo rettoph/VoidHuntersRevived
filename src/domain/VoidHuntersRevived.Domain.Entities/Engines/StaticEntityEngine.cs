@@ -63,8 +63,13 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
-                ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<EntityId>(instances[i].FilterId);
+                InstanceEntity instanceComponent = instances[i];
+                ref StaticEntity staticComponent = ref this.entitiesDB.QueryEntityByIndex<StaticEntity>(instanceComponent.StaticEntityId.Index, instanceComponent.StaticEntityId.GroupID);
+
+                ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<EntityId>(staticComponent.InstanceEntitiesFilterId);
                 filter.Add(ids[i], groupID, i);
+
+                staticComponent.InstanceEntitiesCount++;
             }
         }
     }

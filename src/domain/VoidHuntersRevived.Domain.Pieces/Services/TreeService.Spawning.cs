@@ -44,13 +44,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                         Owner = vhid
                     },
                     data: nodes,
-                    initializer: teamId.EntityInitializer,
-                    rootInitializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-                    {
-                        throw new Exception(); // Do we need to init this component?
-                        // If not we can remove this initializer entirely.
-                        initializer.Init<Coupling>(new Coupling());
-                    });
+                    initializer: teamId.EntityInitializer);
 
                 initializer.Init(teamId);
                 initializer.Init<Tree>(new Tree(headId));

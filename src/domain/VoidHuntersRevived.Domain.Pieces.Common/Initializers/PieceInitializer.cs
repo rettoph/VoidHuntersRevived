@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Resources.Providers;
-using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
@@ -38,9 +37,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Initializers
         private void InitializeColorScheme(ref EntityInitializer initializer, in EntityId id)
         {
             InstanceEntity instance = initializer.Get<InstanceEntity>();
-            ResourceColorScheme defaults = _entities.QueryByGroupIndex<ResourceColorScheme>(instance.StaticEntity);
+            ResourceColorScheme defaults = _entities.QueryByGroupIndex<ResourceColorScheme>(instance.StaticEntityId);
 
-            initializer.Init<ColorScheme>(new ColorScheme(Color.Red, Color.Green));
+            initializer.Init<ColorScheme>(new ColorScheme(defaults.Primary.Value, defaults.Secondary.Value));
         }
     }
 }

@@ -2,6 +2,7 @@
 using Guppy.Attributes;
 using Guppy.Loaders;
 using VoidHuntersRevived.Domain.Client.Services;
+using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
 namespace VoidHuntersRevived.Domain.Client.Loaders
 {
@@ -10,7 +11,9 @@ namespace VoidHuntersRevived.Domain.Client.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<VisibleRenderingService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            services.RegisterType<VisibleInstanceRenderingService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            services.RegisterType<VisibleEffect>().InstancePerDependency();
         }
     }
 }
