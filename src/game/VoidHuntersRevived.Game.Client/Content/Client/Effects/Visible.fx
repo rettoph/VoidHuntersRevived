@@ -16,7 +16,7 @@ float TraceDiffusionScale;
 
 struct VertexShaderStaticInput
 {
-    float2 Position : POSITION0;
+    float3 Position : POSITION0;
     uint Flags : BLENDINDICES0;
 };
 
@@ -52,10 +52,11 @@ VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, VertexShaderIn
 {
     VertexShaderOutput output = (VertexShaderOutput) 0;
 
-    output.Position = float4(staticInput.Position, 0, 1);
+    output.Position = float4(staticInput.Position, 1);
     output.Position = mul(output.Position, instanceInput.Transformation);
     output.Position = mul(output.Position, View);
     output.Position = mul(output.Position, Projection);
+
     // output.Position = mul(float4(staticInput.Position, 0, 1), WorldViewProjection);
     
     if ((staticInput.Flags & IsTraceFlag) == 0)
@@ -92,7 +93,7 @@ float4 MainPS(VertexShaderOutput input) : SV_Target0
     
     if (depth < TraceScale)
     {
-        return float4(0, 0, 0, 0);
+        discard;
     }
     else if (depth < TraceDiffusionScale)
     {

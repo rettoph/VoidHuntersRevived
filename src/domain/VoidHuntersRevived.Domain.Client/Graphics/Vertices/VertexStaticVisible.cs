@@ -58,6 +58,7 @@ namespace VoidHuntersRevived.Domain.Client.Graphics.Vertices
         public VertexStaticVisible(Vector2 position, float zIndex)
         {
             this.Position = new Vector3(position, zIndex);
+            _flags = 0;
         }
 
         public VertexStaticVisible(Vector2 position, float zIndex, bool trace, bool outer)

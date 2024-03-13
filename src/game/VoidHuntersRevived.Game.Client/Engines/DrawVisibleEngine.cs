@@ -25,6 +25,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly short[] _indexBuffer;
         private readonly IVisibleInstanceRenderingService _visibleInstanceRenderingService;
         private readonly IEntityService _entities;
+        private readonly IEntityTypeService _types;
         private readonly ILogger _logger;
         private readonly Camera2D _camera;
 
@@ -34,10 +35,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ILogger logger,
             IVisibleInstanceRenderingService visibleInstanceRenderingService,
             IEntityService entities,
+            IEntityTypeService types,
             Camera2D camera)
         {
             _visibleInstanceRenderingService = visibleInstanceRenderingService;
             _entities = entities;
+            _types = types;
             _indexBuffer = new short[3];
             _logger = logger;
             _camera = camera;
@@ -50,6 +53,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTime param)
         {
+            // _visibleInstanceRenderingService.DrawAll();
+            // return;
+
             _visibleInstanceRenderingService.Begin();
 
             foreach (var ((statics, entityTypes, _, _, count), _) in _entities.QueryEntities<StaticEntity, Id<IEntityType>, Visible, zIndex>())

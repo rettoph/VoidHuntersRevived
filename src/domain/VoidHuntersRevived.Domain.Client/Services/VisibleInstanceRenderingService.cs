@@ -36,7 +36,9 @@ namespace VoidHuntersRevived.Domain.Client.Services
             _rasterizerState = new RasterizerState()
             {
                 MultiSampleAntiAlias = true,
-                SlopeScaleDepthBias = 0.5f
+                DepthClipEnable = true,
+                ScissorTestEnable = false,
+                CullMode = CullMode.None,
             };
         }
 
@@ -61,6 +63,10 @@ namespace VoidHuntersRevived.Domain.Client.Services
 
             _effect.View = _camera.View;
             _effect.Projection = _camera.Projection;
+
+            _graphics.BlendState = _blendState;
+            _graphics.RasterizerState = _rasterizerState;
+            _graphics.DepthStencilState = DepthStencilState.Default;
         }
 
         public void Draw(Id<IEntityType> entityTypeId, int count, ref EntityFilterCollection instances)
@@ -73,8 +79,6 @@ namespace VoidHuntersRevived.Domain.Client.Services
             VisibleInstanceRenderer renderer = _renderers[entityTypeId];
             VertexBufferBinding[] bindings = renderer.SetInstanceData(_entities, count, ref instances);
 
-            _graphics.BlendState = _blendState;
-            _graphics.RasterizerState = _rasterizerState;
             _graphics.SetVertexBuffers(bindings);
             _graphics.Indices = renderer.Indices;
 
@@ -87,7 +91,36 @@ namespace VoidHuntersRevived.Domain.Client.Services
 
         public void End()
         {
-            _graphics.SetVertexBuffer(null);
+            // _graphics.SetVertexBuffer(null);
+
+            // _batch.Begin(_camera);
+            // 
+            // _batch.DrawLine(new VertexPositionColor()
+            // {
+            //     Position = new Vector3(0, 0, 0),
+            //     Color = Color.Red
+            // },
+            // new VertexPositionColor()
+            // {
+            //     Position = new Vector3(1, 1, 0),
+            //     Color = Color.Red
+            // });
+            // 
+            // _batch.End();
+        }
+
+        private VertexPositionColor[] GetVertices(int offset, int z, Color color)
+        {
+            float size = 2;
+
+            return [
+                new VertexPositionColor(new Vector3(offset + 0, offset + 0, z), color),
+                    new VertexPositionColor(new Vector3(offset + 0, offset + size, z), color),
+                    new VertexPositionColor(new Vector3(offset - size, offset + size, z), color),
+                    new VertexPositionColor(new Vector3(offset + 0, offset + 0, z), color),
+                    new VertexPositionColor(new Vector3(offset - size, offset + size, z), color),
+                    new VertexPositionColor(new Vector3(offset - size, offset + 0, z), color),
+                ];
         }
 
         private static readonly Dictionary<Id<IEntityType>, VisibleInstanceRenderer> _renderers = new Dictionary<Id<IEntityType>, VisibleInstanceRenderer>();

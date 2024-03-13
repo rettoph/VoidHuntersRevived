@@ -4,9 +4,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
 {
     public struct zIndex : IEntityComponent
     {
-        public readonly int Value;
+        public readonly float Value;
 
-        public zIndex(int value)
+        public zIndex(float value)
         {
             Value = value;
         }
