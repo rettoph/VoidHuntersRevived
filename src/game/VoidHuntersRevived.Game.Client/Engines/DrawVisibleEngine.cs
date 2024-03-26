@@ -2,17 +2,20 @@
 using Guppy.Common.Attributes;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Utilities.Cameras;
-using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Domain.Client.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Game.Client.Common.Engines;
+using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
+using VoidHuntersRevived.Game.Client.Common.Services;
+using VoidHuntersRevived.Game.Client.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -20,10 +23,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [GuppyFilter<LocalGameGuppy>]
     [SimulationFilter(SimulationType.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal sealed class DrawVisibleEngine : BasicEngine, IStepEngine<GameTime>
+    internal sealed class DrawVisibleEngine : BasicEngine, IDrawVisibleEngine
     {
         private readonly short[] _indexBuffer;
-        private readonly IVisibleInstanceRenderingService _visibleInstanceRenderingService;
         private readonly IEntityService _entities;
         private readonly IEntityTypeService _types;
         private readonly ILogger _logger;
@@ -33,45 +35,54 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public DrawVisibleEngine(
             ILogger logger,
-            IVisibleInstanceRenderingService visibleInstanceRenderingService,
             IEntityService entities,
             IEntityTypeService types,
             Camera2D camera)
         {
-            _visibleInstanceRenderingService = visibleInstanceRenderingService;
             _entities = entities;
             _types = types;
-            _indexBuffer = new short[3];
             _logger = logger;
             _camera = camera;
         }
 
-        public override void Initialize(ISimulation simulation)
+        public void Step(in IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>> param)
         {
-            base.Initialize(simulation);
-        }
-
-        public void Step(in GameTime param)
-        {
-            // _visibleInstanceRenderingService.DrawAll();
-            // return;
-
-            _visibleInstanceRenderingService.Begin();
-
-            foreach (var ((statics, entityTypes, _, _, count), _) in _entities.QueryEntities<StaticEntity, Id<IEntityType>, Visible, zIndex>())
+            foreach (var ((statics, entityTypes, _, _, typeCount), _) in _entities.QueryEntities<StaticEntity, Id<IEntityType>, Visible, zIndex>())
             {
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < typeCount; i++)
                 {
                     ref StaticEntity @static = ref statics[i];
                     ref Id<IEntityType> entityType = ref entityTypes[i];
 
                     ref var instanceFilter = ref _entities.GetFilter<EntityId>(@static.InstanceEntitiesFilterId);
 
-                    _visibleInstanceRenderingService.Draw(entityType, @static.InstanceEntitiesCount, ref instanceFilter);
+                    VertexBufferManager<VertexInstanceVisible> vertexBufferManager = param.GetById(entityType);
+
+                    foreach (var (indices, group) in instanceFilter)
+                    {
+                        var (statuses, nodes, colorSchemes, instanceCount) = _entities.QueryEntities<EntityStatus, Node, ColorScheme>(group);
+                        vertexBufferManager.EnsureFit(instanceCount);
+
+                        for (int j = 0; j < indices.count; j++)
+                        {
+                            uint index = indices[j];
+                            if (statuses[index].IsDespawned)
+                            {
+                                continue;
+                            }
+
+                            ref Node node = ref nodes[index];
+                            ref ColorScheme colorScheme = ref colorSchemes[index];
+
+                            ref VertexInstanceVisible instanceVertex = ref vertexBufferManager.GetNextVertexUnsafe();
+
+                            instanceVertex.LocalTransformation = node.XnaTransformation;
+                            instanceVertex.PrimaryColor = colorScheme.Primary.Current.PackedValue;
+                            instanceVertex.SecondaryColor = colorScheme.Secondary.Current.PackedValue;
+                        }
+                    }
                 }
             }
-
-            _visibleInstanceRenderingService.End();
         }
     }
 }

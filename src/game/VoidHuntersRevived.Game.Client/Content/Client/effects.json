@@ -2,7 +2,8 @@
   {
     "type": "EffectCode",
     "values": {
-      "EffectCode.Visible": "Effects\\Compiled\\Visible.mgfx"
+      "EffectCode.VisibleAccum": "Shaders\\Compiled\\VisibleAccum.mgfx",
+      "EffectCode.VisibleFinal": "Shaders\\Compiled\\VisibleFinal.mgfx"
     }
   }
 ]

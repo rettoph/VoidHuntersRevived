@@ -4,8 +4,8 @@ $InformationPreference = 'Continue'
 
 
 $cacheFile = $PSScriptRoot + "\.fx.cache.json"
-$fxPath = $PSScriptRoot + "\Client\Effects\"
-$mgfxPath = $PSScriptRoot + "\Client\Effects\Compiled\"
+$fxPath = $PSScriptRoot + "\Client\Shaders\"
+$mgfxPath = $PSScriptRoot + "\Client\Shaders\Compiled\"
 $mgfxcPath = $PSScriptRoot + "\..\..\..\..\libraries\Guppy\libraries\MonoGame\Artifacts\MonoGame.Effect.Compiler\Release\mgfxc.exe"
 [hashtable]$cache = Get-Content $cacheFile | ConvertFrom-Json -AsHashtable
 [hashtable]$newCache = @{}
@@ -47,6 +47,8 @@ foreach ($file in $files)
 
     if($dirty -eq $true)
     {
+        Write-Information "Updating: $($file.Name)"
+
         $compiledPath = $mgfxPath + $file.BaseName + ".mgfx"
         $allOutput = & $mgfxcPath $file.FullName $compiledPath /Profile:OpenGL 2>&1
         $stderr = $allOutput | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] }

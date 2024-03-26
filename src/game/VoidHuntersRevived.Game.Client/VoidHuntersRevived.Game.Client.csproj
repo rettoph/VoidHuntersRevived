@@ -8,8 +8,10 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\..\libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Game.MonoGame\Guppy.Game.MonoGame.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
-    <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Client\VoidHuntersRevived.Domain.Client.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Game.Client.Common\VoidHuntersRevived.Game.Client.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Core\VoidHuntersRevived.Game.Core.csproj" />
   </ItemGroup>
 
@@ -28,13 +30,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Content\Client\Effects\Compiled\*.mgfx">
+    <Content Include="Content\Client\Shaders\Compiled\*.mgfx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Content\Client\Effects\*.fx" />
+    <EmbeddedResource Include="Content\Client\Shaders\*.fx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Content\Client\Shaders\VisibleFinal.fx" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' == 'Windows_NT' ">

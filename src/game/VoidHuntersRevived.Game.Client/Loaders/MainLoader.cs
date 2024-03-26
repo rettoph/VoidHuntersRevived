@@ -5,6 +5,7 @@ using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Loaders;
 using Guppy.Resources.Configuration;
 using Guppy.Resources.Extensions.Autofac;
+using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {
@@ -19,6 +20,9 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             {
                 EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
             });
+
+            services.RegisterType<VisibleAccumEffect>().InstancePerDependency();
+            services.RegisterType<VisibleFinalEffect>().InstancePerDependency();
         }
     }
 }
