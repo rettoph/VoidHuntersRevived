@@ -36,7 +36,10 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private IStepGroupEngine<IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>> _stepEngines;
 
         private RenderTarget2D _target_accum;
+        private RenderTarget2D _target_top;
         private BlendState _bs_accum;
+        private BlendState _bs_top;
+        private BlendState _bs_final;
 
         private VisibleAccumEffect _effect_accum;
         private VisibleFinalEffect _effect_final;
@@ -69,6 +72,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 AlphaDestinationBlend = Blend.One,
                 ColorDestinationBlend = Blend.One
             };
+            _bs_final = new BlendState()
+            {
+                ColorBlendFunction = BlendFunction.Add,
+                AlphaSourceBlend = Blend.One,
+                ColorSourceBlend = Blend.One,
+                AlphaDestinationBlend = Blend.Zero,
+                ColorDestinationBlend = Blend.Zero
+            };
 
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
         }
@@ -100,7 +111,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTime param)
         {
-            float scale = 2 / (-_camera.Zoom - 2) + 1;
+            float scale = 1.5f / (-_camera.Zoom - 2) + 1;
 
             // Add vertices
             _stepEngines.Step(this);
@@ -110,13 +121,20 @@ namespace VoidHuntersRevived.Game.Client.Engines
             // Begin Pass Accum
             _graphics.SetRenderTarget(_target_accum);
             _graphics.Clear(Color.Transparent);
-            _graphics.BlendState = _bs_accum;
+            _graphics.BlendState = _bs_accum = new BlendState()
+            {
+                ColorBlendFunction = BlendFunction.Add,
+                AlphaSourceBlend = Blend.One,
+                ColorSourceBlend = Blend.One,
+                AlphaDestinationBlend = Blend.One,
+                ColorDestinationBlend = Blend.One
+            }; ;
             _graphics.DepthStencilState = DepthStencilState.None;
             _graphics.RasterizerState = RasterizerState.CullNone;
-            _graphics.SamplerStates[0] = SamplerState.PointClamp;
+            _graphics.SamplerStates[0] = SamplerState.PointWrap;
 
             _effect_accum.TraceScale = scale;
-            _effect_accum.TraceDiffusionScale = MathHelper.Lerp(scale, 1, 0.75f);
+            _effect_accum.TraceDiffusionScale = MathHelper.Lerp(scale, 1, 1f);
             _effect_accum.WorldViewProjection = _camera.World * _camera.View * _camera.Projection;
 
             foreach (VertexBufferManager<VertexInstanceVisible> manager in _managers.Values)
@@ -138,10 +156,10 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             // Begin Pass Final
             _graphics.SetRenderTargets(targets_final);
-            _graphics.BlendState = BlendState.Opaque;
+            _graphics.BlendState = BlendState.AlphaBlend;
             _graphics.DepthStencilState = DepthStencilState.Default;
             _graphics.RasterizerState = RasterizerState.CullNone;
-            _graphics.SamplerStates[0] = SamplerState.PointClamp;
+            _graphics.SamplerStates[0] = SamplerState.PointWrap;
 
             _effect_final.TraceScale = scale;
             _effect_final.TraceDiffusionScale = MathHelper.Lerp(scale, 1, 0.75f);
@@ -164,6 +182,16 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     manager.Clear();
                 }
             }
+
+            // var mouse = Mouse.GetState().Position;
+            // Vector4[] data = new Vector4[_target_accum.Width * _target_accum.Height];
+            // _target_accum.GetData(data);
+            // int index = mouse.X + (mouse.Y * _target_accum.Width);
+            // 
+            // if (index >= 0 && index < data.Length)
+            // {
+            //     Console.WriteLine(data[index]);
+            // }
         }
 
         public VertexBufferManager<VertexInstanceVisible> GetById(Id<IEntityType> id)

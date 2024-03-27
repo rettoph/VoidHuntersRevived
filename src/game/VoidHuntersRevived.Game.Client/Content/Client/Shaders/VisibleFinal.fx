@@ -13,7 +13,7 @@ matrix WorldViewProjection;
 float TraceScale;
 float TraceDiffusionScale;
 
-Texture2D AccumTexture : register(t0);
+Texture2D<float4> AccumTexture : register(t0);
 SamplerState AccumTextureSampler : register(s0);
 
 struct VertexShaderStaticInput
@@ -66,7 +66,7 @@ VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, uint instanceI
     if ((staticInput.Flags & IsTraceFlag) == 0)
     {
         output.Color = UnpackColor(instanceInput.PrimaryColor);
-        output.Depth = 0.0f;
+        output.Depth = -100;
     }
     else
     {
@@ -92,35 +92,33 @@ float TraceDiffusionAlpha(float depth)
 
 float4 MainPS(VertexShaderOutput input) : SV_TARGET
 {
-    float depth = 1 - abs(input.Depth);
+    float4 top = input.Color;
     
-    float4 color = input.Color;
-    if (depth < TraceScale)
+    if (input.Depth > -100)
     {
-        discard;
+        float depth = 1 - abs(input.Depth);
+        
+        if (depth < TraceScale)
+        {
+            discard;
+        }
+        else if (depth < TraceDiffusionScale)
+        {
+            top.a *= TraceDiffusionAlpha(depth);
+        }
     }
-    else if (depth < TraceDiffusionScale)
-    {
-        color = input.Color * TraceDiffusionAlpha(depth);
-    }
-
+    
     float4 accum = AccumTexture.Sample(AccumTextureSampler, input.TextureCoordinates);
     
-    if (accum.a < 2000)
-    { // Indicates theres only 1 layer, as 2 layers would at least be 2000
-        return input.Color;
-    }
-
     // Alpha channel is:
     // (layers * 1000) + alpha;
     float layers = round(accum.a / 1000);
     float alpha = accum.a % 1000;
     
     // Divide the accum colors by the total number of layers
-    float4 rgba = float4(accum.rgb, alpha) / layers;
+    float4 avg = float4(accum.rgb, alpha) / layers;
     
-    // Average the int color + avg.rgb, use the accum alpha avg
-    return float4((color.rgb + (rgba.rgb * rgba.a)) / 2, rgba.a);
+    return float4(((top.rgb + (avg.rgb * avg.a)) / 2), avg.a);
 }
 
 technique BasicColorDrawing

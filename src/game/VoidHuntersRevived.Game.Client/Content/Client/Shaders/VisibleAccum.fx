@@ -57,7 +57,7 @@ VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, uint instanceI
     if ((staticInput.Flags & IsTraceFlag) == 0)
     {
         output.Color = UnpackColor(instanceInput.PrimaryColor);
-        output.Depth = 0.0f;
+        output.Depth = -100;
     }
     else
     {
@@ -83,18 +83,24 @@ float TraceDiffusionAlpha(float depth)
 
 float4 MainPS(VertexShaderOutput input) : SV_TARGET
 {
-    float depth = 1 - abs(input.Depth);
+    float4 output = input.Color;
     
-    if (depth < TraceScale)
+    if (input.Depth > -100)
     {
-        discard;
-    }
-    else if (depth < TraceDiffusionScale)
-    {
-        return (input.Color * TraceDiffusionAlpha(depth)) + float4(0, 0, 0, 1000);
+        float depth = 1 - abs(input.Depth);
+        
+        if (depth < TraceScale)
+        {
+            discard;
+        }
+        else if (depth < TraceDiffusionScale)
+        {
+            output.a *= TraceDiffusionAlpha(depth);
+        }
     }
 
-    return input.Color + float4(0, 0, 0, 1000);
+
+    return output + float4(0, 0, 0, 1000);
 }
 
 technique BasicColorDrawing
