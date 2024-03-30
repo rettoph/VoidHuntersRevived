@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <None Remove="Content\Client\Shaders\VisibleFinal.fx" />
+    <None Remove="Content\Client\Shaders\_VisibleShared.fx" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' == 'Windows_NT' ">

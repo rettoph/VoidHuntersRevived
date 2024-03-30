@@ -42,6 +42,11 @@ function CheckCacheDirty($file, $newHash)
 
 foreach ($file in $files)
 {
+    if($file.BaseName.StartsWith("_") -eq $true)
+    {
+        continue;
+    }
+
     $hash = (Get-FileHash $file).Hash
     $dirty = CheckCacheDirty $file.Name $hash
 
