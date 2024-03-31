@@ -10,7 +10,6 @@ struct VertexShaderOutput
 {
     float4 Position : SV_POSITION;
     float4 Color : COLOR;
-    float Depth : TEXCOORD0;
     float2 TextureCoordinates : TEXCOORD1;
 };
 
@@ -19,30 +18,12 @@ VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, uint instanceI
     VertexShaderOutput output = (VertexShaderOutput) 0;
 
     output.Position = TransformStaticPosition(staticInput.Position, instanceInput.LocalTranformation);
+    output.Color = GetColor(staticInput.Flags.x, instanceInput.PrimaryColor, instanceInput.SecondaryColor);
     
     // Convert to normalized device coordinates
     output.TextureCoordinates = output.Position.xy / output.Position.w;
     output.TextureCoordinates = float2(output.TextureCoordinates.x + 1, 1 - output.TextureCoordinates.y);
     output.TextureCoordinates /= 2;
-    
-    if ((staticInput.Flags & IsTraceFlag) == 0)
-    {
-        output.Color = UnpackColor(instanceInput.PrimaryColor);
-        output.Depth = -100;
-    }
-    else
-    {
-        output.Color = UnpackColor(instanceInput.SecondaryColor);
-        
-        if ((staticInput.Flags & IsOuterFlag) == 0)
-        {
-            output.Depth = 0.0f;
-        }
-        else
-        {
-            output.Depth = 1.0f;
-        }
-    }
     
     return output;
 }
@@ -50,20 +31,6 @@ VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, uint instanceI
 float4 MainPS(VertexShaderOutput input) : SV_TARGET
 {
     float4 top = input.Color;
-    
-    if (input.Depth > -100)
-    {
-        float depth = 1 - abs(input.Depth);
-        
-        if (depth < TraceScale)
-        {
-            discard;
-        }
-        else if (depth < TraceDiffusionScale)
-        {
-            top.a *= TraceDiffusionAlpha(depth);
-        }
-    }
     
     float4 accum = AccumTexture.Sample(AccumTextureSampler, input.TextureCoordinates);
     

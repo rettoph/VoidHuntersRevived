@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Game.Client.Common.Graphics.Vertices
         private static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration
         (
             new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
-            new VertexElement(12, VertexElementFormat.Single, VertexElementUsage.BlendIndices, 0)
+            new VertexElement(12, VertexElementFormat.Byte4, VertexElementUsage.BlendIndices, 0)
         );
 
         [FieldOffset(0)]
@@ -23,37 +23,8 @@ namespace VoidHuntersRevived.Game.Client.Common.Graphics.Vertices
         [FieldOffset(12)]
         private uint _flags;
 
-        public bool Trace
-        {
-            set
-            {
-                if (value)
-                {
-                    _flags |= IsTraceFlag;
-                }
-                else
-                {
-                    _flags &= ~IsTraceFlag;
-                }
-            }
-        }
-
-        public bool Outer
-        {
-            set
-            {
-                if (value)
-                {
-                    _flags |= IsOuterFlag;
-                }
-                else
-                {
-                    _flags &= ~IsOuterFlag;
-                }
-
-                _flags |= IsTraceFlag;
-            }
-        }
+        [FieldOffset(12)]
+        public bool Trace;
 
         public VertexStaticVisible(Vector2 position, float zIndex)
         {
@@ -61,11 +32,10 @@ namespace VoidHuntersRevived.Game.Client.Common.Graphics.Vertices
             _flags = 0;
         }
 
-        public VertexStaticVisible(Vector2 position, float zIndex, bool trace, bool outer)
+        public VertexStaticVisible(Vector2 position, float zIndex, bool trace)
         {
             this.Position = new Vector3(position, zIndex);
             this.Trace = trace;
-            this.Outer = outer;
         }
     }
 }

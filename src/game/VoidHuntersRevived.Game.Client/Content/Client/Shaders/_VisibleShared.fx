@@ -13,7 +13,7 @@ float TraceDiffusionScale;
 struct VertexShaderStaticInput
 {
     float3 Position : POSITION0;
-    uint Flags : BLENDINDICES0;
+    bool4 Flags : BLENDINDICES0;
 };
 
 struct VertexShaderInstanceInput
@@ -37,15 +37,22 @@ float4 UnpackColor(uint packed)
         ByteToFloat((packed & AMask) >> 24));
 }
 
-float TraceDiffusionAlpha(float depth)
-{
-    return (depth - TraceScale) / (TraceDiffusionScale - TraceScale);
-}
-
 float4 TransformStaticPosition(float3 position, float4x4 instance)
 {
     float4 result = mul(float4(position, 1), instance);
     result = mul(result, WorldViewProjection);
     
     return result;
+}
+
+float4 GetColor(bool isTrace, uint primaryColor, uint secondaryColor)
+{
+    if (isTrace == true)
+    {
+        return UnpackColor(secondaryColor);
+    }
+    else
+    {
+        return UnpackColor(primaryColor);
+    }
 }

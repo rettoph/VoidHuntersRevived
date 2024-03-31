@@ -143,13 +143,16 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 {
                     manager.Flush();
 
-                    _graphics.SetVertexBuffers(manager.VertexBufferBindings);
-                    _graphics.Indices = manager.IndexBuffer;
-
-                    foreach (EffectPass pass in _effect_accum.CurrentTechnique.Passes)
+                    for (int i = 0; i < manager.BufferCount; i++)
                     {
-                        pass.Apply();
-                        _graphics.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, manager.StaticTriangleCount, manager.InstanceCount);
+                        _graphics.SetVertexBuffers(manager.VertexBufferBindings[i]);
+                        _graphics.Indices = manager.IndexBuffers[i];
+
+                        foreach (EffectPass pass in _effect_accum.CurrentTechnique.Passes)
+                        {
+                            pass.Apply();
+                            _graphics.DrawInstancedPrimitives(manager.PrimitiveTypes[i], 0, 0, manager.StaticPrimitiveCount[i], manager.InstanceCount);
+                        }
                     }
                 }
             }
@@ -170,13 +173,16 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 if (manager.InstanceCount > 0)
                 {
-                    _graphics.SetVertexBuffers(manager.VertexBufferBindings);
-                    _graphics.Indices = manager.IndexBuffer;
-
-                    foreach (EffectPass pass in _effect_final.CurrentTechnique.Passes)
+                    for (int i = 0; i < manager.BufferCount; i++)
                     {
-                        pass.Apply();
-                        _graphics.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, manager.StaticTriangleCount, manager.InstanceCount);
+                        _graphics.SetVertexBuffers(manager.VertexBufferBindings[i]);
+                        _graphics.Indices = manager.IndexBuffers[i];
+
+                        foreach (EffectPass pass in _effect_final.CurrentTechnique.Passes)
+                        {
+                            pass.Apply();
+                            _graphics.DrawInstancedPrimitives(manager.PrimitiveTypes[i], 0, 0, manager.StaticPrimitiveCount[i], manager.InstanceCount);
+                        }
                     }
 
                     manager.Clear();
@@ -208,114 +214,144 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private static readonly short[] _indexBuffer = new short[10];
         private static VertexBufferManager<VertexInstanceVisible> BuildVertexBufferManager(Id<IEntityType> entityType, Visible visible, zIndex zIndex, GraphicsDevice graphics)
         {
-            List<VertexStaticVisible> vertices = new List<VertexStaticVisible>();
-            int index = vertices.Count;
-            int count = 0;
-            List<short> indices = new List<short>();
+            int count;
 
+            List<VertexStaticVisible> fillVertices = new List<VertexStaticVisible>();
+            List<short> fillIndices = new List<short>();
+
+            count = 0;
             for (int shape_i = 0; shape_i < visible.Fill.count; shape_i++)
             {
                 Shape shape = visible.Fill[shape_i];
 
-                _indexBuffer[0] = (short)vertices.Count;
-                vertices.Add(new VertexStaticVisible(shape.Vertices[0], zIndex.Value));
+                _indexBuffer[0] = (short)fillVertices.Count;
+                fillVertices.Add(new VertexStaticVisible(shape.Vertices[0], zIndex.Value));
                 count++;
 
-                _indexBuffer[1] = (short)vertices.Count;
-                vertices.Add(new VertexStaticVisible(shape.Vertices[1], zIndex.Value));
+                _indexBuffer[1] = (short)fillVertices.Count;
+                fillVertices.Add(new VertexStaticVisible(shape.Vertices[1], zIndex.Value));
                 count++;
 
                 for (int vertex_i = 2; vertex_i < shape.Vertices.count; vertex_i++)
                 {
-                    _indexBuffer[2] = (short)vertices.Count;
-                    vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i], zIndex.Value));
+                    _indexBuffer[2] = (short)fillVertices.Count;
+                    fillVertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i], zIndex.Value));
                     count++;
 
-                    indices.AddRange(_indexBuffer[..3]);
+                    fillIndices.AddRange(_indexBuffer[..3]);
                     _indexBuffer[1] = _indexBuffer[2];
                 }
             }
 
-            for (int shape_i = 0; shape_i < visible.TraceVertices.count; shape_i++)
+            List<VertexStaticVisible> traceVertices = new List<VertexStaticVisible>();
+            List<short> traceIndices = new List<short>();
+
+            count = 0;
+            for (int shape_i = 0; shape_i < visible.Trace.count; shape_i++)
             {
-                Shape shape = visible.TraceVertices[shape_i];
-                int offset1 = 0;
-                int offset2 = 5;
-                int placeholder = 0;
+                Shape shape = visible.Trace[shape_i];
 
-                _indexBuffer[offset1 + 0] = (short)vertices.Count;
-                vertices.Add(new VertexStaticVisible(shape.Vertices[offset1 + 0], zIndex.Value, true, true));
+                _indexBuffer[0] = (short)traceVertices.Count;
+                traceVertices.Add(new VertexStaticVisible(shape.Vertices[0], zIndex.Value, true));
+                count++;
 
-                _indexBuffer[offset1 + 1] = (short)vertices.Count;
-                vertices.Add(new VertexStaticVisible(shape.Vertices[offset1 + 1], zIndex.Value, true, true));
-
-                _indexBuffer[offset1 + 2] = (short)vertices.Count;
-                vertices.Add(new VertexStaticVisible(shape.Vertices[offset1 + 2], zIndex.Value, true, true));
-
-                _indexBuffer[offset1 + 3] = (short)vertices.Count;
-                vertices.Add(new VertexStaticVisible(shape.Vertices[offset1 + 3], zIndex.Value, true, true));
-
-                _indexBuffer[offset1 + 4] = (short)vertices.Count;
-                vertices.Add(new VertexStaticVisible(shape.Vertices[offset1 + 4], zIndex.Value, true, false));
-
-                count += 5;
-
-                for (int vertex_i = 5; vertex_i < shape.Vertices.count; vertex_i += 5)
+                for (int vertex_i = 1; vertex_i < shape.Vertices.count; vertex_i++)
                 {
-                    _indexBuffer[offset2 + 0] = (short)vertices.Count;
-                    vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i + 0], zIndex.Value, true, true));
+                    _indexBuffer[1] = (short)traceVertices.Count;
+                    traceVertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i], zIndex.Value, true));
+                    count++;
 
-                    _indexBuffer[offset2 + 1] = (short)vertices.Count;
-                    vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i + 1], zIndex.Value, true, true));
-
-                    _indexBuffer[offset2 + 2] = (short)vertices.Count;
-                    vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i + 2], zIndex.Value, true, true));
-
-                    _indexBuffer[offset2 + 3] = (short)vertices.Count;
-                    vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i + 3], zIndex.Value, true, true));
-
-                    _indexBuffer[offset2 + 4] = (short)vertices.Count;
-                    vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i + 4], zIndex.Value, true, false));
-
-                    count += 5;
-
-                    indices.Add(_indexBuffer[offset1 + 4]);
-                    indices.Add(_indexBuffer[offset1 + 1]);
-                    indices.Add(_indexBuffer[offset1 + 2]);
-
-                    indices.Add(_indexBuffer[offset1 + 4]);
-                    indices.Add(_indexBuffer[offset1 + 2]);
-                    indices.Add(_indexBuffer[offset1 + 3]);
-
-                    indices.Add(_indexBuffer[offset1 + 4]);
-                    indices.Add(_indexBuffer[offset1 + 3]);
-                    indices.Add(_indexBuffer[offset2 + 1]);
-
-                    indices.Add(_indexBuffer[offset2 + 1]);
-                    indices.Add(_indexBuffer[offset2 + 4]);
-                    indices.Add(_indexBuffer[offset1 + 4]);
-
-                    indices.Add(_indexBuffer[offset1 + 0]);
-                    indices.Add(_indexBuffer[offset1 + 4]);
-                    indices.Add(_indexBuffer[offset2 + 4]);
-
-                    indices.Add(_indexBuffer[offset2 + 4]);
-                    indices.Add(_indexBuffer[offset2 + 0]);
-                    indices.Add(_indexBuffer[offset1 + 0]);
-
-                    placeholder = offset1;
-                    offset1 = offset2;
-                    offset2 = placeholder;
+                    traceIndices.AddRange(_indexBuffer[..2]);
+                    _indexBuffer[0] = _indexBuffer[1];
                 }
             }
 
-            VertexBuffer vertexBuffer = new VertexBuffer(graphics, typeof(VertexStaticVisible), vertices.Count, BufferUsage.WriteOnly);
-            vertexBuffer.SetData(vertices.ToArray());
+            // for (int shape_i = 0; shape_i < visible.TraceVertices.count; shape_i++)
+            // {
+            //     Shape shape = visible.TraceVertices[shape_i];
+            //     int offset1 = 0;
+            //     int offset2 = 5;
+            //     int placeholder = 0;
+            // 
+            //     _indexBuffer[offset1 + 0] = (short)vertices.Count;
+            //     vertices.Add(new VertexStaticVisible(shape.Vertices[offset1 + 0], zIndex.Value, true, true));
+            // 
+            //     _indexBuffer[offset1 + 1] = (short)vertices.Count;
+            //     vertices.Add(new VertexStaticVisible(shape.Vertices[offset1 + 1], zIndex.Value, true, true));
+            // 
+            //     _indexBuffer[offset1 + 2] = (short)vertices.Count;
+            //     vertices.Add(new VertexStaticVisible(shape.Vertices[offset1 + 2], zIndex.Value, true, true));
+            // 
+            //     _indexBuffer[offset1 + 3] = (short)vertices.Count;
+            //     vertices.Add(new VertexStaticVisible(shape.Vertices[offset1 + 3], zIndex.Value, true, true));
+            // 
+            //     _indexBuffer[offset1 + 4] = (short)vertices.Count;
+            //     vertices.Add(new VertexStaticVisible(shape.Vertices[offset1 + 4], zIndex.Value, true, false));
+            // 
+            //     count += 5;
+            // 
+            //     for (int vertex_i = 5; vertex_i < shape.Vertices.count; vertex_i += 5)
+            //     {
+            //         _indexBuffer[offset2 + 0] = (short)vertices.Count;
+            //         vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i + 0], zIndex.Value, true, true));
+            // 
+            //         _indexBuffer[offset2 + 1] = (short)vertices.Count;
+            //         vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i + 1], zIndex.Value, true, true));
+            // 
+            //         _indexBuffer[offset2 + 2] = (short)vertices.Count;
+            //         vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i + 2], zIndex.Value, true, true));
+            // 
+            //         _indexBuffer[offset2 + 3] = (short)vertices.Count;
+            //         vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i + 3], zIndex.Value, true, true));
+            // 
+            //         _indexBuffer[offset2 + 4] = (short)vertices.Count;
+            //         vertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i + 4], zIndex.Value, true, false));
+            // 
+            //         count += 5;
+            // 
+            //         indices.Add(_indexBuffer[offset1 + 4]);
+            //         indices.Add(_indexBuffer[offset1 + 1]);
+            //         indices.Add(_indexBuffer[offset1 + 2]);
+            // 
+            //         indices.Add(_indexBuffer[offset1 + 4]);
+            //         indices.Add(_indexBuffer[offset1 + 2]);
+            //         indices.Add(_indexBuffer[offset1 + 3]);
+            // 
+            //         indices.Add(_indexBuffer[offset1 + 4]);
+            //         indices.Add(_indexBuffer[offset1 + 3]);
+            //         indices.Add(_indexBuffer[offset2 + 1]);
+            // 
+            //         indices.Add(_indexBuffer[offset2 + 1]);
+            //         indices.Add(_indexBuffer[offset2 + 4]);
+            //         indices.Add(_indexBuffer[offset1 + 4]);
+            // 
+            //         indices.Add(_indexBuffer[offset1 + 0]);
+            //         indices.Add(_indexBuffer[offset1 + 4]);
+            //         indices.Add(_indexBuffer[offset2 + 4]);
+            // 
+            //         indices.Add(_indexBuffer[offset2 + 4]);
+            //         indices.Add(_indexBuffer[offset2 + 0]);
+            //         indices.Add(_indexBuffer[offset1 + 0]);
+            // 
+            //         placeholder = offset1;
+            //         offset1 = offset2;
+            //         offset2 = placeholder;
+            //     }
+            // }
 
-            IndexBuffer indexBuffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, indices.Count, BufferUsage.WriteOnly);
-            indexBuffer.SetData(indices.ToArray());
+            VertexBuffer fillBuffer = new VertexBuffer(graphics, typeof(VertexStaticVisible), fillVertices.Count, BufferUsage.WriteOnly);
+            fillBuffer.SetData(fillVertices.ToArray());
 
-            return new VertexBufferManager<VertexInstanceVisible>(graphics, vertexBuffer, indexBuffer);
+            IndexBuffer fillIndexBuffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, fillIndices.Count, BufferUsage.WriteOnly);
+            fillIndexBuffer.SetData(fillIndices.ToArray());
+
+            VertexBuffer traceBuffer = new VertexBuffer(graphics, typeof(VertexStaticVisible), traceVertices.Count, BufferUsage.WriteOnly);
+            traceBuffer.SetData(traceVertices.ToArray());
+
+            IndexBuffer traceIndexBuffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, traceIndices.Count, BufferUsage.WriteOnly);
+            traceIndexBuffer.SetData(traceIndices.ToArray());
+
+            return new VertexBufferManager<VertexInstanceVisible>(graphics, [fillBuffer, traceBuffer], [fillIndexBuffer, traceIndexBuffer], [PrimitiveType.TriangleList, PrimitiveType.LineList]);
         }
     }
 }

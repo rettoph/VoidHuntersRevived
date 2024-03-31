@@ -9,34 +9,51 @@ namespace VoidHuntersRevived.Game.Client.Common.Utilities
 
         private readonly GraphicsDevice _graphics;
 
-        private readonly VertexBuffer _staticBuffer;
-        private readonly IndexBuffer _indexBuffer;
+        private readonly VertexBuffer[] _staticBuffers;
+        private readonly IndexBuffer[] _indexBuffers;
+        private readonly PrimitiveType[] _primitiveTyes;
         private VertexBuffer _instanceBuffer;
         private TVertexInstance[] _instanceVertices;
         private int _instanceCount = 0;
-        private VertexBufferBinding[] _bindings;
+        private VertexBufferBinding[][] _bindings;
 
-        public VertexBufferBinding[] VertexBufferBindings => _bindings;
-        public IndexBuffer IndexBuffer => _indexBuffer;
-        public int StaticTriangleCount { get; }
+        public readonly int BufferCount;
+        public VertexBufferBinding[][] VertexBufferBindings => _bindings;
+        public IndexBuffer[] IndexBuffers => _indexBuffers;
+        public PrimitiveType[] PrimitiveTypes => _primitiveTyes;
+        public readonly int[] StaticPrimitiveCount;
         public int InstanceCount => _instanceCount;
-        public int TriangleCount => this.StaticTriangleCount * this.InstanceCount;
+        public Func<int, int> PrimitiveCount => (idx) => this.StaticPrimitiveCount[idx] * this.InstanceCount;
 
-        public VertexBufferManager(GraphicsDevice graphics, VertexBuffer staticBuffer, IndexBuffer indexBuffer)
+        public VertexBufferManager(GraphicsDevice graphics, VertexBuffer[] staticBuffers, IndexBuffer[] indexBuffers, PrimitiveType[] primitiveTypes)
         {
+            if (staticBuffers.Length != indexBuffers.Length || staticBuffers.Length != primitiveTypes.Length)
+            {
+                throw new ArgumentException();
+            }
+
             _graphics = graphics;
 
             _instanceVertices = new TVertexInstance[DefaultBufferSize];
             _instanceBuffer = new DynamicVertexBuffer(_graphics, typeof(TVertexInstance), _instanceVertices.Length, BufferUsage.WriteOnly);
 
-            _staticBuffer = staticBuffer;
-            _indexBuffer = indexBuffer;
-            _bindings = [
-                new VertexBufferBinding(_staticBuffer, 0, 0),
+            _staticBuffers = staticBuffers;
+            _indexBuffers = indexBuffers;
+            _primitiveTyes = primitiveTypes;
+            _bindings = _staticBuffers.Select((x, idx) => new VertexBufferBinding[]
+            {
+                new VertexBufferBinding(_staticBuffers[idx], 0, 0),
                 new VertexBufferBinding(_instanceBuffer, 0, 1)
-            ];
+            }).ToArray();
 
-            this.StaticTriangleCount = _indexBuffer.IndexCount / 3;
+            this.StaticPrimitiveCount = _primitiveTyes.Select(x => x switch
+            {
+                PrimitiveType.LineList => 2,
+                PrimitiveType.TriangleList => 3,
+                _ => throw new NotImplementedException()
+            }).Select((x, idx) => _indexBuffers[idx].IndexCount / x).ToArray();
+
+            this.BufferCount = staticBuffers.Length;
         }
 
         public void EnsureFit(int size)
@@ -56,10 +73,11 @@ namespace VoidHuntersRevived.Game.Client.Common.Utilities
 
             _instanceBuffer.Dispose();
             _instanceBuffer = new DynamicVertexBuffer(_graphics, typeof(TVertexInstance), _instanceVertices.Length, BufferUsage.WriteOnly);
-            _bindings = [
-                new VertexBufferBinding(_staticBuffer, 0, 0),
+            _bindings = _staticBuffers.Select((x, idx) => new VertexBufferBinding[]
+            {
+                new VertexBufferBinding(_staticBuffers[idx], 0, 0),
                 new VertexBufferBinding(_instanceBuffer, 0, 1)
-            ];
+            }).ToArray();
         }
 
         public void SetNextVertexUnsafe(TVertexInstance vertex)
@@ -97,7 +115,16 @@ namespace VoidHuntersRevived.Game.Client.Common.Utilities
         public void Dispose()
         {
             _instanceBuffer.Dispose();
-            _staticBuffer.Dispose();
+
+            foreach (IndexBuffer indexBuffer in _indexBuffers)
+            {
+                indexBuffer.Dispose();
+            }
+
+            foreach (VertexBuffer staticBuffer in _staticBuffers)
+            {
+                staticBuffer.Dispose();
+            }
         }
     }
 }
