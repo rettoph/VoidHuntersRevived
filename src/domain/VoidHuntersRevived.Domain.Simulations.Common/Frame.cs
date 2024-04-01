@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Domain.Simulations
+namespace VoidHuntersRevived.Domain.Simulations.Common
 {
-    public class FrameEnd
+    public class Frame
     {
         private GameTime _gameTime;
 
@@ -17,12 +17,12 @@ namespace VoidHuntersRevived.Domain.Simulations
         }
 
         public DateTime UpdatedAd { get; set; }
-        public readonly Frame Frame;
+        public readonly FrameStart Start;
 
-        public FrameEnd(Frame frame)
+        public Frame(FrameStart start)
         {
             _gameTime = default!;
-            this.Frame = frame;
+            this.Start = start;
         }
     }
 }

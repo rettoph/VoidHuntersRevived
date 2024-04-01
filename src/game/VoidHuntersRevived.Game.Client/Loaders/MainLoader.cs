@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
                 EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
             });
 
+            services.RegisterType<ShaderAntiAliasingEffect>().InstancePerDependency();
             services.RegisterType<VisibleAccumEffect>().InstancePerDependency();
             services.RegisterType<VisibleFinalEffect>().InstancePerDependency();
         }

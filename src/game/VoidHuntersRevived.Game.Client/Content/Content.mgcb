@@ -19,3 +19,10 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Client/Fonts/BiomeLight-Normal.spritefont
+
+#begin Client/Shaders/ShaderAntiAliasing.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Client/Shaders/ShaderAntiAliasing.fx
+

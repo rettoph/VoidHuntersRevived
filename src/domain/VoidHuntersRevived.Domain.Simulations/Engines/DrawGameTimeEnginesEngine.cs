@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines

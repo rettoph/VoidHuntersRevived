@@ -96,7 +96,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private void BuildRenderTargets(out RenderTarget2D target_accum, out RenderTarget2D target_top)
         {
             target_accum = new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
-            target_top = new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Vector4, DepthFormat.Depth24Stencil8, _graphics.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
+            target_top = new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Vector4, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
         }
 
         public override void Initialize(ISimulation simulation)
