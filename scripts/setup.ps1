@@ -4,6 +4,8 @@ $MonoGameContentBuilderEditorWindowsDirectory = $MonoGameDirectory + "/Tools/Mon
 $MonoGameContentBuilderEditorWindowsLauncherDirectory = $MonoGameDirectory + "/Tools/MonoGame.Content.Builder.Editor.Launcher\MonoGame.Content.Builder.Editor.Launcher.Windows.csproj"
 $MonoGameContentBuilderEditorBootstrapLauncherDirectory = $MonoGameDirectory + "/Tools/MonoGame.Content.Builder.Editor.Launcher.Bootstrap"
 
+git submodule update --init --recursive
+
 dotnet publish -c Release $MonoGameContentBuilderEditorWindowsDirectory
 
 # Pack & Install dotnet-mgcb for Content.mgcb building
