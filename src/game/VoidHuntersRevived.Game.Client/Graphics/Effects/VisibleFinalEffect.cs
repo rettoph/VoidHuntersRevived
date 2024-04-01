@@ -13,14 +13,14 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Effects
             set => this.Parameters[nameof(WorldViewProjection)].SetValue(value);
         }
 
-        public float TraceScale
+        public bool HideTop
         {
-            set => this.Parameters[nameof(TraceScale)].SetValue(value);
+            set => this.Parameters[nameof(HideTop)].SetValue(value);
         }
 
-        public float TraceDiffusionScale
+        public bool HideAccum
         {
-            set => this.Parameters[nameof(TraceDiffusionScale)].SetValue(value);
+            set => this.Parameters[nameof(HideAccum)].SetValue(value);
         }
 
         public Texture2D AccumTexture

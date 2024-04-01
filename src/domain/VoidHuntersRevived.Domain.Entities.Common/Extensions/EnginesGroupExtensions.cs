@@ -8,10 +8,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Extensions
     {
         public static IStepGroupEngine<T> CreateSequencedStepEnginesGroup<T, TSequence>(
             this IEnumerable<IEngine> engines,
-            TSequence defaultSequence)
+            TSequence defaultSequence,
+            bool reverse = false)
             where TSequence : unmanaged, Enum
         {
-            return new SimpleEnginesGroup<IStepEngine<T>, T>(engines.OfType<IStepEngine<T>>().Sequence(defaultSequence));
+            return new SimpleEnginesGroup<IStepEngine<T>, T>(engines.OfType<IStepEngine<T>>().Sequence(defaultSequence, reverse));
         }
 
         public static IStepGroupEngine<T> CreateStepEnginesGroup<T>(this IEnumerable<IEngine> engines)

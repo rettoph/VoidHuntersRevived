@@ -38,7 +38,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private RenderTarget2D _target_accum;
         private RenderTarget2D _target_top;
         private BlendState _bs_accum;
-        private BlendState _bs_top;
         private BlendState _bs_final;
 
         private VisibleAccumEffect _effect_accum;
@@ -63,7 +62,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _effect_accum = visibleAccumEffect;
             _effect_final = visibleFinalEffect;
 
-            _target_accum = new RenderTarget2D(graphics, graphics.Viewport.Width, graphics.Viewport.Height, false, SurfaceFormat.Vector4, DepthFormat.None);
+            this.BuildRenderTargets(out _target_accum, out _target_top);
+
             _bs_accum = new BlendState()
             {
                 ColorBlendFunction = BlendFunction.Add,
@@ -87,8 +87,16 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public void Dispose()
         {
             _target_accum.Dispose();
+            _target_top.Dispose();
 
             _window.ClientSizeChanged -= this.HandleClientSizeChanged;
+        }
+
+
+        private void BuildRenderTargets(out RenderTarget2D target_accum, out RenderTarget2D target_top)
+        {
+            target_accum = new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
+            target_top = new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Vector4, DepthFormat.Depth24Stencil8, _graphics.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
         }
 
         public override void Initialize(ISimulation simulation)
@@ -111,8 +119,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in GameTime param)
         {
-            float scale = 1.5f / (-_camera.Zoom - 2) + 1;
-
             // Add vertices
             _stepEngines.Step(this);
 
@@ -121,20 +127,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
             // Begin Pass Accum
             _graphics.SetRenderTarget(_target_accum);
             _graphics.Clear(Color.Transparent);
-            _graphics.BlendState = _bs_accum = new BlendState()
-            {
-                ColorBlendFunction = BlendFunction.Add,
-                AlphaSourceBlend = Blend.One,
-                ColorSourceBlend = Blend.One,
-                AlphaDestinationBlend = Blend.One,
-                ColorDestinationBlend = Blend.One
-            }; ;
+            _graphics.BlendState = _bs_accum;
             _graphics.DepthStencilState = DepthStencilState.None;
             _graphics.RasterizerState = RasterizerState.CullNone;
-            _graphics.SamplerStates[0] = SamplerState.PointWrap;
+            _graphics.SamplerStates[0] = SamplerState.AnisotropicWrap;
 
-            _effect_accum.TraceScale = scale;
-            _effect_accum.TraceDiffusionScale = MathHelper.Lerp(scale, 1, 1f);
             _effect_accum.WorldViewProjection = _camera.World * _camera.View * _camera.Projection;
 
             foreach (VertexBufferManager<VertexInstanceVisible> manager in _managers.Values)
@@ -164,8 +161,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _graphics.RasterizerState = RasterizerState.CullNone;
             _graphics.SamplerStates[0] = SamplerState.PointWrap;
 
-            _effect_final.TraceScale = scale;
-            _effect_final.TraceDiffusionScale = MathHelper.Lerp(scale, 1, 0.75f);
+            _effect_final.HideTop = false;
+            _effect_final.HideAccum = false;
             _effect_final.WorldViewProjection = _camera.World * _camera.View * _camera.Projection;
             _effect_final.AccumTexture = _target_accum;
 
@@ -189,7 +186,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 }
             }
 
-            // var mouse = Mouse.GetState().Position;
+            // var mouse = Microsoft.Xna.Framework.Input.Mouse.GetState().Position;
             // Vector4[] data = new Vector4[_target_accum.Width * _target_accum.Height];
             // _target_accum.GetData(data);
             // int index = mouse.X + (mouse.Y * _target_accum.Width);
@@ -208,7 +205,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private void HandleClientSizeChanged(object? sender, EventArgs e)
         {
             _target_accum.Dispose();
-            _target_accum = new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, false, SurfaceFormat.Vector4, DepthFormat.None);
+            _target_top.Dispose();
+
+            this.BuildRenderTargets(out _target_accum, out _target_top);
         }
 
         private static readonly short[] _indexBuffer = new short[10];

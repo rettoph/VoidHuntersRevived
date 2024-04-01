@@ -10,9 +10,9 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Utilities;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 
@@ -22,7 +22,14 @@ namespace VoidHuntersRevived.Domain.Simulations
     {
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
-        private IStepGroupEngine<GameTime> _drawEnginesGroup;
+
+        private IStepGroupEngine<FrameStart> _frameStartEnginesGroup;
+        private IStepGroupEngine<Frame> _frameEnginesGroup;
+        private IStepGroupEngine<FrameEnd> _frameEndEnginesGroup;
+
+        private readonly FrameStart _frameStart;
+        private readonly Frame _frame;
+        private readonly FrameEnd _frameEnd;
 
         protected readonly ILogger logger;
 
@@ -57,9 +64,15 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.logger = this.Scope.Resolve<ILogger>();
             this._publishers = EventPublisher.BuildPublishers(this.Engines, this.logger);
 
-            _drawEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<GameTime, DrawSequence>(DrawSequence.Draw);
+            _frameStartEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<FrameStart, DrawSequence>(DrawSequence.Draw);
+            _frameEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<Frame, DrawSequence>(DrawSequence.Draw);
+            _frameEndEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<FrameEnd, DrawSequence>(DrawSequence.Draw, true);
 
             this.CurrentStep = new Step();
+
+            _frameStart = new FrameStart();
+            _frame = new Frame(_frameStart);
+            _frameEnd = new FrameEnd(_frame);
         }
 
         public virtual void Initialize(ISimulationService simulations)
@@ -76,7 +89,14 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Draw(GameTime realTime)
         {
-            _drawEnginesGroup.Step(realTime);
+            _frameStart.GameTime = realTime;
+            _frameStartEnginesGroup.Step(_frameStart);
+
+            _frame.GameTime = realTime;
+            _frameEnginesGroup.Step(_frame);
+
+            _frameEnd.GameTime = realTime;
+            _frameEndEnginesGroup.Step(_frameEnd);
         }
 
         public virtual void Update(GameTime realTime)
