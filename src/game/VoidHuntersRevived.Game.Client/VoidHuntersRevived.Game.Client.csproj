@@ -17,10 +17,6 @@
     <ProjectReference Include="..\VoidHuntersRevived.Game.Client.Common\VoidHuntersRevived.Game.Client.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Core\VoidHuntersRevived.Game.Core.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
-  </ItemGroup>
   
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />

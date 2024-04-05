@@ -3,21 +3,21 @@
   "isRoot": true,
   "tools": {
     "dotnet-mgcb": {
-      "version": "1.0.0",
+      "version": "1.3.3.7-cpt-develop",
       "commands": [
         "mgcb"
       ]
     },
-    "dotnet-mgcb-editor": {
-      "version": "1.0.0",
-      "commands": [
-        "mgcb-editor"
-      ]
-    },
     "dotnet-mgcb-editor-windows": {
-      "version": "1.0.0",
+      "version": "1.3.3.7-cpt-develop",
       "commands": [
         "mgcb-editor-windows"
+      ]
+    },
+    "dotnet-mgcb-editor": {
+      "version": "1.3.3.7-cpt-develop",
+      "commands": [
+        "mgcb-editor"
       ]
     }
   }

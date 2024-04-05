@@ -1,27 +1,37 @@
-$MonoGameDirectory = "./../libraries/Guppy/libraries/MonoGame";
-$MonoGameContentBuilderDirectory = $MonoGameDirectory + "/Tools/MonoGame.Content.Builder"
-$MonoGameContentBuilderEditorWindowsDirectory = $MonoGameDirectory + "/Tools/MonoGame.Content.Builder.Editor/MonoGame.Content.Builder.Editor.Windows.csproj"
-$MonoGameContentBuilderEditorWindowsLauncherDirectory = $MonoGameDirectory + "/Tools/MonoGame.Content.Builder.Editor.Launcher\MonoGame.Content.Builder.Editor.Launcher.Windows.csproj"
-$MonoGameContentBuilderEditorBootstrapLauncherDirectory = $MonoGameDirectory + "/Tools/MonoGame.Content.Builder.Editor.Launcher.Bootstrap"
+Set-Location $PSScriptRoot;
+
+$MonoGameDirectory = "$($PSScriptRoot)/../libraries/Guppy/libraries/MonoGame";
+$MonoGameBuildVersion = "1.3.3.7-cpt";
 
 git submodule update --init --recursive
 
-dotnet publish -c Release $MonoGameContentBuilderEditorWindowsDirectory
+# Build MonoGame
+$WorkingDirectory = Get-Location;
+Set-Location $MonoGameDirectory;
 
-# Pack & Install dotnet-mgcb for Content.mgcb building
+if((Test-Path "./build.cake") -eq $true)
+{
+    dotnet tool restore
+    dotnet cake --build-version $MonoGameBuildVersion
+
+    $MonoGameBuildVersion = "$($MonoGameBuildVersion)-develop"
+}
+else {
+    dotnet run --project "$($MonoGameDirectory)/build/Build.csproj" -- "--build-version" $MonoGameBuildVersion
+
+    # Why isn't this included in Build.csproj tho?
+    dotnet pack -o "$($MonoGameDirectory)/Artifacts/NuGet" /p:Version=$MonoGameBuildVersion "$($MonoGameDirectory)/Tools/MonoGame.Content.Builder.Editor/MonoGame.Content.Builder.Editor.Windows.csproj"
+}
+
+Set-Location $WorkingDirectory;
+
+# Uninstall old tools (if any)
+dotnet tool uninstall dotnet-mgcb
+dotnet tool uninstall dotnet-mgcb-editor-windows
+dotnet tool uninstall dotnet-mgcb-editor
+
 # https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools-how-to-create
 # https://learn.microsoft.com/en-us/dotnet/core/tools/local-tools-how-to-use
-dotnet pack -o ./bin $MonoGameContentBuilderDirectory
-dotnet tool install --version 1.0.0 --add-source ./bin dotnet-mgcb
-
-dotnet pack -o ./bin $MonoGameContentBuilderEditorWindowsLauncherDirectory
-dotnet tool install --version 1.0.0 --add-source ./bin dotnet-mgcb-editor-windows
-
-dotnet pack -o ./bin $MonoGameContentBuilderEditorBootstrapLauncherDirectory
-dotnet tool install --version 1.0.0 --add-source ./bin dotnet-mgcb-editor
-
-Remove-Item -Recurse -Force ./bin
-
-# dotnet tool uninstall dotnet-mgcb
-# dotnet tool uninstall dotnet-mgcb-editor-windows
-# dotnet tool uninstall dotnet-mgcb-editor
+dotnet tool install --version $MonoGameBuildVersion --add-source "$($MonoGameDirectory)/Artifacts/NuGet" dotnet-mgcb
+dotnet tool install --version $MonoGameBuildVersion --add-source "$($MonoGameDirectory)/Artifacts/NuGet" dotnet-mgcb-editor-windows
+dotnet tool install --version $MonoGameBuildVersion --add-source "$($MonoGameDirectory)/Artifacts/NuGet" dotnet-mgcb-editor
