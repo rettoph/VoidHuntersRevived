@@ -34,8 +34,8 @@ namespace VoidHuntersRevived.Application.Client
 
             _graphics.PreparingDeviceSettings += (s, e) =>
             {
-                // _graphics.PreferMultiSampling = true;
-                // e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 8;
+                _graphics.PreferMultiSampling = true;
+                e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 8;
                 e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
                 e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };

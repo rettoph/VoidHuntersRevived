@@ -43,6 +43,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private RenderTarget2D BuildRenderTarget()
         {
+            var pixel = new Vector2(1f / _graphics.Viewport.Width, 1f / _graphics.Viewport.Height);
+            _effect_aa.Pixel = pixel;
             return new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
         }
 
@@ -59,7 +61,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             _graphics.SetRenderTargets(_target_bindings);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(effect: null);
             _spriteBatch.Draw(_target_aa, Vector2.Zero, Color.White);
             _spriteBatch.End();
         }

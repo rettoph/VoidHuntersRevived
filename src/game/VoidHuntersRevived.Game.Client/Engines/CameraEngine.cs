@@ -5,6 +5,8 @@ using Guppy.Game.Input;
 using Guppy.Game.Input.Messages;
 using Guppy.Game.MonoGame;
 using Guppy.Game.MonoGame.Utilities.Cameras;
+using Guppy.Network.Attributes;
+using Guppy.Network.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Svelto.ECS;
@@ -21,6 +23,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [SimulationFilter(SimulationType.Lockstep)]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
+    [PeerFilter(PeerType.Client)]
     internal sealed class CameraEngine : BasicEngine, IStepEngine<GameTime>,
         IInputSubscriber<CursorScroll>
     {
@@ -69,7 +72,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             Vector2 location = Vector2.Zero;
             if (_userShips.TryGetCurrentUserShipId(out EntityId shipId))
             {
-                location = _entities.QueryById<Location>(shipId).Position.ToXna(); ;
+                location = _entities.QueryById<Location>(shipId).Position.ToXna();
             }
 
             _camera.TargetPosition = location + _offset;
