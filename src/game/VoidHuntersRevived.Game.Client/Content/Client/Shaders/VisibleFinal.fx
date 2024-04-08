@@ -27,8 +27,6 @@ VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, uint instanceI
     output.TextureCoordinates = output.Position.xy / output.Position.w;
     output.TextureCoordinates = float2(output.TextureCoordinates.x + 1, 1 - output.TextureCoordinates.y);
     output.TextureCoordinates /= 2;
-    output.TextureCoordinates.x += 1 / 1600;
-    output.TextureCoordinates.y -= 1 / 960;
     
     return output;
 }
@@ -47,18 +45,21 @@ float4 MainPS(VertexShaderOutput input) : SV_TARGET
     
     if (HideAccum == false)
     {
-        float4 accum = AccumTexture.SampleLevel(AccumTextureSampler, input.TextureCoordinates, 0);
+        float4 accum = AccumTexture.Sample(AccumTextureSampler, input.TextureCoordinates);
 
-        // Alpha channel is:
-        // (layers * 1000) + alpha;
-        float layers = max(1, floor(accum.a / 1000));
-        float alpha = accum.a % 1000;
+        if (accum.a > 2000)
+        {
+            // Alpha channel is:
+            // (layers * 1000) + alpha;
+            float layers = max(1, floor(accum.a / 1000));
+            float alpha = accum.a % 1000;
     
-        // Divide the accum colors by the total number of layers
-        float4 avg = float4(accum.rgb, alpha) / layers;
+            // Divide the accum colors by the total number of layers
+            float4 avg = float4(accum.rgb, alpha) / layers;
         
-        sum += avg;
-        count++;
+            sum += avg;
+            count++;   
+        }
     }
 
     

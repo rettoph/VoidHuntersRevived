@@ -159,7 +159,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _graphics.BlendState = BlendState.AlphaBlend;
             _graphics.DepthStencilState = DepthStencilState.Default;
             _graphics.RasterizerState = RasterizerState.CullNone;
-            _graphics.SamplerStates[0] = SamplerState.PointWrap;
+            _graphics.SamplerStates[0] = SamplerState.PointClamp;
 
             _effect_final.HideTop = false;
             _effect_final.HideAccum = false;

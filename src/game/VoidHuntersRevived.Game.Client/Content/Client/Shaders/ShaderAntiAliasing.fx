@@ -17,10 +17,10 @@ void TrySample(float4 sourceValue, float2 sourceCoord, int offsetX, int offsetY,
 {
     float4 result = Texture.Sample(TextureSampler, sourceCoord + float2(Pixel.x * offsetX, Pixel.y * offsetY));
     
-    if (result.a == 0)
-    {
-        return;
-    }
+    // if (result.a == 0)
+    // {
+    //     return;
+    // }
     
     sum += result;
     count++;
