@@ -37,14 +37,15 @@ function CheckCacheDirty($file, $newHash)
 
     $dirty = $newHash -ne $oldHash
 
-    return $true
+    return $dirty
 }
 
+$cleaned = 0
 foreach ($file in $files)
 {
     if($file.BaseName.StartsWith("_") -eq $true)
     {
-        continue;
+        continue
     }
 
     $hash = (Get-FileHash $file).Hash
@@ -57,6 +58,8 @@ foreach ($file in $files)
         $compiledPath = $mgfxPath + $file.BaseName + ".mgfx"
         $allOutput = & $mgfxcPath $file.FullName $compiledPath /Profile:OpenGL 2>&1
         $stderr = $allOutput | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] }
+        $cleaned++
+
         if($null -ne $stderr)
         {
             "error $($stderr.Exception)"
@@ -68,10 +71,15 @@ foreach ($file in $files)
         }
     }
     else {
+        Write-Information "Skipping: $($file.Name)"
+
         $newCache[$file.Name] = $hash
     }
 }
 
-Set-Content $cacheFile (ConvertTo-Json $newCache)
+if($cleaned -gt 0)
+{
+    Set-Content $cacheFile (ConvertTo-Json $newCache)
+}
 
 exit 0
