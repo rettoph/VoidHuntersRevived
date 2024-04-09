@@ -3,30 +3,30 @@ using Guppy.Files;
 using Guppy.Files.Services;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Entities.ResourceTypes
 {
     [AutoLoad]
-    internal class EntityContextResourceType : SimpleResourceType<EntityContext>
+    internal class EntityTypeResourceType : SimpleResourceType<IEntityType>
     {
         private readonly IFileService _files;
 
         public override string Name => "EntityType";
 
-        public EntityContextResourceType(IFileService files)
+        public EntityTypeResourceType(IFileService files)
         {
             _files = files;
         }
 
-        protected override bool TryResolve(Resource<EntityContext> resource, DirectoryLocation root, string input, out EntityContext value)
+        protected override bool TryResolve(Resource<IEntityType> resource, DirectoryLocation root, string input, out IEntityType value)
         {
-            IFile<EntityContext> piece = _files.Get<EntityContext>(
+            IFile<IEntityType> type = _files.Get<IEntityType>(
                 new FileLocation(root, input),
                 true);
 
-            value = piece.Value;
-            return piece.Success;
+            value = type.Value;
+            return type.Success;
         }
     }
 }

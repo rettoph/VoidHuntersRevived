@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         private readonly short[] _indexBuffer;
         private readonly IEntityService _entities;
-        private readonly IEntityContextService _pieceTypes;
+        private readonly IEntityTypeService _entityTypes;
         private readonly ILogger _logger;
         private readonly IResourceProvider _resources;
         private readonly Camera2D _camera;
@@ -30,13 +30,13 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public DrawActiveThrustableEngine(
             ILogger logger,
             IEntityService entities,
-            IEntityContextService pieceTypes,
+            IEntityTypeService pieceTypes,
             IResourceProvider resources,
             Camera2D camera)
         {
             _resources = resources;
             _entities = entities;
-            _pieceTypes = pieceTypes;
+            _entityTypes = pieceTypes;
             _indexBuffer = new short[3];
             _logger = logger;
             _camera = camera;

@@ -21,14 +21,14 @@ namespace VoidHuntersRevived.Game.Core.Engines
     {
         private readonly INetGroup _scope;
         private readonly ITreeService _trees;
-        private readonly IEntityContextService _pieces;
+        private readonly IEntityTypeService _entityTypes;
         private readonly IBlueprintService _blueprints;
 
-        public UserEngine(ITreeService trees, IEntityContextService pieces, IBlueprintService blueprints, INetGroup scope)
+        public UserEngine(ITreeService trees, IEntityTypeService entityTypes, IBlueprintService blueprints, INetGroup scope)
         {
             _scope = scope;
             _trees = trees;
-            _pieces = pieces;
+            _entityTypes = entityTypes;
             _blueprints = blueprints;
         }
 
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Game.Core.Engines
 
         public void Process(VhId eventId, UserJoined data)
         {
-            var hull = _pieces.All<HullDescriptor>().Last();
+            var hull = _entityTypes.GetAll<HullDescriptor>().Last();
 
             //_trees.Spawn(shipId, Teams.TeamOne, EntityTypes.UserShip, hull.EntityType);
             // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);

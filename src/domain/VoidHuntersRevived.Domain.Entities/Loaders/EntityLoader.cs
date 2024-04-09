@@ -26,8 +26,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
             builder.RegisterType<EntityDescriptorService>().As<IEntityDescriptorService>().AsSelf().InstancePerLifetimeScope();
 
-            builder.RegisterType<EntityContextService>().AsImplementedInterfaces().SingleInstance();
-
             builder.RegisterType<EntityTypeInitializerService>().As<IEntityTypeInitializerService>().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<SimpleEntitiesSubmissionScheduler>().AsSelf().As<EntitiesSubmissionScheduler>().InstancePerLifetimeScope();
@@ -41,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<VoidHuntersEntityDescriptorConverter>().As<JsonConverter>().SingleInstance();
-            builder.RegisterType<EntityContextConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<EntityTypeConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<DictionaryPolymorphicConverter<IEntityComponent>>().As<JsonConverter>().SingleInstance();
 
             builder.Configure<LoggerConfiguration>((scope, config) =>

@@ -1,19 +1,19 @@
 ﻿using Svelto.ECS;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
-    internal sealed class EntityContextConverter : JsonConverter<EntityContext>
+    internal sealed class EntityTypeConverter : JsonConverter<IEntityType>
     {
-        public override EntityContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override IEntityType? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             string key = string.Empty;
             VoidHuntersEntityDescriptor descriptor = default!;
-            Dictionary<Type, IEntityComponent> instanceComponents = default!;
-            Dictionary<Type, IEntityComponent> staticComponents = default!;
+            Dictionary<Type, IEntityComponent> instanceComponents = new Dictionary<Type, IEntityComponent>();
+            Dictionary<Type, IEntityComponent> staticComponents = new Dictionary<Type, IEntityComponent>();
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -22,19 +22,19 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(EntityContext.Key):
+                    case nameof(IEntityType.Key):
                         key = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
-                    case nameof(EntityContext.Descriptor):
+                    case nameof(IEntityType.Descriptor):
                         descriptor = JsonSerializer.Deserialize<VoidHuntersEntityDescriptor>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
-                    case nameof(EntityContext.InstanceComponents):
+                    case nameof(IEntityType.InstanceComponents):
                         instanceComponents = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
-                    case nameof(EntityContext.StaticComponents):
+                    case nameof(IEntityType.StaticComponents):
                         staticComponents = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
@@ -43,10 +43,10 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new EntityContext(key, descriptor, instanceComponents ?? new Dictionary<Type, IEntityComponent>(), staticComponents ?? new Dictionary<Type, IEntityComponent>());
+            return EntityType.Create(key, descriptor, instanceComponents.Values, staticComponents.Values);
         }
 
-        public override void Write(Utf8JsonWriter writer, EntityContext value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, IEntityType value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

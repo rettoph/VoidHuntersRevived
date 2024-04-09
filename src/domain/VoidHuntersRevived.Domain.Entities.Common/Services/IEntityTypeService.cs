@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common.Entities;
+﻿using System.Diagnostics.CodeAnalysis;
+using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
@@ -7,9 +8,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
     {
         IEntityType GetById(Id<IEntityType> id);
 
+        bool TryGetByKey(string key, [MaybeNullWhen(false)] out IEntityType type);
+
         IEnumerable<IEntityType> GetAll();
 
-        IEntityType<T>[] GetAll<T>()
-            where T : VoidHuntersEntityDescriptor;
+        IEntityType<TDescriptor>[] GetAll<TDescriptor>()
+            where TDescriptor : VoidHuntersEntityDescriptor;
     }
 }

@@ -1,39 +1,45 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
+﻿using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
     internal sealed class BlueprintPiece : IBlueprintPiece
     {
         private readonly string _pieceTypeKey;
-        private readonly Lazy<IEntityContextService> _pieceTypes;
-        private EntityContext? _pieceType;
+        private readonly Lazy<IEntityTypeService> _entityTypes;
+        private IEntityType<PieceDescriptor>? _pieceType;
         private bool _initialized;
 
-        public EntityContext PieceType => _pieceType ??= this.InitializePieceType();
+        public IEntityType<PieceDescriptor> PieceType => _pieceType ??= this.InitializePieceType();
         public IBlueprintPiece[][] Children { get; }
 
-        public BlueprintPiece(string pieceTypeKey, IBlueprintPiece[][] children, Lazy<IEntityContextService> pieceTypes)
+        public BlueprintPiece(string pieceTypeKey, IBlueprintPiece[][] children, Lazy<IEntityTypeService> entityTypes)
         {
             _pieceTypeKey = pieceTypeKey;
-            _pieceTypes = pieceTypes;
+            _entityTypes = entityTypes;
 
             this.Children = children;
         }
 
-        private EntityContext InitializePieceType()
+        private IEntityType<PieceDescriptor> InitializePieceType()
         {
-            if (!_pieceTypes.Value.TryGetByKey(_pieceTypeKey, out EntityContext? pieceType))
+            if (!_entityTypes.Value.TryGetByKey(_pieceTypeKey, out IEntityType? entityType))
             {
-                throw new ArgumentException($"Unknown {nameof(EntityContext)}.{nameof(EntityContext.Key)} - {_pieceTypeKey}");
+                throw new ArgumentException($"Unknown {nameof(IEntityType)} - {_pieceTypeKey}");
+            }
+
+            if (entityType is not IEntityType<PieceDescriptor> pieceType)
+            {
+                throw new ArgumentException($"Invalid {nameof(IEntityType)} - {_pieceTypeKey}");
             }
 
             if (this.Children!.Length > 0)
             {
-                Sockets<Location> sockets = pieceType.InstanceComponents.Values.OfType<Sockets<Location>>().First();
+                Sockets<Location> sockets = entityType.InstanceComponents.Values.OfType<Sockets<Location>>().First();
 
                 if (sockets.Items.count != this.Children.Length)
                 {

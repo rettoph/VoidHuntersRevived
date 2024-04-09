@@ -7,11 +7,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
     internal sealed class BlueprintPieceConverter : JsonConverter<IBlueprintPiece>
     {
-        private readonly Lazy<IEntityContextService> _pieceTypes;
+        private readonly Lazy<IEntityTypeService> _entityTypes;
 
-        public BlueprintPieceConverter(Lazy<IEntityContextService> pieceTypes)
+        public BlueprintPieceConverter(Lazy<IEntityTypeService> entityTypes)
         {
-            _pieceTypes = pieceTypes;
+            _entityTypes = entityTypes;
         }
 
         public override IBlueprintPiece? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 children[i] ??= Array.Empty<IBlueprintPiece>();
             }
 
-            return new BlueprintPiece(pieceTypeKey, children, _pieceTypes);
+            return new BlueprintPiece(pieceTypeKey, children, _entityTypes);
         }
 
         public override void Write(Utf8JsonWriter writer, IBlueprintPiece value, JsonSerializerOptions options)

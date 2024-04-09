@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -36,6 +37,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             array = _types.Values.OfType<IEntityType<T>>().ToArray();
             return (IEntityType<T>[])array;
+        }
+
+        public bool TryGetByKey(string key, [MaybeNullWhen(false)] out IEntityType type)
+        {
+            Id<IEntityType> id = Id<IEntityType>.FromString(key);
+            return _types.TryGetValue(id, out type);
         }
     }
 }
