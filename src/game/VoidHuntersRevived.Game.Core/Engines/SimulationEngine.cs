@@ -6,6 +6,7 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
@@ -16,13 +17,13 @@ namespace VoidHuntersRevived.Game.Core.Engines
     internal sealed class SimulationEngine : BasicEngine, IEventEngine<Simulation_Begin>
     {
         private readonly ITreeService _trees;
-        private readonly IPieceTypeService _pieces;
+        private readonly IEntityTypeService _entityTypes;
         private readonly IBlueprintService _blueprints;
 
-        public SimulationEngine(ITreeService treeFactory, IPieceTypeService pieces, IBlueprintService blueprints)
+        public SimulationEngine(ITreeService treeFactory, IEntityTypeService entityTypes, IBlueprintService blueprints)
         {
             _trees = treeFactory;
-            _pieces = pieces;
+            _entityTypes = entityTypes;
             _blueprints = blueprints;
         }
 
@@ -39,11 +40,12 @@ namespace VoidHuntersRevived.Game.Core.Engines
             int radius = 2;
             int step = 2;
             FixVector2 offset = new FixVector2(0, 0);
+            var pieces = _entityTypes.GetAll<PieceDescriptor>();
             for (int x = -radius; x < radius; x += step)
             {
                 for (int y = -radius; y < radius; y += step)
                 {
-                    _trees.Spawn(eventId, eventId.Create(i++), Teams.TeamZero, EntityTypes.Chain, _pieces.All()[i % _pieces.All().Length].EntityType, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                    _trees.Spawn(eventId, eventId.Create(i++), Teams.TeamZero, EntityTypes.Chain, pieces[i % pieces.Length], (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                     {
                         initializer.Init(new Location()
                         {

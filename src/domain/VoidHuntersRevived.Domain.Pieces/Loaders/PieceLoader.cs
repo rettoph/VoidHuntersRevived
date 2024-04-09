@@ -2,12 +2,10 @@
 using Guppy.Attributes;
 using Guppy.Extensions.Autofac;
 using Guppy.Loaders;
-using Guppy.Resources.Serialization.Json.Converters;
 using Serilog;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Pieces.Common;
-using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Pieces.Services;
 
@@ -20,8 +18,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
         {
             services.RegisterType<BlueprintConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<BlueprintPieceConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<PieceTypeConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<DictionaryPolymorphicConverter<IPieceComponent>>().As<JsonConverter>().SingleInstance();
             services.RegisterType<RigidJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<VisibleJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<ShapeJsonConverter>().As<JsonConverter>().SingleInstance();
@@ -30,7 +26,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
             services.RegisterType<PlugJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<ThrustableJsonConverter>().As<JsonConverter>().SingleInstance();
 
-            services.RegisterType<PieceTypeService>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();
 
             services.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();

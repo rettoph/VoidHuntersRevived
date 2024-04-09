@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 {
-    [PolymorphicJsonType<IPieceComponent>(nameof(Plug))]
+    [PolymorphicJsonType<IEntityComponent>(nameof(Plug))]
     public struct Plug : IEntityComponent, IPieceComponent
     {
         public static readonly Plug Default = new Plug()

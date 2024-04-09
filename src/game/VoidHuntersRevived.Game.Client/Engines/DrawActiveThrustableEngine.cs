@@ -3,15 +3,10 @@ using Guppy.Common.Attributes;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Resources.Providers;
-using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Pieces.Common;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
-using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -25,7 +20,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         private readonly short[] _indexBuffer;
         private readonly IEntityService _entities;
-        private readonly IPieceTypeService _pieceTypes;
+        private readonly IEntityContextService _pieceTypes;
         private readonly ILogger _logger;
         private readonly IResourceProvider _resources;
         private readonly Camera2D _camera;
@@ -35,7 +30,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public DrawActiveThrustableEngine(
             ILogger logger,
             IEntityService entities,
-            IPieceTypeService pieceTypes,
+            IEntityContextService pieceTypes,
             IResourceProvider resources,
             Camera2D camera)
         {
@@ -74,26 +69,26 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private void TryDrawThrustableImpulse(GameTimeTeam param, Direction direction, ref EntityFilterCollection helmThrustables)
         {
-            foreach (var (indices, group) in helmThrustables)
-            {
-                var (pieceTypes, thrustables, nodes, _) = _entities.QueryEntities<Id<PieceType>, Thrustable, Node>(group);
-
-                for (int i = 0; i < indices.count; i++)
-                {
-                    uint index = indices[i];
-                    ref Thrustable thrustable = ref thrustables[index];
-
-                    if ((thrustable.Direction & direction) == 0)
-                    {
-                        continue;
-                    }
-
-                    ref Node node = ref nodes[index];
-                    Matrix transformation = node.XnaTransformation;
-
-                    // _visibleRenderingService.Draw(in visibles[index], ref transformation);
-                }
-            }
+            // foreach (var (indices, group) in helmThrustables)
+            // {
+            //     var (pieceTypes, thrustables, nodes, _) = _entities.QueryEntities<Id<EntityContext>, Thrustable, Node>(group);
+            // 
+            //     for (int i = 0; i < indices.count; i++)
+            //     {
+            //         uint index = indices[i];
+            //         ref Thrustable thrustable = ref thrustables[index];
+            // 
+            //         if ((thrustable.Direction & direction) == 0)
+            //         {
+            //             continue;
+            //         }
+            // 
+            //         ref Node node = ref nodes[index];
+            //         Matrix transformation = node.XnaTransformation;
+            // 
+            //         // _visibleRenderingService.Draw(in visibles[index], ref transformation);
+            //     }
+            // }
         }
     }
 }

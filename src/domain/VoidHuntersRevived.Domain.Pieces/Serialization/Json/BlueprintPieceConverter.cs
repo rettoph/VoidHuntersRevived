@@ -1,15 +1,15 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
-using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
     internal sealed class BlueprintPieceConverter : JsonConverter<IBlueprintPiece>
     {
-        private readonly Lazy<IPieceTypeService> _pieceTypes;
+        private readonly Lazy<IEntityContextService> _pieceTypes;
 
-        public BlueprintPieceConverter(Lazy<IPieceTypeService> pieceTypes)
+        public BlueprintPieceConverter(Lazy<IEntityContextService> pieceTypes)
         {
             _pieceTypes = pieceTypes;
         }

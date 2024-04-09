@@ -13,4 +13,8 @@
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Teams.Common\VoidHuntersRevived.Domain.Teams.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Initializers\" />
+  </ItemGroup>
+
 </Project>

@@ -2,13 +2,14 @@
 using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;
+using Svelto.ECS;
 using VoidHuntersRevived.Common.Extensions.System;
 using VoidHuntersRevived.Common.Helpers;
 using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
 {
-    [PolymorphicJsonType<IPieceComponent>(nameof(Visible))]
+    [PolymorphicJsonType<IEntityComponent>(nameof(Visible))]
     public struct Visible : IDisposable, IPieceComponent
     {
         private static float TraceThickness = 1f;

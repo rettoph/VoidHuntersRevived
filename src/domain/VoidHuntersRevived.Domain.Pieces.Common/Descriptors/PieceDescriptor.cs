@@ -1,5 +1,4 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Teams.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Shared;
@@ -12,7 +11,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
         public PieceDescriptor()
         {
             this.WithInstanceComponents([
-                new ComponentBuilder<Id<PieceType>>(),
                 new ComponentBuilder<Plug>(in Plug.Default),
                 new ComponentBuilder<Coupling>(),
                 new ComponentBuilder<Node>(),

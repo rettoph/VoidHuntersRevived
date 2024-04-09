@@ -1,8 +1,10 @@
-﻿namespace VoidHuntersRevived.Domain.Pieces.Common
+﻿using VoidHuntersRevived.Domain.Entities.Common;
+
+namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public interface IBlueprintPiece
     {
-        PieceType PieceType { get; }
+        EntityContext PieceType { get; }
 
         IBlueprintPiece[][] Children { get; }
     }

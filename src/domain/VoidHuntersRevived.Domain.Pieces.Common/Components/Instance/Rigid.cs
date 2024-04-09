@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 {
-    [PolymorphicJsonType<IPieceComponent>(nameof(Rigid))]
+    [PolymorphicJsonType<IEntityComponent>(nameof(Rigid))]
     public struct Rigid : IEntityComponent, IDisposable, IPieceComponent
     {
         public required FixVector2 Centeroid { get; init; }

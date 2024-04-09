@@ -9,12 +9,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     internal sealed partial class BlueprintService : IBlueprintService
     {
         private readonly Dictionary<Id<Blueprint>, Blueprint> _blueprints;
-        private readonly IPieceTypeService _pieces;
         private readonly ILogger _logger;
 
-        public BlueprintService(IPieceTypeService pieces, IResourceProvider resources, ILogger logger, IEnumerable<Blueprint> blueprints)
+        public BlueprintService(IResourceProvider resources, ILogger logger, IEnumerable<Blueprint> blueprints)
         {
-            _pieces = pieces;
             _logger = logger;
             _blueprints = resources.GetAll<Blueprint>().Select(x => x.Item2).Concat(blueprints).ToDictionary(x => x.Id, x => x);
         }

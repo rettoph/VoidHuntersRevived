@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Common.Entities
 {
-    public struct Id<T> : IEntityComponent, IEquatable<Id<T>>
+    public struct Id<T> : IId<T>, IEntityComponent, IEquatable<Id<T>>
     {
         private readonly VhId _value;
 

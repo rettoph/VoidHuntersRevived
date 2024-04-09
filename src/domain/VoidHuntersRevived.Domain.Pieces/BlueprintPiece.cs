@@ -1,21 +1,22 @@
-﻿using VoidHuntersRevived.Domain.Physics.Common.Components;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
     internal sealed class BlueprintPiece : IBlueprintPiece
     {
         private readonly string _pieceTypeKey;
-        private readonly Lazy<IPieceTypeService> _pieceTypes;
-        private PieceType? _pieceType;
+        private readonly Lazy<IEntityContextService> _pieceTypes;
+        private EntityContext? _pieceType;
         private bool _initialized;
 
-        public PieceType PieceType => _pieceType ??= this.InitializePieceType();
+        public EntityContext PieceType => _pieceType ??= this.InitializePieceType();
         public IBlueprintPiece[][] Children { get; }
 
-        public BlueprintPiece(string pieceTypeKey, IBlueprintPiece[][] children, Lazy<IPieceTypeService> pieceTypes)
+        public BlueprintPiece(string pieceTypeKey, IBlueprintPiece[][] children, Lazy<IEntityContextService> pieceTypes)
         {
             _pieceTypeKey = pieceTypeKey;
             _pieceTypes = pieceTypes;
@@ -23,11 +24,11 @@ namespace VoidHuntersRevived.Domain.Pieces
             this.Children = children;
         }
 
-        private PieceType InitializePieceType()
+        private EntityContext InitializePieceType()
         {
-            if (!_pieceTypes.Value.TryGetByKey(_pieceTypeKey, out PieceType? pieceType))
+            if (!_pieceTypes.Value.TryGetByKey(_pieceTypeKey, out EntityContext? pieceType))
             {
-                throw new ArgumentException($"Unknown {nameof(Common.PieceType)}.{nameof(Common.PieceType.Key)} - {_pieceTypeKey}");
+                throw new ArgumentException($"Unknown {nameof(EntityContext)}.{nameof(EntityContext.Key)} - {_pieceTypeKey}");
             }
 
             if (this.Children!.Length > 0)

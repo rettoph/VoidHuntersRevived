@@ -1,4 +1,5 @@
 ﻿using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
@@ -7,5 +8,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         IEntityType GetById(Id<IEntityType> id);
 
         IEnumerable<IEntityType> GetAll();
+
+        IEntityType<T>[] GetAll<T>()
+            where T : VoidHuntersEntityDescriptor;
     }
 }
