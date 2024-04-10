@@ -6,7 +6,6 @@ using Guppy.Game.MonoGame.Primitives;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
@@ -17,7 +16,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     [SimulationFilter(SimulationType.Predictive)]
-    internal class DrawSocketsEngine : BasicEngine, IStepEngine<GameTimeTeam>
+    internal class DrawSocketsEngine : BasicEngine
     {
         private readonly IScreen _screen;
         private readonly IEntityService _entities;
@@ -40,39 +39,39 @@ namespace VoidHuntersRevived.Game.Client.Engines
         }
         public string name { get; } = nameof(DrawSocketsEngine);
 
-        public void Step(in GameTimeTeam _param)
-        {
-            // if (_camera.Zoom < 60)
-            // {
-            //     return;
-            // }
-            // 
-            // var bounds = _camera.Frustum.ToBounds2D();
-            // 
-            // _primitiveBatch.Begin(_camera);
-            // foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
-            // {
-            //     var (statuses, nodes, socketLocationses, count) = _entities.QueryEntities<EntityStatus, Node, Sockets<Location>>(teamDescriptorGroup.GroupId);
-            //     for (uint index = 0; index < count; index++)
-            //     {
-            //         Node node = nodes[index];
-            //         if (bounds.Contains(node.XnaTransformation) == false)
-            //         {
-            //             continue;
-            //         }
-            // 
-            //         Sockets<Location> socketLocations = socketLocationses[index];
-            //         for (int j = 0; j < socketLocations.Items.count; j++)
-            //         {
-            //             if (statuses[index].IsSpawned)
-            //             {
-            //                 Matrix transformationMatrix = FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(socketLocations.Items[j].Transformation, node.Transformation);
-            //                 _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.SecondaryColor, transformationMatrix);
-            //             }
-            //         }
-            //     }
-            // }
-            // _primitiveBatch.End();
-        }
+        // public void Step(in GameTimeTeam _param)
+        // {
+        //     // if (_camera.Zoom < 60)
+        //     // {
+        //     //     return;
+        //     // }
+        //     // 
+        //     // var bounds = _camera.Frustum.ToBounds2D();
+        //     // 
+        //     // _primitiveBatch.Begin(_camera);
+        //     // foreach (ITeamDescriptorGroup teamDescriptorGroup in _teamDescriptorGroups[_param.Team.Id])
+        //     // {
+        //     //     var (statuses, nodes, socketLocationses, count) = _entities.QueryEntities<EntityStatus, Node, Sockets<Location>>(teamDescriptorGroup.GroupId);
+        //     //     for (uint index = 0; index < count; index++)
+        //     //     {
+        //     //         Node node = nodes[index];
+        //     //         if (bounds.Contains(node.XnaTransformation) == false)
+        //     //         {
+        //     //             continue;
+        //     //         }
+        //     // 
+        //     //         Sockets<Location> socketLocations = socketLocationses[index];
+        //     //         for (int j = 0; j < socketLocations.Items.count; j++)
+        //     //         {
+        //     //             if (statuses[index].IsSpawned)
+        //     //             {
+        //     //                 Matrix transformationMatrix = FixMatrixHelper.FastMultiplyTransformationsToXnaMatrix(socketLocations.Items[j].Transformation, node.Transformation);
+        //     //                 _primitiveBatch.Trace(_jointShape, teamDescriptorGroup.SecondaryColor, transformationMatrix);
+        //     //             }
+        //     //         }
+        //     //     }
+        //     // }
+        //     // _primitiveBatch.End();
+        // }
     }
 }

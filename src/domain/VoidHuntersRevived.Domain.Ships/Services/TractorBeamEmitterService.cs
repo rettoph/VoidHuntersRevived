@@ -9,6 +9,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
@@ -20,16 +21,18 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         private readonly IEntityService _entities;
         private readonly INodeService _nodes;
         private readonly ITreeService _trees;
+        private readonly ITeamService _teams;
         private readonly ISocketService _sockets;
         private readonly ILogger _logger;
 
-        public TractorBeamEmitterService(ISpace space, IEntityService entities, INodeService nodes, ITreeService trees, ISocketService sockets, ILogger logger)
+        public TractorBeamEmitterService(ISpace space, IEntityService entities, INodeService nodes, ITreeService trees, ISocketService sockets, ITeamService teams, ILogger logger)
         {
             _space = space;
             _entities = entities;
             _nodes = nodes;
             _trees = trees;
             _sockets = sockets;
+            _teams = teams;
             _logger = logger;
         }
 

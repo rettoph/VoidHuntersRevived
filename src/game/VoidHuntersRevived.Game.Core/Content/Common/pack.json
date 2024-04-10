@@ -5,6 +5,7 @@
     "en-US": [
       "colors.json",
       "strings.json",
+      "teams.json",
       "piece-types.json",
       "blueprints.json"
     ]

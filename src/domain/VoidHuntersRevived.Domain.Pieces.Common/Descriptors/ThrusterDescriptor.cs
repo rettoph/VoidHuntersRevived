@@ -1,11 +1,11 @@
-﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
+﻿using Guppy.Attributes;
+using Svelto.ECS;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Shared;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
 {
+    [AutoLoad]
     public class ThrusterDescriptor : PieceDescriptor
     {
         public ThrusterDescriptor()
@@ -13,11 +13,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
             this.WithInstanceComponents([
                 new ComponentBuilder<Thrustable>()
             ]);
-        }
-
-        protected override ResourceColorScheme GetDefaultColorScheme()
-        {
-            return new ResourceColorScheme(Resources.Colors.ThrusterPrimaryColor, Resources.Colors.ThrusterSecondaryColor);
         }
 
         protected override zIndex GetZIndex()

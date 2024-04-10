@@ -42,19 +42,6 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             return this;
         }
 
-        public bool HasAll(params Type[] componentTypes)
-        {
-            foreach (Type componentType in componentTypes)
-            {
-                if (this._instanceDescriptor.componentsToBuild.Any(x => x.GetEntityComponentType() == componentType) == false)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         public override bool Equals(object? obj)
         {
             return Equals(obj as VoidHuntersEntityDescriptor);

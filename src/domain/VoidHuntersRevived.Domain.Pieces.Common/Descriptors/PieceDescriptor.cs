@@ -1,8 +1,8 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Teams.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Shared;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
+using VoidHuntersRevived.Domain.Teams.Common.Components;
+using VoidHuntersRevived.Domain.Teams.Common.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
 {
@@ -22,12 +22,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
             {
                 new ComponentBuilder<Visible>(),
                 new ComponentBuilder<zIndex>(this.GetZIndex()),
-                new ComponentBuilder<ResourceColorScheme>(this.GetDefaultColorScheme())
+                new ComponentBuilder<ColorScheme>()
             });
         }
 
         protected abstract zIndex GetZIndex();
-
-        protected abstract ResourceColorScheme GetDefaultColorScheme();
     }
 }

@@ -1,12 +1,12 @@
-﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
+﻿using Guppy.Attributes;
+using Svelto.ECS;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Shared;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
 {
+    [AutoLoad]
     public class HullDescriptor : PieceDescriptor
     {
         public HullDescriptor()
@@ -16,11 +16,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
                 new ComponentBuilder<Sockets<Location>>(),
                 new ComponentBuilder<Sockets<SocketId>>(),
             ]);
-        }
-
-        protected override ResourceColorScheme GetDefaultColorScheme()
-        {
-            return new ResourceColorScheme(Resources.Colors.HullPrimaryColor, Resources.Colors.HullSecondaryColor);
         }
 
         protected override zIndex GetZIndex()

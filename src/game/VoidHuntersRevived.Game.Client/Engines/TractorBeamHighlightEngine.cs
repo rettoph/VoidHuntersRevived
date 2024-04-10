@@ -2,7 +2,6 @@
 using Guppy.Common.Attributes;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Utilities.Cameras;
-using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Serilog;
@@ -24,7 +23,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         private readonly ILogger _logger;
         private readonly IEntityService _entities;
-        private readonly IResourceProvider _resources;
         private readonly ISocketService _sockets;
         private readonly Camera2D _camera;
         private readonly ITractorBeamEmitterService _tractorBeamEmitters;
@@ -37,7 +35,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public TractorBeamHighlightEngine(
             ILogger logger,
             IEntityService entities,
-            IResourceProvider resources,
             ISocketService sockets,
             Camera2D camera,
             ITractorBeamEmitterService tractorBeamEmitters,
@@ -45,7 +42,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             _camera = camera;
             _entities = entities;
-            _resources = resources;
             _sockets = sockets;
             _logger = logger;
             _tractorBeamEmitters = tractorBeamEmitters;

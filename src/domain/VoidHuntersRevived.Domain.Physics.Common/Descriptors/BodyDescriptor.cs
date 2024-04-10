@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Teams.Descriptors;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Teams.Common.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Physics.Common.Descriptors
 {

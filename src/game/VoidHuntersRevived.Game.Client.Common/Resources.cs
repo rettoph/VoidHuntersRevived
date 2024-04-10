@@ -8,14 +8,14 @@ namespace VoidHuntersRevived.Game.Client.Common
     {
         public static class SpriteFonts
         {
-            public static readonly Resource<SpriteFont> Default = Resource.Get<SpriteFont>($"{nameof(SpriteFont)}.{nameof(Default)}");
+            public static readonly Resource<SpriteFont> Default = Resource<SpriteFont>.Get($"{nameof(SpriteFont)}.{nameof(Default)}");
         }
 
         public static class EffectCodes
         {
-            public static readonly Resource<EffectCode> ShaderAntiAliasing = Resource.Get<EffectCode>($"{nameof(EffectCode)}.{nameof(ShaderAntiAliasing)}");
-            public static readonly Resource<EffectCode> VisibleAccum = Resource.Get<EffectCode>($"{nameof(EffectCode)}.{nameof(VisibleAccum)}");
-            public static readonly Resource<EffectCode> VisibleFinal = Resource.Get<EffectCode>($"{nameof(EffectCode)}.{nameof(VisibleFinal)}");
+            public static readonly Resource<EffectCode> ShaderAntiAliasing = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(ShaderAntiAliasing)}");
+            public static readonly Resource<EffectCode> VisibleAccum = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(VisibleAccum)}");
+            public static readonly Resource<EffectCode> VisibleFinal = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(VisibleFinal)}");
         }
     }
 }

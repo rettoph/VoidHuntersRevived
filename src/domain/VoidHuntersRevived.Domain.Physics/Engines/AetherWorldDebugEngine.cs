@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -17,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines.Debug
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public AetherWorldDebugEngine(AetherWorld world, IOptional<GraphicsDevice> graphics, IResourceProvider resources)
+        public AetherWorldDebugEngine(AetherWorld world, IOptional<GraphicsDevice> graphics)
         {
             _world = world;
             this.Lines = new[]

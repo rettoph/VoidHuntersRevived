@@ -5,7 +5,6 @@ using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Services;
 using Guppy.Game.MonoGame.Utilities.Cameras;
-using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
@@ -44,7 +43,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
             IImGuiObjectExplorerService objectExplorer,
             World world,
             GraphicsDevice graphics,
-            IResourceProvider resources,
             Camera2D camera)
         {
             _simulation = simulation;
@@ -54,7 +52,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _world = world;
             _debug = new DebugView(world);
             _camera = camera;
-            _debug.LoadContent(graphics, resources.Get(Resources.SpriteFonts.Default));
+            _debug.LoadContent(graphics, Resources.SpriteFonts.Default.Value);
             _filter = string.Empty;
         }
 

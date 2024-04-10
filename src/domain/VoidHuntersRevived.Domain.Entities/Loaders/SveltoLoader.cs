@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             }
 
             // Register all Entity Descriptors
-            var descriptors = _assemblies.GetTypes<VoidHuntersEntityDescriptor>().Where(x => x.IsClass && !x.IsAbstract && !x.IsGenericType).ToArray();
+            var descriptors = _assemblies.GetTypes<VoidHuntersEntityDescriptor>().WithAttribute<AutoLoadAttribute>(true).Where(x => x.IsClass && !x.IsAbstract && !x.IsGenericType).ToArray();
             foreach (Type descriptorType in descriptors)
             {
                 services.RegisterType(descriptorType).As<VoidHuntersEntityDescriptor>().SingleInstance();

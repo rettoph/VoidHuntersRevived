@@ -1,4 +1,4 @@
-﻿using Guppy.Resources.Providers;
+﻿using Guppy.Resources;
 using Serilog;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Pieces.Common;
@@ -11,10 +11,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         private readonly Dictionary<Id<Blueprint>, Blueprint> _blueprints;
         private readonly ILogger _logger;
 
-        public BlueprintService(IResourceProvider resources, ILogger logger, IEnumerable<Blueprint> blueprints)
+        public BlueprintService(ILogger logger, IEnumerable<Blueprint> blueprints)
         {
             _logger = logger;
-            _blueprints = resources.GetAll<Blueprint>().Select(x => x.Item2).Concat(blueprints).ToDictionary(x => x.Id, x => x);
+            _blueprints = Resource<Blueprint>.GetAll().Select(x => x.Value).Concat(blueprints).ToDictionary(x => x.Id, x => x);
         }
 
         public Blueprint GetById(Id<Blueprint> id)

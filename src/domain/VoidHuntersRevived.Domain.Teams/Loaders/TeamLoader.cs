@@ -3,9 +3,10 @@ using Guppy.Attributes;
 using Guppy.Extensions.Autofac;
 using Guppy.Loaders;
 using Serilog;
+using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Teams;
-using VoidHuntersRevived.Domain.Teams.Common.Services;
+using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
+using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Loaders
@@ -15,11 +16,14 @@ namespace VoidHuntersRevived.Domain.Teams.Loaders
     {
         public void ConfigureServices(ContainerBuilder builder)
         {
-            builder.RegisterType<TeamService>().As<ITeamService>().InstancePerLifetimeScope();
+            builder.RegisterType<TeamJsonConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<ColorSchemeJsonConverter>().As<JsonConverter>().SingleInstance();
+
+            builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.Configure<LoggerConfiguration>((scope, config) =>
             {
-                config.Destructure.AsScalar(typeof(Id<ITeam>));
+                config.Destructure.AsScalar(typeof(Id<Team>));
             });
         }
     }

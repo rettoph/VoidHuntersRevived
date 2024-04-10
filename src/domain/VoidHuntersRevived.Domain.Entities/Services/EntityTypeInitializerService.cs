@@ -1,5 +1,5 @@
 ﻿using Guppy.Common;
-using Guppy.Resources.Providers;
+using Guppy.Resources;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -11,9 +11,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         private Dictionary<IEntityType, IEntityTypeInitializer> _initializers;
 
-        public EntityTypeInitializerService(IResourceProvider resources, IFiltered<IEntityInitializer> initializers)
+        public EntityTypeInitializerService(IFiltered<IEntityInitializer> initializers)
         {
-            IEnumerable<IEntityType> imported = resources.GetAll<IEntityType>().Select(x => x.Item2);
+            IEnumerable<IEntityType> imported = Resource<IEntityType>.GetAll().Select(x => x.Value);
 
             _initializers = initializers.Instances.SelectMany(init => init.ExplicitEntityTypes).Concat(imported).Distinct().ToDictionary(
                 keySelector: type => type,

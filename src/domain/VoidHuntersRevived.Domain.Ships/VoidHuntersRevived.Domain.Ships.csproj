@@ -11,6 +11,7 @@
     <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Ships.Common\VoidHuntersRevived.Domain.Ships.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Common\VoidHuntersRevived.Domain.Common.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Teams.Common\VoidHuntersRevived.Domain.Teams.Common.csproj" />
   </ItemGroup>
 
 </Project>

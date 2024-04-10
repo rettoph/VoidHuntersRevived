@@ -10,6 +10,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
+using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Game.Core.Engines
 {
@@ -17,12 +18,14 @@ namespace VoidHuntersRevived.Game.Core.Engines
     internal sealed class SimulationEngine : BasicEngine, IEventEngine<Simulation_Begin>
     {
         private readonly ITreeService _trees;
+        private readonly ITeamService _teams;
         private readonly IEntityTypeService _entityTypes;
         private readonly IBlueprintService _blueprints;
 
-        public SimulationEngine(ITreeService treeFactory, IEntityTypeService entityTypes, IBlueprintService blueprints)
+        public SimulationEngine(ITreeService treeFactory, ITeamService teams, IEntityTypeService entityTypes, IBlueprintService blueprints)
         {
             _trees = treeFactory;
+            _teams = teams;
             _entityTypes = entityTypes;
             _blueprints = blueprints;
         }
@@ -45,7 +48,7 @@ namespace VoidHuntersRevived.Game.Core.Engines
             {
                 for (int y = -radius; y < radius; y += step)
                 {
-                    _trees.Spawn(eventId, eventId.Create(i++), Teams.TeamZero, EntityTypes.Chain, pieces[i % pieces.Length], (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                    _trees.Spawn(eventId, eventId.Create(i++), _teams.GetDefaultTeamId(), EntityTypes.Chain, pieces[i % pieces.Length], (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
                     {
                         initializer.Init(new Location()
                         {
@@ -53,7 +56,6 @@ namespace VoidHuntersRevived.Game.Core.Engines
                         });
                     });
                 }
-
             }
 
             //_trees.Spawn(eventId.Create(2), EntityTypes.UserShip, EntityTypes.Pieces.HullSquare);

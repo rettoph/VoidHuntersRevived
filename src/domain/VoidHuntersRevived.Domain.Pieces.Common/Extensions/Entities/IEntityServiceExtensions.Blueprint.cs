@@ -1,23 +1,23 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Teams;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
 {
     public static class IEntityServiceExtensions
     {
-        public static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<ITeam> teamId, Blueprint blueprint)
+        public static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<Team> teamId, Blueprint blueprint)
         {
             VhId vhid = HashBuilder<Blueprint, VhId, Id<Blueprint>>.Instance.Calculate(treeId, blueprint.Id);
 
             return entities.Spawn(sourceId, treeId, teamId, vhid, blueprint.Head, default);
         }
 
-        private static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<ITeam> teamId, VhId vhid, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
+        private static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, Id<Team> teamId, VhId vhid, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
         {
             return entities.Spawn(sourceId, blueprintPiece.PieceType, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
             {

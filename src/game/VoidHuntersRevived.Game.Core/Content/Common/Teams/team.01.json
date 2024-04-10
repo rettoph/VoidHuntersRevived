@@ -1,0 +1,14 @@
+{
+  "Key": "Team.One",
+  "Descriptor": "TeamDescriptor",
+  "InstanceComponents": {},
+  "StaticComponents": {
+    "Team": {
+      "Name": "String.TeamOneName"
+    },
+    "ColorScheme": {
+      "Primary": "Colors.TeamOnePrimaryColor",
+      "Secondary": "Colors.TeamOneSecondaryColor"
+    }
+  }
+}

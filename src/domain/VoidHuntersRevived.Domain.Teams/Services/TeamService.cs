@@ -1,50 +1,52 @@
-﻿using Guppy.Common;
-using Guppy.Resources;
-using Guppy.Resources.Providers;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Xna.Framework;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Teams;
-using VoidHuntersRevived.Domain.Teams.Common.Loaders;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Services
 {
-    internal sealed class TeamService : ITeamService
+    internal class TeamService : BasicEngine, ITeamService
     {
-        private Dictionary<Id<ITeam>, ITeam> _teams;
-        private readonly IResourceProvider _resources;
+        private Id<Team> _defaultId;
+        private Dictionary<Id<Team>, GroupIndex> _groupIndices;
 
-        public TeamService(IResourceProvider resources, IFiltered<ITeamLoader> loaders)
+
+        private readonly IEntityService _entities;
+        private readonly IEntityTypeService _types;
+
+        public TeamService(IEntityService entities, IEntityTypeService types)
         {
-            _teams = new Dictionary<Id<ITeam>, ITeam>();
-            _resources = resources;
+            _entities = entities;
+            _groupIndices = new Dictionary<Id<Team>, GroupIndex>();
+            _types = types;
+        }
 
-            foreach (ITeamLoader loader in loaders.Instances)
+        public unsafe override void Initialize(ISimulation simulation)
+        {
+            base.Initialize(simulation);
+
+            foreach (var ((teams, colors, count), group) in _entities.QueryEntities<Team, ColorScheme>())
             {
-                loader.Configure(this);
+                for (uint i = 0; i < count; i++)
+                {
+                    var team = teams[i];
+                    _groupIndices.Add(team.Id, new GroupIndex(group, i));
+                    _defaultId = team.Id;
+                }
             }
         }
 
-        public void Register(in Id<ITeam> id, Resource<string> name, Resource<Color> primaryColor, Resource<Color> secondaryColor)
+        public Id<Team> GetDefaultTeamId()
         {
-            _teams.Add(id, new Team()
-            {
-                Id = id,
-                Name = _resources.Get(name) ?? string.Empty,
-                PrimaryColor = _resources.Get(primaryColor),
-                SecondaryColor = _resources.Get(secondaryColor)
-            });
+            return _defaultId;
         }
 
-        public ITeam GetById(Id<ITeam> id)
+        public Id<Team> GetOpenTeamId()
         {
-            return _teams[id];
-        }
-
-        public IEnumerable<ITeam> GetAll()
-        {
-            return _teams.Values.AsEnumerable();
+            return _defaultId;
         }
     }
 }

@@ -12,6 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
         {
             _descriptors = descriptors.ToDictionary(x => x.Name, x => x);
         }
+
         public override VoidHuntersEntityDescriptor? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             string name = reader.GetString() ?? string.Empty;

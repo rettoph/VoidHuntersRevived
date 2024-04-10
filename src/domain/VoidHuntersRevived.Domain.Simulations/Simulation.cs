@@ -14,7 +14,6 @@ using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Utilities;
-using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -35,7 +34,6 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public readonly SimulationType Type;
         public readonly IEngineService Engines;
-        public readonly ITeamService Teams;
         public readonly ILifetimeScope Scope;
 
         public VhId Id { get; }
@@ -58,7 +56,6 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             // Pass the current scoped netscope to the new child scope
             this.Engines = this.Scope.Resolve<IEngineService>();
-            this.Teams = this.Scope.Resolve<ITeamService>();
 
             // Build an event publisher dictionary
             this.logger = this.Scope.Resolve<ILogger>();

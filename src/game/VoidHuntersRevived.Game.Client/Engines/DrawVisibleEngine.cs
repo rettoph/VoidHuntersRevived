@@ -12,6 +12,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Game.Client.Common.Engines;
 using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
 using VoidHuntersRevived.Game.Client.Common.Services;
@@ -77,8 +78,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                             ref VertexInstanceVisible instanceVertex = ref vertexBufferManager.GetNextVertexUnsafe();
 
                             instanceVertex.LocalTransformation = node.XnaTransformation;
-                            instanceVertex.PrimaryColor = colorScheme.Primary.Current.PackedValue;
-                            instanceVertex.SecondaryColor = colorScheme.Secondary.Current.PackedValue;
+                            instanceVertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
+                            instanceVertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
                         }
                     }
                 }
