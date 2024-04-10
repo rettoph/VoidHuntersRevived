@@ -1,5 +1,5 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common.Providers;
+using Guppy.Common.Services;
 using Guppy.Loaders;
 using VoidHuntersRevived.Domain.Entities.Loaders;
 using VoidHuntersRevived.Domain.Loaders;
@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Presentation.Core.Loaders
     [AutoLoad]
     internal class DomainAssemblyLoader : IAssemblyLoader
     {
-        public void ConfigureAssemblies(IAssemblyProvider assemblies)
+        public void ConfigureAssemblies(IAssemblyService assemblies)
         {
             assemblies.Load(typeof(DomainLoader).Assembly);
             assemblies.Load(typeof(SimulationLoader).Assembly);

@@ -1,6 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Extensions;
-using Guppy.Common.Services;
+using Guppy.Messaging.Services;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
@@ -15,19 +15,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         private readonly EnginesRoot _enginesRoot;
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
-        private readonly IBulkSubscriptionService _bulkSubscriptionService;
+        private readonly IMagicBrokerService _brokers;
         private IEngine[] _engines;
         private IStepGroupEngine<Step> _stepEngines;
 
         public EnginesRoot Root => _enginesRoot;
 
         public EngineService(
-            IBulkSubscriptionService bulkSubscriptionService,
+            IMagicBrokerService brokers,
             IFiltered<IEngine> engines,
-            EnginesRoot enginesRoot, 
+            EnginesRoot enginesRoot,
             SimpleEntitiesSubmissionScheduler scheduler)
         {
-            _bulkSubscriptionService = bulkSubscriptionService;
+            _brokers = brokers;
             _enginesRoot = enginesRoot;
             _scheduler = scheduler;
             _stepEngines = null!;
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             foreach (IEngine engine in _engines.Sequence(InitializeSequence.Initialize))
             {
-                _bulkSubscriptionService.Subscribe(engine.Yield());
+                _brokers.Subscribe(engine.Yield());
 
                 _enginesRoot.AddEngine(engine);
 
@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Dispose()
         {
-            _bulkSubscriptionService.Unsubscribe(_engines);
+            _brokers.Unsubscribe(_engines);
         }
 
         public IEnumerable<T> OfType<T>()

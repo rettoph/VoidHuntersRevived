@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public event OnEventDelegate<EventDto>? OnEvent;
 
-        public LockstepSimulation(ISettingProvider settings, ILifetimeScope scope) : base(SimulationType.Lockstep, scope)
+        public LockstepSimulation(ISettingService settings, ILifetimeScope scope) : base(SimulationType.Lockstep, scope)
         {
             _tickStepEnginesGroup = this.Engines.All().CreateStepEnginesGroup<Tick>();
             _history = new List<Tick>();

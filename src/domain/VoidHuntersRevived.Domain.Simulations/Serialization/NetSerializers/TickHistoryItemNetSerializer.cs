@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network;
-using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
     {
         private INetSerializer<Tick> _serializer = default!;
 
-        public override void Initialize(INetSerializerProvider serializers)
+        public override void Initialize(INetSerializerService serializers)
         {
             base.Initialize(serializers);
 

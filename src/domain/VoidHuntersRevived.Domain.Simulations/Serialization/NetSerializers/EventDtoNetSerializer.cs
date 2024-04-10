@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network;
 using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Simulations.Common;
 
@@ -9,9 +10,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
     [AutoLoad]
     internal sealed class EventDtoNetSerializer : NetSerializer<EventDto>
     {
-        private INetSerializerProvider _serializers = default!;
+        private INetSerializerService _serializers = default!;
 
-        public override void Initialize(INetSerializerProvider serializers)
+        public override void Initialize(INetSerializerService serializers)
         {
             base.Initialize(serializers);
 

@@ -3,7 +3,7 @@ using Guppy.Messaging;
 using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         private readonly List<EventDto> _inputs;
 
         public LockstepSimulation_Server(
-            ISettingProvider settings,
+            ISettingService settings,
             ILifetimeScope scope,
             IBus bus) : base(settings, scope)
         {

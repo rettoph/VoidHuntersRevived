@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network;
 using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -11,9 +12,9 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
     [AutoLoad]
     internal sealed class TickNetSerializer : NetSerializer<Tick>
     {
-        private INetSerializerProvider _serializers = default!;
+        private INetSerializerService _serializers = default!;
 
-        public override void Initialize(INetSerializerProvider serializers)
+        public override void Initialize(INetSerializerService serializers)
         {
             base.Initialize(serializers);
 

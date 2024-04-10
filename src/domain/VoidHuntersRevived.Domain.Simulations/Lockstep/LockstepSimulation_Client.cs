@@ -2,7 +2,7 @@
 using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepSimulation_Client(
             INetGroup netScope,
             TickBuffer ticks,
-            ISettingProvider settings,
+            ISettingService settings,
             ILifetimeScope scope) : base(settings, scope)
         {
             _group = netScope;

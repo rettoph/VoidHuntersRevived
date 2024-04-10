@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Common.Providers;
+using Guppy.Common.Services;
 using Guppy.Loaders;
 using Svelto.ECS;
 using System.Reflection;
@@ -14,9 +14,9 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
     [AutoLoad]
     internal class SveltoLoader : IServiceLoader
     {
-        private readonly IAssemblyProvider _assemblies;
+        private readonly IAssemblyService _assemblies;
 
-        public SveltoLoader(IAssemblyProvider assemblies)
+        public SveltoLoader(IAssemblyService assemblies)
         {
             _assemblies = assemblies;
         }

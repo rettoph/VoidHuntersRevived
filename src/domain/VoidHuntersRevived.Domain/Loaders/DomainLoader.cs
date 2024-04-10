@@ -4,7 +4,7 @@ using Guppy.Common.Autofac;
 using Guppy.Extensions.Autofac;
 using Guppy.Files.Enums;
 using Guppy.Files.Helpers;
-using Guppy.Files.Providers;
+using Guppy.Files.Services;
 using Guppy.Loaders;
 using Guppy.Resources.Serialization.Json;
 using Serilog;
@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Loaders
 
                 if (scope.IsTag(LifetimeScopeTags.MainScope))
                 {
-                    var fileTypePaths = scope.Resolve<IPathProvider>();
+                    var fileTypePaths = scope.Resolve<IPathService>();
                     var source = fileTypePaths.GetSourceLocation(DirectoryType.AppData, "logs", $"log_{DateTime.Now.ToString("yyyy-dd-M")}.txt");
                     DirectoryHelper.EnsureDirectoryExists(source);
 
