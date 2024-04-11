@@ -3,13 +3,11 @@ using Guppy.Messaging;
 using Guppy.Network;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
-using Guppy.Resources.Services;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Common.Constants;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
@@ -25,11 +23,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         private readonly List<EventDto> _inputs;
 
         public LockstepSimulation_Server(
-            ISettingService settings,
             ILifetimeScope scope,
-            IBus bus) : base(settings, scope)
+            IBus bus) : base(scope)
         {
-            Fix64 stepInterval = settings.Get(Settings.StepInterval).Value;
+            Fix64 stepInterval = Settings.StepInterval.Value;
 
             _bus = bus;
             _inputs = new List<EventDto>();

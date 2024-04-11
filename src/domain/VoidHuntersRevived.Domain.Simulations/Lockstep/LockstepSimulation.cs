@@ -1,18 +1,16 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Resources.Services;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
+using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
-using VoidHuntersRevived.Domain.Common.Constants;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -36,13 +34,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public event OnEventDelegate<EventDto>? OnEvent;
 
-        public LockstepSimulation(ISettingService settings, ILifetimeScope scope) : base(SimulationType.Lockstep, scope)
+        public LockstepSimulation(ILifetimeScope scope) : base(SimulationType.Lockstep, scope)
         {
             _tickStepEnginesGroup = this.Engines.All().CreateStepEnginesGroup<Tick>();
             _history = new List<Tick>();
 
-            this.stepsPerTick = settings.Get(Settings.StepsPerTick).Value;
-            this.stepInterval = settings.Get(Settings.StepInterval).Value;
+            this.stepsPerTick = Settings.StepsPerTick.Value;
+            this.stepInterval = Settings.StepInterval.Value;
             this.stepsSinceTick = 0;
             this.timeSinceStep = TimeSpan.Zero;
             this.stepTimeSpan = TimeSpan.FromSeconds((double)stepInterval);
