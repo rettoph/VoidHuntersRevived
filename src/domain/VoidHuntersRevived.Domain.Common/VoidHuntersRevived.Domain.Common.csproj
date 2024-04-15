@@ -9,10 +9,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\Guppy\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
-    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
-    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Game\Guppy.Game.csproj" />
-    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
-    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Resources\Guppy.Resources.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\engine\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game\Guppy.Game.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Network\Guppy.Core.Network.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Resources\Guppy.Core.Resources.csproj" />
     <ProjectReference Include="..\..\..\libraries\Svelto.ECS\com.sebaslab.svelto.common\Svelto.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Ships.Common\VoidHuntersRevived.Domain.Ships.Common.csproj" />
   </ItemGroup>

@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Attributes;
+using Guppy.Core.Common.Attributes;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;

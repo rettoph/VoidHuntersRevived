@@ -1,4 +1,4 @@
-﻿using Guppy.Resources;
+﻿using Guppy.Core.Resources;
 using Serilog;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Pieces.Common;

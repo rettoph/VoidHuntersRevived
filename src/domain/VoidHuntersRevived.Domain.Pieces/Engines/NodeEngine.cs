@@ -1,5 +1,5 @@
-﻿using Guppy.Attributes;
-using Guppy.Common.Collections;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Collections;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;

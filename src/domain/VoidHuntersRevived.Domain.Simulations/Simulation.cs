@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using Guppy;
-using Guppy.Extensions.Autofac;
+using Guppy.Engine.Common;
+using Guppy.Engine.Extensions.Autofac;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Serilog;

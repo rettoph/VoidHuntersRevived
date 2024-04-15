@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Extensions.Autofac;
-using Guppy.Loaders;
-using Guppy.Resources.Serialization.Json.Converters;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Resources.Serialization.Json.Converters;
+using Guppy.Engine.Common.Loaders;
 using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;

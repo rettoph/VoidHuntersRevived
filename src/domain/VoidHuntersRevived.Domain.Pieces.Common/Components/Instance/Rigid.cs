@@ -1,4 +1,4 @@
-﻿using Guppy.Resources.Attributes;
+﻿using Guppy.Core.Resources.Attributes;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Extensions.System;

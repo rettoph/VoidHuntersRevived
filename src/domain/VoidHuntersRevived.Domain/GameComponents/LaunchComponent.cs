@@ -1,7 +1,8 @@
-﻿using Guppy;
-using Guppy.Attributes;
-using Guppy.Messaging;
-using Guppy.Providers;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Messaging;
+using Guppy.Engine.Common;
+using Guppy.Engine.Common.Components;
+using Guppy.Engine.Providers;
 using VoidHuntersRevived.Domain.Common.Messages;
 
 namespace VoidHuntersRevived.Domain.GameComponents

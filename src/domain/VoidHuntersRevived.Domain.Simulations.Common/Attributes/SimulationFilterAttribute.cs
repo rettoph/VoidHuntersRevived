@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Common.Extensions.Autofac;
-using Guppy.StateMachine;
-using Guppy.StateMachine.Filters;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.StateMachine;
+using Guppy.Core.StateMachine.Filters;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Attributes
 {
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Attributes
             this.RequiredSimulationType = requiredSimulationType;
         }
 
-        protected override void Configure(ContainerBuilder builder, Type classType)
+        protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
             builder.RegisterFilter(new StateServiceFilter<SimulationType>(classType, new State<SimulationType>(this.RequiredSimulationType)));
         }
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Attributes
     public sealed class SimulationFilterAttribute<TSimulation> : GuppyConfigurationAttribute
         where TSimulation : ISimulation
     {
-        protected override void Configure(ContainerBuilder builder, Type classType)
+        protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
             builder.RegisterFilter(new StateServiceFilter<Type>(classType, new State<Type>(
                 key: StateKey<Type>.Create<ISimulation>(),

@@ -1,7 +1,7 @@
-﻿using Guppy;
-using Guppy.Attributes;
-using Guppy.Common.Attributes;
-using Guppy.Enums;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common;
+using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 

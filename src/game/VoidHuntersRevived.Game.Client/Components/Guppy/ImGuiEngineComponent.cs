@@ -1,9 +1,9 @@
 ﻿using Autofac;
-using Guppy;
-using Guppy.Attributes;
-using Guppy.Common.Attributes;
-using Guppy.Common.Extensions;
-using Guppy.Enums;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Extensions;
+using Guppy.Engine.Common;
+using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
 using Microsoft.Xna.Framework;

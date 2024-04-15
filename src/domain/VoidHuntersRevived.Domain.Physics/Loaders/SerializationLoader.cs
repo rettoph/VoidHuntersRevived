@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Loaders;
+using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common.Loaders;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters;
 

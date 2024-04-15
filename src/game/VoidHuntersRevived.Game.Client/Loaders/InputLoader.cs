@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using Guppy.Attributes;
+using Guppy.Core.Common.Attributes;
 using Guppy.Game.Input;
 using Guppy.Game.Input.Enums;
-using Guppy.Loaders;
+using Guppy.Engine.Common.Loaders;
 using Microsoft.Xna.Framework.Input;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 using VoidHuntersRevived.Game.Client.Constants;

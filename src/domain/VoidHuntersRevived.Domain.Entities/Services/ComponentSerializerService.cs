@@ -1,4 +1,4 @@
-﻿using Guppy.Common;
+﻿using Guppy.Core.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;

@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Common.Autofac;
-using Guppy.Loaders;
+using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common.Autofac;
+using Guppy.Engine.Common.Loaders;
 using LiteNetLib;
 using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;

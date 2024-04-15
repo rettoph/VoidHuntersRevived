@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Commands.Services;
+using Guppy.Game.Commands.Services;
 using Guppy.Game.Extensions;
 using Guppy.Game.Helpers;
 using VoidHuntersRevived.Game.Server;

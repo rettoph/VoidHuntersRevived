@@ -1,12 +1,12 @@
-﻿using Guppy.Attributes;
-using Guppy.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Input;
 using Guppy.Game.Input.Messages;
 using Guppy.Game.MonoGame;
 using Guppy.Game.MonoGame.Utilities.Cameras;
-using Guppy.Network.Attributes;
-using Guppy.Network.Enums;
+using Guppy.Core.Network.Attributes;
+using Guppy.Core.Network.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Svelto.ECS;

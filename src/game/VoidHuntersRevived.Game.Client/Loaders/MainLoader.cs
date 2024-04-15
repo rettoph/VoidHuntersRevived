@@ -1,10 +1,10 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Files;
+using Guppy.Core.Files.Common;
+using Guppy.Core.Resources.Configuration;
+using Guppy.Core.Resources.Extensions.Autofac;
+using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common.Loaders;
 using Guppy.Game.MonoGame.Utilities.Cameras;
-using Guppy.Loaders;
-using Guppy.Resources.Configuration;
-using Guppy.Resources.Extensions.Autofac;
 using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Loaders

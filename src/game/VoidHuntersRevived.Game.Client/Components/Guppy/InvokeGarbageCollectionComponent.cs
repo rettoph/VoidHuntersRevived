@@ -1,6 +1,7 @@
-﻿using Guppy;
-using Guppy.Attributes;
-using Guppy.Messaging;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Messaging;
+using Guppy.Engine.Common;
+using Guppy.Engine.Common.Components;
 using Serilog;
 using VoidHuntersRevived.Game.Client.Messages;
 

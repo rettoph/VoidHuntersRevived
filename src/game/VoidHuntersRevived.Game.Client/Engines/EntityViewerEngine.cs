@@ -1,9 +1,8 @@
 ﻿using Autofac;
-using Guppy;
-using Guppy.Attributes;
-using Guppy.Common.Attributes;
-using Guppy.Common.Enums;
-using Guppy.Common.Services;
+using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common;
+using Guppy.Engine.Common.Enums;
+using Guppy.Engine.Common.Services;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Services;

@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Attributes;
+using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;

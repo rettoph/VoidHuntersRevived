@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Guppy.Network.Identity.Claims;
-using Guppy.Network.Identity.Enums;
-using Guppy.Network.Peers;
+using Guppy.Core.Network.Identity.Claims;
+using Guppy.Core.Network.Identity.Enums;
+using Guppy.Core.Network.Peers;
 
 namespace VoidHuntersRevived.Game.Client
 {

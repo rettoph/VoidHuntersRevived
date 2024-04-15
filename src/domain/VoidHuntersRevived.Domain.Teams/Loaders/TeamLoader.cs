@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Extensions.Autofac;
-using Guppy.Loaders;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Engine.Common.Loaders;
 using Serilog;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common.Entities;

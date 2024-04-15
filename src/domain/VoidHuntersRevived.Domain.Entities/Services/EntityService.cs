@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using Guppy.Common.Attributes;
-using Guppy.Common.Collections;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Collections;
 using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;

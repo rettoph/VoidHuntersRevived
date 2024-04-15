@@ -1,5 +1,5 @@
-﻿using Guppy.Attributes;
-using Guppy.Common;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;

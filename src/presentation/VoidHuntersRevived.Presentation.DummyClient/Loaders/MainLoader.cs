@@ -1,13 +1,13 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Common.Autofac;
-using Guppy.Extensions.Autofac;
-using Guppy.Files.Enums;
-using Guppy.Files.Helpers;
-using Guppy.Files.Services;
+using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common.Autofac;
+using Guppy.Engine.Extensions.Autofac;
+using Guppy.Core.Files.Enums;
+using Guppy.Core.Files.Helpers;
+using Guppy.Core.Files.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Extensions.Serilog;
-using Guppy.Loaders;
+using Guppy.Engine.Common.Loaders;
 using Serilog;
 
 namespace VoidHuntersRevived.Presentation.Client.Loaders

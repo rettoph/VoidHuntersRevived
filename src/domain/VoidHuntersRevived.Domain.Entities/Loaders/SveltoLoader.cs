@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Common.Services;
-using Guppy.Loaders;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Services;
+using Guppy.Engine.Common.Loaders;
 using Svelto.ECS;
 using System.Reflection;
 using VoidHuntersRevived.Common.Entities.Descriptors;

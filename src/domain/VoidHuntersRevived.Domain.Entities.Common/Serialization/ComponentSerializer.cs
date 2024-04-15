@@ -1,5 +1,5 @@
-﻿using Guppy.Attributes;
-using Guppy.Enums;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;

@@ -1,5 +1,5 @@
-﻿using Guppy.Attributes;
-using Guppy.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;

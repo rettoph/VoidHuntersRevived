@@ -1,4 +1,4 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;

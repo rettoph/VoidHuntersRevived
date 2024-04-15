@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Common.Collections;
+using Guppy.Core.Common.Collections;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;

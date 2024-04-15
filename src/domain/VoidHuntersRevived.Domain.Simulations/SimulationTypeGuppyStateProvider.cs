@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Extensions.Autofac;
-using Guppy.Providers;
-using Guppy.StateMachine;
+using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Extensions.Autofac;
+using Guppy.Engine.Providers;
+using Guppy.Core.StateMachine;
 using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations

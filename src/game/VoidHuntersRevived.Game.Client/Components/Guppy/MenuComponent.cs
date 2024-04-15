@@ -1,5 +1,6 @@
-﻿using Guppy;
-using Guppy.Attributes;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common;
+using Guppy.Engine.Common.Components;
 using Guppy.Game.MonoGame;
 using Guppy.Game.MonoGame.Providers;
 using VoidHuntersRevived.Domain.Common.Messages;

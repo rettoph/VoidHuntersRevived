@@ -1,4 +1,4 @@
-﻿using Guppy.Serialization.Converters;
+﻿using Guppy.Core.Serialization.Common.Converters;
 using Svelto.DataStructures;
 using System.Text.Json;
 

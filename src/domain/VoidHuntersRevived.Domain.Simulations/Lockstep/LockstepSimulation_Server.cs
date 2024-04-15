@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using Guppy.Messaging;
-using Guppy.Network;
-using Guppy.Network.Attributes;
-using Guppy.Network.Enums;
+using Guppy.Core.Messaging;
+using Guppy.Core.Network;
+using Guppy.Core.Network.Attributes;
+using Guppy.Core.Network.Enums;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;

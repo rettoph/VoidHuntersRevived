@@ -1,4 +1,4 @@
-﻿using Guppy.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;

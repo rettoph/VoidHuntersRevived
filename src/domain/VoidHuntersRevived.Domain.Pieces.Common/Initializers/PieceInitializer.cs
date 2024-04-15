@@ -1,4 +1,4 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Initializers

@@ -1,16 +1,17 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Common.Autofac;
-using Guppy.Extensions.Autofac;
-using Guppy.Files.Enums;
-using Guppy.Files.Helpers;
-using Guppy.Files.Services;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Files.Common.Enums;
+using Guppy.Core.Files.Common.Helpers;
+using Guppy.Core.Files.Common.Services;
+using Guppy.Core.Network.Enums;
+using Guppy.Core.StateMachine;
+using Guppy.Core.StateMachine.Services;
+using Guppy.Engine.Common.Autofac;
+using Guppy.Engine.Common.Loaders;
+using Guppy.Engine.Extensions.Autofac;
 using Guppy.Game.Common;
 using Guppy.Game.Extensions.Serilog;
-using Guppy.Loaders;
-using Guppy.Network.Enums;
-using Guppy.StateMachine;
-using Guppy.StateMachine.Services;
 using Serilog;
 using VoidHuntersRevived.Domain.Simulations.Common;
 

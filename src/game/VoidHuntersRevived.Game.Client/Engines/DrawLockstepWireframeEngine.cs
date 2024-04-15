@@ -1,7 +1,7 @@
-﻿using Guppy.Attributes;
-using Guppy.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common.Enums;
-using Guppy.Messaging;
+using Guppy.Core.Messaging;
 using Serilog;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;

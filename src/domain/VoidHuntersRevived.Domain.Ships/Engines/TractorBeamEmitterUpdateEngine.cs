@@ -1,4 +1,4 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;

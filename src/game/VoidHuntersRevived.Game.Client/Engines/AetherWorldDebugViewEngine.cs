@@ -1,6 +1,5 @@
-﻿using Guppy;
-using Guppy.Attributes;
-using Guppy.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Services;

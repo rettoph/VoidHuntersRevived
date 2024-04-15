@@ -1,6 +1,6 @@
-﻿using Guppy.Attributes;
-using Guppy.Common.Services;
-using Guppy.Loaders;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Services;
+using Guppy.Engine.Common.Loaders;
 using VoidHuntersRevived.Domain.Entities.Loaders;
 using VoidHuntersRevived.Domain.Loaders;
 using VoidHuntersRevived.Domain.Physics.Loaders;

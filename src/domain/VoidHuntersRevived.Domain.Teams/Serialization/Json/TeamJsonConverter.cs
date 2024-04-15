@@ -1,4 +1,4 @@
-﻿using Guppy.Resources;
+﻿using Guppy.Core.Resources;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Teams.Common.Components;

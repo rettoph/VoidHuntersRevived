@@ -1,14 +1,14 @@
-﻿using Guppy;
-using Guppy.Attributes;
-using Guppy.Common.Attributes;
-using Guppy.Enums;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Network;
+using Guppy.Core.Network.Identity;
+using Guppy.Core.Network.Identity.Claims;
+using Guppy.Core.Network.Identity.Services;
+using Guppy.Core.Network.Peers;
+using Guppy.Engine.Common;
+using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
-using Guppy.Network;
-using Guppy.Network.Identity;
-using Guppy.Network.Identity.Claims;
-using Guppy.Network.Identity.Services;
-using Guppy.Network.Peers;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Common.Constants;
 

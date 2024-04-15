@@ -1,6 +1,6 @@
-﻿using Guppy.Attributes;
-using Guppy.Network;
-using Guppy.Network.Services;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Network;
+using Guppy.Core.Network.Services;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;

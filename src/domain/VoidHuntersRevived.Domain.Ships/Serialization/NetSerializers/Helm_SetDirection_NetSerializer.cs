@@ -1,5 +1,5 @@
-﻿using Guppy.Attributes;
-using Guppy.Network;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Network;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 using VoidHuntersRevived.Domain.Ships.Common.Events;

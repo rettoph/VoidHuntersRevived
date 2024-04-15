@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\Guppy\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
-    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Common\Guppy.Common.csproj" />
-    <ProjectReference Include="..\..\..\libraries\Guppy\src\Guppy.Network\Guppy.Network.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\engine\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Network\Guppy.Core.Network.csproj" />
   </ItemGroup>
 
 </Project>

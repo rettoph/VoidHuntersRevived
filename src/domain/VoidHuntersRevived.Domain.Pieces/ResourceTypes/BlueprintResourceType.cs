@@ -1,8 +1,8 @@
-﻿using Guppy.Attributes;
-using Guppy.Files;
-using Guppy.Files.Services;
-using Guppy.Resources;
-using Guppy.Resources.ResourceTypes;
+﻿using Guppy.Core.Files.Common;
+using Guppy.Core.Files.Common.Services;
+using Guppy.Core.Resources;
+using Guppy.Core.Resources.ResourceTypes;
+using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Domain.Pieces.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes

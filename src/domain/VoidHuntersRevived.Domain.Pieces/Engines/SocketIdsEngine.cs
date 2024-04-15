@@ -1,4 +1,4 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;

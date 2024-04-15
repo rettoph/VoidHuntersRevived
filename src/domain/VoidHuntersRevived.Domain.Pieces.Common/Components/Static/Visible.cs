@@ -1,4 +1,4 @@
-﻿using Guppy.Resources.Attributes;
+﻿using Guppy.Core.Resources.Attributes;
 using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;

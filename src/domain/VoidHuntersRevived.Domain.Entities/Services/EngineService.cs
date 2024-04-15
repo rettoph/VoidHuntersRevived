@@ -1,6 +1,6 @@
-﻿using Guppy.Common;
-using Guppy.Common.Extensions;
-using Guppy.Messaging.Services;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Messaging.Services;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
