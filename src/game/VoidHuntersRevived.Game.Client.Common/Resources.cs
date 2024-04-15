@@ -1,5 +1,5 @@
 ﻿using Guppy.Game.MonoGame.Graphics.Effects;
-using Guppy.Core.Resources;
+using Guppy.Core.Resources.Common;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace VoidHuntersRevived.Game.Client.Common

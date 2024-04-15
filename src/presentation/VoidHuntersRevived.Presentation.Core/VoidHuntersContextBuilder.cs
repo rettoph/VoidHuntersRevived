@@ -1,6 +1,7 @@
 ﻿using Guppy.Engine;
 using System.Reflection;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Teams.Common.Descriptors;
 using VoidHuntersRevived.Game.Core;
 
 namespace VoidHuntersRevived.Presentation.Core
@@ -8,16 +9,11 @@ namespace VoidHuntersRevived.Presentation.Core
     public static class VoidHuntersContextBuilder
     {
         private static readonly Assembly[] GameLibraries = [
-            typeof(VhId).Assembly
+            typeof(VhId).Assembly,
+            typeof(TeamDescriptor).Assembly
         ];
 
-        public static GuppyContext Build()
-        {
-            return new GuppyContext(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name, null);
-        }
-        public static GuppyContext Build(string suffix)
-        {
-            return new GuppyContext(VoidHuntersRevivedGame.Company, VoidHuntersRevivedGame.Name + "." + suffix, null);
-        }
+        public static readonly GuppyContext ClientContext = new GuppyContext(VoidHuntersRevivedGame.Company, $"{VoidHuntersRevivedGame.Name}", GameLibraries);
+        public static readonly GuppyContext ServerContext = new GuppyContext(VoidHuntersRevivedGame.Company, $"{VoidHuntersRevivedGame.Name}.Server", GameLibraries);
     }
 }

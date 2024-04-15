@@ -1,14 +1,14 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.StateMachine.Common;
+using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Engine.Extensions.Autofac;
-using Guppy.Engine.Providers;
-using Guppy.Core.StateMachine;
 using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     [AutoLoad]
-    internal sealed class SimulationTypeGuppyStateProvider : StateProvider
+    internal sealed class SimulationTypeGuppyStateProvider : IStateProvider
     {
         public readonly ISimulation? _simulation;
 
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             }
         }
 
-        public override IEnumerable<IState> GetStates()
+        public IEnumerable<IState> GetStates()
         {
             yield return new State<Type>(StateKey<Type>.Create<ISimulation>(), _simulation?.GetType(), (x, y) => x?.IsAssignableTo(y) ?? false);
             yield return new State<SimulationType>(_simulation?.Type ?? SimulationType.None, (x, y) => x.HasFlag(y));

@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Messaging;
+﻿using Guppy.Core.Messaging.Common;
 using Guppy.Engine.Common;
 
 namespace VoidHuntersRevived.Domain.Common.Messages

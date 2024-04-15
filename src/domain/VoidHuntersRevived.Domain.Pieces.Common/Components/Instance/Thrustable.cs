@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Attributes;
+﻿using Guppy.Core.Serialization.Common.Attributes;
 using Svelto.ECS;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common.FixedPoint;

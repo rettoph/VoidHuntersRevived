@@ -2,8 +2,8 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
-using Guppy.Core.StateMachine;
-using Guppy.Core.StateMachine.Services;
+using Guppy.Core.StateMachine.Common;
+using Guppy.Core.StateMachine.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;

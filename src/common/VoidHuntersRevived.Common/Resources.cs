@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources;
+﻿using Guppy.Core.Resources.Common;
 using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Common

@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Resources;
-using Guppy.Core.Resources.Attributes;
+﻿using Guppy.Core.Resources.Common;
+using Guppy.Core.Serialization.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 

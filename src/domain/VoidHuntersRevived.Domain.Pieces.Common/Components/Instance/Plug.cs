@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Attributes;
+﻿using Guppy.Core.Serialization.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Common.Components;

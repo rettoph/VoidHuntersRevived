@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Application.Client
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                var game = GuppyEngine.Start(VoidHuntersContextBuilder.Build(), builder =>
+                var game = GuppyEngine.Start(VoidHuntersContextBuilder.ClientContext, builder =>
                 {
                     builder.RegisterMonoGame(this, _graphics, this.Content, this.Window);
                 }).StartGame();

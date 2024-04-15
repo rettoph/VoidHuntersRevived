@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Messaging;
+using Guppy.Core.Messaging.Common;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common;
