@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Network.Identity.Dtos;
+﻿using Guppy.Core.Network.Common.Dtos;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 

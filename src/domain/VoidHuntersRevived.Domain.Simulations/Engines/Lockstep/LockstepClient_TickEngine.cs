@@ -1,8 +1,8 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging.Common;
-using Guppy.Core.Network;
-using Guppy.Core.Network.Attributes;
-using Guppy.Core.Network.Enums;
+using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Attributes;
+using Guppy.Core.Network.Common.Enums;
 using Serilog;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;

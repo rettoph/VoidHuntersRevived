@@ -1,9 +1,8 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network;
-using Guppy.Core.Network.Identity;
-using Guppy.Core.Network.Identity.Claims;
-using Guppy.Core.Network.Identity.Services;
-using Guppy.Core.Network.Peers;
+using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Claims;
+using Guppy.Core.Network.Common.Peers;
+using Guppy.Core.Network.Common.Services;
 using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
@@ -42,7 +41,7 @@ namespace VoidHuntersRevived.Game.Server.Components.Guppy
             _server.Flush();
         }
 
-        private void HandleUserConnected(IUserService sender, User args)
+        private void HandleUserConnected(IUserService sender, IUser args)
         {
             _server.Groups.GetById(NetScopeIds.Game).Users.Add(args);
         }

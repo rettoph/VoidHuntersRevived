@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LiteNetLib", "LiteNetLib", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiteNetLib", "libraries\Guppy\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj", "{6DAF6112-1C79-4675-AF98-451FBD7FCCBA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Network", "libraries\Guppy\src\core\Guppy.Core.Network\Guppy.Core.Network.csproj", "{191CDCD2-A62B-4817-8F04-63972A82A8D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Network.Common", "libraries\Guppy\src\core\Guppy.Core.Network.Common\Guppy.Core.Network.Common.csproj", "{191CDCD2-A62B-4817-8F04-63972A82A8D3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Resources.Common", "libraries\Guppy\src\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj", "{42EE90CA-D494-40EE-A271-9D004D9F5EFE}"
 EndProject
@@ -177,7 +177,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.StateMachine", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Messaging", "libraries\Guppy\src\core\Guppy.Core.Messaging\Guppy.Core.Messaging.csproj", "{83BFA7EA-1ABF-49AD-BBC1-85AB62633021}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Core.Resources", "libraries\Guppy\src\core\Guppy.Core.Resources\Guppy.Core.Resources.csproj", "{2A427785-0878-46B2-90C5-3C10D9DF612B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Resources", "libraries\Guppy\src\core\Guppy.Core.Resources\Guppy.Core.Resources.csproj", "{2A427785-0878-46B2-90C5-3C10D9DF612B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Core.Network", "libraries\Guppy\src\core\Guppy.Core.Network\Guppy.Core.Network.csproj", "{06CE75B8-EE39-4586-BE69-63825EBB74E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1647,6 +1649,30 @@ Global
 		{2A427785-0878-46B2-90C5-3C10D9DF612B}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
 		{2A427785-0878-46B2-90C5-3C10D9DF612B}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
 		{2A427785-0878-46B2-90C5-3C10D9DF612B}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Debug|x64.Build.0 = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Debug|x86.Build.0 = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Release|x64.ActiveCfg = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Release|x64.Build.0 = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Release|x86.ActiveCfg = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.Release|x86.Build.0 = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionDebug|Any CPU.Build.0 = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionDebug|x64.ActiveCfg = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionDebug|x64.Build.0 = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionDebug|x86.ActiveCfg = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionDebug|x86.Build.0 = Debug|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionRelease|Any CPU.Build.0 = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionRelease|x64.ActiveCfg = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1729,6 +1755,7 @@ Global
 		{F0FD8B76-93C0-4960-A1E8-DC09592A8D35} = {DE7D4D34-38AE-4EAF-B4C1-58FBC663485F}
 		{83BFA7EA-1ABF-49AD-BBC1-85AB62633021} = {DE7D4D34-38AE-4EAF-B4C1-58FBC663485F}
 		{2A427785-0878-46B2-90C5-3C10D9DF612B} = {DE7D4D34-38AE-4EAF-B4C1-58FBC663485F}
+		{06CE75B8-EE39-4586-BE69-63825EBB74E0} = {DE7D4D34-38AE-4EAF-B4C1-58FBC663485F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}

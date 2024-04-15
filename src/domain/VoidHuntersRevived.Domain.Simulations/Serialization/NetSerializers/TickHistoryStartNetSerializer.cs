@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network;
+using Guppy.Core.Network.Common.Serialization;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 

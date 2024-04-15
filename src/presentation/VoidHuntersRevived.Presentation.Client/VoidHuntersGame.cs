@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Files;
+using Guppy.Core.Network.Extensions;
 using Guppy.Engine;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
@@ -59,7 +60,7 @@ namespace VoidHuntersRevived.Application.Client
             {
                 var game = GuppyEngine.Start(VoidHuntersContextBuilder.ClientContext, builder =>
                 {
-                    builder.RegisterMonoGame(this, _graphics, this.Content, this.Window);
+                    builder.RegisterMonoGame(this, _graphics, this.Content, this.Window).RegisterCoreNetworkServices();
                 }).StartGame();
 
                 game.Initialize();

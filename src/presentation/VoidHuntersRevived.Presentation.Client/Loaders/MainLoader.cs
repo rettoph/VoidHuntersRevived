@@ -4,7 +4,7 @@ using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Common.Enums;
 using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Files.Common.Services;
-using Guppy.Core.Network.Enums;
+using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Services;
 using Guppy.Engine.Common.Autofac;

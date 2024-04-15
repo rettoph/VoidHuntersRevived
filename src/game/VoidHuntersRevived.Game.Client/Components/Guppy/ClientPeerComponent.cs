@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network;
-using Guppy.Core.Network.Peers;
+using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Peers;
 using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;

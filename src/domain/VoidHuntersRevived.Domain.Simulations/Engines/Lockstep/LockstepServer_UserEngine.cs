@@ -1,11 +1,10 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network;
-using Guppy.Core.Network.Attributes;
-using Guppy.Core.Network.Enums;
-using Guppy.Core.Network.Extensions.Identity;
-using Guppy.Core.Network.Identity;
-using Guppy.Core.Network.Identity.Enums;
-using Guppy.Core.Network.Identity.Services;
+using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Attributes;
+using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Extensions;
+using Guppy.Core.Network.Common.Identity.Enums;
+using Guppy.Core.Network.Common.Services;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
@@ -33,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
             _scope.Users.OnUserJoined += this.HandleUserJoined;
         }
 
-        private void HandleUserJoined(INetScopeUserService sender, User args)
+        private void HandleUserJoined(INetScopeUserService sender, IUser args)
         {
             this.Simulation.Input(VhId.NewId(), new UserJoined()
             {

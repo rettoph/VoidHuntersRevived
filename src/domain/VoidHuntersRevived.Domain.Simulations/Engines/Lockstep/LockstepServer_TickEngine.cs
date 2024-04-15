@@ -1,8 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network;
-using Guppy.Core.Network.Attributes;
-using Guppy.Core.Network.Enums;
-using Guppy.Core.Network.Identity;
+using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Attributes;
+using Guppy.Core.Network.Common.Enums;
 using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -36,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(VhId id, UserJoined data)
         {
-            User? user = _group.Peer!.Users.UpdateOrCreate(data.UserDto);
+            IUser? user = _group.Peer!.Users.UpdateOrCreate(data.UserDto);
 
             if (user.NetPeer is null)
             {

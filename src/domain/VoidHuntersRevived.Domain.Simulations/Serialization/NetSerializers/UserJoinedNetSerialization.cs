@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network;
-using Guppy.Core.Network.Identity.Dtos;
-using Guppy.Core.Network.Services;
+using Guppy.Core.Network.Common.Dtos;
+using Guppy.Core.Network.Common.Serialization;
+using Guppy.Core.Network.Common.Services;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 

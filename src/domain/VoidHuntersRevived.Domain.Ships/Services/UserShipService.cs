@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Collections;
-using Guppy.Core.Network;
+using Guppy.Core.Network.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
