@@ -47,7 +47,7 @@ float4 MainPS(VertexShaderOutput input) : SV_TARGET
     {
         float4 accum = AccumTexture.Sample(AccumTextureSampler, input.TextureCoordinates);
 
-        if (accum.a > 2000)
+        if (accum.a > 2000 || HideTop == true)
         {
             // Alpha channel is:
             // (layers * 1000) + alpha;

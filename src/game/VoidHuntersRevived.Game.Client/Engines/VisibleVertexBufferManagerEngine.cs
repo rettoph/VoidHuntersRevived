@@ -156,7 +156,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             // Begin Pass Final
             _graphics.SetRenderTargets(targets_final);
-            _graphics.BlendState = BlendState.AlphaBlend;
+            _graphics.BlendState = _bs_final;
             _graphics.DepthStencilState = DepthStencilState.Default;
             _graphics.RasterizerState = RasterizerState.CullNone;
             _graphics.SamplerStates[0] = SamplerState.PointClamp;
