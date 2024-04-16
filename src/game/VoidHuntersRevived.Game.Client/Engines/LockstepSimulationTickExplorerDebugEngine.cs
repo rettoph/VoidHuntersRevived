@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common;
-using Guppy.Game.ImGui;
-using Guppy.Game.ImGui.Services;
+using Guppy.Game.ImGui.Common;
+using Guppy.Game.ImGui.Common.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void RenderDebugInfo(GameTime gameTime)
         {
-            var buttonStyle = _historyViewerEnabled ? Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonGreen;
+            var buttonStyle = _historyViewerEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen;
 
             using (_imgui.Apply(buttonStyle))
             {

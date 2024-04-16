@@ -9,7 +9,7 @@ using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Domain.Common.Constants;
+using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Server.Components.Guppy
 {
@@ -19,10 +19,10 @@ namespace VoidHuntersRevived.Game.Server.Components.Guppy
     [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
     internal class ServerPeerComponent : IGuppyComponent, IGuppyUpdateable
     {
-        public readonly IServerPeer _server;
-        public readonly INetScope _scope;
+        private readonly IServerPeer _server;
+        private readonly INetScope<ISimulation> _scope;
 
-        public ServerPeerComponent(IServerPeer server, INetScope scope)
+        public ServerPeerComponent(IServerPeer server, INetScope<ISimulation> scope)
         {
             _server = server;
             _scope = scope;
@@ -31,8 +31,6 @@ namespace VoidHuntersRevived.Game.Server.Components.Guppy
         public void Initialize(IGuppy guppy)
         {
             _server.Start(1337, Claim.Public("username", "System"));
-            _server.Groups.GetById(NetScopeIds.Game).Attach(_scope);
-
             _server.Users.OnUserConnected += HandleUserConnected;
         }
 
@@ -43,7 +41,7 @@ namespace VoidHuntersRevived.Game.Server.Components.Guppy
 
         private void HandleUserConnected(IUserService sender, IUser args)
         {
-            _server.Groups.GetById(NetScopeIds.Game).Users.Add(args);
+            _scope.Group.Users.Add(args);
         }
     }
 }

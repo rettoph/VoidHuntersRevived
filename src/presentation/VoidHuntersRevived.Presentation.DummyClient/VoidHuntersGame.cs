@@ -1,6 +1,6 @@
 ﻿using Guppy.Game.Common;
 using Guppy.Game.Extensions;
-using Guppy.Game.MonoGame;
+using Guppy.Game;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Game.Client;

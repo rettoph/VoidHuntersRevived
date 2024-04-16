@@ -10,6 +10,7 @@ using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
@@ -20,13 +21,13 @@ namespace VoidHuntersRevived.Game.Core.Engines
     internal sealed class UserEngine : BasicEngine, IGetReadyEngine,
         IEventEngine<UserJoined>
     {
-        private readonly INetGroup _scope;
+        private readonly INetScope<ISimulation> _scope;
         private readonly ITreeService _trees;
         private readonly ITeamService _teams;
         private readonly IEntityTypeService _entityTypes;
         private readonly IBlueprintService _blueprints;
 
-        public UserEngine(ITreeService trees, ITeamService teams, IEntityTypeService entityTypes, IBlueprintService blueprints, INetGroup scope)
+        public UserEngine(ITreeService trees, ITeamService teams, IEntityTypeService entityTypes, IBlueprintService blueprints, INetScope<ISimulation> scope)
         {
             _scope = scope;
             _trees = trees;

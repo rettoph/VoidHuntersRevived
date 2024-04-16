@@ -7,6 +7,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
@@ -17,10 +18,10 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         IEventEngine<SetUserShipUserId>
     {
         private readonly Map<EntityId, int> _shipVhIdUserIdMap;
-        private readonly INetGroup _netScope;
+        private readonly INetScope<ISimulation> _netScope;
         private readonly IEntityService _entities;
 
-        public UserShipService(INetGroup netScope, IEntityService entities)
+        public UserShipService(INetScope<ISimulation> netScope, IEntityService entities)
         {
             _netScope = netScope;
             _shipVhIdUserIdMap = new Map<EntityId, int>();
@@ -102,9 +103,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
         public bool TryGetCurrentUserShipId(out EntityId shipId)
         {
-            if (_netScope.Peer?.Users.Current is not null)
+            if (_netScope.Group.Peer?.Users.Current is not null)
             {
-                return this.TryGetShipId(_netScope.Peer.Users.Current.Id, out shipId);
+                return this.TryGetShipId(_netScope.Group.Peer.Users.Current.Id, out shipId);
             }
 
             shipId = default;

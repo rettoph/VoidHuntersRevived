@@ -1,10 +1,14 @@
-﻿using Guppy.Core.Files;
+﻿using Autofac;
+using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Extensions;
 using Guppy.Engine;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
+using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Domain.Common.Constants;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Game.Client;
 using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Presentation.Core;
@@ -60,17 +64,24 @@ namespace VoidHuntersRevived.Application.Client
             {
                 var game = GuppyEngine.Start(VoidHuntersContextBuilder.ClientContext, builder =>
                 {
-                    builder.RegisterMonoGame(this, _graphics, this.Content, this.Window).RegisterCoreNetworkServices();
+                    builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window)
+                    .RegisterCoreNetworkServices();
                 }).StartGame();
 
                 game.Initialize();
 
                 if (_internalServer)
                 {
-                    game.Guppies.Create<ServerGameGuppy>();
+                    game.Guppies.Create<ServerGameGuppy>(builder =>
+                    {
+                        builder.RegisterNetScope<ISimulation>(PeerType.Server, NetScopeIds.Game);
+                    });
                 }
 
-                game.Guppies.Create<MultiplayerGameGuppy>();
+                game.Guppies.Create<MultiplayerGameGuppy>(builder =>
+                {
+                    builder.RegisterNetScope<ISimulation>(PeerType.Client, NetScopeIds.Game);
+                });
                 //_engine.Guppies.Create<EditorGuppy>();
 
                 _game = game;

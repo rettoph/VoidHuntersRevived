@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
-using Guppy.Game.Input;
-using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Game.Input.Common;
+using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Svelto.ECS;

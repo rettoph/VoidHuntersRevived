@@ -2,7 +2,7 @@
 using Guppy.Core.Messaging.Common;
 using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
-using Guppy.Engine.Providers;
+using Guppy.Engine.Common.Providers;
 using VoidHuntersRevived.Domain.Common.Messages;
 
 namespace VoidHuntersRevived.Domain.GameComponents

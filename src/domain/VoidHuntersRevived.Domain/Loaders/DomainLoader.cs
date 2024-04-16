@@ -6,7 +6,6 @@ using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Serialization.Json;
 using Guppy.Engine.Common.Loaders;
-using Guppy.Engine.Extensions.Autofac;
 using Serilog;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;

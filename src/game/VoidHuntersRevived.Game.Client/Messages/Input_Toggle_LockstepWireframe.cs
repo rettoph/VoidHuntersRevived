@@ -1,4 +1,4 @@
-﻿using Guppy.Game.Input;
+﻿using Guppy.Game.Input.Common;
 using Guppy.Core.Messaging.Common;
 
 namespace VoidHuntersRevived.Game.Client.Messages

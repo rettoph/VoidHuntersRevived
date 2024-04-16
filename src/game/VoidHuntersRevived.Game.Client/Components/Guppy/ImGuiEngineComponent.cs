@@ -5,7 +5,7 @@ using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Enums;
-using Guppy.Game.ImGui;
+using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;

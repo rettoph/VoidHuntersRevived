@@ -14,16 +14,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     internal sealed class LockstepSimulation_Client : LockstepSimulation,
         IDisposable
     {
-        private readonly INetGroup _group;
+        private readonly INetScope<ISimulation> _netScope;
 
         internal readonly TickBuffer _ticks;
 
         public LockstepSimulation_Client(
-            INetGroup netScope,
+            INetScope<ISimulation> netScope,
             TickBuffer ticks,
             ILifetimeScope scope) : base(scope)
         {
-            _group = netScope;
+            _netScope = netScope;
             _ticks = ticks;
         }
 
@@ -81,11 +81,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public override void Input(VhId sourceId, IInputData data)
         {
-            _group.CreateMessage(new EventDto()
+            _netScope.CreateMessage(new EventDto()
             {
                 SourceId = sourceId,
                 Data = data
-            }).Enqueue();
+            });
         }
     }
 }

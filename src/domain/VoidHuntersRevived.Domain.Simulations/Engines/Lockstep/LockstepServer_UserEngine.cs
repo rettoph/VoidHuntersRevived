@@ -18,9 +18,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     [SimulationFilter(SimulationType.Lockstep)]
     internal class LockstepServer_UserEngine : BasicEngine
     {
-        private readonly INetGroup _scope;
+        private readonly INetScope _scope;
 
-        public LockstepServer_UserEngine(INetGroup scope)
+        public LockstepServer_UserEngine(INetScope<ISimulation> scope)
         {
             _scope = scope;
         }
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
         {
             base.Initialize(simulation);
 
-            _scope.Users.OnUserJoined += this.HandleUserJoined;
+            _scope.Group.Users.OnUserJoined += this.HandleUserJoined;
         }
 
         private void HandleUserJoined(INetScopeUserService sender, IUser args)

@@ -4,8 +4,8 @@ using Guppy.Engine.Common;
 using Guppy.Engine.Common.Enums;
 using Guppy.Engine.Common.Services;
 using Guppy.Game.Common.Enums;
-using Guppy.Game.ImGui;
-using Guppy.Game.ImGui.Services;
+using Guppy.Game.ImGui.Common;
+using Guppy.Game.ImGui.Common.Services;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using Svelto.ECS.Internal;
@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void RenderDebugInfo(GameTime gameTime)
         {
-            var buttonStyle = _entityViewerEnabled ? Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Resources.ImGuiStyles.ButtonGreen;
+            var buttonStyle = _entityViewerEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen;
 
             using (_imgui.Apply(buttonStyle))
             {

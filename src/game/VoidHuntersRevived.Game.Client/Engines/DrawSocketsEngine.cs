@@ -1,9 +1,8 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common.Enums;
-using Guppy.Game.MonoGame;
-using Guppy.Game.MonoGame.Primitives;
-using Guppy.Game.MonoGame.Utilities.Cameras;
+using Guppy.Game.MonoGame.Common;
+using Guppy.Game.MonoGame.Common.Primitives;
+using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
