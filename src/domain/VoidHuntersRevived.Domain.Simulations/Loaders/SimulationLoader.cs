@@ -8,7 +8,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
-using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
 [assembly: InternalsVisibleTo("VoidHuntersRevived.Domain.Client")]
@@ -28,8 +27,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
         private void ConfigureLockstep(ContainerBuilder services)
         {
-            services.RegisterType<LockstepSimulation_Server>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            services.RegisterType<LockstepSimulation_Client>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            // ISimulation instances are now registerd in scope builders wthin ISimulationService
+            // services.RegisterType<LockstepSimulation_Server>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            // services.RegisterType<LockstepSimulation_Client>().AsImplementedInterfaces().InstancePerLifetimeScope();
             services.RegisterType<TickBuffer>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
@@ -40,7 +40,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
 
         private void ConfigurePredictive(ContainerBuilder services)
         {
-            services.RegisterType<PredictiveSimulation>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            // ISimulation instances are now registerd in scope builders wthin ISimulationService
+            // services.RegisterType<PredictiveSimulation>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

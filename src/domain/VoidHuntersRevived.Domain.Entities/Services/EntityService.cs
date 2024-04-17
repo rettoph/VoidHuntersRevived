@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public void Initialize(IEngine[] engines)
+        public void Initialize(IEngineService engines)
         {
             _writer = new EntityWriter(this, _logger);
             _reader = new EntityReader(_scope.Resolve<IEntityTypeService>(), this, _logger);

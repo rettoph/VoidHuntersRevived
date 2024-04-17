@@ -15,9 +15,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             IEnumerable<IEntityType> imported = Resource<IEntityType>.GetAll().Select(x => x.Value);
 
-            _initializers = initializers.Instances.SelectMany(init => init.ExplicitEntityTypes).Concat(imported).Distinct().ToDictionary(
+            _initializers = initializers.SelectMany(init => init.ExplicitEntityTypes).Concat(imported).Distinct().ToDictionary(
                 keySelector: type => type,
-                elementSelector: type => (IEntityTypeInitializer)new EntityTypeInitializer(type, initializers.Instances.Where(init => init.ShouldInitialize(type))));
+                elementSelector: type => (IEntityTypeInitializer)new EntityTypeInitializer(type, initializers.Where(init => init.ShouldInitialize(type))));
         }
 
         public IEntityTypeInitializer Get(IEntityType type)

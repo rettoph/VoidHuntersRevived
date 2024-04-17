@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
         public abstract void Publish(EventDto @event);
         public abstract void Revert(EventDto @event);
 
-        public static Dictionary<Type, EventPublisher> BuildPublishers(IEngineService engines, ILogger logger)
+        public static void PopulatePublishers(IEngineService engines, ILogger logger, Dictionary<Type, EventPublisher> publishers)
         {
             Dictionary<Type, List<IEventEngine>> subscriptions = new();
             foreach (IEventEngine system in engines.OfType<IEventEngine>())
@@ -28,13 +28,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
                 }
             }
 
-            Dictionary<Type, EventPublisher> publishers = new();
             foreach ((Type type, List<IEventEngine> subscribers) in subscriptions)
             {
                 Type publisherType = typeof(EventPublisher<>).MakeGenericType(type);
                 EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, new object[] { logger, subscribers })!;
                 publishers.Add(type, publisher);
             }
+        }
+
+        public static Dictionary<Type, EventPublisher> BuildPublishers(IEngineService engines, ILogger logger)
+        {
+            Dictionary<Type, EventPublisher> publishers = new();
+
+            EventPublisher.PopulatePublishers(engines, logger, publishers);
 
             return publishers;
         }

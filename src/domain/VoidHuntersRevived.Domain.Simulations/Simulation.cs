@@ -1,6 +1,4 @@
 ﻿using Autofac;
-using Guppy.Engine.Common;
-using Guppy.Engine.Extensions.Autofac;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Serilog;
@@ -30,11 +28,11 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly Frame _frame;
         private readonly FrameEnd _frameEnd;
 
-        protected readonly ILogger logger;
+        protected ILogger logger { get; private set; }
+        protected IEngineService engines { get; private set; }
 
         public readonly SimulationType Type;
-        public readonly IEngineService Engines;
-        public readonly ILifetimeScope Scope;
+        public ILifetimeScope Scope { get; private set; }
 
         public VhId Id { get; }
         public Step CurrentStep { get; private set; }
@@ -45,25 +43,18 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected Simulation(SimulationType type, ILifetimeScope scope)
         {
             _enqueued = new Queue<EventDto>();
+            _publishers = new Dictionary<Type, EventPublisher>();
 
-            this.Id = HashBuilder<Simulation, ulong, SimulationType>.Instance.Calculate(scope.Resolve<IGuppy>().Id, type);
+            this.Id = HashBuilder<Simulation, Guid, SimulationType>.Instance.Calculate(Guid.NewGuid(), type);
             this.Type = type;
+            this.Scope = scope;
 
-            this.Scope = scope.BeginGuppyScope(nameof(Simulation), builder =>
-            {
-                builder.RegisterInstance<ISimulation>(this);
-            });
+            this.logger = null!;
+            this.engines = null!;
 
-            // Pass the current scoped netscope to the new child scope
-            this.Engines = this.Scope.Resolve<IEngineService>();
-
-            // Build an event publisher dictionary
-            this.logger = this.Scope.Resolve<ILogger>();
-            this._publishers = EventPublisher.BuildPublishers(this.Engines, this.logger);
-
-            _frameStartEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<FrameStart, DrawSequence>(DrawSequence.Draw);
-            _frameEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<Frame, DrawSequence>(DrawSequence.Draw);
-            _frameEndEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<FrameEnd, DrawSequence>(DrawSequence.Draw, true);
+            _frameStartEnginesGroup = null!;
+            _frameEnginesGroup = null!;
+            _frameEndEnginesGroup = null!;
 
             this.CurrentStep = new Step();
 
@@ -74,14 +65,23 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Initialize(ISimulationService simulations)
         {
-            this.Engines.Initialize();
+            this.logger = this.Scope.Resolve<ILogger>();
+            this.engines = this.Scope.Resolve<IEngineService>();
 
-            this.Engines.InitializeSimulationEngines(this);
+            EventPublisher.PopulatePublishers(this.engines, this.logger, _publishers);
+
+            this.engines.Initialize();
+
+            this.engines.InitializeSimulationEngines(this);
+
+            _frameStartEnginesGroup = this.engines.All().CreateSequencedStepEnginesGroup<FrameStart, DrawSequence>(DrawSequence.Draw);
+            _frameEnginesGroup = this.engines.All().CreateSequencedStepEnginesGroup<Frame, DrawSequence>(DrawSequence.Draw);
+            _frameEndEnginesGroup = this.engines.All().CreateSequencedStepEnginesGroup<FrameEnd, DrawSequence>(DrawSequence.Draw, true);
         }
 
         public virtual void Dispose()
         {
-            this.Engines.Dispose();
+            this.engines.Dispose();
         }
 
         public virtual void Draw(GameTime realTime)
@@ -107,7 +107,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
         protected virtual void DoStep(Step step)
         {
-            this.Engines.Step(step);
+            this.engines.Step(step);
             while (_enqueued.TryDequeue(out EventDto? enqueued))
             {
                 this.Publish(enqueued);

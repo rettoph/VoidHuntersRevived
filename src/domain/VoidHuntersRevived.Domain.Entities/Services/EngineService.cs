@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly EnginesRoot _enginesRoot;
         private readonly SimpleEntitiesSubmissionScheduler _scheduler;
         private readonly IMagicBrokerService _brokers;
-        private IEngine[] _engines;
+        private IFiltered<IEngine> _engines;
         private IStepGroupEngine<Step> _stepEngines;
 
         public EnginesRoot Root => _enginesRoot;
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _enginesRoot = enginesRoot;
             _scheduler = scheduler;
             _stepEngines = null!;
-            _engines = engines.Instances.ToArray();
+            _engines = engines;
         }
 
         public void Initialize()
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                 if (engine is IEngineEngine engineEngine)
                 {
-                    engineEngine.Initialize(_engines);
+                    engineEngine.Initialize(this);
                 }
             }
 
@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public T Get<T>()
         {
-            return (T)_engines.First(x => x is T);
+            return (T)_engines.Single(x => x is T);
         }
 
         public IEnumerable<IEngine> All()

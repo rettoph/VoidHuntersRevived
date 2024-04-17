@@ -60,16 +60,16 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             _serializers = serializers.GetComponentSerializers(_descriptor);
         }
 
-        public void Initialize(IEngine[] engines)
+        public void Initialize(IEngineService engines)
         {
             foreach (Type componentType in _descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()))
             {
-                if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engines, out var invoker))
+                if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engines.All(), out var invoker))
                 {
                     _onDespawnEngineInvokers.Add(invoker);
                 }
 
-                if (ComponentEngineInvoker.Create(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), componentType, engines, out invoker))
+                if (ComponentEngineInvoker.Create(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), componentType, engines.All(), out invoker))
                 {
                     _onSpawnEngineInvokers.Add(invoker);
                 }

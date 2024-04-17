@@ -1,11 +1,13 @@
 ﻿using Autofac;
-using Guppy.Core.Common;
-using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Enums;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Predictive;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
@@ -13,7 +15,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
     {
         private bool _configured;
         private bool _initialized;
-        private readonly IBus _bus;
         private readonly ILifetimeScope _scope;
         private readonly IDictionary<SimulationType, ISimulation> _simulations;
         private readonly IList<SimulationType> _types;
@@ -29,9 +30,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public ISimulation this[SimulationType type] => _simulations[type];
 
-        public SimulationService(IBus bus, ILifetimeScope scope)
+        public SimulationService(ILifetimeScope scope)
         {
-            _bus = bus;
             _scope = scope;
             _simulations = new Dictionary<SimulationType, ISimulation>();
             _list = new List<ISimulation>();
@@ -51,19 +51,49 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
             this.Flags = simulationTypeFlags;
 
-            IEnumerable<ISimulation> simulations = _scope.Resolve<IFiltered<ISimulation>>().Instances;
-            foreach (ISimulation simulation in simulations)
+            INetScope<ISimulation> netScope = _scope.Resolve<INetScope<ISimulation>>();
+            List<Type> simulationTypes = new List<Type>();
+            if (netScope.Group.Peer.Type == PeerType.Client && this.Flags.HasFlag(SimulationType.Predictive))
             {
-                if (!this.Flags.HasFlag(simulation.Type))
+                simulationTypes.Add(typeof(PredictiveSimulation));
+            }
+            if (netScope.Group.Peer.Type == PeerType.Client && this.Flags.HasFlag(SimulationType.Lockstep))
+            {
+                simulationTypes.Add(typeof(LockstepSimulation_Client));
+            }
+            if (netScope.Group.Peer.Type == PeerType.Server && this.Flags.HasFlag(SimulationType.Lockstep))
+            {
+                simulationTypes.Add(typeof(LockstepSimulation_Server));
+            }
+
+            foreach (Type simulationType in simulationTypes)
+            {
+                ISimulation simulation = _scope.BeginLifetimeScope(nameof(Simulation), builder =>
                 {
-                    continue;
-                }
+                    builder.RegisterInstance(this).As<ISimulationService>();
+                    builder.RegisterType(simulationType).AsSelf().AsImplementedInterfaces().SingleInstance();
+                    builder.RegisterNetScope<ISimulation>(netScope.Group.Peer.Type, netScope.Group.Id);
+                }).Resolve<ISimulation>();
 
                 _simulations.Add(simulation.Type, simulation);
                 _list.Add(simulation);
                 _types.Add(simulation.Type);
                 _reversed.Insert(0, simulation);
             }
+
+            // IEnumerable<ISimulation> simulations = _scope.Resolve<IFiltered<ISimulation>>().Instances;
+            // foreach (ISimulation simulation in simulations)
+            // {
+            //     if (!this.Flags.HasFlag(simulation.Type))
+            //     {
+            //         continue;
+            //     }
+            // 
+            //     _simulations.Add(simulation.Type, simulation);
+            //     _list.Add(simulation);
+            //     _types.Add(simulation.Type);
+            //     _reversed.Insert(0, simulation);
+            // }
 
             _configured = true;
         }

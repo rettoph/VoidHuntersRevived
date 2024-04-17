@@ -111,9 +111,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
         }
 
-        public void Initialize(IEngine[] engines)
+        public void Initialize(IEngineService engines)
         {
-            _stepEngines = engines.CreateSequencedStepEnginesGroup<IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>, DrawSequence>(DrawSequence.Draw);
+            _stepEngines = engines.All().CreateSequencedStepEnginesGroup<IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>, DrawSequence>(DrawSequence.Draw);
         }
 
         public void Step(in GameTime param)

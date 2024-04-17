@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public ComponentSerializerService(IFiltered<ComponentSerializer> serializers)
         {
-            _serializers = serializers.Instances.ToDictionary(x => x.Type, x => x);
+            _serializers = serializers.ToDictionary(x => x.Type, x => x);
         }
 
         public FasterList<ComponentSerializer> GetComponentSerializers(IEntityDescriptor descriptor)

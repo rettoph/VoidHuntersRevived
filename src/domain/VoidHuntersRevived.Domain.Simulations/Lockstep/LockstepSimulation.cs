@@ -10,6 +10,7 @@ using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
@@ -17,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     [GuppyFilter<IVoidHuntersGameGuppy>()]
     internal abstract class LockstepSimulation : Simulation, ILockstepSimulation
     {
-        private readonly IStepGroupEngine<Tick> _tickStepEnginesGroup;
+        private IStepGroupEngine<Tick> _tickStepEnginesGroup;
         private readonly List<Tick> _history;
 
         internal int stepsPerTick;
@@ -36,8 +37,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public LockstepSimulation(ILifetimeScope scope) : base(SimulationType.Lockstep, scope)
         {
-            _tickStepEnginesGroup = this.Engines.All().CreateStepEnginesGroup<Tick>();
             _history = new List<Tick>();
+            _tickStepEnginesGroup = null!;
 
             this.stepsPerTick = Settings.StepsPerTick.Value;
             this.stepInterval = Settings.StepInterval.Value;
@@ -51,6 +52,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             };
 
             this.CurrentTick = Tick.First(Array.Empty<EventDto>());
+        }
+
+        public override void Initialize(ISimulationService simulations)
+        {
+            base.Initialize(simulations);
+
+            _tickStepEnginesGroup = this.engines.All().CreateStepEnginesGroup<Tick>();
         }
 
         public override void Update(GameTime realTime)

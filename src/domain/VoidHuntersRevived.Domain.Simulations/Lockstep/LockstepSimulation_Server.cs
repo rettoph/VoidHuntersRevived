@@ -22,9 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         private readonly IBus _bus;
         private readonly List<EventDto> _inputs;
 
-        public LockstepSimulation_Server(
-            ILifetimeScope scope,
-            IBus bus) : base(scope)
+        public LockstepSimulation_Server(IBus bus, ILifetimeScope scope) : base(scope)
         {
             Fix64 stepInterval = Settings.StepInterval.Value;
 
