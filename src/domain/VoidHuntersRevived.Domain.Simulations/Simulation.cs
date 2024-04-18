@@ -82,6 +82,8 @@ namespace VoidHuntersRevived.Domain.Simulations
         public virtual void Dispose()
         {
             this.engines.Dispose();
+
+            this.Scope.Dispose();
         }
 
         public virtual void Draw(GameTime realTime)

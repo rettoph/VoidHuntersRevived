@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common
 {
-    public interface ISimulation
+    public interface ISimulation : IDisposable
     {
         VhId Id { get; }
         SimulationType Type { get; }

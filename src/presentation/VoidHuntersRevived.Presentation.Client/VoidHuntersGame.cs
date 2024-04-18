@@ -144,6 +144,11 @@ namespace VoidHuntersRevived.Application.Client
         {
             base.Draw(gameTime);
 
+            if (_game is null)
+            {
+                return;
+            }
+
             GraphicsDevice.Clear(Color.Black);
 
             _game?.Draw(gameTime);

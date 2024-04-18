@@ -11,7 +11,7 @@ using VoidHuntersRevived.Domain.Simulations.Predictive;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    internal sealed partial class SimulationService : ISimulationService
+    internal sealed partial class SimulationService : ISimulationService, IDisposable
     {
         private bool _configured;
         private bool _initialized;
@@ -116,6 +116,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
 
             _initialized = true;
+        }
+
+        public void Dispose()
+        {
+            foreach (ISimulation simulation in _simulations.Values)
+            {
+                simulation.Dispose();
+            }
         }
 
         public ISimulation First(params SimulationType[] types)

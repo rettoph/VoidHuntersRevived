@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.GameComponents
         public void Process(in Guid messageId, Launch message)
         {
             _guppies.Create(message.GuppyType);
-            _guppy.Dispose();
+            _guppies.Destroy(_guppy);
         }
     }
 }
