@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Game.Common.Services;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common;
@@ -66,14 +67,29 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 simulationTypes.Add(typeof(LockstepSimulation_Server));
             }
 
+            //foreach (Type simulationType in simulationTypes)
+            //{
+            //    ISimulation simulation = _scope.BeginLifetimeScope(nameof(Simulation), builder =>
+            //    {
+            //        builder.RegisterInstance(this).As<ISimulationService>();
+            //        builder.RegisterType(simulationType).AsSelf().AsImplementedInterfaces().SingleInstance();
+            //        builder.RegisterNetScope<ISimulation>(netScope.Group.Peer.Type, netScope.Group.Id);
+            //    }).Resolve<ISimulation>();
+            //
+            //    _simulations.Add(simulation.Type, simulation);
+            //    _list.Add(simulation);
+            //    _types.Add(simulation.Type);
+            //    _reversed.Insert(0, simulation);
+            //}
+
+            ISceneService scenes = _scope.Resolve<ISceneService>();
             foreach (Type simulationType in simulationTypes)
             {
-                ISimulation simulation = _scope.BeginLifetimeScope(nameof(Simulation), builder =>
+                ISimulation simulation = (ISimulation)scenes.Create(simulationType, builder =>
                 {
                     builder.RegisterInstance(this).As<ISimulationService>();
-                    builder.RegisterType(simulationType).AsSelf().AsImplementedInterfaces().SingleInstance();
                     builder.RegisterNetScope<ISimulation>(netScope.Group.Peer.Type, netScope.Group.Id);
-                }).Resolve<ISimulation>();
+                });
 
                 _simulations.Add(simulation.Type, simulation);
                 _list.Add(simulation);

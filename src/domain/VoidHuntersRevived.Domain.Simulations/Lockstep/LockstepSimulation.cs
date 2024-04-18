@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Attributes;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
@@ -15,7 +15,7 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
-    [GuppyFilter<IVoidHuntersGameGuppy>()]
+    [SceneFilter<IVoidHuntersGameScene>()]
     internal abstract class LockstepSimulation : Simulation, ILockstepSimulation
     {
         private IStepGroupEngine<Tick> _tickStepEnginesGroup;

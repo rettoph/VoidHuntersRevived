@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Game;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Serilog;
@@ -15,7 +16,7 @@ using VoidHuntersRevived.Domain.Simulations.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    public abstract partial class Simulation : ISimulation, IDisposable
+    public abstract partial class Simulation : Scene, ISimulation, IDisposable
     {
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
@@ -68,11 +69,10 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.logger = this.Scope.Resolve<ILogger>();
             this.engines = this.Scope.Resolve<IEngineService>();
 
-            EventPublisher.PopulatePublishers(this.engines, this.logger, _publishers);
-
             this.engines.Initialize();
-
             this.engines.InitializeSimulationEngines(this);
+
+            EventPublisher.PopulatePublishers(this.engines, this.logger, _publishers);
 
             _frameStartEnginesGroup = this.engines.All().CreateSequencedStepEnginesGroup<FrameStart, DrawSequence>(DrawSequence.Draw);
             _frameEnginesGroup = this.engines.All().CreateSequencedStepEnginesGroup<Frame, DrawSequence>(DrawSequence.Draw);
@@ -86,8 +86,10 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Scope.Dispose();
         }
 
-        public virtual void Draw(GameTime realTime)
+        public override void Draw(GameTime realTime)
         {
+            base.Update(realTime);
+
             _frameStart.GameTime = realTime;
             _frameStartEnginesGroup.Step(_frameStart);
 
@@ -98,8 +100,10 @@ namespace VoidHuntersRevived.Domain.Simulations
             _frameEndEnginesGroup.Step(_frameEnd);
         }
 
-        public virtual void Update(GameTime realTime)
+        public override void Update(GameTime realTime)
         {
+            base.Update(realTime);
+
             while (this.TryGetNextStep(realTime, out Step? step))
             {
                 this.DoStep(step);

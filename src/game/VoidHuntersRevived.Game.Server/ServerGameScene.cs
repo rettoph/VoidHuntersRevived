@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Game.Server
 {
-    public sealed class ServerGameGuppy : VoidHuntersGameGuppy
+    public sealed class ServerGameScene : VoidHuntersGameScene
     {
     }
 }

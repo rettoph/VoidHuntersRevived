@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Game.Client
 {
-    public class LocalGameGuppy : VoidHuntersGameGuppy
+    public class LocalGameScene : VoidHuntersGameScene
     {
     }
 }

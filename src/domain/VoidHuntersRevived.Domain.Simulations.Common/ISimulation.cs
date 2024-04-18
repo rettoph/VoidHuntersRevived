@@ -1,21 +1,16 @@
 ﻿using Autofac;
-using Microsoft.Xna.Framework;
+using Guppy.Game.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common
 {
-    public interface ISimulation : IDisposable
+    public interface ISimulation : IScene, IDisposable
     {
-        VhId Id { get; }
         SimulationType Type { get; }
         ILifetimeScope Scope { get; }
 
         void Initialize(ISimulationService simulations);
-
-        void Draw(GameTime realTime);
-
-        void Update(GameTime realTime);
 
         /// <summary>
         /// Publish an event

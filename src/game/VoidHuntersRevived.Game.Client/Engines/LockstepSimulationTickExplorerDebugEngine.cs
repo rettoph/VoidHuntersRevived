@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common;
+using Guppy.Game.Common;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Services;
 using Microsoft.Xna.Framework;
@@ -19,18 +19,18 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private readonly IImGui _imgui;
         private readonly IImGuiObjectExplorerService _objectExplorer;
-        private readonly IGuppy _guppy;
+        private readonly IScene _scene;
         private bool _historyViewerEnabled;
         private string _filter;
 
         public LockstepSimulationTickExplorerDebugEngine(
             IImGui imgui,
             IImGuiObjectExplorerService objectExplorer,
-            IGuppy guppy)
+            IScene guppy)
         {
             _imgui = imgui;
             _objectExplorer = objectExplorer;
-            _guppy = guppy;
+            _scene = guppy;
             _filter = string.Empty;
         }
 
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _imgui.Begin($"Tick History Explorer - {this.Simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _historyViewerEnabled);
+            _imgui.Begin($"Tick History Explorer - {this.Simulation.Type}, {_scene.Name} {_scene.Id}", ref _historyViewerEnabled);
             _imgui.InputText("Filter", ref _filter, 255);
 
             using (_imgui.ApplyID(nameof(ILockstepSimulation.History)))

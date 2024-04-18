@@ -1,9 +1,8 @@
 ﻿using Autofac;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Extensions;
-using Guppy.Engine;
+using Guppy.Game;
 using Guppy.Game.Common;
-using Guppy.Game.Common.Extensions;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +17,7 @@ namespace VoidHuntersRevived.Application.Client
     public sealed class VoidHuntersGame : Microsoft.Xna.Framework.Game
     {
         private readonly GraphicsDeviceManager _graphics;
-        private IGame? _game;
+        private IGameEngine? _engine;
         private readonly bool _internalServer;
 
 
@@ -62,28 +61,26 @@ namespace VoidHuntersRevived.Application.Client
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                var game = GuppyEngine.Start(VoidHuntersContextBuilder.ClientContext, builder =>
+                var engine = new GameEngine(VoidHuntersContextBuilder.ClientContext, builder =>
                 {
                     builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window).RegisterCoreNetworkServices();
-                }).StartGame();
-
-                game.Initialize();
+                }).Start();
 
                 if (_internalServer)
                 {
-                    game.Guppies.Create<ServerGameGuppy>(builder =>
+                    engine.Scenes.Create<ServerGameScene>(builder =>
                     {
                         builder.RegisterNetScope<ISimulation>(PeerType.Server, NetScopeIds.Game);
                     });
                 }
 
-                game.Guppies.Create<MultiplayerGameGuppy>(builder =>
+                engine.Scenes.Create<MultiplayerGameScene>(builder =>
                 {
                     builder.RegisterNetScope<ISimulation>(PeerType.Client, NetScopeIds.Game);
                 });
                 //_engine.Guppies.Create<EditorGuppy>();
 
-                _game = game;
+                _engine = engine;
             });
 
         }
@@ -104,21 +101,21 @@ namespace VoidHuntersRevived.Application.Client
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            _game?.Dispose();
+            _engine?.Dispose();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
-            _game?.Dispose();
+            _engine?.Dispose();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
 
-            _game?.Dispose();
+            _engine?.Dispose();
 
             Environment.Exit(0);
         }
@@ -133,7 +130,7 @@ namespace VoidHuntersRevived.Application.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _game?.Update(gameTime);
+            _engine?.Update(gameTime);
         }
 
         /// <summary>
@@ -144,14 +141,14 @@ namespace VoidHuntersRevived.Application.Client
         {
             base.Draw(gameTime);
 
-            if (_game is null)
+            if (_engine is null)
             {
                 return;
             }
 
             GraphicsDevice.Clear(Color.Black);
 
-            _game?.Draw(gameTime);
+            _engine?.Draw(gameTime);
         }
     }
 }

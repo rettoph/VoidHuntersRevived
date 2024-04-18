@@ -3,21 +3,21 @@ using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
-using Guppy.Engine.Common;
-using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Attributes;
+using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Simulations.Common;
 
-namespace VoidHuntersRevived.Game.Server.Components.Guppy
+namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
     [AutoLoad]
-    [GuppyFilter<ServerGameGuppy>]
+    [SceneFilter<ServerGameScene>]
     [Sequence<InitializeSequence>(InitializeSequence.Setup)]
     [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
-    internal class ServerPeerComponent : IGuppyComponent, IGuppyUpdateable
+    internal class ServerPeerComponent : SceneComponent, IGuppyUpdateable
     {
         private readonly IServerPeer _server;
         private readonly INetScope<ISimulation> _scope;
@@ -28,8 +28,10 @@ namespace VoidHuntersRevived.Game.Server.Components.Guppy
             _scope = scope;
         }
 
-        public void Initialize(IGuppy guppy)
+        protected override void Initialize()
         {
+            base.Initialize();
+
             _server.Start(1337, Claim.Public("username", "System"));
             _server.Users.OnUserConnected += HandleUserConnected;
         }

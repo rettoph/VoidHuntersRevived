@@ -1,21 +1,21 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common;
-using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Attributes;
+using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Components.Guppy
 {
     [AutoLoad]
-    [GuppyFilter<GameGuppy>]
+    [SceneFilter<IVoidHuntersGameScene>]
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
     [Sequence<UpdateSequence>(UpdateSequence.Update)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal class SimulationComponent : IGuppyComponent, IGuppyUpdateable, IGuppyDrawable
+    internal class SimulationComponent : SceneComponent, IGuppyUpdateable, IGuppyDrawable
     {
         private readonly ISimulationService _simulations;
 
@@ -24,19 +24,21 @@ namespace VoidHuntersRevived.Domain.Simulations.Components.Guppy
             _simulations = simulations;
         }
 
-        public void Initialize(IGuppy guppy)
+        protected override void Initialize()
         {
+            base.Initialize();
+
             _simulations.Initialize();
         }
 
         public void Update(GameTime gameTime)
         {
-            _simulations.Update(gameTime);
+            // _simulations.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime)
         {
-            _simulations.Draw(gameTime);
+            // _simulations.Draw(gameTime);
         }
     }
 }

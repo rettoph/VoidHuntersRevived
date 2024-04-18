@@ -1,14 +1,13 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging.Common;
-using Guppy.Engine.Common;
-using Guppy.Engine.Common.Components;
+using Guppy.Game.Common.Components;
 using Serilog;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Components.Guppy
 {
     [AutoLoad]
-    internal class InvokeGarbageCollectionComponent : IGuppyComponent,
+    internal class InvokeGarbageCollectionComponent : SceneComponent,
         ISubscriber<Input_Invoke_Garbage_Collection>
     {
         private ILogger _logger;
@@ -18,11 +17,6 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
         public InvokeGarbageCollectionComponent(ILogger logger)
         {
             _logger = logger;
-        }
-
-        public void Initialize(IGuppy guppy)
-        {
-            //
         }
 
         public void Process(in Guid messageId, Input_Invoke_Garbage_Collection message)

@@ -1,9 +1,10 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions;
-using Guppy.Engine.Common;
-using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
+using Guppy.Game.Common;
+using Guppy.Game.Common.Attributes;
+using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
 using Guppy.Game.ImGui.Common;
@@ -17,10 +18,10 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 namespace VoidHuntersRevived.Game.Client.Components.Guppy
 {
     [AutoLoad]
-    [GuppyFilter<IVoidHuntersGameGuppy>]
+    [SceneFilter<IVoidHuntersGameScene>]
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class DebugEngineComponent : GuppyComponent, IDebugComponent
+    internal class DebugEngineComponent : SceneComponent, IDebugComponent
     {
         private class DebugEngineGroupRenderer
         {
@@ -65,23 +66,22 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
         private readonly ISimulationService _simulations;
         private (ISimulation, Dictionary<string, DebugEngineGroupRenderer>)[] _data;
         private readonly IImGui _imgui;
-        private IGuppy _guppy;
+        private readonly IScene _scene;
 
         public DebugEngineComponent(
+            IScene scene,
             IImGui imgui,
             ISimulationService simulations)
         {
-            _guppy = null!;
+            _scene = scene;
             _imgui = imgui;
             _simulations = simulations;
             _data = Array.Empty<(ISimulation, Dictionary<string, DebugEngineGroupRenderer>)>();
         }
 
-        public override void Initialize(IGuppy guppy)
+        protected override void Initialize()
         {
-            base.Initialize(guppy);
-
-            _guppy = guppy;
+            base.Initialize();
 
             _data = _simulations.Instances.Select(x => (
                 (x as ISimulation)!,
@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
 
         public void RenderDebugInfo(GameTime gameTime)
         {
-            _imgui.PushID($"#Debugger#{_guppy.ToString()}");
+            _imgui.PushID($"#Debugger#{_scene.ToString()}");
             foreach (var (simulation, renderers) in _data)
             {
                 _imgui.BeginChild($"{simulation.Type}", Vector2.Zero, ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AutoResizeY);

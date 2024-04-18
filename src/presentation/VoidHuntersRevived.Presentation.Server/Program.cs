@@ -21,7 +21,7 @@ AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
     game.Dispose();
 });
 
-game.Guppies.Create<ServerGameGuppy>(builder =>
+game.Guppies.Create<ServerGameScene>(builder =>
 {
     builder.RegisterNetScope<ISimulation>(PeerType.Server, NetScopeIds.Game);
 });

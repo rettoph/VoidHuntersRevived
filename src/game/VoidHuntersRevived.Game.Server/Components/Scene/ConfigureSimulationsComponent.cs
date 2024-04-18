@@ -1,16 +1,16 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common;
-using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
+using Guppy.Game.Common.Attributes;
+using Guppy.Game.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Server.Guppy
 {
     [AutoLoad]
-    [GuppyFilter<ServerGameGuppy>]
+    [SceneFilter<ServerGameScene>]
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
-    internal class ConfigureSimulationsComponent : IGuppyComponent
+    internal class ConfigureSimulationsComponent : SceneComponent
     {
         private readonly ISimulationService _simluations;
 
@@ -19,8 +19,10 @@ namespace VoidHuntersRevived.Game.Server.Guppy
             _simluations = simluations;
         }
 
-        public void Initialize(IGuppy guppy)
+        protected override void Initialize()
         {
+            base.Initialize();
+
             _simluations.Configure(SimulationType.Lockstep);
         }
     }

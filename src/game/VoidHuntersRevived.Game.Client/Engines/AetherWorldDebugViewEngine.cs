@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common;
+using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Services;
@@ -12,7 +12,6 @@ using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Game.Client.Common;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
@@ -25,7 +24,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public string name { get; } = nameof(AetherWorldDebugViewEngine);
 
         private readonly ISimulation _simulation;
-        private readonly IGuppy _guppy;
+        private readonly IScene _scene;
         private readonly IImGui _imgui;
         private readonly IImGuiObjectExplorerService _objectExplorer;
         private readonly World _world;
@@ -37,7 +36,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public AetherWorldDebugViewEngine(
             ISimulation simulation,
-            IGuppy guppy,
+            IScene scene,
             IImGui imgui,
             IImGuiObjectExplorerService objectExplorer,
             World world,
@@ -45,13 +44,13 @@ namespace VoidHuntersRevived.Game.Client.Engines
             Camera2D camera)
         {
             _simulation = simulation;
-            _guppy = guppy;
+            _scene = scene;
             _imgui = imgui;
             _objectExplorer = objectExplorer;
             _world = world;
             _debug = new DebugView(world);
             _camera = camera;
-            _debug.LoadContent(graphics, Resources.SpriteFonts.Default.Value);
+            _debug.LoadContent(graphics, Common.Resources.SpriteFonts.Default.Value);
             _filter = string.Empty;
         }
 
@@ -72,7 +71,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _imgui.Begin($"Aether Explorer - {_simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _aetherExplorerEnabled);
+            _imgui.Begin($"Aether Explorer - {_simulation.Type}, {_scene.Name} {_scene.Id}", ref _aetherExplorerEnabled);
 
             _imgui.InputText("Filter", ref _filter, 255);
 

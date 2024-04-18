@@ -5,16 +5,16 @@ using Guppy.Core.Network.Common.Peers;
 
 namespace VoidHuntersRevived.Game.Client
 {
-    public class MultiplayerGameGuppy : LocalGameGuppy
+    public class MultiplayerGameScene : LocalGameScene
     {
         public readonly IClientPeer Client;
 
-        public MultiplayerGameGuppy(IClientPeer client)
+        public MultiplayerGameScene(IClientPeer client)
         {
             this.Client = client;
         }
 
-        public override void Initialize(ILifetimeScope scope)
+        protected override void Initialize(ILifetimeScope scope)
         {
             base.Initialize(scope);
 

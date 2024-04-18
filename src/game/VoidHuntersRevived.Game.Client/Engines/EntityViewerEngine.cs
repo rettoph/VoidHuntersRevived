@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common;
 using Guppy.Engine.Common.Enums;
 using Guppy.Engine.Common.Services;
+using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Services;
@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         public string? Group => nameof(IEntityService);
 
-        private readonly IGuppy _guppy;
+        private readonly IScene _scene;
         private readonly ISimulation _simulation;
         private readonly IEntityService _entities;
         private readonly IEntityTypeService _entityTypes;
@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private Vector4 _greenBackground = Color.DarkGreen.ToVector4();
 
         public EntityViewerEngine(
-            IGuppy guppy,
+            IScene scene,
             ISimulation simulation,
             IEntityService entities,
             IEntityTypeService entityTypes,
@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             IImGui imgui)
         {
             _simulation = simulation;
-            _guppy = guppy;
+            _scene = scene;
             _entities = entities;
             _entityTypes = entityTypes;
             _entityDescriptors = entityDescriptors;
@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _imgui.Begin($"Entity Viewer - {_simulation.Type}, {_guppy.Name} {_guppy.Id}", ref _entityViewerEnabled);
+            _imgui.Begin($"Entity Viewer - {_simulation.Type}, {_scene.Name} {_scene.Id}", ref _entityViewerEnabled);
 
             _imgui.InputText("Filter", ref _filter, 255);
 

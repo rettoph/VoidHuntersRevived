@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common.Autofac;
 using Guppy.Engine.Common.Loaders;
 using LiteNetLib;
 using System.Runtime.CompilerServices;
@@ -19,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<SimulationService>().As<ISimulationService>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
+            services.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
 
             this.ConfigureLockstep(services);
             this.ConfigurePredictive(services);
@@ -30,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
             // ISimulation instances are now registerd in scope builders wthin ISimulationService
             // services.RegisterType<LockstepSimulation_Server>().AsImplementedInterfaces().InstancePerLifetimeScope();
             // services.RegisterType<LockstepSimulation_Client>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            services.RegisterType<TickBuffer>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
+            services.RegisterType<TickBuffer>().InstancePerLifetimeScope();
 
             services.AddNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
             services.AddNetMessageType<TickHistoryStart>(DeliveryMethod.ReliableOrdered, 0);

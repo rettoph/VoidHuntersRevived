@@ -20,12 +20,10 @@ using VoidHuntersRevived.Game.Client.Common.Utilities;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [GuppyFilter<LocalGameGuppy>]
     [SimulationFilter(SimulationType.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal sealed class DrawVisibleEngine : BasicEngine, IDrawVisibleEngine
     {
-        private readonly short[] _indexBuffer;
         private readonly IEntityService _entities;
         private readonly IEntityTypeService _types;
         private readonly ILogger _logger;
