@@ -1,7 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common.Enums;
-using Guppy.Game.ImGui.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -19,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines.Debug
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public EntitiesDebugEngine(IEntityService entities, IImGui imgui)
+        public EntitiesDebugEngine(IEntityService entities)
         {
             _entities = entities;
 

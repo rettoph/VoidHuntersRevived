@@ -1,9 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common.Enums;
-using Guppy.Game.ImGui.Common;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Services;
+using Guppy.Game.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
@@ -14,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
     [AutoLoad]
     [SimulationFilter<Simulation>]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
-    internal class SimulationDebugComponent : BasicEngine<Simulation>, ISimpleDebugEngine
+    internal class SimulationDebugEngine : BasicEngine<Simulation>, ISimpleDebugEngine
     {
         private readonly IStateService _states;
 
@@ -22,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public SimulationDebugComponent(IImGui imgui, IStateService states)
+        public SimulationDebugEngine(IStateService states)
         {
             _states = states;
 

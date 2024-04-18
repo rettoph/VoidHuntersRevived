@@ -64,8 +64,7 @@ namespace VoidHuntersRevived.Application.Client
             {
                 var game = GuppyEngine.Start(VoidHuntersContextBuilder.ClientContext, builder =>
                 {
-                    builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window)
-                    .RegisterCoreNetworkServices();
+                    builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window).RegisterCoreNetworkServices();
                 }).StartGame();
 
                 game.Initialize();
