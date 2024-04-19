@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game\Guppy.Game.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game.Common\Guppy.Game.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Common\VoidHuntersRevived.Domain.Common.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-﻿using Guppy.Game;
+﻿using Guppy.Game.Common;
 using VoidHuntersRevived.Domain.Common;
 
 namespace VoidHuntersRevived.Game.Core

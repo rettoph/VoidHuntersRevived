@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Game;
+using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Serilog;
