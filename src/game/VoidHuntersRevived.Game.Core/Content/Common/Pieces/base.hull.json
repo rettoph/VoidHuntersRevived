@@ -3,5 +3,10 @@
   "Descriptor": "HullDescriptor",
   "Flags": "Partial",
   "InstanceComponents": { },
-  "StaticComponents": { }
+  "StaticComponents": {
+    "ColorScheme": {
+      "Primary": "Color.HullPrimaryColor",
+      "Secondary": "Color.HullSecondaryColor"
+    }
+  }
 }

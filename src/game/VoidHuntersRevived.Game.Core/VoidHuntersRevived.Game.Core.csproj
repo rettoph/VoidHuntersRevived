@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <None Remove="Content\Common\Pieces\base.hull.json" />
+    <None Remove="Content\Common\Pieces\base.thruster.json" />
     <None Remove="Content\Common\teams.json" />
     <None Remove="Content\Common\Teams\team.00.json" />
     <None Remove="Content\Common\Teams\team.01.json" />

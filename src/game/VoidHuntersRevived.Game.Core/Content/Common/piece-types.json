@@ -3,6 +3,7 @@
     "type": "EntityType",
     "values": {
       "Piece.Base.Hull": "Pieces\\base.hull.json",
+      "Piece.Base.Thruster": "Pieces\\base.thruster.json",
       "Piece.Hull.Triangle": "Pieces\\hull.triangle.json",
       "Piece.Hull.Square": "Pieces\\hull.square.json",
       "Piece.Thruster": "Pieces\\thruster.json"

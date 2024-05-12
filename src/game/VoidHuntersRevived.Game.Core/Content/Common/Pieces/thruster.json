@@ -1,6 +1,6 @@
 {
   "Key": "Piece.Thruster",
-  "Descriptor": "ThrusterDescriptor",
+  "BaseType": "Piece.Base.Thruster",
   "InstanceComponents": {
     "Rigid": {
       "Centeroid": {
