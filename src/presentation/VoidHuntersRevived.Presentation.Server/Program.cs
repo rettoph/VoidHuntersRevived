@@ -2,8 +2,7 @@
 using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Extensions;
-using Guppy.Engine;
-using Guppy.Game.Common.Extensions;
+using Guppy.Game;
 using Guppy.Game.Console.Extensions;
 using Guppy.Game.Helpers;
 using VoidHuntersRevived.Domain.Common.Constants;
@@ -11,24 +10,24 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Presentation.Core;
 
-var game = GuppyEngine.Start(VoidHuntersContextBuilder.ClientContext, builder =>
+var engine = new GameEngine(VoidHuntersContextBuilder.ServerContext, builder =>
 {
     builder.RegisterConsoleGameServices().RegisterCoreNetworkServices();
-}).StartGame();
+}).Start();
 
 AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
 {
-    game.Dispose();
+    engine.Dispose();
 });
 
-game.Guppies.Create<ServerGameScene>(builder =>
+engine.Scenes.Create<ServerGameScene>(builder =>
 {
     builder.RegisterNetScope<ISimulation>(PeerType.Server, NetScopeIds.Game);
 });
 
 var source = new CancellationTokenSource();
 _ = TaskHelper.CreateLoop(
-    game.Update,
+    engine.Update,
     TimeSpan.FromMilliseconds(16),
     source.Token
 );
@@ -42,5 +41,5 @@ while (true)
         continue;
     }
 
-    game.Guppies.Last().Scope.Resolve<ICommandService>().Invoke(input);
+    engine.Scenes.GetAll().Last().Resolve<ICommandService>().Invoke(input);
 }

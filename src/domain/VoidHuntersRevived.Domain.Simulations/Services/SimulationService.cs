@@ -67,21 +67,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 simulationTypes.Add(typeof(LockstepSimulation_Server));
             }
 
-            //foreach (Type simulationType in simulationTypes)
-            //{
-            //    ISimulation simulation = _scope.BeginLifetimeScope(nameof(Simulation), builder =>
-            //    {
-            //        builder.RegisterInstance(this).As<ISimulationService>();
-            //        builder.RegisterType(simulationType).AsSelf().AsImplementedInterfaces().SingleInstance();
-            //        builder.RegisterNetScope<ISimulation>(netScope.Group.Peer.Type, netScope.Group.Id);
-            //    }).Resolve<ISimulation>();
-            //
-            //    _simulations.Add(simulation.Type, simulation);
-            //    _list.Add(simulation);
-            //    _types.Add(simulation.Type);
-            //    _reversed.Insert(0, simulation);
-            //}
-
             ISceneService scenes = _scope.Resolve<ISceneService>();
             foreach (Type simulationType in simulationTypes)
             {
@@ -96,20 +81,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 _types.Add(simulation.Type);
                 _reversed.Insert(0, simulation);
             }
-
-            // IEnumerable<ISimulation> simulations = _scope.Resolve<IFiltered<ISimulation>>().Instances;
-            // foreach (ISimulation simulation in simulations)
-            // {
-            //     if (!this.Flags.HasFlag(simulation.Type))
-            //     {
-            //         continue;
-            //     }
-            // 
-            //     _simulations.Add(simulation.Type, simulation);
-            //     _list.Add(simulation);
-            //     _types.Add(simulation.Type);
-            //     _reversed.Insert(0, simulation);
-            // }
 
             _configured = true;
         }

@@ -12,7 +12,7 @@ using VoidHuntersRevived.Game.Client;
 using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Presentation.Core;
 
-namespace VoidHuntersRevived.Application.Client
+namespace VoidHuntersRevived.Presentation.Client
 {
     public sealed class VoidHuntersGame : Microsoft.Xna.Framework.Game
     {

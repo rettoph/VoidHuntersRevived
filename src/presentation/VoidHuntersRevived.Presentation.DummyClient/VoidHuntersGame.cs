@@ -1,18 +1,22 @@
-﻿using Guppy.Game.Common;
-using Guppy.Game.Extensions;
+﻿using Autofac;
+using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Extensions;
 using Guppy.Game;
+using Guppy.Game.Common;
+using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Domain.Common.Constants;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Game.Client;
 using VoidHuntersRevived.Presentation.Core;
 
-namespace VoidHuntersRevived.Application.Client
+namespace VoidHuntersRevived.Presentation.Client
 {
     public sealed class VoidHuntersGame : Microsoft.Xna.Framework.Game
     {
         private readonly GraphicsDeviceManager _graphics;
-        private VoidHuntersEngine _engine;
-        private IGame? _game;
+        private IGameEngine? _engine;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -31,15 +35,14 @@ namespace VoidHuntersRevived.Application.Client
 
             _graphics.PreparingDeviceSettings += (s, e) =>
             {
+                _graphics.PreferMultiSampling = true;
+                e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 8;
                 e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
                 e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.ApplyChanges();
-
-
-            _engine = new VoidHuntersEngine("Dummy");
         }
 
         /// <summary>
@@ -55,16 +58,18 @@ namespace VoidHuntersRevived.Application.Client
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                var game = _engine.StartGame(builder =>
+                var engine = new GameEngine(VoidHuntersContextBuilder.ClientContext, builder =>
                 {
-                    builder.RegisterMonoGame(this, _graphics, this.Content, this.Window);
+                    builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window).RegisterCoreNetworkServices();
+                }).Start();
+
+                engine.Scenes.Create<MultiplayerGameScene>(builder =>
+                {
+                    builder.RegisterNetScope<ISimulation>(PeerType.Client, NetScopeIds.Game);
                 });
+                //_engine.Guppies.Create<EditorGuppy>();
 
-                game.Initialize();
-
-                game.Guppies.Create<MultiplayerGameGuppy>();
-
-                _game = game;
+                _engine = engine;
             });
 
         }
@@ -85,21 +90,21 @@ namespace VoidHuntersRevived.Application.Client
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            _game?.Dispose();
+            _engine?.Dispose();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
-            _game?.Dispose();
+            _engine?.Dispose();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
 
-            _game?.Dispose();
+            _engine?.Dispose();
 
             Environment.Exit(0);
         }
@@ -114,7 +119,7 @@ namespace VoidHuntersRevived.Application.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _game?.Update(gameTime);
+            _engine?.Update(gameTime);
         }
 
         /// <summary>
@@ -125,9 +130,14 @@ namespace VoidHuntersRevived.Application.Client
         {
             base.Draw(gameTime);
 
-            GraphicsDevice.Clear(Random.Shared.Next(0, 2) == 0 ? Color.Black : Color.Gray);
+            if (_engine is null)
+            {
+                return;
+            }
 
-            _game?.Draw(gameTime);
+            GraphicsDevice.Clear(Color.Black);
+
+            _engine?.Draw(gameTime);
         }
     }
 }

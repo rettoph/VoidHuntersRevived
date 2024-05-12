@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Network\Guppy.Core.Network.csproj" />
     <ProjectReference Include="..\..\game\VoidHuntersRevived.Game.Client\VoidHuntersRevived.Game.Client.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Presentation.Core\VoidHuntersRevived.Presentation.Core.csproj" />
   </ItemGroup>
