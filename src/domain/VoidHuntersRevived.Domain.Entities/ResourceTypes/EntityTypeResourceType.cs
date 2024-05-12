@@ -1,14 +1,16 @@
-﻿using Guppy.Core.Files.Common;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.ResourceTypes;
-using Guppy.Core.Common.Attributes;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using VoidHuntersRevived.Common.Entities;
 
 namespace VoidHuntersRevived.Domain.Entities.ResourceTypes
 {
     [AutoLoad]
-    internal class EntityTypeResourceType : SimpleResourceType<IEntityType>
+    internal class EntityTypeResourceType : ResourceType<IEntityType>
     {
         private readonly IFileService _files;
 
@@ -19,13 +21,15 @@ namespace VoidHuntersRevived.Domain.Entities.ResourceTypes
             _files = files;
         }
 
-        protected override bool TryResolve(Resource<IEntityType> resource, DirectoryLocation root, string input, out IEntityType value)
+        protected override bool TryGetResolver(Resource<IEntityType> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out ResourceResolver<IEntityType> resolver)
         {
-            IFile<IEntityType> type = _files.Get<IEntityType>(
+            string input = json.GetString() ?? string.Empty;
+
+            IFile<ResourceResolver<IEntityType>> type = _files.Get<ResourceResolver<IEntityType>>(
                 new FileLocation(root, input),
                 true);
 
-            value = type.Value;
+            resolver = type.Value;
             return type.Success;
         }
     }

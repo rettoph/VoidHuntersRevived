@@ -1,6 +1,6 @@
 {
   "Key": "Piece.Hull.Triangle",
-  "Descriptor": "HullDescriptor",
+  "BaseType": "Piece.Base.Hull",
   "InstanceComponents": {
     "Rigid": {
       "Centeroid": {

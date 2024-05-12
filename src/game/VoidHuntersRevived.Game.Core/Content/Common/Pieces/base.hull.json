@@ -1,0 +1,7 @@
+{
+  "Key": "Piece.Base.Hull",
+  "Descriptor": "HullDescriptor",
+  "Flags": "Partial",
+  "InstanceComponents": { },
+  "StaticComponents": { }
+}

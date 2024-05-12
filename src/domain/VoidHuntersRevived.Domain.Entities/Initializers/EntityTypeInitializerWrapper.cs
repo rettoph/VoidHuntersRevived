@@ -6,7 +6,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Initializers
 {
-    internal sealed class EntityTypeInitializer : IEntityTypeInitializer
+    internal sealed class EntityTypeInitializerWrapper : IEntityTypeInitializer
     {
         public InstanceEntityInitializerDelegate InstanceEntityInitializer;
         public StaticEntityInitializerDelegate StaticEntityInitializer;
@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
 
         public IEntityType Type { get; }
 
-        public EntityTypeInitializer(IEntityType type, IEnumerable<IEntityInitializer> initializers)
+        public EntityTypeInitializerWrapper(IEntityType type, IEnumerable<IEntityInitializer> initializers)
         {
             this.Type = type;
 
@@ -62,22 +62,22 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
 
             if (InstanceEntityInitializer is null)
             {
-                InstanceEntityInitializer = EntityTypeInitializer.DefaultInstanceInitializer;
+                InstanceEntityInitializer = EntityTypeInitializerWrapper.DefaultInstanceInitializer;
             }
 
             if (InstanceEntityDisposer is null)
             {
-                InstanceEntityDisposer = EntityTypeInitializer.DefaultDisposer;
+                InstanceEntityDisposer = EntityTypeInitializerWrapper.DefaultDisposer;
             }
 
             if (StaticEntityInitializer is null)
             {
-                StaticEntityInitializer = EntityTypeInitializer.DefaultStaticInitializer;
+                StaticEntityInitializer = EntityTypeInitializerWrapper.DefaultStaticInitializer;
             }
 
             if (StaticEntityDisposer is null)
             {
-                StaticEntityDisposer = EntityTypeInitializer.DefaultDisposer;
+                StaticEntityDisposer = EntityTypeInitializerWrapper.DefaultDisposer;
             }
         }
 

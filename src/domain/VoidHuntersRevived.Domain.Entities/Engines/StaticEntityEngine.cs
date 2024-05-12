@@ -2,6 +2,7 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Utilities;
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             // Automatically create all static entities
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
 
-            foreach (IEntityTypeInitializer typeInitializer in entityTypeInitializers.GetAll())
+            foreach (IEntityTypeInitializer typeInitializer in entityTypeInitializers.GetAll(EntityTypeFlags.Partial))
             {
                 var data = StaticEntityHelper.GetData(typeInitializer.Type);
 

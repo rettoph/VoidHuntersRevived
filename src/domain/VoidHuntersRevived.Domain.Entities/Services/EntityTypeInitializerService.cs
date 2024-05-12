@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Resources.Common;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Initializers;
@@ -17,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             _initializers = initializers.SelectMany(init => init.ExplicitEntityTypes).Concat(imported).Distinct().ToDictionary(
                 keySelector: type => type,
-                elementSelector: type => (IEntityTypeInitializer)new EntityTypeInitializer(type, initializers.Where(init => init.ShouldInitialize(type))));
+                elementSelector: type => (IEntityTypeInitializer)new EntityTypeInitializerWrapper(type, initializers.Where(init => init.ShouldInitialize(type))));
         }
 
         public IEntityTypeInitializer Get(IEntityType type)
@@ -25,9 +26,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _initializers[type];
         }
 
-        public IEnumerable<IEntityTypeInitializer> GetAll()
+        public IEnumerable<IEntityTypeInitializer> GetAll(EntityTypeFlags except)
         {
-            return _initializers.Values;
+            return _initializers.Values.Where(x => (x.Type.Flags & except) == 0);
         }
     }
 }

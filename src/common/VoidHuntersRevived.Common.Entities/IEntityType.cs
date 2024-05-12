@@ -1,13 +1,16 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Entities.Enums;
 
 namespace VoidHuntersRevived.Common.Entities
 {
     public interface IEntityType
     {
         Id<IEntityType> Id { get; }
-        VoidHuntersEntityDescriptor Descriptor { get; }
         string Key { get; }
+        public EntityTypeFlags Flags { get; }
+        VoidHuntersEntityDescriptor Descriptor { get; }
+        IEntityType? BaseType { get; }
 
         IReadOnlyDictionary<Type, IEntityComponent> InstanceComponents { get; }
         IReadOnlyDictionary<Type, IEntityComponent> StaticComponents { get; }

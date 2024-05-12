@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Common.Entities.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -13,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityTypeService(IEntityTypeInitializerService initializers)
         {
-            _types = initializers.GetAll().ToDictionary(x => x.Type.Id, x => x.Type);
+            _types = initializers.GetAll(EntityTypeFlags.Partial).Select(x => x.Type).ToDictionary(x => x.Id, x => x);
             _byDescriptor = new Dictionary<Type, object>();
         }
 
