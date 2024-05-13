@@ -2,11 +2,11 @@
 
 namespace VoidHuntersRevived.Common.Entities.Components
 {
-    public struct InstanceEntity : IEntityComponent
+    public struct InstanceData : IEntityComponent
     {
         public readonly GroupIndex StaticEntityId;
 
-        public InstanceEntity(GroupIndex staticEntity) : this()
+        public InstanceData(GroupIndex staticEntity) : this()
         {
             this.StaticEntityId = staticEntity;
         }

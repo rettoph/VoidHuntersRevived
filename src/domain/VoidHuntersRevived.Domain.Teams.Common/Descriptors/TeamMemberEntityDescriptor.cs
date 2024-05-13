@@ -10,7 +10,13 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Descriptors
         public TeamMemberEntityDescriptor()
         {
             this.WithInstanceComponents([
-                new ComponentBuilder<Id<Team>>()
+                new ComponentBuilder<Id<Team>>(),
+                new ComponentBuilder<GroupIndex<Team>>(),
+                new ComponentBuilder<ColorScheme>()
+            ]);
+
+            this.WithStaticComponents([
+                new ComponentBuilder<ColorScheme>()
             ]);
         }
     }

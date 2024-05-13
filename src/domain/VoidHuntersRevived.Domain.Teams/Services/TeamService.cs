@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         {
             base.Initialize(simulation);
 
-            foreach (var ((teams, colors, count), group) in _entities.QueryEntities<Team, ColorScheme>())
+            foreach (var ((teams, count), group) in _entities.QueryEntities<Team>())
             {
                 for (uint i = 0; i < count; i++)
                 {
@@ -37,6 +37,11 @@ namespace VoidHuntersRevived.Domain.Teams.Services
                     _defaultId = team.Id;
                 }
             }
+        }
+
+        public bool TryGetGroupIndex(Id<Team> teamId, out GroupIndex groupIndex)
+        {
+            return _groupIndices.TryGetValue(teamId, out groupIndex);
         }
 
         public Id<Team> GetDefaultTeamId()

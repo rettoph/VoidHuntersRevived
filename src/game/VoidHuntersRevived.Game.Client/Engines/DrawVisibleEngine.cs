@@ -45,11 +45,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>> param)
         {
-            foreach (var ((statics, entityTypes, colorSchemes, _, typeCount), _) in _entities.QueryEntities<StaticEntity, Id<IEntityType>, ColorScheme, Visible>())
+            foreach (var ((statics, entityTypes, colorSchemes, _, typeCount), _) in _entities.QueryEntities<StaticData, Id<IEntityType>, ColorScheme, Visible>())
             {
                 for (int i = 0; i < typeCount; i++)
                 {
-                    ref StaticEntity @static = ref statics[i];
+                    ref StaticData @static = ref statics[i];
                     ref Id<IEntityType> entityType = ref entityTypes[i];
                     ref ColorScheme colorScheme = ref colorSchemes[i];
 
@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         {
                             uint index = indices[j];
                             if (statuses[index].IsDespawned)
-                            {
+                            { // Dont render pieces that have been despawned
                                 continue;
                             }
 

@@ -102,7 +102,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             base.Initialize(simulation);
 
-            foreach (var ((staticEntities, typeIds, visibles, zIndices, count), group) in _entities.QueryEntities<StaticEntity, Id<IEntityType>, Visible, zIndex>())
+            foreach (var ((staticEntities, typeIds, visibles, zIndices, count), group) in _entities.QueryEntities<StaticData, Id<IEntityType>, Visible, zIndex>())
             {
                 for (int i = 0; i < count; i++)
                 {

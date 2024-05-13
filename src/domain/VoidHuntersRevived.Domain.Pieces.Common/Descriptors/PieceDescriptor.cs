@@ -1,7 +1,6 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
-using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
@@ -14,16 +13,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
                 new ComponentBuilder<Plug>(in Plug.Default),
                 new ComponentBuilder<Coupling>(),
                 new ComponentBuilder<Node>(),
-                new ComponentBuilder<Rigid>(),
-                new ComponentBuilder<ColorScheme>()
+                new ComponentBuilder<Rigid>()
             ]);
 
-            this.WithStaticComponents(new IComponentBuilder[]
-            {
+            this.WithStaticComponents([
                 new ComponentBuilder<Visible>(),
                 new ComponentBuilder<zIndex>(this.GetZIndex()),
-                new ComponentBuilder<ColorScheme>()
-            });
+            ]);
         }
 
         protected abstract zIndex GetZIndex();

@@ -11,7 +11,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
     [AutoLoad]
-    internal sealed class StaticEntityEngine : BasicEngine, IQueryingEntitiesEngine, IReactOnAddEx<InstanceEntity>, IReactOnAddEx<StaticEntity>
+    internal sealed class StaticEntityEngine : BasicEngine, IQueryingEntitiesEngine, IReactOnAddEx<InstanceData>, IReactOnAddEx<StaticData>
     {
         private readonly IEntityTypeService _types;
 
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             }
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<StaticEntity> entities, ExclusiveGroupStruct groupID)
+        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<StaticData> entities, ExclusiveGroupStruct groupID)
         {
             var (instances, ids, _) = entities;
             var (typeIds, _) = this.entitiesDB.QueryEntities<Id<IEntityType>>(groupID);
@@ -58,14 +58,14 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         /// <param name="rangeOfEntities"></param>
         /// <param name="entities"></param>
         /// <param name="groupID"></param>
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<InstanceEntity> entities, ExclusiveGroupStruct groupID)
+        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<InstanceData> entities, ExclusiveGroupStruct groupID)
         {
             var (instances, ids, _) = entities;
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
-                InstanceEntity instanceComponent = instances[i];
-                ref StaticEntity staticComponent = ref this.entitiesDB.QueryEntityByIndex<StaticEntity>(instanceComponent.StaticEntityId.Index, instanceComponent.StaticEntityId.GroupID);
+                InstanceData instanceComponent = instances[i];
+                ref StaticData staticComponent = ref this.entitiesDB.QueryEntityByIndex<StaticData>(instanceComponent.StaticEntityId.Index, instanceComponent.StaticEntityId.GroupID);
 
                 ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<EntityId>(staticComponent.InstanceEntitiesFilterId);
                 filter.Add(ids[i], groupID, i);
