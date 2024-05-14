@@ -68,11 +68,34 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return this.entitiesDB.HasAny<T>(groupID);
         }
 
-        public bool HasAny<T>(ExclusiveGroupStruct groupID, out EntityCollection<T> entities)
-            where T : unmanaged, IEntityComponent
+        public bool HasAny<T1>(ExclusiveGroupStruct groupId, out EntityCollection<T1> entities)
+            where T1 : unmanaged, IEntityComponent
         {
-            entities = this.entitiesDB.QueryEntities<T>(groupID);
-            return entities.count > 0;
+            return this.entitiesDB.HasAny(groupId, out entities);
+        }
+
+        public bool HasAll<T1, T2>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2> entities)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+        {
+            return this.entitiesDB.HasAll(groupId, out entities);
+        }
+
+        public bool HasAll<T1, T2, T3>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2, T3> entities)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+        {
+            return this.entitiesDB.HasAll(groupId, out entities);
+        }
+
+        public bool HasAll<T1, T2, T3, T4>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2, T3, T4> entities)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent
+        {
+            return this.entitiesDB.HasAll(groupId, out entities);
         }
 
         public ref T QueryByGroupIndex<T>(in GroupIndex groupIndex)
@@ -145,44 +168,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T4 : unmanaged, IEntityComponent
         {
             return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groupID);
-        }
-
-        public EntityCollection<T1> TryQueryEntities<T1>(ExclusiveGroupStruct groupID, out bool success)
-            where T1 : unmanaged, IEntityComponent
-        {
-            var result = this.entitiesDB.TryQueryEntities<T1>(groupID);
-            success = result.count > 0;
-            return result;
-        }
-
-        public EntityCollection<T1, T2> TryQueryEntities<T1, T2>(ExclusiveGroupStruct groupID, out bool success)
-            where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent
-        {
-            var result = this.entitiesDB.TryQueryEntities<T1, T2>(groupID);
-            success = result.count > 0;
-            return result;
-        }
-
-        public EntityCollection<T1, T2, T3> TryQueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupID, out bool success)
-            where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent
-            where T3 : unmanaged, IEntityComponent
-        {
-            var result = this.entitiesDB.TryQueryEntities<T1, T2, T3>(groupID);
-            success = result.count > 0;
-            return result;
-        }
-
-        public EntityCollection<T1, T2, T3, T4> TryQueryEntities<T1, T2, T3, T4>(ExclusiveGroupStruct groupID, out bool success)
-            where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent
-            where T3 : unmanaged, IEntityComponent
-            where T4 : unmanaged, IEntityComponent
-        {
-            var result = this.entitiesDB.TryQueryEntities<T1, T2, T3, T4>(groupID);
-            success = result.count > 0;
-            return result;
         }
 
         public GroupsEnumerable<T1> QueryEntities<T1>()

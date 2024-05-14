@@ -7,8 +7,8 @@
       "Name": "String.TeamOneName"
     },
     "ColorScheme": {
-      "Primary": "Colors.TeamOnePrimaryColor",
-      "Secondary": "Colors.TeamOneSecondaryColor"
+      "Primary": "Color.TeamOnePrimaryColor",
+      "Secondary": "Color.TeamOneSecondaryColor"
     }
   }
 }

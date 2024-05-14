@@ -87,6 +87,24 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         bool HasAny<T>(ExclusiveGroupStruct groupID)
             where T : unmanaged, IEntityComponent;
 
+        bool HasAny<T1>(ExclusiveGroupStruct groupId, out EntityCollection<T1> entities)
+            where T1 : unmanaged, IEntityComponent;
+
+        bool HasAll<T1, T2>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2> entities)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent;
+
+        bool HasAll<T1, T2, T3>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2, T3> entities)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent;
+
+        bool HasAll<T1, T2, T3, T4>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2, T3, T4> entities)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent;
+
         EntityCollection<T1> QueryEntities<T1>(ExclusiveGroupStruct groupId)
             where T1 : unmanaged, IEntityComponent;
 
@@ -100,24 +118,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
             where T3 : unmanaged, IEntityComponent;
 
         EntityCollection<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(ExclusiveGroupStruct groupId)
-            where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent
-            where T3 : unmanaged, IEntityComponent
-            where T4 : unmanaged, IEntityComponent;
-
-        EntityCollection<T1> TryQueryEntities<T1>(ExclusiveGroupStruct groupId, out bool success)
-            where T1 : unmanaged, IEntityComponent;
-
-        EntityCollection<T1, T2> TryQueryEntities<T1, T2>(ExclusiveGroupStruct groupId, out bool success)
-            where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent;
-
-        EntityCollection<T1, T2, T3> TryQueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupId, out bool success)
-            where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent
-            where T3 : unmanaged, IEntityComponent;
-
-        EntityCollection<T1, T2, T3, T4> TryQueryEntities<T1, T2, T3, T4>(ExclusiveGroupStruct groupId, out bool success)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent

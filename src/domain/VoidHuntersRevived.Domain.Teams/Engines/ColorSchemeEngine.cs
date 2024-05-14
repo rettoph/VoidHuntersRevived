@@ -2,6 +2,7 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
@@ -20,20 +21,31 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<ColorScheme> entities, ExclusiveGroupStruct groupID)
         {
-            var (colorSchemes, _) = entities;
-            var (instanceDatas, teamGroupIds, _) = _entities.TryQueryEntities<InstanceData, GroupIndex<Team>>(groupID, out bool success);
-            if(success == false)
+            if(_entities.HasAll<InstanceData, GroupIndex<Team>>(groupID, out var components) == false)
             {
                 return;
             }
 
+            var (colorSchemes, _) = entities;
+            var (instanceDatas, teamGroupIds, _) = components;
+
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
                 ref InstanceData instanceData = ref instanceDatas[i];
-                ref ColorScheme instanceColorScheme = ref colorSchemes[i];
+                ref ColorScheme colorScheme = ref colorSchemes[i];
                 ref GroupIndex<Team> teamGroupId = ref teamGroupIds[i];
-                ref ColorScheme teamColorScheme = ref _entities.QueryByGroupIndex<ColorScheme>(teamGroupId.Value);
 
+                if(_entities.TryQueryByGroupIndex<ColorScheme>(teamGroupId.Value, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
+                {
+                    colorScheme = teamColorScheme;
+                    return;
+                }
+
+                if(_entities.TryQueryByGroupIndex<ColorScheme>(instanceData.StaticEntityId, out ColorScheme staticColorScheme))
+                {
+                    colorScheme = staticColorScheme;
+                    return;
+                }
             }
         }
     }
