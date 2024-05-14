@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Initialize()
         {
-            foreach (IEngine engine in _engines.Sequence(EngineSequence.Initialize))
+            foreach (IEngine engine in _engines.Sequence(EngineSequence.Group03))
             {
                 _brokers.Subscribe(engine.Yield());
 

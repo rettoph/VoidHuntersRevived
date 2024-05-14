@@ -2,8 +2,11 @@
 {
     public enum EngineSequence
     {
-        PreInitialize,
-        Initialize,
-        PostInitialize
+        Group00,
+        Group01,
+        Group02,
+        Group03,
+        Group04,
+        Group05
     }
 }

@@ -15,7 +15,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    [Sequence<EngineSequence>(EngineSequence.PreInitialize)]
+    [Sequence<EngineSequence>(EngineSequence.Group01)]
     internal partial class EntityService : BasicEngine, IEntityService, IQueryingEntitiesEngine, IEngineEngine
     {
         private readonly ILogger _logger;

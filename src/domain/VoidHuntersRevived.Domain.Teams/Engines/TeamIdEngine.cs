@@ -1,31 +1,30 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
-using VoidHuntersRevived.Domain.Teams.Common.Descriptors;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Engines
 {
     [AutoLoad]
-    [Sequence<EngineSequence>(EngineSequence.PreInitialize)]
-    internal sealed class TeamIdEngine : BasicEngine, IReactOnAddEx<Instance<TeamMemberEntityDescriptor>>
+    [Sequence<EngineSequence>(EngineSequence.Group00)]
+    internal sealed class TeamGroupIndexEngine : BasicEngine, IReactOnAddEx<Id<Team>>
     {
         private readonly IEntityService _entities;
         private readonly ITeamService _teams;
 
-        public TeamIdEngine(IEntityService entities, ITeamService teams)
+        public TeamGroupIndexEngine(IEntityService entities, ITeamService teams)
         {
             _entities = entities;
             _teams = teams;
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Instance<TeamMemberEntityDescriptor>> entities, ExclusiveGroupStruct groupID)
+        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Id<Team>> entities, ExclusiveGroupStruct groupID)
         {
-            var (teamIds, groupIds, _) = _entities.QueryEntities<Id<Team>, GroupIndex<Team>>(groupID);
+            var (teamIds, _) = entities;
+            var (groupIds, _) = _entities.QueryEntities<GroupIndex<Team>>(groupID);
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
