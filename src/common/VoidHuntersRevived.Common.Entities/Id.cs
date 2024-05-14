@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Common.Entities
             _value = value;
         }
 
-        public void EntityInitializer(ref EntityInitializer initializer, in EntityId id)
+        public void EntityInitializer(IEntityType type, ref EntityInitializer initializer, in EntityId id)
         {
             // TODO: Only call this if necessary? 
             initializer.Init(this);

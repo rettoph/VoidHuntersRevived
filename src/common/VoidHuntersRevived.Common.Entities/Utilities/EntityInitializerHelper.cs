@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Common.Entities.Utilities
         public static InstanceEntityInitializerDelegate BuildInstanceEntityInitializerDelegate<T>(T instance)
             where T : unmanaged, IEntityComponent
         {
-            return (ref EntityInitializer initializer, in EntityId id) =>
+            return (IEntityType type, ref EntityInitializer initializer, in EntityId id) =>
             {
                 initializer.Init(instance);
             };
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Common.Entities.Utilities
         public static StaticEntityInitializerDelegate BuildStaticEntityInitializerDelegate<T>(T instance)
             where T : unmanaged, IEntityComponent
         {
-            return (ref EntityInitializer initializer) =>
+            return (IEntityType type, ref EntityInitializer initializer) =>
             {
                 initializer.Init(instance);
             };

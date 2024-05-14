@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Utilities;
 
@@ -27,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
         {
             var data = StaticEntityHelper.GetData(entityType);
 
-            return (ref EntityInitializer initializer, in EntityId id) =>
+            return (IEntityType type, ref EntityInitializer initializer, in EntityId id) =>
             {
                 initializer.Init(data.InstanceComponent);
             };

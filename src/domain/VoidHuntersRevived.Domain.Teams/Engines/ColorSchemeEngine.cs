@@ -9,6 +9,14 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Teams.Engines
 {
+    /// <summary>
+    /// Responsible for setting an instance entity's color scheme.
+    /// Scheme selection is done in the following priority:
+    /// 
+    ///   1. Team Color Scheme
+    ///   2. Static Color Scheme
+    /// 
+    /// </summary>
     [AutoLoad]
     internal class ColorSchemeEngine : BasicEngine, IReactOnAddEx<ColorScheme>
     {
@@ -21,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<ColorScheme> entities, ExclusiveGroupStruct groupID)
         {
-            if(_entities.HasAll<InstanceData, GroupIndex<Team>>(groupID, out var components) == false)
+            if (_entities.HasAll<InstanceData, GroupIndex<Team>>(groupID, out var components) == false)
             {
                 return;
             }
@@ -31,17 +39,17 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
-                ref InstanceData instanceData = ref instanceDatas[i];
                 ref ColorScheme colorScheme = ref colorSchemes[i];
-                ref GroupIndex<Team> teamGroupId = ref teamGroupIds[i];
 
-                if(_entities.TryQueryByGroupIndex<ColorScheme>(teamGroupId.Value, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
+                ref GroupIndex<Team> teamGroupId = ref teamGroupIds[i];
+                if (_entities.TryQueryByGroupIndex<ColorScheme>(teamGroupId.Value, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
                 {
                     colorScheme = teamColorScheme;
                     return;
                 }
 
-                if(_entities.TryQueryByGroupIndex<ColorScheme>(instanceData.StaticEntityId, out ColorScheme staticColorScheme))
+                ref InstanceData instanceData = ref instanceDatas[i];
+                if (_entities.TryQueryByGroupIndex<ColorScheme>(instanceData.StaticEntityId, out ColorScheme staticColorScheme))
                 {
                     colorScheme = staticColorScheme;
                     return;

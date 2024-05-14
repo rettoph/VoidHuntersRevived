@@ -54,8 +54,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 
         public Node(EntityId id, EntityId treeId)
         {
-            Id = id;
-            TreeId = treeId;
+            this.Id = id;
+            this.TreeId = treeId;
 
             _dirtyTransformation = true;
             _dirtyXnaTransformation = true;

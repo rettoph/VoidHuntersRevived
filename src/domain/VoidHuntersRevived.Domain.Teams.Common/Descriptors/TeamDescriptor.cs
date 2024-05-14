@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Teams.Common.Descriptors
@@ -12,7 +13,8 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Descriptors
         {
             this.WithStaticComponents([
                 new ComponentBuilder<Team>(),
-                new ComponentBuilder<ColorScheme>()
+                new ComponentBuilder<ColorScheme>(),
+                new ComponentBuilder<Parent<UserId>>()
             ]);
         }
     }

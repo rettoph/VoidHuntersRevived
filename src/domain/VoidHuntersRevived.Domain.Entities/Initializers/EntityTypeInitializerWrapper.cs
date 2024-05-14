@@ -89,25 +89,25 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
         public void InitializeInstance(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
         {
             initializer.Init<Id<IEntityType>>(this.Type.Id);
-            InstanceEntityInitializer(ref initializer, in id);
+            InstanceEntityInitializer(this.Type, ref initializer, in id);
         }
 
         public void InitializeStatic(ref EntityInitializer initializer)
         {
-            StaticEntityInitializer(ref initializer);
+            StaticEntityInitializer(this.Type, ref initializer);
         }
 
-        private static void DefaultInstanceInitializer(ref EntityInitializer initializer, in EntityId id)
+        private static void DefaultInstanceInitializer(IEntityType type, ref EntityInitializer initializer, in EntityId id)
         {
             // throw new NotImplementedException();
         }
 
-        private static void DefaultStaticInitializer(ref EntityInitializer initializer)
+        private static void DefaultStaticInitializer(IEntityType type, ref EntityInitializer initializer)
         {
             // throw new NotImplementedException();
         }
 
-        private static void DefaultDisposer()
+        private static void DefaultDisposer(IEntityType type)
         {
             // throw new NotImplementedException();
         }

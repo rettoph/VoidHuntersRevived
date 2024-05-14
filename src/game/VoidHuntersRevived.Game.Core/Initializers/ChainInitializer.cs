@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Game.Core.Initializers
             this.WithInstanceInitializer(EntityTypes.Chain, this.InitializeChain);
         }
 
-        private void InitializeChain(ref EntityInitializer initializer, in EntityId id)
+        private void InitializeChain(IEntityType type, ref EntityInitializer initializer, in EntityId id)
         {
             initializer.Init(new Collision()
             {

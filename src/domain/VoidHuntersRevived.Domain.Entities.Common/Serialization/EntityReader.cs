@@ -157,7 +157,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
                 this.Load(data, position + EntityReader.EntityHeaderSize);
                 entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
 
-                initializerDelegate(ref initializer, in id);
+                initializerDelegate(type, ref initializer, in id);
             });
 
             return vhid;
@@ -178,7 +178,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
                 entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
 
                 rootInitializerDelegate(entities, ref initializer, in id);
-                initializerDelegate(ref initializer, in id);
+                initializerDelegate(type, ref initializer, in id);
             });
 
             return vhid;
@@ -198,8 +198,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
                 this.Load(data, position + EntityReader.EntityHeaderSize);
                 entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
 
-                rootInitializerDelegate(ref initializer, in id);
-                initializerDelegate(ref initializer, in id);
+                rootInitializerDelegate(type, ref initializer, in id);
+                initializerDelegate(type, ref initializer, in id);
             });
 
             return vhid;
