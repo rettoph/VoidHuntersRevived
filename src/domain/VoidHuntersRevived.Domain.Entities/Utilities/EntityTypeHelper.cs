@@ -6,15 +6,15 @@ using VoidHuntersRevived.Common.Entities.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
-    public static class StaticEntityHelper
+    public static class EntityTypeHelper
     {
         public class StaticEntityData
         {
             public EGID EGID { get; }
-            public StaticData StaticComponent { get; }
+            public TypeData StaticComponent { get; }
             public InstanceData InstanceComponent { get; set; }
 
-            public StaticEntityData(EGID eGID, StaticData staticComponent, InstanceData instanceComponent)
+            public StaticEntityData(EGID eGID, TypeData staticComponent, InstanceData instanceComponent)
             {
                 this.EGID = eGID;
                 this.StaticComponent = staticComponent;
@@ -35,16 +35,16 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 
             ExclusiveGroupStruct group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{entityType.Descriptor.GetType().Name}.Static");
             EGID egid = new EGID(_id++, group);
-            CombinedFilterID filter = new CombinedFilterID((int)egid.entityID, StaticData.InstanceEntitiesFilterContextId);
+            CombinedFilterID filter = new CombinedFilterID((int)egid.entityID, TypeData.InstanceEntitiesFilterContextId);
 
-            data = new StaticEntityData(egid, new StaticData(filter), new InstanceData(default));
+            data = new StaticEntityData(egid, new TypeData(filter), new InstanceData(default));
 
             return data;
         }
 
         public static void SetGroupIndex(IEntityType entityType, GroupIndex groupIndex)
         {
-            StaticEntityData data = StaticEntityHelper.GetData(entityType);
+            StaticEntityData data = EntityTypeHelper.GetData(entityType);
 
             data.InstanceComponent = new InstanceData(groupIndex);
         }

@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Entities
         public readonly VoidHuntersEntityDescriptor Descriptor;
         public readonly IEntityType? BaseType;
         public readonly IReadOnlyDictionary<Type, IEntityComponent> InstanceComponents;
-        public readonly IReadOnlyDictionary<Type, IEntityComponent> StaticComponents;
+        public readonly IReadOnlyDictionary<Type, IEntityComponent> Components;
 
         Id<IEntityType> IEntityType.Id => this.Id;
         string IEntityType.Key => this.Key;
@@ -23,9 +23,9 @@ namespace VoidHuntersRevived.Common.Entities
         VoidHuntersEntityDescriptor IEntityType.Descriptor => this.Descriptor;
         IEntityType? IEntityType.BaseType => this.BaseType;
         IReadOnlyDictionary<Type, IEntityComponent> IEntityType.InstanceComponents => this.InstanceComponents;
-        IReadOnlyDictionary<Type, IEntityComponent> IEntityType.StaticComponents => this.StaticComponents;
+        IReadOnlyDictionary<Type, IEntityComponent> IEntityType.Components => this.Components;
 
-        internal unsafe EntityType(string key, EntityTypeFlags flags, VoidHuntersEntityDescriptor descriptor, IEntityType? baseType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> staticComponents)
+        internal unsafe EntityType(string key, EntityTypeFlags flags, VoidHuntersEntityDescriptor descriptor, IEntityType? baseType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components)
         {
             this.Key = key;
             this.Id = Id<IEntityType>.FromString(key);
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Common.Entities
             this.BaseType = baseType;
 
             this.InstanceComponents = instanceComponents.ToDictionary(x => x.GetType(), x => x);
-            this.StaticComponents = staticComponents.ToDictionary(x => x.GetType(), x => x);
+            this.Components = components.ToDictionary(x => x.GetType(), x => x);
         }
 
         public static IEnumerable<EntityType> All()
@@ -44,27 +44,27 @@ namespace VoidHuntersRevived.Common.Entities
             return _list;
         }
 
-        public static IEntityType Create(string key, EntityTypeFlags flags, Type descriptorType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> staticComponents)
+        public static IEntityType Create(string key, EntityTypeFlags flags, Type descriptorType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components)
         {
             ThrowIf.Type.IsNotAssignableFrom<VoidHuntersEntityDescriptor>(descriptorType);
 
             Type entityTypeType = typeof(EntityType<>).MakeGenericType(descriptorType);
 
-            return (IEntityType<VoidHuntersEntityDescriptor>)Activator.CreateInstance(entityTypeType, key, flags, instanceComponents, staticComponents)!;
+            return (IEntityType<VoidHuntersEntityDescriptor>)Activator.CreateInstance(entityTypeType, key, flags, instanceComponents, components)!;
         }
 
-        public static IEntityType Create(string key, EntityTypeFlags flags, VoidHuntersEntityDescriptor descriptor, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> staticComponents)
+        public static IEntityType Create(string key, EntityTypeFlags flags, VoidHuntersEntityDescriptor descriptor, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components)
         {
             Type entityTypeType = typeof(EntityType<>).MakeGenericType(descriptor.GetType());
 
-            return (IEntityType<VoidHuntersEntityDescriptor>)Activator.CreateInstance(entityTypeType, key, flags, descriptor, instanceComponents, staticComponents)!;
+            return (IEntityType<VoidHuntersEntityDescriptor>)Activator.CreateInstance(entityTypeType, key, flags, descriptor, instanceComponents, components)!;
         }
 
-        public static IEntityType Create(string key, EntityTypeFlags flags, IEntityType baseType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> staticComponents)
+        public static IEntityType Create(string key, EntityTypeFlags flags, IEntityType baseType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components)
         {
             Type entityTypeType = typeof(EntityType<>).MakeGenericType(baseType.Descriptor.GetType());
 
-            return (IEntityType<VoidHuntersEntityDescriptor>)Activator.CreateInstance(entityTypeType, key, flags, baseType, instanceComponents, staticComponents)!;
+            return (IEntityType<VoidHuntersEntityDescriptor>)Activator.CreateInstance(entityTypeType, key, flags, baseType, instanceComponents, components)!;
         }
     }
 
@@ -75,15 +75,15 @@ namespace VoidHuntersRevived.Common.Entities
 
         TDescriptor IEntityType<TDescriptor>.Descriptor => this.Descriptor;
 
-        public EntityType(string key, EntityTypeFlags flags, IEntityType baseType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> staticComponents) : base(key, flags, baseType.Descriptor, baseType, baseType.InstanceComponents.Values.Concat(instanceComponents), baseType.StaticComponents.Values.Concat(staticComponents))
+        public EntityType(string key, EntityTypeFlags flags, IEntityType baseType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components) : base(key, flags, baseType.Descriptor, baseType, baseType.InstanceComponents.Values.Concat(instanceComponents), baseType.Components.Values.Concat(components))
         {
             this.Descriptor = new TDescriptor();
         }
-        public EntityType(string key, EntityTypeFlags flags, TDescriptor descriptor, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> staticComponents) : base(key, flags, descriptor, null, instanceComponents, staticComponents)
+        public EntityType(string key, EntityTypeFlags flags, TDescriptor descriptor, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components) : base(key, flags, descriptor, null, instanceComponents, components)
         {
             this.Descriptor = new TDescriptor();
         }
-        public EntityType(string key, EntityTypeFlags flags, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> staticComponents) : this(key, flags, new TDescriptor(), instanceComponents, staticComponents)
+        public EntityType(string key, EntityTypeFlags flags, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components) : this(key, flags, new TDescriptor(), instanceComponents, components)
         {
             this.Descriptor = new TDescriptor();
         }

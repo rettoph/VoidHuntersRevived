@@ -8,8 +8,8 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
     public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEquatable<VoidHuntersEntityDescriptor?>
     {
-        private DynamicEntityDescriptor<StaticEntityDescriptor> _staticDescriptor;
-        private DynamicEntityDescriptor<InstanceEntityDescriptor> _instanceDescriptor;
+        private DynamicEntityDescriptor<TypeDescriptor> _staticDescriptor;
+        private DynamicEntityDescriptor<EntityDescriptor> _instanceDescriptor;
         private Id<VoidHuntersEntityDescriptor>? _id;
 
         public Id<VoidHuntersEntityDescriptor> Id => _id ??= HashBuilder<VoidHuntersEntityDescriptor, VhId>.Instance.CalculateId(VhId.HashString(this.GetType().AssemblyQualifiedName ?? throw new NotImplementedException()));
@@ -23,8 +23,8 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
 
         protected VoidHuntersEntityDescriptor()
         {
-            _staticDescriptor = DynamicEntityDescriptor<StaticEntityDescriptor>.CreateDynamicEntityDescriptor();
-            _instanceDescriptor = DynamicEntityDescriptor<InstanceEntityDescriptor>.CreateDynamicEntityDescriptor();
+            _staticDescriptor = DynamicEntityDescriptor<TypeDescriptor>.CreateDynamicEntityDescriptor();
+            _instanceDescriptor = DynamicEntityDescriptor<EntityDescriptor>.CreateDynamicEntityDescriptor();
 
             this.Name = this.GetType().Name;
             this.Group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct(this.Name);
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             while (type is not null && type != typeof(object))
             {
                 IComponentBuilder instanceDescriptorComponentBuilder = VoidHuntersEntityDescriptor.MakeDescriptorComponent(typeof(Instance<>), type, descriptor);
-                IComponentBuilder staticDescriptorComponentBuilder = VoidHuntersEntityDescriptor.MakeDescriptorComponent(typeof(Static<>), type, descriptor);
+                IComponentBuilder staticDescriptorComponentBuilder = VoidHuntersEntityDescriptor.MakeDescriptorComponent(typeof(Type<>), type, descriptor);
 
                 instanceBuilderList.Add(instanceDescriptorComponentBuilder);
                 staticBuilderList.Add(staticDescriptorComponentBuilder);

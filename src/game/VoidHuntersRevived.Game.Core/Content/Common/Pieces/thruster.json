@@ -51,7 +51,7 @@
       }
     }
   },
-  "StaticComponents": {
+  "Components": {
     "Visible": {
       "Fill": [
         {

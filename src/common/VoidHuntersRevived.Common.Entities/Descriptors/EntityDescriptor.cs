@@ -3,13 +3,15 @@ using VoidHuntersRevived.Common.Entities.Components;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
-    internal class StaticEntityDescriptor : IEntityDescriptor
+    public class EntityDescriptor : IEntityDescriptor
     {
         private readonly IComponentBuilder[] _componentsToBuild = new IComponentBuilder[]
         {
-            new ComponentBuilder<StaticData>(),
+            new ComponentBuilder<InstanceData>(),
+            new ComponentBuilder<EntityStatus>(),
+            new ComponentBuilder<EntityId>(),
             new ComponentBuilder<Id<VoidHuntersEntityDescriptor>>(),
-            new ComponentBuilder<Id<IEntityType>>()
+            new ComponentBuilder<Id<IEntityType>>(),
         };
 
         public IComponentBuilder[] componentsToBuild => _componentsToBuild;

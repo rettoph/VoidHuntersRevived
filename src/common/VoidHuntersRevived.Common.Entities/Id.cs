@@ -13,12 +13,6 @@ namespace VoidHuntersRevived.Common.Entities
             _value = value;
         }
 
-        public void EntityInitializer(IEntityType type, ref EntityInitializer initializer, in EntityId id)
-        {
-            // TODO: Only call this if necessary? 
-            initializer.Init(this);
-        }
-
         public override bool Equals(object? obj)
         {
             return obj is Id<T> id && Equals(id);
@@ -46,7 +40,7 @@ namespace VoidHuntersRevived.Common.Entities
 
         public static Id<T> FromString(string input)
         {
-            return new Id<T>(VhId.HashString(input));
+            return new Id<T>(NameSpace<T>.Instance.Create(input));
         }
 
         public override string ToString()

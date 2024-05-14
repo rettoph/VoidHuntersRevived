@@ -107,7 +107,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             return reader.ReadStruct<T>();
         }
 
-        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, InstanceEntityInitializerDelegate initializer)
+        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, EntityInitializerDelegate initializer)
         {
             VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializer);
 
@@ -119,7 +119,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             return _entities.GetId(vhid);
         }
 
-        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, InstanceEntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
+        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
         {
             VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializer, rootInitializer);
 
@@ -131,19 +131,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             return _entities.GetId(vhid);
         }
 
-        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, InstanceEntityInitializerDelegate initializer, InstanceEntityInitializerDelegate rootInitializer)
-        {
-            VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializer, rootInitializer);
-
-            for (uint i = 0; i < data.Positions.Length; i++)
-            {
-                this.InternalDeserialize(sourceId, data, data.Positions[i], options, initializer);
-            }
-
-            return _entities.GetId(vhid);
-        }
-
-        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, InstanceEntityInitializerDelegate initializerDelegate)
+        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, EntityInitializerDelegate initializerDelegate)
         {
             this.Load(data, position);
             VhId vhid = this.ReadVhId(options.Seed);
@@ -152,18 +140,18 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
 
-            _entities.Spawn(sourceId, type, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            _entities.Spawn(sourceId, type, vhid, (IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
                 entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
 
-                initializerDelegate(type, ref initializer, in id);
+                initializerDelegate(entities, type, ref initializer, in id);
             });
 
             return vhid;
         }
 
-        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, InstanceEntityInitializerDelegate initializerDelegate, EntityInitializerDelegate rootInitializerDelegate)
+        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, EntityInitializerDelegate initializerDelegate, EntityInitializerDelegate rootInitializerDelegate)
         {
             this.Load(data, position);
             VhId vhid = this.ReadVhId(options.Seed);
@@ -172,34 +160,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
 
-            _entities.Spawn(sourceId, type, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            _entities.Spawn(sourceId, type, vhid, (IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
                 entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
 
-                rootInitializerDelegate(entities, ref initializer, in id);
-                initializerDelegate(type, ref initializer, in id);
-            });
-
-            return vhid;
-        }
-
-        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, InstanceEntityInitializerDelegate initializerDelegate, InstanceEntityInitializerDelegate rootInitializerDelegate)
-        {
-            this.Load(data, position);
-            VhId vhid = this.ReadVhId(options.Seed);
-            Id<IEntityType> typeId = this.ReadStruct<Id<IEntityType>>();
-            IEntityType type = _types.GetById(typeId);
-
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
-
-            _entities.Spawn(sourceId, type, vhid, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
-            {
-                this.Load(data, position + EntityReader.EntityHeaderSize);
-                entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
-
-                rootInitializerDelegate(type, ref initializer, in id);
-                initializerDelegate(type, ref initializer, in id);
+                rootInitializerDelegate(entities, type, ref initializer, in id);
+                initializerDelegate(entities, type, ref initializer, in id);
             });
 
             return vhid;

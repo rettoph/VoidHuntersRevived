@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                         instanceComponents = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
-                    case nameof(IEntityType.StaticComponents):
+                    case nameof(IEntityType.Components):
                         staticComponents = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;

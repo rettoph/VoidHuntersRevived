@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     internal sealed class EngineService : IEngineService, IDisposable
     {
         private readonly EnginesRoot _enginesRoot;
-        private readonly SimpleEntitiesSubmissionScheduler _scheduler;
+        private readonly EntitiesSubmissionScheduler _scheduler;
         private readonly IMagicBrokerService _brokers;
         private IFiltered<IEngine> _engines;
         private IStepGroupEngine<Step> _stepEngines;
@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             IMagicBrokerService brokers,
             IFiltered<IEngine> engines,
             EnginesRoot enginesRoot,
-            SimpleEntitiesSubmissionScheduler scheduler)
+            EntitiesSubmissionScheduler scheduler)
         {
             _brokers = brokers;
             _enginesRoot = enginesRoot;

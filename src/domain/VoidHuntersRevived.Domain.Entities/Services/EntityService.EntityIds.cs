@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref CollectionsMarshal.GetValueRefOrAddDefault(_ids, vhid, out exists);
         }
 
-        private bool AddId(EntityId id)
+        internal bool AddId(EntityId id)
         {
             if (_ids.TryAdd(id.VhId, id))
             {
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             throw new Exception();
         }
 
-        private bool RemoveId(EntityId id)
+        internal bool RemoveId(EntityId id)
         {
             if (_ids.Remove(id.VhId))
             {

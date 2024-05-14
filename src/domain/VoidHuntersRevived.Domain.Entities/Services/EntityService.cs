@@ -6,7 +6,6 @@ using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -20,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         private readonly ILogger _logger;
         private readonly ILifetimeScope _scope;
-        private readonly SimpleEntitiesSubmissionScheduler _scheduler;
+        private readonly EntitiesSubmissionScheduler _scheduler;
 
         private EntityReader _reader;
         private EntityWriter _writer;
@@ -29,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityService(
             ILogger logger,
             ILifetimeScope scope,
-            SimpleEntitiesSubmissionScheduler scheduler)
+            EntitiesSubmissionScheduler scheduler)
         {
             _logger = logger;
             _scope = scope;

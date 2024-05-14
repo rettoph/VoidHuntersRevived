@@ -34,9 +34,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
         /// <returns></returns>
         bool ShouldInitialize(IEntityType entityType);
 
-        InstanceEntityInitializerDelegate? InstanceInitializer(IEntityType entityType);
+        EntityInitializerDelegate? InstanceInitializer(IEntityType entityType);
         DisposeEntityInitializerDelegate? InstanceDisposer(IEntityType entityType);
-        StaticEntityInitializerDelegate? StaticInitializer(IEntityType entityType);
-        DisposeEntityInitializerDelegate? StaticDisposer(IEntityType entityType);
+        EntityInitializerDelegate? TypeInitializer(IEntityType entityType);
+        DisposeEntityInitializerDelegate? TypeDisposer(IEntityType entityType);
     }
 }

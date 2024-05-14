@@ -1,7 +1,9 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Initializers
@@ -22,11 +24,11 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             return true;
         }
 
-        public InstanceEntityInitializerDelegate? InstanceInitializer(IEntityType entityType)
+        public EntityInitializerDelegate? InstanceInitializer(IEntityType entityType)
         {
-            var data = StaticEntityHelper.GetData(entityType);
+            var data = EntityTypeHelper.GetData(entityType);
 
-            return (IEntityType type, ref EntityInitializer initializer, in EntityId id) =>
+            return (IEntityService _, IEntityType _, ref EntityInitializer initializer, in EntityId _) =>
             {
                 initializer.Init(data.InstanceComponent);
             };
@@ -37,12 +39,12 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             return null;
         }
 
-        public StaticEntityInitializerDelegate? StaticInitializer(IEntityType entityType)
+        public EntityInitializerDelegate? TypeInitializer(IEntityType entityType)
         {
             return null;
         }
 
-        public DisposeEntityInitializerDelegate? StaticDisposer(IEntityType entityType)
+        public DisposeEntityInitializerDelegate? TypeDisposer(IEntityType entityType)
         {
             return null;
         }

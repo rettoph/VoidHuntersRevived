@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Common.Entities
         IEntityType? BaseType { get; }
 
         IReadOnlyDictionary<Type, IEntityComponent> InstanceComponents { get; }
-        IReadOnlyDictionary<Type, IEntityComponent> StaticComponents { get; }
+        IReadOnlyDictionary<Type, IEntityComponent> Components { get; }
     }
 
     public interface IEntityType<out T> : IEntityType

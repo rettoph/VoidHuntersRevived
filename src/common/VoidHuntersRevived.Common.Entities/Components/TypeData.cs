@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Common.Entities.Components
 {
-    public struct StaticData : IEntityComponent
+    public struct TypeData : IEntityComponent
     {
         public static readonly FilterContextID InstanceEntitiesFilterContextId = FilterContextID.GetNewContextID();
 
@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Common.Entities.Components
 
         public int InstanceEntitiesCount;
 
-        public StaticData(CombinedFilterID instanceEntitiesFilterId)
+        public TypeData(CombinedFilterID instanceEntitiesFilterId)
         {
             this.InstanceEntitiesCount = 0;
             this.InstanceEntitiesFilterId = instanceEntitiesFilterId;

@@ -1,8 +1,7 @@
 {
   "Key": "Team.One",
   "Descriptor": "TeamDescriptor",
-  "InstanceComponents": {},
-  "StaticComponents": {
+  "Components": {
     "Team": {
       "Name": "String.TeamOneName"
     },

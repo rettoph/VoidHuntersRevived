@@ -1,18 +1,19 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Initializers
 {
     internal sealed class EntityTypeInitializerWrapper : IEntityTypeInitializer
     {
-        public InstanceEntityInitializerDelegate InstanceEntityInitializer;
-        public StaticEntityInitializerDelegate StaticEntityInitializer;
+        public EntityInitializerDelegate InstanceEntityInitializer;
+        public EntityInitializerDelegate TypeEntityInitializer;
 
         public DisposeEntityInitializerDelegate InstanceEntityDisposer;
-        public DisposeEntityInitializerDelegate StaticEntityDisposer;
+        public DisposeEntityInitializerDelegate TypeEntityDisposer;
 
         public IEntityType Type { get; }
 
@@ -22,26 +23,26 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
 
             if (this.Type.InstanceComponents.Count > 0)
             {
-                this.InstanceEntityInitializer = EntityInitializerHelper.BuildInstanceEntityInitializerDelegate(this.Type.InstanceComponents.Values) ?? throw new Exception();
+                this.InstanceEntityInitializer = EntityInitializerHelper.BuildEntityInitializerDelegate(this.Type.InstanceComponents.Values) ?? throw new Exception();
             }
 
-            if (this.Type.StaticComponents.Count > 0)
+            if (this.Type.Components.Count > 0)
             {
-                this.StaticEntityInitializer = EntityInitializerHelper.BuildStaticEntityInitializerDelegate(this.Type.StaticComponents.Values) ?? throw new Exception();
+                this.TypeEntityInitializer = EntityInitializerHelper.BuildEntityInitializerDelegate(this.Type.Components.Values) ?? throw new Exception();
             }
 
             foreach (IEntityInitializer initializer in initializers.OrderBy(x => x.Order))
             {
-                InstanceEntityInitializerDelegate? initializerInstanceInitializer = initializer.InstanceInitializer(this.Type);
+                EntityInitializerDelegate? initializerInstanceInitializer = initializer.InstanceInitializer(this.Type);
                 if (initializerInstanceInitializer is not null)
                 {
                     InstanceEntityInitializer += initializerInstanceInitializer;
                 }
 
-                StaticEntityInitializerDelegate? initializerStaticInitializer = initializer.StaticInitializer(this.Type);
+                EntityInitializerDelegate? initializerStaticInitializer = initializer.TypeInitializer(this.Type);
                 if (initializerStaticInitializer is not null)
                 {
-                    StaticEntityInitializer += initializerStaticInitializer;
+                    TypeEntityInitializer += initializerStaticInitializer;
                 }
             }
 
@@ -53,16 +54,16 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                     InstanceEntityDisposer += initializerInstanceDisposer;
                 }
 
-                DisposeEntityInitializerDelegate? initializerStaticDisposer = initializer.StaticDisposer(this.Type);
+                DisposeEntityInitializerDelegate? initializerStaticDisposer = initializer.TypeDisposer(this.Type);
                 if (initializerStaticDisposer is not null)
                 {
-                    StaticEntityDisposer += initializerStaticDisposer;
+                    TypeEntityDisposer += initializerStaticDisposer;
                 }
             }
 
             if (InstanceEntityInitializer is null)
             {
-                InstanceEntityInitializer = EntityTypeInitializerWrapper.DefaultInstanceInitializer;
+                InstanceEntityInitializer = EntityTypeInitializerWrapper.DefaultInitializer;
             }
 
             if (InstanceEntityDisposer is null)
@@ -70,14 +71,14 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                 InstanceEntityDisposer = EntityTypeInitializerWrapper.DefaultDisposer;
             }
 
-            if (StaticEntityInitializer is null)
+            if (TypeEntityInitializer is null)
             {
-                StaticEntityInitializer = EntityTypeInitializerWrapper.DefaultStaticInitializer;
+                TypeEntityInitializer = EntityTypeInitializerWrapper.DefaultInitializer;
             }
 
-            if (StaticEntityDisposer is null)
+            if (TypeEntityDisposer is null)
             {
-                StaticEntityDisposer = EntityTypeInitializerWrapper.DefaultDisposer;
+                TypeEntityDisposer = EntityTypeInitializerWrapper.DefaultDisposer;
             }
         }
 
@@ -86,23 +87,18 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             throw new NotImplementedException();
         }
 
-        public void InitializeInstance(IEntityService entities, ref EntityInitializer initializer, in EntityId id)
+        public void InitializeInstance(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id)
         {
             initializer.Init<Id<IEntityType>>(this.Type.Id);
-            InstanceEntityInitializer(this.Type, ref initializer, in id);
+            InstanceEntityInitializer(entities, this.Type, ref initializer, in id);
         }
 
-        public void InitializeStatic(ref EntityInitializer initializer)
+        public void InitializeType(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id)
         {
-            StaticEntityInitializer(this.Type, ref initializer);
+            TypeEntityInitializer(entities, this.Type, ref initializer, in id);
         }
 
-        private static void DefaultInstanceInitializer(IEntityType type, ref EntityInitializer initializer, in EntityId id)
-        {
-            // throw new NotImplementedException();
-        }
-
-        private static void DefaultStaticInitializer(IEntityType type, ref EntityInitializer initializer)
+        private static void DefaultInitializer(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id)
         {
             // throw new NotImplementedException();
         }

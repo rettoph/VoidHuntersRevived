@@ -45,11 +45,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>> param)
         {
-            foreach (var ((statics, entityTypes, colorSchemes, _, typeCount), _) in _entities.QueryEntities<StaticData, Id<IEntityType>, ColorScheme, Visible>())
+            foreach (var ((statics, entityTypes, colorSchemes, _, typeCount), _) in _entities.QueryEntities<TypeData, Id<IEntityType>, ColorScheme, Visible>())
             {
                 for (int i = 0; i < typeCount; i++)
                 {
-                    ref StaticData @static = ref statics[i];
+                    ref TypeData @static = ref statics[i];
                     ref Id<IEntityType> entityType = ref entityTypes[i];
                     ref ColorScheme colorScheme = ref colorSchemes[i];
 

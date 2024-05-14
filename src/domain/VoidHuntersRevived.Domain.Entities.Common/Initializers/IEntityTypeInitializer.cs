@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
     {
         public IEntityType Type { get; }
 
-        void InitializeInstance(IEntityService entities, ref EntityInitializer initializer, in EntityId id);
-        void InitializeStatic(ref EntityInitializer initializer);
+        void InitializeInstance(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id);
+        void InitializeType(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id);
     }
 }

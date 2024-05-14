@@ -3,6 +3,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -22,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             SocketVhId socketVhId = socket.Id.VhId;
             VhId treeId = socket.Node.TreeId.VhId;
 
-            return _entities.Spawn(sourceId, node, nodeVhId, (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+            return _entities.Spawn(sourceId, node, nodeVhId, (IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id) =>
             {
                 initializer.Init(teamId);
                 initializer.Init(new Node(id, entities.GetId(treeId)));
@@ -32,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                         index: socketVhId.Index))
                 );
 
-                initializerDelegate?.Invoke(entities, ref initializer, in id);
+                initializerDelegate?.Invoke(entities, type, ref initializer, in id);
             });
         }
 
@@ -49,8 +50,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     Owner = socket.Node.TreeId.VhId
                 },
                 data: nodes,
-                initializer: teamId.EntityInitializer,
-                rootInitializer: (IEntityService entities, ref EntityInitializer initializer, in EntityId id) =>
+                initializer: teamId.EntityInitializer(),
+                rootInitializer: (IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id) =>
                 {
                     initializer.Init<Coupling>(new Coupling(
                         socketId: new SocketId(
@@ -58,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                             index: socketVhId.Index))
                         );
 
-                    initializerDelegate?.Invoke(entities, ref initializer, in id);
+                    initializerDelegate?.Invoke(entities, type, ref initializer, in id);
                 });
 
             return nodeId;

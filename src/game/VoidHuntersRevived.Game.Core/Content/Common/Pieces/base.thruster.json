@@ -2,8 +2,7 @@
   "Key": "Piece.Base.Thruster",
   "Descriptor": "ThrusterDescriptor",
   "Flags": "Partial",
-  "InstanceComponents": {},
-  "StaticComponents": {
+  "Components": {
     "ColorScheme": {
       "Primary": "Color.ThrusterPrimaryColor",
       "Secondary": "Color.ThrusterSecondaryColor"

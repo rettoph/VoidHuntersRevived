@@ -15,14 +15,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     internal partial class EntityService :
         IEventEngine<SpawnEntity>,
         IEventEngine<SpawnEntity<EntityInitializerDelegate>>,
-        IEventEngine<SpawnEntity<InstanceEntityInitializerDelegate>>,
         IEventEngine<HardSpawnEntity>,
         IEventEngine<HardSpawnEntity<EntityInitializerDelegate>>,
-        IEventEngine<HardSpawnEntity<InstanceEntityInitializerDelegate>>,
         IEventEngine<SoftSpawnEntity>,
         IRevertEventEngine<SpawnEntity>,
         IRevertEventEngine<SpawnEntity<EntityInitializerDelegate>>,
-        IRevertEventEngine<SpawnEntity<InstanceEntityInitializerDelegate>>,
         IEventEngine<DespawnEntity>,
         IRevertEventEngine<DespawnEntity>,
         IEventEngine<SoftDespawnEntity>,
@@ -43,18 +40,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, EntityInitializerDelegate initializer)
         {
             this.Simulation.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
-            {
-                Type = type,
-                VhId = vhid,
-                Initializer = initializer
-            });
-
-            return this.GetId(vhid);
-        }
-
-        public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, InstanceEntityInitializerDelegate initializer)
-        {
-            this.Simulation.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<InstanceEntityInitializerDelegate>()
             {
                 Type = type,
                 VhId = vhid,
@@ -209,39 +194,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public void Process(VhId eventId, SpawnEntity<InstanceEntityInitializerDelegate> data)
-        {
-            _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntityService), nameof(Process), nameof(SpawnEntity), data.VhId);
-
-            if (this.TryGetId(data.VhId, out EntityId id) == false)
-            {
-                this.Simulation.Enqueue(new EventDto()
-                {
-                    SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                    Data = new SoftSpawnEntity()
-                    {
-                        VhId = data.VhId
-                    }
-                });
-
-                this.Simulation.Publish(new EventDto()
-                {
-                    SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                    Data = new HardSpawnEntity<InstanceEntityInitializerDelegate>()
-                    {
-                        VhId = data.VhId,
-                        Type = data.Type,
-                        Initializer = data.Initializer
-                    }
-                });
-            }
-            else
-            {
-                ref EntityStatus status = ref this.QueryById<EntityStatus>(id);
-                status.Increment(EntityModificationTypeEnum.Spawned);
-            }
-        }
-
         public void Process(VhId eventId, HardSpawnEntity data)
         {
             ref EntityId id = ref this.GetOrAddId(data.VhId, out bool exists);
@@ -249,7 +201,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 EntityInitializer initializer = this.GetDescriptorEngine(data.Type.Descriptor.Id).HardSpawn(eventId, data.VhId, out id);
                 initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
-                _entityTypeInitializer.Get(data.Type).InitializeInstance(this, ref initializer, in id);
+                _entityTypeInitializer.Get(data.Type).InitializeInstance(this, data.Type, ref initializer, in id);
             }
             else
             {
@@ -264,24 +216,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 EntityInitializer initializer = this.GetDescriptorEngine(data.Type.Descriptor.Id).HardSpawn(eventId, data.VhId, out id);
                 initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
-                _entityTypeInitializer.Get(data.Type).InitializeInstance(this, ref initializer, in id);
-                data.Initializer.Invoke(this, ref initializer, in id);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public void Process(VhId eventId, HardSpawnEntity<InstanceEntityInitializerDelegate> data)
-        {
-            ref EntityId id = ref this.GetOrAddId(data.VhId, out bool exists);
-            if (exists == false)
-            {
-                EntityInitializer initializer = this.GetDescriptorEngine(data.Type.Descriptor.Id).HardSpawn(eventId, data.VhId, out id);
-                initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
-                _entityTypeInitializer.Get(data.Type).InitializeInstance(this, ref initializer, in id);
-                data.Initializer.Invoke(data.Type, ref initializer, in id);
+                _entityTypeInitializer.Get(data.Type).InitializeInstance(this, data.Type, ref initializer, in id);
+                data.Initializer.Invoke(this, data.Type, ref initializer, in id);
             }
             else
             {
@@ -318,11 +254,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
 
         public void Revert(VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
-        {
-            this.InternalRevert(eventId, data);
-        }
-
-        public void Revert(VhId eventId, SpawnEntity<InstanceEntityInitializerDelegate> data)
         {
             this.InternalRevert(eventId, data);
         }
