@@ -20,7 +20,12 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<ColorScheme> entities, ExclusiveGroupStruct groupID)
         {
-            var (instanceDatas, colorSchemes, teamGroupIds, _) = _entities.QueryEntities<InstanceData, ColorScheme, GroupIndex<Team>>(groupID);
+            var (colorSchemes, _) = entities;
+            var (instanceDatas, teamGroupIds, _) = _entities.TryQueryEntities<InstanceData, GroupIndex<Team>>(groupID, out bool success);
+            if(success == false)
+            {
+                return;
+            }
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {

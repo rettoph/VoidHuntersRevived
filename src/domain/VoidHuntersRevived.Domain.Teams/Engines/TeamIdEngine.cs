@@ -24,7 +24,11 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Id<Team>> entities, ExclusiveGroupStruct groupID)
         {
             var (teamIds, _) = entities;
-            var (groupIds, _) = _entities.QueryEntities<GroupIndex<Team>>(groupID);
+            var (groupIds, _) = _entities.TryQueryEntities<GroupIndex<Team>>(groupID, out bool success);
+            if(success == false)
+            {
+                return;
+            }
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {

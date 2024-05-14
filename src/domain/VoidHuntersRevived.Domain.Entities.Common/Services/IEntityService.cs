@@ -105,6 +105,24 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent;
 
+        EntityCollection<T1> TryQueryEntities<T1>(ExclusiveGroupStruct groupId, out bool success)
+            where T1 : unmanaged, IEntityComponent;
+
+        EntityCollection<T1, T2> TryQueryEntities<T1, T2>(ExclusiveGroupStruct groupId, out bool success)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent;
+
+        EntityCollection<T1, T2, T3> TryQueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupId, out bool success)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent;
+
+        EntityCollection<T1, T2, T3, T4> TryQueryEntities<T1, T2, T3, T4>(ExclusiveGroupStruct groupId, out bool success)
+            where T1 : unmanaged, IEntityComponent
+            where T2 : unmanaged, IEntityComponent
+            where T3 : unmanaged, IEntityComponent
+            where T4 : unmanaged, IEntityComponent;
+
         GroupsEnumerable<T1> QueryEntities<T1>()
             where T1 : unmanaged, IEntityComponent;
 

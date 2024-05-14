@@ -6,4 +6,4 @@
 	url = https://github.com/rettoph/Aether.Physics2D-FixedMath
 [submodule "libraries/Svelto.ECS"]
 	path = libraries/Svelto.ECS
-	url = https://github.com/sebas77/Svelto.ECS
+	url = https://github.com/rettoph/Svelto.ECS
