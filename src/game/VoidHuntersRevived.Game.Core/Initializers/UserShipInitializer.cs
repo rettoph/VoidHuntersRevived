@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Game.Core.Initializers
             this.WithInstanceInitializer(EntityTypes.UserShip, this.InitializeUserShip);
         }
 
-        private void InitializeUserShip(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id)
+        private void InitializeUserShip(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
         {
             initializer.Init(new Awake(sleepingAllowed: false));
             initializer.Init(new TractorBeamEmitter(id));

@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
 
         // public EntityId Spawn(VhId treeId, VhId vhid, Id<ITeam> teamId, IEntityService entities)
         // {
-        //     return entities.Spawn(_piece.EntityType, vhid, teamId, (IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id) =>
+        //     return entities.Spawn(_piece.EntityType, vhid, teamId, (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
         //     {
         //         initializer.Init(new Node(id, entities.GetId(treeId)));
         //     });

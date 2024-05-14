@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 entityInitializer.Init(typeInitializer.Type.Id);
                 entityInitializer.Init(typeInitializer.Type.Descriptor.Id);
 
-                typeInitializer.InitializeType(entities, typeInitializer.Type, ref entityInitializer, in typeEntityId);
+                typeInitializer.InitializeType(entities, typeInitializer.Type, in typeEntityId, ref entityInitializer);
 
                 entities.AddId(typeEntityId);
             }

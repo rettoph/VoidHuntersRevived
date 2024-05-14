@@ -87,18 +87,18 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             throw new NotImplementedException();
         }
 
-        public void InitializeInstance(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id)
+        public void InitializeInstance(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
         {
             initializer.Init<Id<IEntityType>>(this.Type.Id);
-            InstanceEntityInitializer(entities, this.Type, ref initializer, in id);
+            InstanceEntityInitializer(entities, this.Type, in id, ref initializer);
         }
 
-        public void InitializeType(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id)
+        public void InitializeType(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
         {
-            TypeEntityInitializer(entities, this.Type, ref initializer, in id);
+            TypeEntityInitializer(entities, this.Type, in id, ref initializer);
         }
 
-        private static void DefaultInitializer(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id)
+        private static void DefaultInitializer(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
         {
             // throw new NotImplementedException();
         }

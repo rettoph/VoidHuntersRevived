@@ -59,12 +59,12 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             _entities.Dispose();
         }
 
-        private void InitializeInstanceParentComponents(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id)
+        private void InitializeInstanceParentComponents(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
         {
             throw new NotImplementedException();
         }
 
-        private void InitializeTypeParentComponents(IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id)
+        private void InitializeTypeParentComponents(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
         {
             // throw new NotImplementedException();
         }

@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
         {
             var data = EntityTypeHelper.GetData(entityType);
 
-            return (IEntityService _, IEntityType _, ref EntityInitializer initializer, in EntityId _) =>
+            return (IEntityService _, IEntityType _, in EntityId _, ref EntityInitializer initializer) =>
             {
                 initializer.Init(data.InstanceComponent);
             };

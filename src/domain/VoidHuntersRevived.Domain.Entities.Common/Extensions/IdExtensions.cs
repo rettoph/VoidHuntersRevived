@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Extensions
     {
         public static EntityInitializerDelegate EntityInitializer<T>(this Id<T> value)
         {
-            return (IEntityService entities, IEntityType type, ref EntityInitializer initializer, in EntityId id) =>
+            return (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
                 // TODO: Only call this if necessary? 
                 initializer.Init(value);
