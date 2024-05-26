@@ -1,5 +1,5 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
 using VoidHuntersRevived.Game.Client.Common.Services;
 

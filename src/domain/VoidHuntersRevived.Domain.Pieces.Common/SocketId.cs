@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 using System.Runtime.InteropServices;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common
 {

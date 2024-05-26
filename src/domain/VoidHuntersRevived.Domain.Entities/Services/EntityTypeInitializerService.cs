@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Resources.Common;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Enums;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Initializers;

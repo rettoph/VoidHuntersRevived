@@ -1,5 +1,5 @@
-﻿using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Enums;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services

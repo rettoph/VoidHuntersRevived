@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components

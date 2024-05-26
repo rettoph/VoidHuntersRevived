@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Common.Entities;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common

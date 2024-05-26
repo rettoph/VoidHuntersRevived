@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 
-namespace VoidHuntersRevived.Common.Entities.Descriptors
+namespace VoidHuntersRevived.Domain.Entities.Common.Descriptors
 {
     internal class TypeEntityDescriptor : IEntityDescriptor
     {

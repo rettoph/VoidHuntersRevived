@@ -4,7 +4,7 @@ using Guppy.Core.Messaging.Common.Services;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;

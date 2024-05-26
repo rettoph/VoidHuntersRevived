@@ -2,9 +2,9 @@
 using Svelto.ECS;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Enums;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {

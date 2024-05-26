@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityDescriptorService(IEntityTypeService types)
         {
             _ids = types.GetAll().Select(x => x.Descriptor).Distinct().ToDictionary(x => x.Id, x => x);
-            _groups = _ids.Values.ToDictionary(x => x.Group, x => x);
+            _groups = _ids.Values.ToDictionary(x => x.InstanceGroup, x => x);
         }
 
         public VoidHuntersEntityDescriptor GetById(Id<VoidHuntersEntityDescriptor> id)

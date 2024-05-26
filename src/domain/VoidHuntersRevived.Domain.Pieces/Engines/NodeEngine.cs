@@ -3,7 +3,7 @@ using Guppy.Core.Common.Collections;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Utilities;

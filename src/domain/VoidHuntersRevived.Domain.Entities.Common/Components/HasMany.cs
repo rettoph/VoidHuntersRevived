@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Common.Utilities;
 using Svelto.ECS;
 
-namespace VoidHuntersRevived.Common.Entities.Components
+namespace VoidHuntersRevived.Domain.Entities.Common.Components
 {
     public struct HasMany<TChild> : IEntityComponent
         where TChild : unmanaged, IEntityComponent

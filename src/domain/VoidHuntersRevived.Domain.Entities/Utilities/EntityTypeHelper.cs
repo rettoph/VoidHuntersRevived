@@ -1,8 +1,8 @@
 ﻿using Svelto.ECS;
 using System.Runtime.InteropServices;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Utilities
 {

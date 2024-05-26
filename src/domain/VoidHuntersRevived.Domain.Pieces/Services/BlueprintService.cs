@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Resources.Common;
 using Serilog;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 

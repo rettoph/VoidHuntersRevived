@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
 using System.Runtime.InteropServices;
 
-namespace VoidHuntersRevived.Common.Entities.Utilities
+namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
     public static class ExclusiveGroupStructHelper
     {

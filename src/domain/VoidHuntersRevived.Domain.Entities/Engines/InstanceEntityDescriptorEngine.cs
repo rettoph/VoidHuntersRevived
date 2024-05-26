@@ -2,9 +2,9 @@
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public override EntityInitializer HardSpawn(in VhId sourceEventId, in VhId vhid, out EntityId id)
         {
-            EGID egid = new EGID(EntityId.Value++, this.Descriptor.Group);
+            EGID egid = new EGID(EntityId.Value++, this.Descriptor.InstanceGroup);
             id = new EntityId(egid, vhid);
 
             EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor.Instance);

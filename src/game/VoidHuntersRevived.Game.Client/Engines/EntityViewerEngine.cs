@@ -11,9 +11,9 @@ using Svelto.ECS;
 using Svelto.ECS.Internal;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -92,7 +92,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             foreach (VoidHuntersEntityDescriptor descriptor in _entityDescriptors.GetAll())
             {
-                var (ids, typeIds, statuses, nativeIds, count) = _entities.QueryEntities<EntityId, Id<IEntityType>, EntityStatus>(descriptor.Group);
+                var (ids, typeIds, statuses, nativeIds, count) = _entities.QueryEntities<EntityId, Id<IEntityType>, EntityStatus>(descriptor.InstanceGroup);
                 this.RenderTeamDescriptorGroup(descriptor, ids, typeIds, statuses, nativeIds, count);
             }
 
@@ -102,11 +102,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private void RenderTeamDescriptorGroup(VoidHuntersEntityDescriptor descriptor, Svelto.DataStructures.NB<EntityId> ids, Svelto.DataStructures.NB<Id<IEntityType>> types, Svelto.DataStructures.NB<EntityStatus> statuses, NativeEntityIDs nativeIds, int count)
         {
-            using (_imgui.ApplyID($"{nameof(EntityViewerEngine)}_{nameof(ExclusiveGroupStruct)}_{descriptor.Group.id}"))
+            using (_imgui.ApplyID($"{nameof(EntityViewerEngine)}_{nameof(ExclusiveGroupStruct)}_{descriptor.InstanceGroup.id}"))
             {
                 uint id = _imgui.GetID(nameof(TextFilterResult));
                 ref TextFilterResult result = ref this.GetFilterResult(id);
-                string label = $"Group: {descriptor.Group.id}, Descriptor: {descriptor.Name}, Count: {count}";
+                string label = $"Group: {descriptor.InstanceGroup.id}, Descriptor: {descriptor.Name}, Count: {count}";
                 Vector4? color = result switch
                 {
                     TextFilterResult.NotMatched => _redBackground,

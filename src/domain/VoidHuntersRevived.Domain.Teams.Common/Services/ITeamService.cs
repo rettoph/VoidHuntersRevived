@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Common.Entities;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Teams.Common.Services

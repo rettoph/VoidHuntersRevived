@@ -1,9 +1,9 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Enums;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Events;

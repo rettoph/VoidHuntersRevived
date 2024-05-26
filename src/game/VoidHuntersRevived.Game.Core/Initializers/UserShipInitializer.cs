@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;

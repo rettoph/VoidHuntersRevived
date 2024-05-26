@@ -4,7 +4,7 @@ using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Engine.Common.Loaders;
 using Serilog;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Services;

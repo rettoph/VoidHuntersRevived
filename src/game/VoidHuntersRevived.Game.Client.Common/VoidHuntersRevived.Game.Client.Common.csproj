@@ -10,7 +10,6 @@
     <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game.MonoGame\Guppy.Game.MonoGame.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game\Guppy.Game.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
-    <ProjectReference Include="..\..\common\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Pieces.Common\VoidHuntersRevived.Domain.Pieces.Common.csproj" />
   </ItemGroup>
 

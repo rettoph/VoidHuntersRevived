@@ -1,9 +1,9 @@
 ﻿using Guppy.Core.Common;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Enums;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
-namespace VoidHuntersRevived.Common.Entities
+namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public abstract class EntityType : IEntityType
     {

@@ -1,5 +1,5 @@
 ﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Physics.Common

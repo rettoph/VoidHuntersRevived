@@ -7,7 +7,7 @@ using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.Serialization.Json;

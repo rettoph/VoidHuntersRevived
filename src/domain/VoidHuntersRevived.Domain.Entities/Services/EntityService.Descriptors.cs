@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common.Collections;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 

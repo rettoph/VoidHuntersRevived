@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Common.Entities.Enums
+﻿namespace VoidHuntersRevived.Domain.Entities.Common.Enums
 {
     [Flags]
     public enum EntityTypeFlags

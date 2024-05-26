@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {

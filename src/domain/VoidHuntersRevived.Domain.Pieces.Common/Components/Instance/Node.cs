@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;

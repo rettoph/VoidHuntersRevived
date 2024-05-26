@@ -1,10 +1,11 @@
 ﻿using Svelto.ECS;
 using System.Runtime.InteropServices;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Utilities;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
-namespace VoidHuntersRevived.Common.Entities.Descriptors
+namespace VoidHuntersRevived.Domain.Entities.Common.Descriptors
 {
     public abstract class VoidHuntersEntityDescriptor : IEquatable<VoidHuntersEntityDescriptor?>
     {
@@ -18,7 +19,8 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
         public IEntityDescriptor Instance => _instanceDescriptor;
         public IEntityDescriptor Type => _typeDescriptor;
 
-        public ExclusiveGroupStruct Group { get; }
+        public ExclusiveGroupStruct InstanceGroup { get; }
+        public ExclusiveGroupStruct TypeGroup { get; }
 
         protected VoidHuntersEntityDescriptor()
         {
@@ -26,7 +28,8 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             _instanceDescriptor = DynamicEntityDescriptor<InstanceEntityDescriptor>.CreateDynamicEntityDescriptor();
 
             this.Name = this.GetType().Name;
-            this.Group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct(this.Name);
+            this.InstanceGroup = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{this.Name}_{nameof(this.InstanceGroup)}");
+            this.TypeGroup = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{this.Name}}}_{nameof(this.TypeGroup)}");
 
             VoidHuntersEntityDescriptor.GetDescriptorComponentBuilders(this, out IComponentBuilder[] instanceDescriptorComponents, out IComponentBuilder[] staticComponentBuilders);
             this.WithInstanceComponents(instanceDescriptorComponents);

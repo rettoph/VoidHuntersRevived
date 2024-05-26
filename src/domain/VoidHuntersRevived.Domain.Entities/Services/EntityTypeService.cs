@@ -1,10 +1,10 @@
 ﻿using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using VoidHuntersRevived.Common.Entities;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.Entities.Descriptors;
-using VoidHuntersRevived.Common.Entities.Enums;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Utilities;
