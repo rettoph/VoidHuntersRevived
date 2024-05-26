@@ -1,8 +1,10 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Utilities;
 using Svelto.ECS;
+using System.Reflection;
 using VoidHuntersRevived.Common.Entities;
 using VoidHuntersRevived.Common.Entities.Components;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
@@ -12,10 +14,14 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
     internal class HasManyEntityInitializer : BaseEntityInitializer, IDisposable
     {
         private readonly StaticValue<HasManyEntityInitializer, IEntityService> _entities;
+        private readonly Dictionary<IEntityType, EntityInitializerDelegate> _instanceInitializers;
+        private readonly Dictionary<IEntityType, EntityInitializerDelegate> _typeInitializers;
 
         public HasManyEntityInitializer(IEntityService entities)
         {
             _entities = new StaticValue<HasManyEntityInitializer, IEntityService>(entities);
+            _instanceInitializers = new Dictionary<IEntityType, EntityInitializerDelegate>();
+            _typeInitializers = new Dictionary<IEntityType, EntityInitializerDelegate>();
 
             this.WithInstanceInitializer(type => type.Descriptor.componentsToBuild.Any(x =>
             {
@@ -29,6 +35,12 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                 if (componentType.GetGenericTypeDefinition() != typeof(HasMany<>))
                 {
                     return false;
+                }
+
+                // Build initializer now
+                if (_instanceInitializers.ContainsKey(type) == false)
+                {
+                    _instanceInitializers.Add(type, HasManyEntityInitializersBuilder(type.Descriptor.componentsToBuild));
                 }
 
                 return true;
@@ -49,6 +61,12 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                     return false;
                 }
 
+                // Build initializer now
+                if(_typeInitializers.ContainsKey(type) == false)
+                {
+                    _typeInitializers.Add(type, HasManyEntityInitializersBuilder(type.Descriptor.StaticDescriptor.componentsToBuild));
+                }
+
                 return true;
 
             }), this.InitializeTypeParentComponents);
@@ -66,9 +84,42 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
 
         private void InitializeTypeParentComponents(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
         {
-            // throw new NotImplementedException();
+            _typeInitializers[type](entities, type, in id, ref initializer);
         }
 
+        private static MethodInfo hasManyComponentInitializerBuilderMethod = typeof(HasManyEntityInitializer).GetMethod(nameof(HasManyEntityInitializer.HasManyComponentInitializerBuilder), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new NotImplementedException();
+        private static EntityInitializerDelegate HasManyEntityInitializersBuilder(IComponentBuilder[] components)
+        {
 
+            EntityInitializerDelegate initializers = default!;
+
+            foreach(IComponentBuilder component in components)
+            {
+                Type componentType = component.GetEntityComponentType();
+
+                if (componentType.IsConstructedGenericType == false)
+                {
+                    continue;
+                }
+
+                if (componentType.GetGenericTypeDefinition() != typeof(HasMany<>))
+                {
+                    continue;
+                }
+
+                initializers += (EntityInitializerDelegate)hasManyComponentInitializerBuilderMethod.MakeGenericMethod(componentType).Invoke(null, Array.Empty<object>())!;
+            }
+
+            return initializers;
+        }
+
+        private static EntityInitializerDelegate HasManyComponentInitializerBuilder<T>()
+            where T : unmanaged, IEntityComponent
+        {
+            return (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
+            {
+                initializer.Init<HasMany<T>>(new HasMany<T>());
+            };
+        }
     }
 }

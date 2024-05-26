@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
         private readonly List<KeyValuePair<Func<IEntityType, bool>, EntityInitializerDelegate>> _instanceInitializers;
         private readonly List<KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>> _instanceDisposers;
         private readonly List<KeyValuePair<Func<IEntityType, bool>, EntityInitializerDelegate>> _typeInitializers;
-        private readonly List<KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>> _staticDisposers;
+        private readonly List<KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>> _typeDisposers;
 
         public int Order { get; set; }
 
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
             _instanceInitializers = new List<KeyValuePair<Func<IEntityType, bool>, EntityInitializerDelegate>>();
             _instanceDisposers = new List<KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>>();
             _typeInitializers = new List<KeyValuePair<Func<IEntityType, bool>, EntityInitializerDelegate>>();
-            _staticDisposers = new List<KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>>();
+            _typeDisposers = new List<KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>>();
 
             this.Order = 0;
         }
@@ -117,7 +117,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
             }
 
             _filters.Add(entityTypeFilter);
-            _staticDisposers.Add(new KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>(entityTypeFilter, disposer));
+            _typeDisposers.Add(new KeyValuePair<Func<IEntityType, bool>, DisposeEntityInitializerDelegate>(entityTypeFilter, disposer));
 
             return this;
         }
@@ -185,7 +185,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
         {
             DisposeEntityInitializerDelegate? result = default;
 
-            foreach ((Func<IEntityType, bool> filter, DisposeEntityInitializerDelegate disposer) in _staticDisposers)
+            foreach ((Func<IEntityType, bool> filter, DisposeEntityInitializerDelegate disposer) in _typeDisposers)
             {
                 if (filter(entityType))
                 {

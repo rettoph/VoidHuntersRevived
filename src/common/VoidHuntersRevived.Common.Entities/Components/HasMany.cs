@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Core.Common.Utilities;
+using Svelto.ECS;
 
 namespace VoidHuntersRevived.Common.Entities.Components
 {
