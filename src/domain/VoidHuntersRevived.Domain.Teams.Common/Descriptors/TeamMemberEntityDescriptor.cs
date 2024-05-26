@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Descriptors
                 new ComponentBuilder<ColorScheme>()
             ]);
 
-            this.WithStaticComponents([
+            this.WithTypeComponents([
                 new ComponentBuilder<ColorScheme>()
             ]);
         }

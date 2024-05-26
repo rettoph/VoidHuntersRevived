@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _reader = new EntityReader(_scope.Resolve<IEntityTypeService>(), this, _logger);
             _entityTypeInitializer = _scope.Resolve<IEntityTypeInitializerService>();
 
-            foreach (VoidHuntersEntityDescriptorEngine engine in engines.OfType<IVoidHuntersEntityDescriptorEngine>())
+            foreach (InstanceEntityDescriptorEngine engine in engines.OfType<IVoidHuntersEntityDescriptorEngine>())
             {
                 _descriptors.TryAdd(engine.Descriptor.Id, engine.Descriptor.GetType(), engine);
             }

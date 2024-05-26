@@ -6,32 +6,31 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Common.Entities.Descriptors
 {
-    public abstract class VoidHuntersEntityDescriptor : IDynamicEntityDescriptor, IEquatable<VoidHuntersEntityDescriptor?>
+    public abstract class VoidHuntersEntityDescriptor : IEquatable<VoidHuntersEntityDescriptor?>
     {
-        private DynamicEntityDescriptor<TypeDescriptor> _staticDescriptor;
-        private DynamicEntityDescriptor<EntityDescriptor> _instanceDescriptor;
+        private DynamicEntityDescriptor<TypeEntityDescriptor> _typeDescriptor;
+        private DynamicEntityDescriptor<InstanceEntityDescriptor> _instanceDescriptor;
         private Id<VoidHuntersEntityDescriptor>? _id;
 
         public Id<VoidHuntersEntityDescriptor> Id => _id ??= HashBuilder<VoidHuntersEntityDescriptor, VhId>.Instance.CalculateId(VhId.HashString(this.GetType().AssemblyQualifiedName ?? throw new NotImplementedException()));
         public string Name { get; }
 
-        public IComponentBuilder[] componentsToBuild => _instanceDescriptor.componentsToBuild;
-
-        public IEntityDescriptor StaticDescriptor => _staticDescriptor;
+        public IEntityDescriptor Instance => _instanceDescriptor;
+        public IEntityDescriptor Type => _typeDescriptor;
 
         public ExclusiveGroupStruct Group { get; }
 
         protected VoidHuntersEntityDescriptor()
         {
-            _staticDescriptor = DynamicEntityDescriptor<TypeDescriptor>.CreateDynamicEntityDescriptor();
-            _instanceDescriptor = DynamicEntityDescriptor<EntityDescriptor>.CreateDynamicEntityDescriptor();
+            _typeDescriptor = DynamicEntityDescriptor<TypeEntityDescriptor>.CreateDynamicEntityDescriptor();
+            _instanceDescriptor = DynamicEntityDescriptor<InstanceEntityDescriptor>.CreateDynamicEntityDescriptor();
 
             this.Name = this.GetType().Name;
             this.Group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct(this.Name);
 
             VoidHuntersEntityDescriptor.GetDescriptorComponentBuilders(this, out IComponentBuilder[] instanceDescriptorComponents, out IComponentBuilder[] staticComponentBuilders);
             this.WithInstanceComponents(instanceDescriptorComponents);
-            this.WithStaticComponents(staticComponentBuilders);
+            this.WithTypeComponents(staticComponentBuilders);
         }
 
         protected VoidHuntersEntityDescriptor WithInstanceComponents(IComponentBuilder[] builders)
@@ -41,9 +40,9 @@ namespace VoidHuntersRevived.Common.Entities.Descriptors
             return this;
         }
 
-        protected VoidHuntersEntityDescriptor WithStaticComponents(IComponentBuilder[] builders)
+        protected VoidHuntersEntityDescriptor WithTypeComponents(IComponentBuilder[] builders)
         {
-            _staticDescriptor.ExtendWith(builders);
+            _typeDescriptor.ExtendWith(builders);
 
             return this;
         }

@@ -14,7 +14,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
-    internal abstract class VoidHuntersEntityDescriptorEngine : BasicEngine, IVoidHuntersEntityDescriptorEngine
+    internal abstract class InstanceEntityDescriptorEngine : BasicEngine, IVoidHuntersEntityDescriptorEngine
     {
         internal static AsyncLocal<uint> EntityId = new AsyncLocal<uint>();
 
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         public abstract void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 
-    internal sealed class VoidHuntersEntityDescriptorEngine<TDescriptor> : VoidHuntersEntityDescriptorEngine, IQueryingEntitiesEngine, IEngineEngine
+    internal sealed class InstanceEntityDescriptorEngine<TDescriptor> : InstanceEntityDescriptorEngine, IQueryingEntitiesEngine, IEngineEngine
         where TDescriptor : VoidHuntersEntityDescriptor, new()
     {
         private readonly TDescriptor _descriptor;
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public override VoidHuntersEntityDescriptor Descriptor => _descriptor;
 
-        public VoidHuntersEntityDescriptorEngine(
+        public InstanceEntityDescriptorEngine(
             IComponentSerializerService serializers,
             ILifetimeScope scope,
             EnginesRoot enginesRoot,
@@ -57,12 +57,12 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             _functions = enginesRoot.GenerateEntityFunctions();
             _onDespawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
             _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
-            _serializers = serializers.GetComponentSerializers(_descriptor);
+            _serializers = serializers.GetComponentSerializers(_descriptor.Instance);
         }
 
         public void Initialize(IEngineService engines)
         {
-            foreach (Type componentType in _descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()))
+            foreach (Type componentType in _descriptor.Instance.componentsToBuild.Select(x => x.GetEntityComponentType()))
             {
                 if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engines.All(), out var invoker))
                 {
@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             EGID egid = new EGID(EntityId.Value++, this.Descriptor.Group);
             id = new EntityId(egid, vhid);
 
-            EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor);
+            EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor.Instance);
             initializer.Init(id);
             initializer.Init(_descriptor.Id);
 
@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
         public override void HardDespawn(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
-            _functions.RemoveEntity<TDescriptor>(id.EGID);
+            _functions.RemoveEntity<InstanceEntityDescriptor>(id.EGID);
         }
     }
 }

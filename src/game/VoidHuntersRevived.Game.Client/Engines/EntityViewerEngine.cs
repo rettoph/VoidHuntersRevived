@@ -161,7 +161,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         result = result.Max(_objectExplorer.DrawObjectExplorer(entityId, _filter));
                     }
 
-                    foreach (Type componentType in descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()).Where(x => x.IsAssignableTo<IEntityComponent>()))
+                    foreach (Type componentType in descriptor.Instance.componentsToBuild.Select(x => x.GetEntityComponentType()).Where(x => x.IsAssignableTo<IEntityComponent>()))
                     {
                         using (_imgui.ApplyID(componentType.AssemblyQualifiedName ?? string.Empty))
                         {
@@ -215,7 +215,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
             TextFilterResult result = this.BasicFilter($"{entityId.VhId}{descriptor.Name}{type.Key}");
 
-            foreach (Type componentType in descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()).Where(x => x.IsAssignableTo<IEntityComponent>()))
+            foreach (Type componentType in descriptor.Instance.componentsToBuild.Select(x => x.GetEntityComponentType()).Where(x => x.IsAssignableTo<IEntityComponent>()))
             {
                 using (_imgui.ApplyID(componentType.AssemblyQualifiedName ?? string.Empty))
                 {

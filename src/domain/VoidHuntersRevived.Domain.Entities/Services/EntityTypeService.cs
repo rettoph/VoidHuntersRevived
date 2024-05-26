@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                 // Configure global components
                 // This parallels the actions done in EntityService for instance spawning
-                EntityInitializer entityInitializer = factory.BuildEntity(data.EGID, typeInitializer.Type.Descriptor.StaticDescriptor);
+                EntityInitializer entityInitializer = factory.BuildEntity(data.EGID, typeInitializer.Type.Descriptor.Type);
                 entityInitializer.Init(typeEntityId);
                 entityInitializer.Init(data.StaticComponent);
                 entityInitializer.Init(typeInitializer.Type.Id);

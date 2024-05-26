@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Descriptors
     {
         public TeamDescriptor()
         {
-            this.WithStaticComponents([
+            this.WithTypeComponents([
                 new ComponentBuilder<Team>(),
                 new ComponentBuilder<ColorScheme>()
             ]);

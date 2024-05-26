@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
                 new ComponentBuilder<Rigid>()
             ]);
 
-            this.WithStaticComponents([
+            this.WithTypeComponents([
                 new ComponentBuilder<Visible>(),
                 new ComponentBuilder<zIndex>(this.GetZIndex()),
             ]);

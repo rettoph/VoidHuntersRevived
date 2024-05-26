@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             _instanceInitializers = new Dictionary<IEntityType, EntityInitializerDelegate>();
             _typeInitializers = new Dictionary<IEntityType, EntityInitializerDelegate>();
 
-            this.WithInstanceInitializer(type => type.Descriptor.componentsToBuild.Any(x =>
+            this.WithInstanceInitializer(type => type.Descriptor.Instance.componentsToBuild.Any(x =>
             {
                 Type componentType = x.GetEntityComponentType();
 
@@ -40,14 +40,14 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                 // Build initializer now
                 if (_instanceInitializers.ContainsKey(type) == false)
                 {
-                    _instanceInitializers.Add(type, HasManyEntityInitializersBuilder(type.Descriptor.componentsToBuild));
+                    _instanceInitializers.Add(type, HasManyEntityInitializersBuilder(type.Descriptor.Instance.componentsToBuild));
                 }
 
                 return true;
 
             }), this.InitializeInstanceParentComponents);
 
-            this.WithTypeInitializer(type => type.Descriptor.StaticDescriptor.componentsToBuild.Any(x =>
+            this.WithTypeInitializer(type => type.Descriptor.Type.componentsToBuild.Any(x =>
             {
                 Type componentType = x.GetEntityComponentType();
 
@@ -62,9 +62,9 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                 }
 
                 // Build initializer now
-                if(_typeInitializers.ContainsKey(type) == false)
+                if (_typeInitializers.ContainsKey(type) == false)
                 {
-                    _typeInitializers.Add(type, HasManyEntityInitializersBuilder(type.Descriptor.StaticDescriptor.componentsToBuild));
+                    _typeInitializers.Add(type, HasManyEntityInitializersBuilder(type.Descriptor.Type.componentsToBuild));
                 }
 
                 return true;
@@ -93,7 +93,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
 
             EntityInitializerDelegate initializers = default!;
 
-            foreach(IComponentBuilder component in components)
+            foreach (IComponentBuilder component in components)
             {
                 Type componentType = component.GetEntityComponentType();
 

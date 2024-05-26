@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                 {
                     if (autoDisposeAttr.Scope == AutoDisposeScope.Instance)
                     {
-                        services.RegisterType(typeof(InstanceDisposableEngine<>)
+                        services.RegisterType(typeof(DisposableEngine<>)
                             .MakeGenericType(autoDisposeAttr.GetDisposableComponentType(disposableComponent)))
                             .As<IEngine>()
                             .InstancePerLifetimeScope();
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             foreach (Type descriptorType in descriptors)
             {
                 services.RegisterType(descriptorType).As<VoidHuntersEntityDescriptor>().SingleInstance();
-                services.RegisterType(typeof(VoidHuntersEntityDescriptorEngine<>).MakeGenericType(descriptorType)).AsImplementedInterfaces().InstancePerLifetimeScope();
+                services.RegisterType(typeof(InstanceEntityDescriptorEngine<>).MakeGenericType(descriptorType)).AsImplementedInterfaces().InstancePerLifetimeScope();
             }
         }
     }
