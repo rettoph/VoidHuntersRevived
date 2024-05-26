@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Collections;
+using Guppy.Core.Common.Utilities;
 using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
@@ -15,15 +16,18 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     [Sequence<EngineSequence>(EngineSequence.Group01)]
-    internal partial class EntityService : BasicEngine, IEntityService, IQueryingEntitiesEngine, IEngineEngine
+    internal partial class EntityService : BasicEngine, IEntityService, IQueryingEntitiesEngine, IEngineEngine, IDisposable
     {
         private readonly ILogger _logger;
         private readonly ILifetimeScope _scope;
         private readonly EntitiesSubmissionScheduler _scheduler;
+        private readonly UnmanagedReference<IEntityService> _ref;
 
         private EntityReader _reader;
         private EntityWriter _writer;
         private IEntityTypeInitializerService _entityTypeInitializer;
+
+        public EntitiesDB entitiesDB { get; set; } = null!;
 
         public EntityService(
             ILogger logger,
@@ -38,9 +42,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _writer = null!;
             _reader = null!;
             _entityTypeInitializer = null!;
+
+            _ref = new UnmanagedReference<IEntityService>(this);
         }
 
-        public EntitiesDB entitiesDB { get; set; } = null!;
+        public void Dispose()
+        {
+            _ref.Dispose(false);
+        }
 
         public void Initialize(IEngineService engines)
         {
@@ -52,6 +61,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 _descriptors.TryAdd(engine.Descriptor.Id, engine.Descriptor.GetType(), engine);
             }
+        }
+
+        public UnmanagedReference<IEntityService> GetReference()
+        {
+            return _ref;
         }
     }
 }

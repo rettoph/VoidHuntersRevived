@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Utilities;
 using Svelto.ECS;
 using System.Reflection;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -10,15 +9,13 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 namespace VoidHuntersRevived.Domain.Entities.Initializers
 {
     [AutoLoad]
-    internal class HasManyEntityInitializer : BaseEntityInitializer, IDisposable
+    internal class HasManyEntityInitializer : BaseEntityInitializer
     {
-        private readonly StaticValue<HasManyEntityInitializer, IEntityService> _entities;
         private readonly Dictionary<IEntityType, EntityInitializerDelegate> _instanceInitializers;
         private readonly Dictionary<IEntityType, EntityInitializerDelegate> _typeInitializers;
 
         public HasManyEntityInitializer(IEntityService entities)
         {
-            _entities = new StaticValue<HasManyEntityInitializer, IEntityService>(entities);
             _instanceInitializers = new Dictionary<IEntityType, EntityInitializerDelegate>();
             _typeInitializers = new Dictionary<IEntityType, EntityInitializerDelegate>();
 
@@ -71,11 +68,6 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             }), this.InitializeTypeParentComponents);
         }
 
-        public void Dispose()
-        {
-            _entities.Dispose();
-        }
-
         private void InitializeInstanceParentComponents(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
         {
             throw new NotImplementedException();
@@ -117,7 +109,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
         {
             return (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
-                initializer.Init<HasMany<T>>(new HasMany<T>());
+                initializer.Init<HasMany<T>>(new HasMany<T>(entities.GetReference()));
             };
         }
     }

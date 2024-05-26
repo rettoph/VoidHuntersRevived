@@ -1,7 +1,7 @@
-﻿using Svelto.DataStructures;
+﻿using Guppy.Core.Common.Utilities;
+using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
@@ -181,6 +181,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 
         #region Descriptors
         internal IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(Id<VoidHuntersEntityDescriptor> descriptorId);
+        #endregion
+
+        #region Utilities
+        UnmanagedReference<IEntityService> GetReference();
         #endregion
     }
 }
