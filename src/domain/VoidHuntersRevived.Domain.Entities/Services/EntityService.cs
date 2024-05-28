@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityReader _reader;
         private EntityWriter _writer;
-        private IEntityTypeInitializerService _entityTypeInitializer;
+        private IEntityTypeService _types;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             _writer = null!;
             _reader = null!;
-            _entityTypeInitializer = null!;
+            _types = null!;
 
             _ref = new UnmanagedReference<IEntityService>(this);
         }
@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _writer = new EntityWriter(this, _logger);
             _reader = new EntityReader(_scope.Resolve<IEntityTypeService>(), this, _logger);
-            _entityTypeInitializer = _scope.Resolve<IEntityTypeInitializerService>();
+            _types = _scope.Resolve<IEntityTypeService>();
 
             foreach (InstanceEntityDescriptorEngine engine in engines.OfType<IVoidHuntersEntityDescriptorEngine>())
             {

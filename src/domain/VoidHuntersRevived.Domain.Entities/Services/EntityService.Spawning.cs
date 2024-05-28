@@ -3,9 +3,8 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
-using VoidHuntersRevived.Domain.Entities.Common.Enums;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -167,6 +166,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             if (this.TryGetId(data.VhId, out EntityId id) == false)
             {
+                // Enqueue SoftSpawn entity event
+                // This is enqueued before HardSpawn is published in case the initializer
+                // Spawns any other entities. This ensture the first entitiy SoftSpawn
+                // event is called first every time.
                 this.Simulation.Enqueue(new EventDto()
                 {
                     SourceId = NameSpace<EntityService>.Instance.Create(eventId),
@@ -176,6 +179,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     }
                 });
 
+                // Publish HardSPawn even immidiately
                 this.Simulation.Publish(new EventDto()
                 {
                     SourceId = NameSpace<EntityService>.Instance.Create(eventId),
@@ -201,7 +205,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 EntityInitializer initializer = this.GetDescriptorEngine(data.Type.Descriptor.Id).HardSpawn(eventId, data.VhId, out id);
                 initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
-                _entityTypeInitializer.Get(data.Type).InitializeInstance(this, data.Type, in id, ref initializer);
+                _types.GetProviderByType(data.Type).InitializeInstance(this, data.Type, in id, ref initializer);
             }
             else
             {
@@ -216,7 +220,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 EntityInitializer initializer = this.GetDescriptorEngine(data.Type.Descriptor.Id).HardSpawn(eventId, data.VhId, out id);
                 initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
-                _entityTypeInitializer.Get(data.Type).InitializeInstance(this, data.Type, in id, ref initializer);
+                _types.GetProviderByType(data.Type).InitializeInstance(this, data.Type, in id, ref initializer);
                 data.Initializer.Invoke(this, data.Type, in id, ref initializer);
             }
             else

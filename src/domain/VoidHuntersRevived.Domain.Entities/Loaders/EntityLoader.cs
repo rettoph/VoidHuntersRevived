@@ -26,8 +26,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
             builder.RegisterType<EntityDescriptorService>().As<IEntityDescriptorService>().AsSelf().InstancePerLifetimeScope();
 
-            builder.RegisterType<EntityTypeInitializerService>().As<IEntityTypeInitializerService>().AsSelf().InstancePerLifetimeScope();
-
             builder.RegisterType<EntitiesSubmissionScheduler>().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<EnginesRoot>().InstancePerLifetimeScope();

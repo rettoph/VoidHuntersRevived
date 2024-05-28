@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Components
 {
-    public struct BelongsTo : IEntityComponent
+    public struct BelongsTo<TParent> : IEntityComponent
     {
         public EntityId ParentId { get; set; }
     }

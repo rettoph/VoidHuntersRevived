@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
 {
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
 
         /// <summary>
         /// Indicates wether or not the current <see cref="IEntityInitializer"/> should be used when
-        /// constructing a <see cref="IEntityTypeInitializer"/> instance for the given <paramref name="entityType"/>
+        /// constructing a <see cref="IEntityTypeProvider"/> instance for the given <paramref name="entityType"/>
         /// </summary>
         /// <param name="entityType"></param>
         /// <returns></returns>

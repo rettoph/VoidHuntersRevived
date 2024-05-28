@@ -1,4 +1,7 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Collections;
+using Guppy.Core.Resources.Common;
+using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -6,7 +9,9 @@ using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Providers;
 using VoidHuntersRevived.Domain.Entities.Utilities;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
@@ -14,18 +19,32 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     internal sealed class EntityTypeService : BasicEngine, IEntityTypeService, IQueryingEntitiesEngine, IReactOnAddEx<InstanceData>, IReactOnAddEx<TypeData>
     {
+        private DoubleDictionary<Id<IEntityType>, IEntityType, IEntityTypeProvider> _providers;
         private Dictionary<Id<IEntityType>, IEntityType> _types;
         private Dictionary<Type, object> _byDescriptor;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public EntityTypeService(IEntityTypeInitializerService typeInitializersService, EnginesRoot enginesRoot, EntityService entities)
+        public EntityTypeService(
+            IFiltered<IEntityInitializer> initializers,
+            EnginesRoot enginesRoot,
+            EntityService entities)
         {
-            // Fetch all non partial types
-            List<IEntityTypeInitializer> typeInitializers = typeInitializersService.GetAll(EntityTypeFlags.Partial).ToList();
+            IEnumerable<IEntityType> importedInitializers = Resource<IEntityType>.GetAll().Select(x => x.Value);
 
-            // Store them internally
-            _types = typeInitializers.Select(x => x.Type).ToDictionary(x => x.Id, x => x);
+            // Create EntityTypeProviders for all non-partial declared types
+            _providers = initializers.SelectMany(init => init.ExplicitEntityTypes)
+                .Concat(importedInitializers)
+                .Distinct()
+                .Where(x => x.Flags.HasFlag(EntityTypeFlags.Partial) == false)
+                .ToDoubleDictionary(
+                    keySelector1: type => type.Id,
+                    keySelector2: type => type,
+                    elementSelector: type => (IEntityTypeProvider)new EntityTypeProvider(type, initializers.Where(init => init.ShouldInitialize(type))));
+
+            // Smaller type lookup 
+            _types = _providers.Values.ToDictionary(x => x.Type.Id, x => x.Type);
+
             _byDescriptor = new Dictionary<Type, object>();
 
 
@@ -33,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             // The idea behind this entity is to contain "type" shared data that is consistent
             // Across all entities of this type.
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
-            foreach (IEntityTypeInitializer typeInitializer in typeInitializersService.GetAll(EntityTypeFlags.Partial))
+            foreach (IEntityTypeProvider typeInitializer in _providers.Values)
             {
                 var data = EntityTypeHelper.GetData(typeInitializer.Type);
 
@@ -60,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public IEntityType GetById(Id<IEntityType> id)
         {
-            return _types[id];
+            return _providers[id].Type;
         }
 
         public IEnumerable<IEntityType> GetAll()
@@ -121,6 +140,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                 staticComponent.InstanceEntitiesCount++;
             }
+        }
+
+        public IEntityTypeProvider GetProviderByType(IEntityType type)
+        {
+            return _providers[type];
         }
     }
 }

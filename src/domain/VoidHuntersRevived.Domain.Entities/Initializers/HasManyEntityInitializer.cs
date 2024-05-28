@@ -109,7 +109,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
         {
             return (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
-                initializer.Init<HasMany<T>>(new HasMany<T>(entities.GetReference()));
+                initializer.Init<HasMany<T>>(new HasMany<T>(id, entities.GetReference()));
             };
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
@@ -14,5 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 
         IEntityType<TDescriptor>[] GetAll<TDescriptor>()
             where TDescriptor : VoidHuntersEntityDescriptor;
+
+        IEntityTypeProvider GetProviderByType(IEntityType type);
     }
 }
