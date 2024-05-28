@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Svelto.DataStructures;
-using Svelto.ECS;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
@@ -15,11 +15,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _serializers = serializers.ToDictionary(x => x.Type, x => x);
         }
 
-        public FasterList<ComponentSerializer> GetComponentSerializers(IEntityDescriptor descriptor)
+        public FasterList<ComponentSerializer> GetInstanceComponentSerializers(IEntityType type)
         {
             List<ComponentSerializer> items = new List<ComponentSerializer>();
 
-            foreach (Type component in descriptor.componentsToBuild.Select(x => x.GetEntityComponentType()))
+            foreach (Type component in type.Descriptor.Instance.componentsToBuild.Select(x => x.GetEntityComponentType()))
             {
                 if (_serializers.TryGetValue(component, out var serializer))
                 {

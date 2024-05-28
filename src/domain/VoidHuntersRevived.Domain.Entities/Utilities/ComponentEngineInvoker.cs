@@ -13,28 +13,28 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 
         public static bool Create(Type componentEngineInvokerType, Type engineType, Type componentType, IEnumerable<IEngine> engines, [MaybeNullWhen(false)] out ComponentEngineInvoker invoker)
         {
-            List<IEngine> onDespawnEngines = new List<IEngine>();
+            List<IEngine> onComponentEngines = new List<IEngine>();
 
             foreach (IEngine engine in engines)
             {
-                foreach (Type onDespawnEngineType in engine.GetType().GetConstructedGenericTypes(engineType))
+                foreach (Type onComponentEngineType in engine.GetType().GetConstructedGenericTypes(engineType))
                 {
-                    if (componentType == onDespawnEngineType.GenericTypeArguments[0])
+                    if (componentType == onComponentEngineType.GenericTypeArguments[0])
                     {
-                        onDespawnEngines.Add(engine);
+                        onComponentEngines.Add(engine);
                         continue;
                     }
                 }
             }
 
-            if (onDespawnEngines.Count == 0)
+            if (onComponentEngines.Count == 0)
             {
                 invoker = null;
                 return false;
             }
 
             Type invokerType = componentEngineInvokerType.MakeGenericType(componentType);
-            invoker = (ComponentEngineInvoker)Activator.CreateInstance(invokerType, onDespawnEngines)!;
+            invoker = (ComponentEngineInvoker)Activator.CreateInstance(invokerType, onComponentEngines)!;
 
             return true;
         }

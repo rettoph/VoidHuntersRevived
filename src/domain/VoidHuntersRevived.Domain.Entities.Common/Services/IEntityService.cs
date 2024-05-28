@@ -2,8 +2,6 @@
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 
@@ -11,6 +9,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IEntityService
     {
+        IEntityTypeService Types { get; }
+
         #region Entity Ids
         EntityId GetId(VhId vhid);
 
@@ -177,10 +177,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 
         int CalculateTotal<T>()
             where T : unmanaged, IEntityComponent;
-        #endregion
-
-        #region Descriptors
-        internal IVoidHuntersEntityDescriptorEngine GetDescriptorEngine(Id<VoidHuntersEntityDescriptor> descriptorId);
         #endregion
 
         #region Utilities

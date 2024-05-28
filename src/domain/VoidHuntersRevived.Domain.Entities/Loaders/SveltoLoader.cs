@@ -43,7 +43,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             foreach (Type descriptorType in descriptors)
             {
                 services.RegisterType(descriptorType).As<VoidHuntersEntityDescriptor>().SingleInstance();
-                services.RegisterType(typeof(InstanceEntityDescriptorEngine<>).MakeGenericType(descriptorType)).AsImplementedInterfaces().InstancePerLifetimeScope();
             }
         }
     }

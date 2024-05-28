@@ -3,7 +3,6 @@ using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
@@ -143,7 +142,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             _entities.Spawn(sourceId, type, vhid, (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
-                entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
+                entities.Types.GetProviderByType(type).DeserializeInstance(in sourceId, in options, this, ref initializer, in id);
 
                 initializerDelegate(entities, type, in id, ref initializer);
             });
@@ -163,7 +162,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             _entities.Spawn(sourceId, type, vhid, (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
-                entities.GetDescriptorEngine(type.Descriptor.Id).Deserialize(in sourceId, in options, this, ref initializer, in id);
+                entities.Types.GetProviderByType(type).DeserializeInstance(in sourceId, in options, this, ref initializer, in id);
 
                 rootInitializerDelegate(entities, type, in id, ref initializer);
                 initializerDelegate(entities, type, in id, ref initializer);

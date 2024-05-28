@@ -2,9 +2,8 @@
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -203,9 +202,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             ref EntityId id = ref this.GetOrAddId(data.VhId, out bool exists);
             if (exists == false)
             {
-                EntityInitializer initializer = this.GetDescriptorEngine(data.Type.Descriptor.Id).HardSpawn(eventId, data.VhId, out id);
-                initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
-                _types.GetProviderByType(data.Type).InitializeInstance(this, data.Type, in id, ref initializer);
+                EntityInitializer initializer = _types.GetProviderByType(data.Type).HardSpawnInstance(eventId, data.VhId, out id);
             }
             else
             {
@@ -218,9 +215,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             ref EntityId id = ref this.GetOrAddId(data.VhId, out bool exists);
             if (exists == false)
             {
-                EntityInitializer initializer = this.GetDescriptorEngine(data.Type.Descriptor.Id).HardSpawn(eventId, data.VhId, out id);
-                initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
-                _types.GetProviderByType(data.Type).InitializeInstance(this, data.Type, in id, ref initializer);
+                EntityInitializer initializer = _types.GetProviderByType(data.Type).HardSpawnInstance(eventId, data.VhId, out id);
                 data.Initializer.Invoke(this, data.Type, in id, ref initializer);
             }
             else
@@ -237,8 +232,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                 if (exists && status.Value == EntityStatusEnum.HardSpawned)
                 {
-                    Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
-                    this.GetDescriptorEngine(descriptorId).SoftSpawn(in eventId, in id, in groupIndex, ref status);
+                    Id<IEntityType> typeId = this.QueryByGroupIndex<Id<IEntityType>>(in groupIndex);
+                    _types.GetProviderByTypeId(typeId).SoftSpawnInstance(in eventId, in id, in groupIndex, ref status);
                     status.Value = EntityStatusEnum.SoftSpawned;
                 }
                 else
@@ -362,8 +357,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                 if (exists && status.Value == EntityStatusEnum.SoftDespawnEnqueued)
                 {
-                    Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
-                    this.GetDescriptorEngine(descriptorId).SoftDespawn(in eventId, in id, in groupIndex, ref status);
+                    Id<IEntityType> typeId = this.QueryByGroupIndex<Id<IEntityType>>(in groupIndex);
+                    _types.GetProviderByTypeId(typeId).SoftSpawnInstance(in eventId, in id, in groupIndex, ref status);
                     status.Value = EntityStatusEnum.SoftDespawned;
                 }
                 else
@@ -397,16 +392,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
                 if (exists)
                 {
-                    Id<VoidHuntersEntityDescriptor> descriptorId = this.QueryByGroupIndex<Id<VoidHuntersEntityDescriptor>>(in groupIndex);
-                    IVoidHuntersEntityDescriptorEngine descriptorEngine = this.GetDescriptorEngine(descriptorId);
+                    Id<IEntityType> typeId = this.QueryByGroupIndex<Id<IEntityType>>(in groupIndex);
+                    IEntityTypeProvider descriptorEngine = _types.GetProviderByTypeId(typeId);
 
                     if (status.Value < EntityStatusEnum.SoftDespawned)
                     {
-                        descriptorEngine.SoftDespawn(in eventId, in id, in groupIndex, ref status);
+                        descriptorEngine.SoftDespawnInstance(in eventId, in id, in groupIndex, ref status);
                         status.Value = EntityStatusEnum.SoftDespawned;
                     }
 
-                    descriptorEngine.HardDespawn(in eventId, in id, in groupIndex, ref status);
+                    descriptorEngine.HardDespawnInstance(in eventId, in id, in groupIndex, ref status);
                     this.RemoveId(id);
                     status.Value = EntityStatusEnum.HardDespawned;
                 }

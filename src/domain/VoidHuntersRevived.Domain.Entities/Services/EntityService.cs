@@ -1,16 +1,13 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Collections;
 using Guppy.Core.Common.Utilities;
 using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -29,6 +26,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
+        public IEntityTypeService Types => _types;
+
         public EntityService(
             ILogger logger,
             ILifetimeScope scope,
@@ -37,7 +36,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _logger = logger;
             _scope = scope;
             _scheduler = scheduler;
-            _descriptors = new DoubleDictionary<Id<VoidHuntersEntityDescriptor>, Type, IVoidHuntersEntityDescriptorEngine>();
 
             _writer = null!;
             _reader = null!;
@@ -56,11 +54,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _writer = new EntityWriter(this, _logger);
             _reader = new EntityReader(_scope.Resolve<IEntityTypeService>(), this, _logger);
             _types = _scope.Resolve<IEntityTypeService>();
-
-            foreach (InstanceEntityDescriptorEngine engine in engines.OfType<IVoidHuntersEntityDescriptorEngine>())
-            {
-                _descriptors.TryAdd(engine.Descriptor.Id, engine.Descriptor.GetType(), engine);
-            }
         }
 
         public UnmanagedReference<IEntityService> GetReference()
