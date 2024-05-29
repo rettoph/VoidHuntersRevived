@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
 
         private void InitializeInstanceParentComponents(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
         {
-            throw new NotImplementedException();
+            _instanceInitializers[type](entities, type, in id, ref initializer);
         }
 
         private void InitializeTypeParentComponents(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
