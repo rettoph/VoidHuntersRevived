@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Game;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
@@ -7,7 +6,6 @@ using Serilog;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Extensions;
@@ -36,7 +34,6 @@ namespace VoidHuntersRevived.Domain.Simulations
         public readonly SimulationType Type;
         public ILifetimeScope Scope { get; private set; }
 
-        public VhId Id { get; }
         public Step CurrentStep { get; private set; }
 
         SimulationType ISimulation.Type => this.Type;
@@ -47,7 +44,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             _enqueued = new Queue<EventDto>();
             _publishers = new Dictionary<Type, EventPublisher>();
 
-            this.Id = HashBuilder<Simulation, Guid, SimulationType>.Instance.Calculate(Guid.NewGuid(), type);
             this.Type = type;
             this.Scope = scope;
 
@@ -89,7 +85,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public override void Draw(GameTime realTime)
         {
-            base.Update(realTime);
+            base.Draw(realTime);
 
             _frameStart.GameTime = realTime;
             _frameStartEnginesGroup.Step(_frameStart);
