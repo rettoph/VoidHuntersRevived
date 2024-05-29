@@ -1,5 +1,4 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 
@@ -10,8 +9,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
         public TreeDescriptor()
         {
             this.WithInstanceComponents([
-                new ComponentBuilder<Tree>(),
-                new ComponentBuilder<Id<Blueprint>>()
+                new ComponentBuilder<Tree>()
             ]);
         }
     }

@@ -4,16 +4,16 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Components
 {
-    public unsafe struct HasMany<TItem, T> : IEntityComponent
-        where TItem : unmanaged, IEntityComponent
-        where T : unmanaged, IEntityComponent
+    public unsafe struct HasMany<TItems, TAs> : IEntityComponent
+        where TItems : unmanaged, IEntityComponent
+        where TAs : unmanaged, IEntityComponent
     {
         private static readonly FilterContextID _context = FilterContextID.GetNewContextID();
 
         private readonly UnmanagedReference<IEntityService> _entities;
         private readonly CombinedFilterID _filterId;
 
-        public EntityFilterCollection Items => _entities.Value.GetFilter<TItem>(_filterId);
+        public EntityFilterCollection Items => _entities.Value.GetFilter<TItems>(_filterId);
 
         public HasMany(EntityId id, UnmanagedReference<IEntityService> entities)
         {

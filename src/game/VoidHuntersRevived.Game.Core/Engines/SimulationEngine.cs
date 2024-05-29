@@ -1,9 +1,9 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Game.Core.Engines
             {
                 for (int y = -radius; y < radius; y += step)
                 {
-                    _trees.Spawn(eventId, eventId.Create(i++), _teams.GetDefaultTeamId(), EntityTypes.Chain, pieces[i % pieces.Length], (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
+                    _trees.Spawn(eventId, eventId.Create(i++), _teams.GetDefaultTeamComponent(), EntityTypes.Chain, pieces[i % pieces.Length], (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
                     {
                         initializer.Init(new Location()
                         {

@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using Svelto.DataStructures;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
@@ -99,7 +100,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
         private void InternalSerialize(EntityId id, SerializationOptions options)
         {
-            Id<IEntityType> typeId = _entities.QueryById<Id<IEntityType>>(id, out GroupIndex groupIndex);
+            Id<IEntityType> typeId = _entities.QueryById<InstanceEntity>(id, out GroupIndex groupIndex).TypeId;
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to serialize {EntityId} of type {EntityType}", nameof(EntityWriter), nameof(InternalSerialize), id.VhId, typeId.Value);
 

@@ -2,9 +2,9 @@
 using Guppy.Core.Network.Common;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Game.Core.Engines
             // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
 
             var blueprint = _blueprints.GetAll().First();
-            _trees.Spawn(eventId, eventId.Create(1), _teams.GetOpenTeamId(), EntityTypes.UserShip, blueprint, (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
+            _trees.Spawn(eventId, eventId.Create(1), _teams.GetOpenTeamComponent(), EntityTypes.UserShip, blueprint, (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(new Location()
                 {

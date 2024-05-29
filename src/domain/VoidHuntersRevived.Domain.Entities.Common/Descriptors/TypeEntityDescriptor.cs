@@ -9,8 +9,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Descriptors
         {
             new ComponentBuilder<EntityId>(),
             new ComponentBuilder<TypeEntity>(),
-            new ComponentBuilder<Id<VoidHuntersEntityDescriptor>>(),
-            new ComponentBuilder<Id<IEntityType>>(),
             new ComponentBuilder<HasMany<InstanceEntity, TypeEntity>>()
         };
 

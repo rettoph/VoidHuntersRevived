@@ -7,11 +7,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Descriptors
     {
         private readonly IComponentBuilder[] _componentsToBuild = new IComponentBuilder[]
         {
-            new ComponentBuilder<InstanceEntity>(),
-            new ComponentBuilder<EntityStatus>(),
             new ComponentBuilder<EntityId>(),
-            new ComponentBuilder<Id<VoidHuntersEntityDescriptor>>(),
-            new ComponentBuilder<Id<IEntityType>>(),
+            new ComponentBuilder<EntityStatus>(),
+            new ComponentBuilder<InstanceEntity>(),
             new ComponentBuilder<BelongsTo<TypeEntity, InstanceEntity>>()
         };
 

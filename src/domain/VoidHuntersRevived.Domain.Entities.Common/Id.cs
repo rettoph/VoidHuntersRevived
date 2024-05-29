@@ -1,9 +1,8 @@
-﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public struct Id<T> : IId<T>, IEntityComponent, IEquatable<Id<T>>
+    public struct Id<T> : IId<T>, IEquatable<Id<T>>
     {
         private readonly VhId _value;
 

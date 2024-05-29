@@ -1,4 +1,5 @@
 ﻿using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Teams.Common.Services
@@ -7,7 +8,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Services
     {
         bool TryGetGroupIndex(Id<Team> teamId, out GroupIndex groupIndex);
 
-        Id<Team> GetDefaultTeamId();
-        Id<Team> GetOpenTeamId();
+        BelongsTo<Team, TeamMember> GetDefaultTeamComponent();
+        BelongsTo<Team, TeamMember> GetOpenTeamComponent();
     }
 }

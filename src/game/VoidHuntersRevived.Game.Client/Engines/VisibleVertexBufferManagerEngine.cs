@@ -102,11 +102,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             base.Initialize(simulation);
 
-            foreach (var ((staticEntities, typeIds, visibles, zIndices, count), group) in _entities.QueryEntities<TypeEntity, Id<IEntityType>, Visible, zIndex>())
+            foreach (var ((typeEntities, visibles, zIndices, count), group) in _entities.QueryEntities<TypeEntity, Visible, zIndex>())
             {
                 for (int i = 0; i < count; i++)
                 {
-                    _managers.Add(typeIds[i], VisibleVertexBufferManagerEngine.BuildVertexBufferManager(typeIds[i], visibles[i], zIndices[i], _graphics));
+                    _managers.Add(typeEntities[i].TypeId, VisibleVertexBufferManagerEngine.BuildVertexBufferManager(typeEntities[i].TypeId, visibles[i], zIndices[i], _graphics));
                 }
             }
         }

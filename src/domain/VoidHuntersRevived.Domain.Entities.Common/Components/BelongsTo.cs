@@ -2,9 +2,9 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Components
 {
-    public struct BelongsTo<TOwner, T> : IEntityComponent
+    public struct BelongsTo<TOwner, TAs> : IEntityComponent
         where TOwner : unmanaged, IEntityComponent
-        where T : unmanaged, IEntityComponent
+        where TAs : unmanaged, IEntityComponent
     {
         // Someday, if we want to be able to change EntityId for an existing entity,
         // we should consider adding an UnmanagedReference<IEntityService> in this component

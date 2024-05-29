@@ -1,5 +1,6 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -10,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
 {
     internal class TeamService : BasicEngine, ITeamService
     {
-        private Id<Team> _defaultId;
+        private BelongsTo<Team, TeamMember> _belongsToDefaultTeamComponent;
         private Dictionary<Id<Team>, GroupIndex> _groupIndices;
 
 
@@ -28,13 +29,13 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         {
             base.Initialize(simulation);
 
-            foreach (var ((teams, count), group) in _entities.QueryEntities<Team>())
+            foreach (var ((teams, entityIds, count), group) in _entities.QueryEntities<Team, EntityId>())
             {
                 for (uint i = 0; i < count; i++)
                 {
                     var team = teams[i];
                     _groupIndices.Add(team.Id, new GroupIndex(group, i));
-                    _defaultId = team.Id;
+                    _belongsToDefaultTeamComponent = new BelongsTo<Team, TeamMember>(entityIds[i]);
                 }
             }
         }
@@ -44,14 +45,14 @@ namespace VoidHuntersRevived.Domain.Teams.Services
             return _groupIndices.TryGetValue(teamId, out groupIndex);
         }
 
-        public Id<Team> GetDefaultTeamId()
+        public BelongsTo<Team, TeamMember> GetDefaultTeamComponent()
         {
-            return _defaultId;
+            return _belongsToDefaultTeamComponent;
         }
 
-        public Id<Team> GetOpenTeamId()
+        public BelongsTo<Team, TeamMember> GetOpenTeamComponent()
         {
-            return _defaultId;
+            return _belongsToDefaultTeamComponent;
         }
     }
 }

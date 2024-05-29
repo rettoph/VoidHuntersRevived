@@ -2,7 +2,7 @@
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -16,23 +16,23 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal partial class TreeService
     {
-        public EntityId Spawn(VhId sourceId, VhId vhid, Id<Team> teamId, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, IEntityType<TreeDescriptor> tree, IEntityType<PieceDescriptor> head, EntityInitializerDelegate? initializerDelegate = null)
         {
             return _entities.Spawn(sourceId, tree, vhid, (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
                 EntityId headId = entities.Spawn(sourceId, head, vhid.Create(1), (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
                 {
-                    initializer.Init(teamId);
+                    initializer.Init(belongsToTeam);
                     initializer.Init(new Node(id, entities.GetId(vhid)));
                 });
 
-                initializer.Init(teamId);
+                initializer.Init(belongsToTeam);
                 initializer.Init(new Tree(headId));
                 initializerDelegate?.Invoke(entities, type, in id, ref initializer);
             });
         }
 
-        public EntityId Spawn(VhId sourceId, VhId vhid, Id<Team> teamId, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
+        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, IEntityType<TreeDescriptor> tree, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
             return _entities.Spawn(sourceId, tree, vhid, (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
@@ -44,21 +44,24 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                         Owner = vhid
                     },
                     data: nodes,
-                    initializer: teamId.EntityInitializer());
+                    initializer: (IEntityService _, IEntityType _, in EntityId _, ref EntityInitializer initializer) =>
+                    {
+                        initializer.Init(belongsToTeam);
+                    });
 
-                initializer.Init(teamId);
+                initializer.Init(belongsToTeam);
                 initializer.Init<Tree>(new Tree(headId));
                 initializerDelegate(entities, type, in id, ref initializer);
             });
         }
 
-        public EntityId Spawn(VhId sourceId, VhId vhid, Id<Team> teamId, IEntityType<TreeDescriptor> tree, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, IEntityType<TreeDescriptor> tree, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
         {
             return _entities.Spawn(sourceId, tree, vhid, (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
-                EntityId headId = entities.Spawn(sourceId, vhid, teamId, blueprint);
+                EntityId headId = entities.Spawn(sourceId, vhid, belongsToTeam, blueprint);
 
-                initializer.Init(teamId);
+                initializer.Init(belongsToTeam);
                 initializer.Init(new Tree(headId));
                 initializerDelegate?.Invoke(entities, type, in id, ref initializer);
             });

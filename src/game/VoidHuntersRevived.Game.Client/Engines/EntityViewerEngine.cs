@@ -92,15 +92,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             foreach (VoidHuntersEntityDescriptor descriptor in _entityDescriptors.GetAll())
             {
-                var (ids, typeIds, statuses, nativeIds, count) = _entities.QueryEntities<EntityId, Id<IEntityType>, EntityStatus>(descriptor.InstanceGroup);
-                this.RenderTeamDescriptorGroup(descriptor, ids, typeIds, statuses, nativeIds, count);
+                var (instanceEntities, ids, statuses, nativeIds, count) = _entities.QueryEntities<InstanceEntity, EntityId, EntityStatus>(descriptor.InstanceGroup);
+                this.RenderTeamDescriptorGroup(descriptor, instanceEntities, ids, statuses, nativeIds, count);
             }
 
             _imgui.End();
             //throw new NotImplementedException();
         }
 
-        private void RenderTeamDescriptorGroup(VoidHuntersEntityDescriptor descriptor, Svelto.DataStructures.NB<EntityId> ids, Svelto.DataStructures.NB<Id<IEntityType>> types, Svelto.DataStructures.NB<EntityStatus> statuses, NativeEntityIDs nativeIds, int count)
+        private void RenderTeamDescriptorGroup(VoidHuntersEntityDescriptor descriptor, Svelto.DataStructures.NB<InstanceEntity> instanceEntities, Svelto.DataStructures.NB<EntityId> ids, Svelto.DataStructures.NB<EntityStatus> statuses, NativeEntityIDs nativeIds, int count)
         {
             using (_imgui.ApplyID($"{nameof(EntityViewerEngine)}_{nameof(ExclusiveGroupStruct)}_{descriptor.InstanceGroup.id}"))
             {
@@ -120,7 +120,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     _imgui.Indent();
                     for (int i = 0; i < count; i++)
                     {
-                        result = result.Max(this.RenderEntityData(ids[i], descriptor, _entityTypes.GetById(types[i]), statuses[i], nativeIds[i]));
+                        result = result.Max(this.RenderEntityData(ids[i], descriptor, instanceEntities[i].Type, statuses[i], nativeIds[i]));
                     }
                     _imgui.Unindent();
                 }
@@ -128,7 +128,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 {
                     for (int i = 0; i < count; i++)
                     {
-                        result = result.Max(this.FilterEntityData(ids[i], descriptor, _entityTypes.GetById(types[i])));
+                        result = result.Max(this.FilterEntityData(ids[i], descriptor, instanceEntities[i].Type));
                     }
                 }
             }

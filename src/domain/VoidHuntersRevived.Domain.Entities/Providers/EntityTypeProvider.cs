@@ -30,6 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         private readonly FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
         private readonly FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
 
+        private readonly InstanceEntity _instanceEntityComponent;
         private readonly BelongsTo<TypeEntity, InstanceEntity> _belongsToTypeInstanceEntityComponent;
 
         private readonly FasterList<ComponentSerializer> _serializers;
@@ -107,6 +108,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // This is very lowkey, but this is responsible for spawning the primary TypeEntity instance for the
             // Current provider's type.
             this.SpawnTypeEntity(out _belongsToTypeInstanceEntityComponent);
+            _instanceEntityComponent = new InstanceEntity(_typeRef);
 
         }
 
@@ -125,9 +127,8 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // Invoke Svelto factory and initialize instance with common component values
             EntityInitializer initializer = _factory.BuildEntity(egid, this.Type.Descriptor.Instance);
             initializer.Init(id);
-            initializer.Init(this.Type.Id);
-            initializer.Init(this.Type.Descriptor.Id);
             initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
+            initializer.Init(_instanceEntityComponent);
             initializer.Init(_belongsToTypeInstanceEntityComponent);
 
             // Run custom instance initializer
@@ -196,8 +197,6 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // This parallels the actions done in EntityService for instance spawning
             EntityInitializer initializer = _factory.BuildEntity(egid, this.Type.Descriptor.Type);
             initializer.Init(id);
-            initializer.Init(this.Type.Id);
-            initializer.Init(this.Type.Descriptor.Id);
 
             TypeEntity typeEntityComponent = new TypeEntity(_typeRef);
             initializer.Init(typeEntityComponent);

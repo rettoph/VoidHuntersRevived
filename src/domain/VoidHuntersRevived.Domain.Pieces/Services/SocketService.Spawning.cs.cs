@@ -2,7 +2,7 @@
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -18,13 +18,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         public EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializerDelegate = null)
         {
-            Id<Team> teamId = _entities.QueryById<Id<Team>>(socket.Node.TreeId);
+            BelongsTo<Team, TeamMember> belongsToTeam = _entities.QueryById<BelongsTo<Team, TeamMember>>(socket.Node.TreeId);
             SocketVhId socketVhId = socket.Id.VhId;
             VhId treeId = socket.Node.TreeId.VhId;
 
             return _entities.Spawn(sourceId, node, nodeVhId, (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
-                initializer.Init(teamId);
+                initializer.Init(belongsToTeam);
                 initializer.Init(new Node(id, entities.GetId(treeId)));
                 initializer.Init<Coupling>(new Coupling(
                     socketId: new SocketId(
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public EntityId Spawn(VhId sourceId, Socket socket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
         {
-            Id<Team> teamId = _entities.QueryById<Id<Team>>(socket.Node.TreeId);
+            BelongsTo<Team, TeamMember> belongsToTeam = _entities.QueryById<BelongsTo<Team, TeamMember>>(socket.Node.TreeId);
             SocketVhId socketVhId = socket.Id.VhId;
 
             EntityId nodeId = _entities.Deserialize(
@@ -49,7 +49,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     Owner = socket.Node.TreeId.VhId
                 },
                 data: nodes,
-                initializer: teamId.EntityInitializer(),
+                initializer: (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
+                {
+                    initializer.Init(belongsToTeam);
+                },
                 rootInitializer: (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<Coupling>(new Coupling(
