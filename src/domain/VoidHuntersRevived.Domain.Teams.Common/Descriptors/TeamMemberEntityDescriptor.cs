@@ -1,5 +1,4 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
@@ -10,8 +9,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Descriptors
         public TeamMemberEntityDescriptor()
         {
             this.WithInstanceComponents([
-                new ComponentBuilder<Id<Team>>(),
-                new ComponentBuilder<GroupIndex<Team>>(),
+                new ComponentBuilder<TeamMember>(),
                 new ComponentBuilder<ColorScheme>()
             ]);
 

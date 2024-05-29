@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                     return false;
                 }
 
-                if (componentType.GetGenericTypeDefinition() != typeof(HasMany<>))
+                if (componentType.GetGenericTypeDefinition() != typeof(HasMany<,>))
                 {
                     return false;
                 }
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                     return false;
                 }
 
-                if (componentType.GetGenericTypeDefinition() != typeof(HasMany<>))
+                if (componentType.GetGenericTypeDefinition() != typeof(HasMany<,>))
                 {
                     return false;
                 }
@@ -93,23 +93,24 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                     continue;
                 }
 
-                if (componentType.GetGenericTypeDefinition() != typeof(HasMany<>))
+                if (componentType.GetGenericTypeDefinition() != typeof(HasMany<,>))
                 {
                     continue;
                 }
 
-                initializers += (EntityInitializerDelegate)hasManyComponentInitializerBuilderMethod.MakeGenericMethod(componentType).Invoke(null, Array.Empty<object>())!;
+                initializers += (EntityInitializerDelegate)hasManyComponentInitializerBuilderMethod.MakeGenericMethod(componentType.GenericTypeArguments).Invoke(null, Array.Empty<object>())!;
             }
 
             return initializers;
         }
 
-        private static EntityInitializerDelegate HasManyComponentInitializerBuilder<T>()
+        private static EntityInitializerDelegate HasManyComponentInitializerBuilder<TItem, T>()
+            where TItem : unmanaged, IEntityComponent
             where T : unmanaged, IEntityComponent
         {
             return (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
             {
-                initializer.Init<HasMany<T>>(new HasMany<T>(id, entities.GetReference()));
+                initializer.Init(new HasMany<TItem, T>(id, entities.GetReference()));
             };
         }
     }

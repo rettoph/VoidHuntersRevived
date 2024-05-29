@@ -1,8 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Common.Extensions;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
@@ -29,27 +28,27 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<ColorScheme> entities, ExclusiveGroupStruct groupID)
         {
-            if (_entities.HasAll<InstanceData, GroupIndex<Team>>(groupID, out var components) == false)
+            if (_entities.HasAll<InstanceEntity, BelongsTo<Team, TeamMember>, BelongsTo<TypeEntity, InstanceEntity>>(groupID, out var components) == false)
             {
                 return;
             }
 
             var (colorSchemes, _) = entities;
-            var (instanceDatas, teamGroupIds, _) = components;
+            var (instanceDatas, belongsToTeams, belongsToTypes, _) = components;
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
                 ref ColorScheme colorScheme = ref colorSchemes[i];
 
-                ref GroupIndex<Team> teamGroupId = ref teamGroupIds[i];
-                if (_entities.TryQueryByGroupIndex<ColorScheme>(teamGroupId.Value, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
+                ref BelongsTo<Team, TeamMember> belongsToTeam = ref belongsToTeams[i];
+                if (_entities.TryQueryById<ColorScheme>(belongsToTeam.OwnerId, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
                 {
                     colorScheme = teamColorScheme;
                     return;
                 }
 
-                ref InstanceData instanceData = ref instanceDatas[i];
-                if (_entities.TryQueryByGroupIndex<ColorScheme>(instanceData.StaticEntityId, out ColorScheme staticColorScheme))
+                ref BelongsTo<TypeEntity, InstanceEntity> belongsToType = ref belongsToTypes[i];
+                if (_entities.TryQueryById<ColorScheme>(belongsToTypes[i].OwnerId, out ColorScheme staticColorScheme))
                 {
                     colorScheme = staticColorScheme;
                     return;

@@ -105,7 +105,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
             this.Write(id.VhId);
             this.WriteStruct(typeId);
-            _entities.Types.GetProviderByTypeId(typeId).SerializeInstance(this, in groupIndex, in options);
+            _entities.Types.GetProviderByTypeId(typeId).SerializeInstanceEntity(this, in groupIndex, in options);
         }
     }
 }

@@ -13,9 +13,4 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             Index = index;
         }
     }
-
-    public struct GroupIndex<T> : IEntityComponent
-    {
-        public GroupIndex Value;
-    }
 }

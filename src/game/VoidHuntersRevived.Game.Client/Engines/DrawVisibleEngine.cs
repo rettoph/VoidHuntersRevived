@@ -45,19 +45,17 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>> param)
         {
-            foreach (var ((statics, entityTypes, colorSchemes, _, typeCount), _) in _entities.QueryEntities<TypeData, Id<IEntityType>, ColorScheme, Visible>())
+            foreach (var ((hasManyInstances, entityTypes, colorSchemes, _, typeCount), _) in _entities.QueryEntities<HasMany<InstanceEntity, TypeEntity>, Id<IEntityType>, ColorScheme, Visible>())
             {
                 for (int i = 0; i < typeCount; i++)
                 {
-                    ref TypeData @static = ref statics[i];
+                    ref HasMany<InstanceEntity, TypeEntity> hasManyIntances = ref hasManyInstances[i];
                     ref Id<IEntityType> entityType = ref entityTypes[i];
                     ref ColorScheme colorScheme = ref colorSchemes[i];
 
-                    ref var instanceFilter = ref _entities.GetFilter<EntityId>(@static.InstanceEntitiesFilterId);
-
                     VertexBufferManager<VertexInstanceVisible> vertexBufferManager = param.GetById(entityType);
 
-                    foreach (var (indices, group) in instanceFilter)
+                    foreach (var (indices, group) in hasManyIntances.Items)
                     {
                         var (statuses, nodes, instanceCount) = _entities.QueryEntities<EntityStatus, Node>(group);
                         vertexBufferManager.EnsureFit(instanceCount);

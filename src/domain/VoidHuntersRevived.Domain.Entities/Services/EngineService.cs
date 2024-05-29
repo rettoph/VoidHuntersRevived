@@ -5,9 +5,9 @@ using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -17,6 +17,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly EnginesRoot _enginesRoot;
         private readonly EntitiesSubmissionScheduler _scheduler;
         private readonly IMagicBrokerService _brokers;
+        private readonly Lazy<IFiltered<IEngineProvider>> _engineProviders;
         private IFiltered<IEngine> _engines;
         private IStepGroupEngine<Step> _stepEngines;
 
@@ -25,11 +26,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EngineService(
             IMagicBrokerService brokers,
             IFiltered<IEngine> engines,
+            Lazy<IFiltered<IEngineProvider>> engineProviders,
             EnginesRoot enginesRoot,
             EntitiesSubmissionScheduler scheduler)
         {
             _brokers = brokers;
             _enginesRoot = enginesRoot;
+            _engineProviders = engineProviders;
             _scheduler = scheduler;
             _stepEngines = null!;
             _engines = engines;
@@ -37,7 +40,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Initialize()
         {
-            foreach (IEngine engine in _engines.Sequence(EngineSequence.Group03))
+            IEnumerable<IEngine> engines = _engineProviders.Value.SelectMany(x => x.GetEngines()).Concat(_engines);
+
+            foreach (IEngine engine in engines.Sequence(EngineSequence.Group03))
             {
                 _brokers.Subscribe(engine.Yield());
 

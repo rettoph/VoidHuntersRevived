@@ -1,4 +1,5 @@
-﻿using Svelto.DataStructures;
+﻿using Guppy.Core.Common.Utilities;
+using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -12,21 +13,24 @@ using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Providers
 {
-    internal sealed class EntityTypeProvider : IEntityTypeProvider
+    internal sealed class EntityTypeProvider : IEntityTypeProvider, IDisposable
     {
         internal static AsyncLocal<uint> EntityId = new AsyncLocal<uint>();
 
-
+        private readonly UnmanagedReference<IEntityType> _typeRef;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
-        private readonly IEntityService _entities;
+        private readonly EntityService _entities;
         private readonly EntitiesDB _entitiesDB;
         private readonly FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
         private readonly FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
+
+        private readonly BelongsTo<TypeEntity, InstanceEntity> _belongsToTypeInstanceEntityComponent;
 
         private readonly FasterList<ComponentSerializer> _serializers;
 
@@ -52,9 +56,10 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         {
             this.Type = type;
 
+            _typeRef = new UnmanagedReference<IEntityType>(this.Type);
             _factory = factory;
             _functions = functions;
-            _entities = engines.Get<IEntityService>();
+            _entities = engines.Get<EntityService>();
             _entitiesDB = entitiesDB;
             _serializers = serializers.GetInstanceComponentSerializers(this.Type);
 
@@ -98,25 +103,20 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             this.InstanceEntityDisposer ??= EntityTypeProvider.DefaultDisposer;
             this.TypeEntityInitializer ??= EntityTypeProvider.DefaultInitializer;
             this.TypeEntityDisposer ??= EntityTypeProvider.DefaultDisposer;
+
+            // This is very lowkey, but this is responsible for spawning the primary TypeEntity instance for the
+            // Current provider's type.
+            this.SpawnTypeEntity(out _belongsToTypeInstanceEntityComponent);
+
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _typeRef.Dispose(false);
         }
 
-        #region Instance Methods
-        private static void DefaultInitializer(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
-        {
-            // throw new NotImplementedException();
-        }
-
-        private static void DefaultDisposer(IEntityType type)
-        {
-            // throw new NotImplementedException();
-        }
-
-        public EntityInitializer HardSpawnInstance(in VhId sourceEventId, in VhId vhid, out EntityId id)
+        #region Instance Entity Methods
+        public EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id)
         {
             // Create a new EGID for the entity
             EGID egid = new EGID(EntityId.Value++, this.Type.Descriptor.InstanceGroup);
@@ -128,6 +128,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             initializer.Init(this.Type.Id);
             initializer.Init(this.Type.Descriptor.Id);
             initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
+            initializer.Init(_belongsToTypeInstanceEntityComponent);
 
             // Run custom instance initializer
             this.InstanceEntityInitializer!(_entities, Type, in id, ref initializer);
@@ -135,7 +136,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             return initializer;
         }
 
-        public void SoftSpawnInstance(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
+        public void SoftSpawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
             // Call all OnSpawn engines
             for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
@@ -144,7 +145,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             }
         }
 
-        public void SoftDespawnInstance(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
+        public void SoftDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
             // Call all OnDespawn engines
             for (int i = 0; i < _onDespawnEngineInvokers.count; i++)
@@ -153,12 +154,12 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             }
         }
 
-        public void HardDespawnInstance(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
+        public void HardDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
             _functions.RemoveEntity<InstanceEntityDescriptor>(id.EGID);
         }
 
-        public void SerializeInstance(EntityWriter writer, in GroupIndex groupIndex, in SerializationOptions options)
+        public void SerializeInstanceEntity(EntityWriter writer, in GroupIndex groupIndex, in SerializationOptions options)
         {
             foreach (ComponentSerializer serializer in _serializers)
             {
@@ -166,7 +167,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             }
         }
 
-        public void DeserializeInstance(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
             foreach (ComponentSerializer serializer in _serializers)
             {
@@ -175,11 +176,51 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         }
         #endregion
 
-        #region Type Methods
-        public void InitializeType(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
+        #region Type Entity Methods
+        private EntityId SpawnTypeEntity(out BelongsTo<TypeEntity, InstanceEntity> belongsToTypeInstanceEntityComponent)
         {
-            TypeEntityInitializer!(entities, Type, in id, ref initializer);
+            // IEntityType instances each get a single a Svelto entity automatically created here
+            // The idea behind this entity is to contain "type" shared data that is consistent
+            // Across all entities of this type.
+
+            // Its a little messy, but we create an EntityId and add it to EntityService manually
+            // This makes the type entity appear and behave as if it is like an instance entity.
+            // Fully queryable within IEntityService as one would expect.
+            // Likewise, EntityId is the primary key associated with filters, meaning type entites can be added to filters
+            // Or hold filtered instances.
+            // Create a new EGID for the entity
+            EGID egid = new EGID(EntityId.Value++, this.Type.Descriptor.TypeGroup);
+            EntityId id = new EntityId(egid, this.Type.Id.Value);
+
+            // Configure global components
+            // This parallels the actions done in EntityService for instance spawning
+            EntityInitializer initializer = _factory.BuildEntity(egid, this.Type.Descriptor.Type);
+            initializer.Init(id);
+            initializer.Init(this.Type.Id);
+            initializer.Init(this.Type.Descriptor.Id);
+
+            TypeEntity typeEntityComponent = new TypeEntity(_typeRef);
+            initializer.Init(typeEntityComponent);
+
+            this.TypeEntityInitializer!(_entities, Type, in id, ref initializer);
+
+            // These instance components are automatically applied to all created instance entities
+            belongsToTypeInstanceEntityComponent = new BelongsTo<TypeEntity, InstanceEntity>(id);
+
+            _entities.AddId(id);
+
+            return id;
         }
         #endregion
+
+        private static void DefaultInitializer(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
+        {
+            // throw new NotImplementedException();
+        }
+
+        private static void DefaultDisposer(IEntityType type)
+        {
+            // throw new NotImplementedException();
+        }
     }
 }

@@ -17,5 +17,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 
         IEntityTypeProvider GetProviderByType(IEntityType type);
         IEntityTypeProvider GetProviderByTypeId(Id<IEntityType> id);
+
+        IEnumerable<Type> GetAllDistinctComponentTypes();
     }
 }
