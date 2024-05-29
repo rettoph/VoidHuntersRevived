@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
             }
 
             var (colorSchemes, _) = entities;
-            var (instanceDatas, belongsToTeams, belongsToTypes, _) = components;
+            var (instances, belongsToTeams, belongsToTypes, _) = components;
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
@@ -44,14 +44,14 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
                 if (_entities.TryQueryById<ColorScheme>(belongsToTeam.OwnerId, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
                 {
                     colorScheme = teamColorScheme;
-                    return;
+                    continue;
                 }
 
                 ref BelongsTo<TypeEntity, InstanceEntity> belongsToType = ref belongsToTypes[i];
-                if (_entities.TryQueryById<ColorScheme>(belongsToTypes[i].OwnerId, out ColorScheme staticColorScheme))
+                if (_entities.TryQueryById<ColorScheme>(belongsToTypes[i].OwnerId, out ColorScheme typeColorScheme))
                 {
-                    colorScheme = staticColorScheme;
-                    return;
+                    colorScheme = typeColorScheme;
+                    continue;
                 }
             }
         }

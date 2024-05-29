@@ -45,20 +45,20 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>> param)
         {
-            foreach (var ((typeEntities, hasManyInstances, colorSchemes, _, typeCount), _) in _entities.QueryEntities<TypeEntity, HasMany<InstanceEntity, TypeEntity>, ColorScheme, Visible>())
+            foreach (var ((typeEntities, hasManyInstances, _, typeCount), _) in _entities.QueryEntities<TypeEntity, HasMany<InstanceEntity, TypeEntity>, Visible>())
             {
                 for (int i = 0; i < typeCount; i++)
                 {
                     Id<IEntityType> entityType = typeEntities[i].TypeId;
+                    var type = typeEntities[i].Type;
 
                     ref HasMany<InstanceEntity, TypeEntity> hasManyIntances = ref hasManyInstances[i];
-                    ref ColorScheme colorScheme = ref colorSchemes[i];
 
                     VertexBufferManager<VertexInstanceVisible> vertexBufferManager = param.GetById(entityType);
 
                     foreach (var (indices, group) in hasManyIntances.Items)
                     {
-                        var (statuses, nodes, instanceCount) = _entities.QueryEntities<EntityStatus, Node>(group);
+                        var (statuses, nodes, colorSchemes, instanceCount) = _entities.QueryEntities<EntityStatus, Node, ColorScheme>(group);
                         vertexBufferManager.EnsureFit(instanceCount);
 
                         for (int j = 0; j < indices.count; j++)
@@ -70,6 +70,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                             }
 
                             ref Node node = ref nodes[index];
+                            ref ColorScheme colorScheme = ref colorSchemes[index];
 
                             ref VertexInstanceVisible instanceVertex = ref vertexBufferManager.GetNextVertexUnsafe();
 

@@ -12,10 +12,10 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     /// Instances of this engine are automatically created within the <see cref="Providers.BelongsToEngineProvider"/>
     /// </summary>
     /// <typeparam name="TOwner"></typeparam>
-    /// <typeparam name="T"></typeparam>
-    internal sealed class BelongsToEngine<TOwner, T> : BasicEngine, IReactOnAddEx<BelongsTo<TOwner, T>>
+    /// <typeparam name="TItems"></typeparam>
+    internal sealed class BelongsToEngine<TOwner, TItems> : BasicEngine, IReactOnAddEx<BelongsTo<TOwner, TItems>>
         where TOwner : unmanaged, IEntityComponent
-        where T : unmanaged, IEntityComponent
+        where TItems : unmanaged, IEntityComponent
     {
         private readonly IEntityService _entities;
 
@@ -24,16 +24,16 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             _entities = entities;
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<BelongsTo<TOwner, T>> entities, ExclusiveGroupStruct groupID)
+        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<BelongsTo<TOwner, TItems>> entities, ExclusiveGroupStruct groupID)
         {
-            var (belongsTos, egids, _) = entities;
+            var (belongsTos, nativeIds, _) = entities;
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                BelongsTo<TOwner, T> belongsTo = belongsTos[index];
-                HasMany<T, TOwner> hasMany = _entities.QueryById<HasMany<T, TOwner>>(belongsTo.OwnerId);
+                BelongsTo<TOwner, TItems> belongsTo = belongsTos[index];
+                HasMany<TItems, TOwner> hasMany = _entities.QueryById<HasMany<TItems, TOwner>>(belongsTo.OwnerId);
 
-                hasMany.Items.Add(egids[index], groupID, index);
+                hasMany.Items.Add(nativeIds[index], groupID, index);
             }
         }
     }
