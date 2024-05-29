@@ -358,7 +358,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 if (exists && status.Value == EntityStatusEnum.SoftDespawnEnqueued)
                 {
                     Id<IEntityType> typeId = this.QueryByGroupIndex<Id<IEntityType>>(in groupIndex);
-                    _types.GetProviderByTypeId(typeId).SoftSpawnInstance(in eventId, in id, in groupIndex, ref status);
+                    _types.GetProviderByTypeId(typeId).SoftDespawnInstance(in eventId, in id, in groupIndex, ref status);
                     status.Value = EntityStatusEnum.SoftDespawned;
                 }
                 else
