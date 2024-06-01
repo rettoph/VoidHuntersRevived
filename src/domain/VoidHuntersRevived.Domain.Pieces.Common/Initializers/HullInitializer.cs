@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Initializers
             this.WithInstanceInitializer<HullDescriptor>(this.InitializeSocketIds);
         }
 
-        private void InitializeSocketIds(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
+        private void InitializeSocketIds(IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer)
         {
             ref Sockets<Location> socketLocations = ref initializer.Get<Sockets<Location>>();
             NativeDynamicArrayCast<SocketId> socketIds = new NativeDynamicArrayCast<SocketId>((uint)socketLocations.Items.count, Allocator.Persistent);

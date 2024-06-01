@@ -132,7 +132,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             initializer.Init(_belongsToTypeInstanceEntityComponent);
 
             // Run custom instance initializer
-            this.InstanceEntityInitializer!(_entities, Type, in id, ref initializer);
+            this.InstanceEntityInitializer!(_entities, Type, id, ref initializer);
 
             return initializer;
         }
@@ -201,7 +201,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             TypeEntity typeEntityComponent = new TypeEntity(_typeRef);
             initializer.Init(typeEntityComponent);
 
-            this.TypeEntityInitializer!(_entities, Type, in id, ref initializer);
+            this.TypeEntityInitializer!(_entities, Type, id, ref initializer);
 
             // These instance components are automatically applied to all created instance entities
             belongsToTypeInstanceEntityComponent = new BelongsTo<TypeEntity, InstanceEntity>(id);
@@ -212,7 +212,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         }
         #endregion
 
-        private static void DefaultInitializer(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
+        private static void DefaultInitializer(IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer)
         {
             // throw new NotImplementedException();
         }

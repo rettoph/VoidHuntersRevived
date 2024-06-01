@@ -216,7 +216,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             if (exists == false)
             {
                 EntityInitializer initializer = _types.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
-                data.Initializer.Invoke(this, data.Type, in id, ref initializer);
+                data.Initializer.Invoke(this, data.Type, id, ref initializer);
             }
             else
             {

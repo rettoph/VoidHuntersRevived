@@ -1,8 +1,8 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Game.Core.Initializers
             this.WithInstanceInitializer(EntityTypes.UserShip, this.InitializeUserShip);
         }
 
-        private void InitializeUserShip(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
+        private void InitializeUserShip(IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer)
         {
             initializer.Init(new Awake(sleepingAllowed: false));
             initializer.Init(new TractorBeamEmitter(id));

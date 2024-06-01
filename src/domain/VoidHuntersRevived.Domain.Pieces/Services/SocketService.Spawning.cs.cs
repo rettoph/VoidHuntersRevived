@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             SocketVhId socketVhId = socket.Id.VhId;
             VhId treeId = socket.Node.TreeId.VhId;
 
-            return _entities.Spawn(sourceId, node, nodeVhId, (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
+            return _entities.Spawn(sourceId, node, nodeVhId, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(belongsToTeam);
                 initializer.Init(new Node(id, entities.GetId(treeId)));
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                         index: socketVhId.Index))
                 );
 
-                initializerDelegate?.Invoke(entities, type, in id, ref initializer);
+                initializerDelegate?.Invoke(entities, type, id, ref initializer);
             });
         }
 
@@ -49,11 +49,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     Owner = socket.Node.TreeId.VhId
                 },
                 data: nodes,
-                initializer: (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
+                initializer: (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
                 {
                     initializer.Init(belongsToTeam);
                 },
-                rootInitializer: (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
+                rootInitializer: (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<Coupling>(new Coupling(
                         socketId: new SocketId(
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                             index: socketVhId.Index))
                         );
 
-                    initializerDelegate?.Invoke(entities, type, in id, ref initializer);
+                    initializerDelegate?.Invoke(entities, type, id, ref initializer);
                 });
 
             return nodeId;

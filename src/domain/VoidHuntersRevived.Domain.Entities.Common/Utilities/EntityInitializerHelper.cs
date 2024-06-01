@@ -1,6 +1,5 @@
 ﻿using Svelto.ECS;
 using System.Reflection;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
@@ -31,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         public static EntityInitializerDelegate BuildEntityInitializerDelegate<T>(T instance)
             where T : unmanaged, IEntityComponent
         {
-            return (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
+            return (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(instance);
             };

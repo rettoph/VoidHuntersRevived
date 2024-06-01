@@ -68,14 +68,14 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             }), this.InitializeTypeParentComponents);
         }
 
-        private void InitializeInstanceParentComponents(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
+        private void InitializeInstanceParentComponents(IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer)
         {
-            _instanceInitializers[type](entities, type, in id, ref initializer);
+            _instanceInitializers[type](entities, type, id, ref initializer);
         }
 
-        private void InitializeTypeParentComponents(IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer)
+        private void InitializeTypeParentComponents(IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer)
         {
-            _typeInitializers[type](entities, type, in id, ref initializer);
+            _typeInitializers[type](entities, type, id, ref initializer);
         }
 
         private static MethodInfo hasManyComponentInitializerBuilderMethod = typeof(HasManyEntityInitializer).GetMethod(nameof(HasManyEntityInitializer.HasManyComponentInitializerBuilder), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new NotImplementedException();
@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             where TItem : unmanaged, IEntityComponent
             where T : unmanaged, IEntityComponent
         {
-            return (IEntityService entities, IEntityType type, in EntityId id, ref EntityInitializer initializer) =>
+            return (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(new HasMany<TItem, T>(id, entities.GetReference()));
             };
