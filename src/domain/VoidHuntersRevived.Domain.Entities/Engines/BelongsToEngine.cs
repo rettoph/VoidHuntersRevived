@@ -1,6 +1,10 @@
-﻿using Serilog;
+﻿using Guppy.Core.Common.Attributes;
+using Serilog;
 using Svelto.ECS;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
@@ -14,7 +18,8 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     /// </summary>
     /// <typeparam name="TOwner"></typeparam>
     /// <typeparam name="TItems"></typeparam>
-    internal sealed class BelongsToEngine<TOwner, TItems> : BasicEngine, IReactOnAddEx<BelongsTo<TOwner, TItems>>
+    [Sequence<EngineSequence>(EngineSequence.Group01)]
+    internal sealed class BelongsToEngine<TOwner, TItems> : BasicEngine, IOnSpawnEngine<BelongsTo<TOwner, TItems>>
         where TOwner : unmanaged, IEntityComponent
         where TItems : unmanaged, IEntityComponent
     {
@@ -27,23 +32,17 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             _logger = logger;
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<BelongsTo<TOwner, TItems>> entities, ExclusiveGroupStruct groupID)
+        public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref BelongsTo<TOwner, TItems> belongsTo, in GroupIndex groupIndex)
         {
-            var (belongsTos, nativeIds, _) = entities;
-
-            for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
+            if (belongsTo.OwnerVhId == default)
             {
-                BelongsTo<TOwner, TItems> belongsTo = belongsTos[index];
-                if (belongsTo.OwnerId == default)
-                {
-                    _logger.Warning("{0}::{1} - Empty OwnerId", typeof(BelongsToEngine<TOwner, TItems>).GetFormattedName(), nameof(BelongsToEngine<TOwner, TItems>.Add));
-                    continue;
-                }
-
-                HasMany<TItems, TOwner> hasMany = _entities.QueryById<HasMany<TItems, TOwner>>(belongsTo.OwnerId);
-
-                hasMany.Items.Add(nativeIds[index], groupID, index);
+                _logger.Warning("{0}::{1} - Empty OwnerId", typeof(BelongsToEngine<TOwner, TItems>).GetFormattedName(), nameof(BelongsToEngine<TOwner, TItems>.OnSpawn));
+                return;
             }
+
+            EntityId ownerId = _entities.GetId(belongsTo.OwnerVhId);
+            HasMany<TItems, TOwner> hasMany = _entities.QueryById<HasMany<TItems, TOwner>>(ownerId);
+            hasMany.Items.Add(id, groupIndex);
         }
     }
 }

@@ -123,7 +123,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             return false;
         }
 
-        public void OnDespawn(VhId sourceEventId, EntityId id, ref Enabled component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Enabled component, in GroupIndex groupIndex)
         {
             if (component.Value == false)
             {

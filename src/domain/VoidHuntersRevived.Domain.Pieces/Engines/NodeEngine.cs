@@ -3,10 +3,10 @@ using Guppy.Core.Common.Collections;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public string name { get; } = nameof(NodeEngine);
 
-        public void OnSpawn(VhId sourceEventId, EntityId id, ref Node node, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Node node, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnSpawn), id.VhId);
 
@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             this.SetLocalTransformation(ref node, groupIndex, in treeLocation);
         }
 
-        public void OnDespawn(VhId sourceEventId, EntityId id, ref Node node, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Node node, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnDespawn), id.VhId);
 

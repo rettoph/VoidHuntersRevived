@@ -142,7 +142,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // Call all OnSpawn engines
             for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
             {
-                _onSpawnEngineInvokers[i].Invoke(sourceEventId, _entitiesDB, id, groupIndex);
+                _onSpawnEngineInvokers[i].Invoke(sourceEventId, this.Type, _entitiesDB, id, groupIndex);
             }
         }
 
@@ -151,7 +151,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // Call all OnDespawn engines
             for (int i = 0; i < _onDespawnEngineInvokers.count; i++)
             {
-                _onDespawnEngineInvokers[i].Invoke(sourceEventId, _entitiesDB, id, groupIndex);
+                _onDespawnEngineInvokers[i].Invoke(sourceEventId, this.Type, _entitiesDB, id, groupIndex);
             }
         }
 
@@ -204,7 +204,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             this.TypeEntityInitializer!(_entities, Type, id, ref initializer);
 
             // These instance components are automatically applied to all created instance entities
-            belongsToTypeInstanceEntityComponent = new BelongsTo<TypeEntity, InstanceEntity>(id);
+            belongsToTypeInstanceEntityComponent = new BelongsTo<TypeEntity, InstanceEntity>(id.VhId);
 
             _entities.AddId(id);
 

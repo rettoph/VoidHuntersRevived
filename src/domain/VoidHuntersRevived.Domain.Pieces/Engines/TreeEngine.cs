@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger = logger;
         }
 
-        public void OnSpawn(VhId sourceEventId, EntityId id, ref Tree component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
             if (_entityDescriptors.GetByGroup(groupIndex.GroupID) is not TreeDescriptor)
             {
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             this.TransformNodes(ref location, ref filter);
         }
 
-        public void OnDespawn(VhId sourceEventId, EntityId id, ref Tree component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - Despawning Tree {TreeId}, HeadId = {HeadId}", nameof(TreeEngine), nameof(OnDespawn), id.VhId, component.HeadId.VhId);
             _entities.Despawn(sourceEventId, component.HeadId);

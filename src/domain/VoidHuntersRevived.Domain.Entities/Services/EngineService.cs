@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly EntitiesSubmissionScheduler _scheduler;
         private readonly IMagicBrokerService _brokers;
         private readonly Lazy<IFiltered<IEngineProvider>> _engineProviders;
-        private IFiltered<IEngine> _engines;
+        private List<IEngine> _engines;
         private IStepGroupEngine<Step> _stepEngines;
 
         public EnginesRoot Root => _enginesRoot;
@@ -35,14 +35,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _engineProviders = engineProviders;
             _scheduler = scheduler;
             _stepEngines = null!;
-            _engines = engines;
+            _engines = engines.ToList();
         }
 
         public void Initialize()
         {
-            IEnumerable<IEngine> engines = _engineProviders.Value.SelectMany(x => x.GetEngines()).Concat(_engines);
+            _engines.AddRange(_engineProviders.Value.SelectMany(x => x.GetEngines()));
+            _engines = _engines.Sequence(EngineSequence.Group03).ToList();
 
-            foreach (IEngine engine in engines.Sequence(EngineSequence.Group03))
+            foreach (IEngine engine in _engines)
             {
                 _brokers.Subscribe(engine.Yield());
 

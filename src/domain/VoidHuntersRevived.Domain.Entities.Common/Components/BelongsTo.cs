@@ -1,4 +1,5 @@
 ﻿using Svelto.ECS;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Components
 {
@@ -6,14 +7,14 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Components
         where TOwner : unmanaged, IEntityComponent
         where TAs : unmanaged, IEntityComponent
     {
-        // Someday, if we want to be able to change EntityId for an existing entity,
+        // Someday, if we want to be able to change EntityVhId for an existing entity,
         // we should consider adding an UnmanagedReference<IEntityService> in this component
         // and automagically publishing necessary events/actions to make this happen.
-        public EntityId OwnerId { get; private set; }
+        public VhId OwnerVhId { get; private set; }
 
-        public BelongsTo(EntityId ownerId)
+        public BelongsTo(VhId ownerVhId)
         {
-            this.OwnerId = ownerId;
+            this.OwnerVhId = ownerVhId;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger = logger;
         }
 
-        public void OnDespawn(VhId sourceEventId, EntityId id, ref Sockets<SocketId> sockets, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Sockets<SocketId> sockets, in GroupIndex groupIndex)
         {
             for (int i = 0; i < sockets.Items.count; i++)
             {

@@ -41,7 +41,6 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
                 IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, new object[] { _entities, _logger }) ?? throw new NotImplementedException();
 
                 yield return belongsToEngine;
-
             }
         }
     }

@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
                 {
                     var team = teams[i];
                     _groupIndices.Add(team.Id, new GroupIndex(group, i));
-                    _belongsToDefaultTeamComponent = new BelongsTo<Team, TeamMember>(entityIds[i]);
+                    _belongsToDefaultTeamComponent = new BelongsTo<Team, TeamMember>(entityIds[i].VhId);
                 }
             }
         }

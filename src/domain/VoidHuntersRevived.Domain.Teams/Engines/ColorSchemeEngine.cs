@@ -41,14 +41,14 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
                 ref ColorScheme colorScheme = ref colorSchemes[i];
 
                 ref BelongsTo<Team, TeamMember> belongsToTeam = ref belongsToTeams[i];
-                if (_entities.TryQueryById<ColorScheme>(belongsToTeam.OwnerId, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
+                if (_entities.TryQueryByVhId<ColorScheme>(belongsToTeam.OwnerVhId, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
                 {
                     colorScheme = teamColorScheme;
                     continue;
                 }
 
                 ref BelongsTo<TypeEntity, InstanceEntity> belongsToType = ref belongsToTypes[i];
-                if (_entities.TryQueryById<ColorScheme>(belongsToTypes[i].OwnerId, out ColorScheme typeColorScheme))
+                if (_entities.TryQueryByVhId<ColorScheme>(belongsToTypes[i].OwnerVhId, out ColorScheme typeColorScheme))
                 {
                     colorScheme = typeColorScheme;
                     continue;

@@ -131,120 +131,118 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntityService), nameof(Process), nameof(SpawnEntity), data.VhId);
 
-            if (this.TryGetId(data.VhId, out EntityId id) == false)
-            {
-                this.Simulation.Enqueue(new EventDto()
-                {
-                    SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                    Data = new SoftSpawnEntity()
-                    {
-                        VhId = data.VhId
-                    }
-                });
-
-                this.Simulation.Publish(new EventDto()
-                {
-                    SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                    Data = new HardSpawnEntity()
-                    {
-                        VhId = data.VhId,
-                        Type = data.Type
-                    }
-                });
-            }
-            else
+            if (this.TryGetId(data.VhId, out EntityId id) == true)
             {
                 ref EntityStatus status = ref this.QueryById<EntityStatus>(id);
                 status.Increment(EntityModificationTypeEnum.Spawned);
+
+                return;
             }
+
+            // Enqueue SoftSpawn entity event
+            // This is enqueued before HardSpawn is published in case the initializer
+            // Spawns any other entities. This ensture the first entitiy SoftSpawn
+            // event is called first every time.
+            this.Simulation.Enqueue(new EventDto()
+            {
+                SourceId = NameSpace<EntityService>.Instance.Create(eventId),
+                Data = new SoftSpawnEntity()
+                {
+                    VhId = data.VhId
+                }
+            });
+
+            this.Simulation.Publish(new EventDto()
+            {
+                SourceId = NameSpace<EntityService>.Instance.Create(eventId),
+                Data = new HardSpawnEntity()
+                {
+                    VhId = data.VhId,
+                    Type = data.Type
+                }
+            });
         }
 
         public void Process(VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
         {
             _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntityService), nameof(Process), nameof(SpawnEntity), data.VhId);
 
-            if (this.TryGetId(data.VhId, out EntityId id) == false)
-            {
-                // Enqueue SoftSpawn entity event
-                // This is enqueued before HardSpawn is published in case the initializer
-                // Spawns any other entities. This ensture the first entitiy SoftSpawn
-                // event is called first every time.
-                this.Simulation.Enqueue(new EventDto()
-                {
-                    SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                    Data = new SoftSpawnEntity()
-                    {
-                        VhId = data.VhId
-                    }
-                });
-
-                // Publish HardSPawn even immidiately
-                this.Simulation.Publish(new EventDto()
-                {
-                    SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                    Data = new HardSpawnEntity<EntityInitializerDelegate>()
-                    {
-                        VhId = data.VhId,
-                        Type = data.Type,
-                        Initializer = data.Initializer
-                    }
-                });
-            }
-            else
+            if (this.TryGetId(data.VhId, out EntityId id) == true)
             {
                 ref EntityStatus status = ref this.QueryById<EntityStatus>(id);
                 status.Increment(EntityModificationTypeEnum.Spawned);
+
+                return;
             }
+
+            // Enqueue SoftSpawn entity event
+            // This is enqueued before HardSpawn is published in case the initializer
+            // Spawns any other entities. This ensture the first entitiy SoftSpawn
+            // event is called first every time.
+            this.Simulation.Enqueue(new EventDto()
+            {
+                SourceId = NameSpace<EntityService>.Instance.Create(eventId),
+                Data = new SoftSpawnEntity()
+                {
+                    VhId = data.VhId
+                }
+            });
+
+            // Publish HardSPawn even immidiately
+            this.Simulation.Publish(new EventDto()
+            {
+                SourceId = NameSpace<EntityService>.Instance.Create(eventId),
+                Data = new HardSpawnEntity<EntityInitializerDelegate>()
+                {
+                    VhId = data.VhId,
+                    Type = data.Type,
+                    Initializer = data.Initializer
+                }
+            });
         }
 
         public void Process(VhId eventId, HardSpawnEntity data)
         {
             ref EntityId id = ref this.GetOrAddId(data.VhId, out bool exists);
-            if (exists == false)
-            {
-                EntityInitializer initializer = _types.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
-            }
-            else
-            {
+            if (exists == true)
+            { // Unable to hard spawn - entity already exists
                 throw new NotImplementedException();
             }
+
+            EntityInitializer initializer = _types.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
         }
 
         public void Process(VhId eventId, HardSpawnEntity<EntityInitializerDelegate> data)
         {
             ref EntityId id = ref this.GetOrAddId(data.VhId, out bool exists);
-            if (exists == false)
-            {
-                EntityInitializer initializer = _types.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
-                data.Initializer.Invoke(this, data.Type, id, ref initializer);
-            }
-            else
-            {
+            if (exists == true)
+            { // Unable to hard spawn - entity already exists
                 throw new NotImplementedException();
             }
+
+            EntityInitializer initializer = _types.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
+            data.Initializer.Invoke(this, data.Type, id, ref initializer);
         }
 
         public void Process(VhId eventId, SoftSpawnEntity data)
         {
-            if (this.TryGetId(data.VhId, out EntityId id))
-            {
-                ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
-
-                if (exists && status.Value == EntityStatusEnum.HardSpawned)
-                {
-                    Id<IEntityType> typeId = this.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
-                    _types.GetProviderByTypeId(typeId).SoftSpawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
-                    status.Value = EntityStatusEnum.SoftSpawned;
-                }
-                else
-                {
-                    _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(Process), nameof(SoftSpawnEntity), id.VhId, exists, exists ? status.Value : null);
-                }
-            }
-            else
+            if (this.TryGetId(data.VhId, out EntityId id) == false)
             {
                 _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown VhId {VhId}", nameof(EntityService), nameof(Process), nameof(SoftSpawnEntity), data.VhId);
+                return;
             }
+
+            ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+            if (exists == false || status.Value != EntityStatusEnum.HardSpawned)
+            {
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(Process), nameof(SoftSpawnEntity), id.VhId, exists, exists ? status.Value : null);
+                return;
+            }
+
+
+            Id<IEntityType> typeId = this.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
+            _types.GetProviderByTypeId(typeId).SoftSpawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
+            status.Value = EntityStatusEnum.SoftSpawned;
         }
 
         public void Revert(VhId eventId, SpawnEntity data)
@@ -261,115 +259,108 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntityService), nameof(InternalRevert), nameof(SpawnEntity), data.VhId);
 
-            if (this.TryGetId(data.VhId, out EntityId id))
+            if (this.TryGetId(data.VhId, out EntityId id) == false)
             {
-                ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out _, out bool exists);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown VhId {VhId}", nameof(EntityService), nameof(InternalRevert), nameof(SpawnEntity), data.VhId);
+                return;
+            }
 
-                if (exists)
+            ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out _, out bool exists);
+            if (exists == false)
+            {
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(InternalRevert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null);
+                return;
+            }
+
+            int spawnCount = 0;
+            if ((spawnCount = status.Increment(EntityModificationTypeEnum.Despawned)) == 0)
+            {
+                this.Simulation.Enqueue(new EventDto()
                 {
-                    int spawnCount = 0;
-
-                    if ((spawnCount = status.Increment(EntityModificationTypeEnum.Despawned)) == 0)
+                    SourceId = NameSpace<EntityService>.Instance.Create(eventId),
+                    Data = new SoftDespawnEntity()
                     {
-                        this.Simulation.Enqueue(new EventDto()
-                        {
-                            SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                            Data = new SoftDespawnEntity()
-                            {
-                                VhId = data.VhId
-                            }
-                        });
+                        VhId = data.VhId
                     }
-                    else
-                    {
-                        _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnCount = {SpawnCount}", nameof(EntityService), nameof(InternalRevert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null, spawnCount);
-                    }
-
-                    this.Simulation.Enqueue(new EventDto()
-                    {
-                        SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                        Data = new HardDespawnEntity()
-                        {
-                            VhId = data.VhId
-                        }
-                    });
-
-                    status.Value = EntityStatusEnum.RevertSpawnEnqueued;
-                }
-                else
-                {
-                    _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(InternalRevert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null);
-                }
+                });
             }
             else
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown VhId {VhId}", nameof(EntityService), nameof(InternalRevert), nameof(SpawnEntity), data.VhId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnCount = {SpawnCount}", nameof(EntityService), nameof(InternalRevert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null, spawnCount);
             }
+
+            // TODO: Investigate why the HardDespawn event is published despite the SoftDespawn being locked behind the Despawn counter
+            // I dont remember if this was by design or if its just a bug
+            this.Simulation.Enqueue(new EventDto()
+            {
+                SourceId = NameSpace<EntityService>.Instance.Create(eventId),
+                Data = new HardDespawnEntity()
+                {
+                    VhId = data.VhId
+                }
+            });
+
+            status.Value = EntityStatusEnum.RevertSpawnEnqueued;
         }
 
         public void Process(VhId eventId, DespawnEntity data)
         {
             _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntityService), nameof(Process), nameof(DespawnEntity), data.VhId);
 
-            if (this.TryGetId(data.VhId, out EntityId id))
+            if (this.TryGetId(data.VhId, out EntityId id) == false)
             {
-                ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
-
-                int spawnedCount = 0;
-                if (exists && (spawnedCount = status.Increment(EntityModificationTypeEnum.Despawned)) == 0)
-                {
-                    this.Simulation.Enqueue(new EventDto()
-                    {
-                        SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                        Data = new SoftDespawnEntity()
-                        {
-                            VhId = data.VhId
-                        }
-                    });
-
-                    this.Simulation.Publish(new EventDto()
-                    {
-                        SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                        Data = new EnqueueHardDespawn()
-                        {
-                            VhId = data.VhId
-                        }
-                    });
-
-                    status.Value = EntityStatusEnum.SoftDespawnEnqueued;
-                }
-                else
-                {
-                    _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnedCount = {SpawnedCount}", nameof(EntityService), nameof(Process), nameof(DespawnEntity), id.VhId, exists, exists ? status.Value : null, spawnedCount);
-                }
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to despawn entity, unknown VhId {VhId}", nameof(EntityService), nameof(Process), nameof(DespawnEntity), data.VhId);
+                return;
             }
-            else
+
+            ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+            int spawnedCount = 0;
+            if (exists == false || (spawnedCount = status.Increment(EntityModificationTypeEnum.Despawned)) != 0)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - U00nable to despawn entity, unknown VhId {VhId}", nameof(EntityService), nameof(Process), nameof(DespawnEntity), data.VhId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnedCount = {SpawnedCount}", nameof(EntityService), nameof(Process), nameof(DespawnEntity), id.VhId, exists, exists ? status.Value : null, spawnedCount);
+                return;
             }
+
+
+            this.Simulation.Enqueue(new EventDto()
+            {
+                SourceId = NameSpace<EntityService>.Instance.Create(eventId),
+                Data = new SoftDespawnEntity()
+                {
+                    VhId = data.VhId
+                }
+            });
+
+            this.Simulation.Publish(new EventDto()
+            {
+                SourceId = NameSpace<EntityService>.Instance.Create(eventId),
+                Data = new EnqueueHardDespawn()
+                {
+                    VhId = data.VhId
+                }
+            });
+
+            status.Value = EntityStatusEnum.SoftDespawnEnqueued;
         }
 
         public void Process(VhId eventId, SoftDespawnEntity data)
         {
-            if (this.TryGetId(data.VhId, out EntityId id) == true)
-            {
-                ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
-
-                if (exists && status.Value == EntityStatusEnum.SoftDespawnEnqueued)
-                {
-                    Id<IEntityType> typeId = this.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
-                    _types.GetProviderByTypeId(typeId).SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
-                    status.Value = EntityStatusEnum.SoftDespawned;
-                }
-                else
-                {
-                    _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft despawn entity. Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(Process), nameof(SoftDespawnEntity), id.VhId, exists, exists ? status.Value : null);
-                }
-            }
-            else
+            if (this.TryGetId(data.VhId, out EntityId id) == false)
             {
                 _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft despawn entity. VhId = {VhId}", nameof(EntityService), nameof(Process), nameof(SoftDespawnEntity), data.VhId);
+                return;
             }
+
+            ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+            if (exists == false || status.Value != EntityStatusEnum.SoftDespawnEnqueued)
+            {
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft despawn entity. Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(Process), nameof(SoftDespawnEntity), id.VhId, exists, exists ? status.Value : null);
+                return;
+            }
+
+            Id<IEntityType> typeId = this.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
+            _types.GetProviderByTypeId(typeId).SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
+            status.Value = EntityStatusEnum.SoftDespawned;
         }
 
         public void Process(VhId eventId, EnqueueHardDespawn data)
@@ -386,67 +377,63 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, HardDespawnEntity data)
         {
-            if (this.TryGetId(data.VhId, out EntityId id))
-            {
-                ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
-
-                if (exists)
-                {
-                    Id<IEntityType> typeId = this.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
-                    IEntityTypeProvider descriptorEngine = _types.GetProviderByTypeId(typeId);
-
-                    if (status.Value < EntityStatusEnum.SoftDespawned)
-                    {
-                        descriptorEngine.SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
-                        status.Value = EntityStatusEnum.SoftDespawned;
-                    }
-
-                    descriptorEngine.HardDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
-                    this.RemoveId(id);
-                    status.Value = EntityStatusEnum.HardDespawned;
-                }
-                else
-                {
-                    _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to hard despawn entity. Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(Process), nameof(HardDespawnEntity), id.VhId, exists, exists ? status.Value : null);
-                }
-            }
-            else
+            if (this.TryGetId(data.VhId, out EntityId id) == false)
             {
                 _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to hard despawn entity. VhId = {VhId}", nameof(EntityService), nameof(Process), nameof(HardDespawnEntity), data.VhId);
+                return;
             }
+
+            ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+
+            if (exists == false)
+            {
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to hard despawn entity. Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntityService), nameof(Process), nameof(HardDespawnEntity), id.VhId, exists, exists ? status.Value : null);
+                return;
+            }
+
+            Id<IEntityType> typeId = this.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
+            IEntityTypeProvider descriptorEngine = _types.GetProviderByTypeId(typeId);
+
+            if (status.Value < EntityStatusEnum.SoftDespawned)
+            { // Ensure an entity gets soft despawned if it hasn't been already
+                descriptorEngine.SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
+                status.Value = EntityStatusEnum.SoftDespawned;
+            }
+
+            descriptorEngine.HardDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
+            this.RemoveId(id);
+            status.Value = EntityStatusEnum.HardDespawned;
         }
 
         public void Revert(VhId eventId, DespawnEntity data)
         {
             _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntityService), nameof(Revert), nameof(DespawnEntity), data.VhId);
 
-            if (this.TryGetId(data.VhId, out EntityId id))
-            {
-                ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
-
-                int spawnedCount = 0;
-                if (exists && (spawnedCount = status.Increment(EntityModificationTypeEnum.Spawned)) == 1)
-                {
-                    this.Simulation.Enqueue(new EventDto()
-                    {
-                        SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                        Data = new SoftSpawnEntity()
-                        {
-                            VhId = data.VhId
-                        }
-                    });
-
-                    status.Value = EntityStatusEnum.HardSpawned;
-                }
-                else
-                {
-                    _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnedCount = {SpawnedCount}", nameof(EntityService), nameof(Revert), nameof(DespawnEntity), id.VhId, exists, exists ? status.Value : null, spawnedCount);
-                }
-            }
-            else
+            if (this.TryGetId(data.VhId, out EntityId id) == false)
             {
                 _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to revert despawn entity, unknown VhId {VhId}, Id not found.", nameof(EntityService), nameof(Revert), nameof(DespawnEntity), data.VhId);
+                return;
             }
+
+            ref EntityStatus status = ref this.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+
+            int spawnedCount = 0;
+            if (exists == false || (spawnedCount = status.Increment(EntityModificationTypeEnum.Spawned)) != 1)
+            {
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnedCount = {SpawnedCount}", nameof(EntityService), nameof(Revert), nameof(DespawnEntity), id.VhId, exists, exists ? status.Value : null, spawnedCount);
+                return;
+            }
+
+            this.Simulation.Enqueue(new EventDto()
+            {
+                SourceId = NameSpace<EntityService>.Instance.Create(eventId),
+                Data = new SoftSpawnEntity()
+                {
+                    VhId = data.VhId
+                }
+            });
+
+            status.Value = EntityStatusEnum.HardSpawned;
         }
     }
 }

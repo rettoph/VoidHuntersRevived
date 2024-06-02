@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
     internal abstract class ComponentEngineInvoker
     {
-        public abstract void Invoke(VhId sourceEventId, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex);
+        public abstract void Invoke(VhId sourceEventId, IEntityType type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex);
 
         public static bool Create(Type componentEngineInvokerType, Type engineType, Type componentType, IEnumerable<IEngine> engines, [MaybeNullWhen(false)] out ComponentEngineInvoker invoker)
         {
@@ -50,12 +50,12 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             _engines = new FasterList<IOnSpawnEngine<T>>(engines.OfType<IOnSpawnEngine<T>>().ToList());
         }
 
-        public override void Invoke(VhId sourceEventId, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
+        public override void Invoke(VhId sourceEventId, IEntityType type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {
             ref T component = ref entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
             for (int i = 0; i < _engines.count; i++)
             {
-                _engines[i].OnSpawn(sourceEventId, id, ref component, in groupIndex);
+                _engines[i].OnSpawn(sourceEventId, type, id, ref component, in groupIndex);
             }
         }
     }
@@ -70,12 +70,12 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             _engines = new FasterList<IOnDespawnEngine<T>>(engines.OfType<IOnDespawnEngine<T>>().ToList());
         }
 
-        public override void Invoke(VhId sourceEventId, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
+        public override void Invoke(VhId sourceEventId, IEntityType type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {
             ref T component = ref entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
             for (int i = 0; i < _engines.count; i++)
             {
-                _engines[i].OnDespawn(sourceEventId, id, ref component, in groupIndex);
+                _engines[i].OnDespawn(sourceEventId, type, id, ref component, in groupIndex);
             }
         }
     }

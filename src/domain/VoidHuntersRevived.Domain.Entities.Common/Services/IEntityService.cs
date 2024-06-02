@@ -70,6 +70,76 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         ref T QueryById<T>(EntityId id, out GroupIndex groupIndex, out bool exists)
             where T : unmanaged, IEntityComponent;
 
+        /// <summary>
+        /// Warning, extra lookup, less efficient
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="vhid"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        bool TryQueryByVhId<T>(VhId vhid, out T value)
+            where T : unmanaged, IEntityComponent
+        {
+            if (this.TryGetId(vhid, out EntityId id) && this.TryQueryById(id, out value))
+            {
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
+        /// <summary>
+        /// Warning, extra lookup, less efficient
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="vhid"></param>
+        /// <param name="groupIndex"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        bool TryQueryByVhId<T>(VhId vhid, out GroupIndex groupIndex, out T value)
+            where T : unmanaged, IEntityComponent
+        {
+            if (this.TryGetId(vhid, out EntityId id) && this.TryQueryById(id, out groupIndex, out value))
+            {
+                return true;
+            }
+
+            groupIndex = default;
+            value = default;
+            return false;
+        }
+
+        /// <summary>
+        /// Warning, extra lookup, even less efficient
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        ref T QueryByVhId<T>(VhId vhid)
+            where T : unmanaged, IEntityComponent => ref this.QueryById<T>(this.GetId(vhid));
+
+        /// <summary>
+        /// Warning, extra lookup, even less efficient
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="groupIndex"></param>
+        /// <returns></returns>
+        ref T QueryByVhId<T>(VhId vhid, out GroupIndex groupIndex)
+            where T : unmanaged, IEntityComponent => ref this.QueryById<T>(this.GetId(vhid), out groupIndex);
+
+        /// <summary>
+        /// Warning, extra lookup, even less efficient
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="groupIndex"></param>
+        /// <param name="exists"></param>
+        /// <returns></returns>
+        ref T QueryByVhId<T>(VhId vhid, out GroupIndex groupIndex, out bool exists)
+            where T : unmanaged, IEntityComponent => ref this.QueryById<T>(this.GetId(vhid), out groupIndex, out exists);
+
         ref T QueryByGroupIndex<T>(in GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent;
 

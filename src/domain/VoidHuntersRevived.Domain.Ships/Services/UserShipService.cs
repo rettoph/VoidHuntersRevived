@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             _entities = entities;
         }
 
-        public void OnSpawn(VhId sourceEventId, EntityId id, ref UserId userId, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref UserId userId, in GroupIndex groupIndex)
         {
             this.Simulation.Publish(sourceEventId, new SetUserShipUserId()
             {
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             });
         }
 
-        public void OnDespawn(VhId sourceEventId, EntityId id, ref UserId userId, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref UserId userId, in GroupIndex groupIndex)
         {
             this.Simulation.Publish(sourceEventId, new SetUserShipUserId()
             {
