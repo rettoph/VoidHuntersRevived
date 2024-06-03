@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _debug.RenderDebugData(_camera.Projection, _camera.View);
+            _debug.RenderDebugData(_camera.Projection, _camera.View, _camera.World);
         }
 
         public void DrawImGui(GameTime gameTime)
