@@ -11,7 +11,7 @@ using Guppy.Engine.Common.Loaders;
 using Guppy.Game.Common;
 using Guppy.Game.Extensions.Serilog;
 using Serilog;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Presentation.DummyClient.Loaders
 {
@@ -34,15 +34,15 @@ namespace VoidHuntersRevived.Presentation.DummyClient.Loaders
                 config
                     .WriteTo.File(
                         path: source.Path,
-                        outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}",
+                        outputTemplate: "[{PeerType}][{StrategyType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}",
                         retainedFileCountLimit: 5,
                         shared: true
                     )
-                    .WriteTo.Terminal(scope.Resolve<ITerminal>(), outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+                    .WriteTo.Terminal(scope.Resolve<ITerminal>(), outputTemplate: "[{PeerType}][{StrategyType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
 
                 IStateService states = scope.Resolve<IStateService>();
                 config.Enrich.WithProperty("PeerType", states.GetByKey(StateKey<PeerType>.Create()).Value);
-                config.Enrich.WithProperty("SimulationType", states.GetByKey(StateKey<SimulationType>.Create()).Value);
+                config.Enrich.WithProperty("StrategyType", states.GetByKey(StateKey<StrategyTypeEnum>.Create()).Value);
             });
         }
     }

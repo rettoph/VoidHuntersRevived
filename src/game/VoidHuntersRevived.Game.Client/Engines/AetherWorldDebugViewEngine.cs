@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public string name { get; } = nameof(AetherWorldDebugViewEngine);
 
-        private readonly ISimulation _simulation;
+        private readonly IStrategy _strategy;
         private readonly IScene _scene;
         private readonly IImGui _imgui;
         private readonly IImGuiObjectExplorerService _objectExplorer;
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private string _filter;
 
         public AetherWorldDebugViewEngine(
-            ISimulation simulation,
+            IStrategy strategy,
             IScene scene,
             IImGui imgui,
             IImGuiObjectExplorerService objectExplorer,
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             GraphicsDevice graphics,
             Camera2D camera)
         {
-            _simulation = simulation;
+            _strategy = strategy;
             _scene = scene;
             _imgui = imgui;
             _objectExplorer = objectExplorer;
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _imgui.Begin($"Aether Explorer - {_simulation.Type}, {_scene.Name} {_scene.Id}", ref _aetherExplorerEnabled);
+            _imgui.Begin($"Aether Explorer - {_strategy.Type}, {_scene.Name} {_scene.Id}", ref _aetherExplorerEnabled);
 
             _imgui.InputText("Filter", ref _filter, 255);
 

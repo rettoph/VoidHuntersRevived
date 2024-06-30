@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
             }
         }
         private readonly ISimulationService _simulations;
-        private (ISimulation, Dictionary<string, DebugEngineGroupRenderer>)[] _data;
+        private (IStrategy, Dictionary<string, DebugEngineGroupRenderer>)[] _data;
         private readonly IImGui _imgui;
         private readonly IScene _scene;
 
@@ -76,15 +76,15 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
             _scene = scene;
             _imgui = imgui;
             _simulations = simulations;
-            _data = Array.Empty<(ISimulation, Dictionary<string, DebugEngineGroupRenderer>)>();
+            _data = Array.Empty<(IStrategy, Dictionary<string, DebugEngineGroupRenderer>)>();
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            _data = _simulations.Instances.Select(x => (
-                (x as ISimulation)!,
+            _data = _simulations.Instances.SelectMany(x => x.Strategies).Select(x => (
+                (x as IStrategy)!,
                 new Dictionary<string, DebugEngineGroupRenderer>())).ToArray();
 
             foreach (var (simulation, renderers) in _data)

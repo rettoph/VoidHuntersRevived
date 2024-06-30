@@ -10,9 +10,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
-    [SimulationFilter<Simulation>]
+    [SimulationFilter<Strategy>]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
-    internal class SimulationDebugEngine : BasicEngine<Simulation>, ISimpleDebugEngine
+    internal class SimulationDebugEngine : BasicEngine<Strategy>, ISimpleDebugEngine
     {
         private readonly IStateService _states;
 
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
             _states = states;
 
             this.Lines = new ISimpleDebugEngine.SimpleDebugLine[1 + states.GetAll().Count()];
-            this.Lines[0] = new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Time, () => TimeSpan.FromSeconds((float)Simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'));
+            this.Lines[0] = new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Time, () => TimeSpan.FromSeconds((float)Simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'));
 
             int index = 1;
             foreach (IState state in _states.GetAll())

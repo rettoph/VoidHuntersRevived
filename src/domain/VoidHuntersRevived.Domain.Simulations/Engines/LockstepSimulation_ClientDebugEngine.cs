@@ -8,8 +8,8 @@ using VoidHuntersRevived.Domain.Simulations.Lockstep;
 namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
-    [SimulationFilter<LockstepSimulation_Client>]
-    internal class LockstepSimulation_ClientDebugEngine : BasicEngine<LockstepSimulation_Client>, ISimpleDebugEngine
+    [SimulationFilter<LockstepStrategy_Client>]
+    internal class LockstepSimulation_ClientDebugEngine : BasicEngine<LockstepStrategy_Client>, ISimpleDebugEngine
     {
         public const string Time = nameof(Time);
         public const string Tick = nameof(Tick);
@@ -26,14 +26,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
         {
             this.Lines = new[]
             {
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Tick, () => this.Simulation.CurrentTick.Id.ToString("#,###,##0")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), Step, () => $"{this.Simulation.stepsSinceTick}/{this.Simulation.stepsPerTick}"),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), BufferHead, () => $"{(this.Simulation._ticks.Head?.Id.ToString()) ?? "null"}"),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), BufferTail, () => $"{(this.Simulation._ticks.Tail?.Id.ToString()) ?? "null"}"),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), BufferCount, () => this.Simulation._ticks.Count.ToString("#,##0")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), BufferCount, () => this.Simulation._ticks.Count.ToString("#,##0")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), TimeSinceStep, () => this.Simulation.timeSinceStep.ToString(@"hh\:mm\:ss\.FFFFFFF")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(ISimulation), StepTimespan, () => this.Simulation.stepTimeSpan.ToString(@"hh\:mm\:ss\.FFFFFFF")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Tick, () => this.Simulation.CurrentTick.Id.ToString("#,###,##0")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Step, () => $"{this.Simulation.stepsSinceTick}/{this.Simulation.stepsPerTick}"),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), BufferHead, () => $"{(this.Simulation._ticks.Head?.Id.ToString()) ?? "null"}"),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), BufferTail, () => $"{(this.Simulation._ticks.Tail?.Id.ToString()) ?? "null"}"),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), BufferCount, () => this.Simulation._ticks.Count.ToString("#,##0")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), BufferCount, () => this.Simulation._ticks.Count.ToString("#,##0")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), TimeSinceStep, () => this.Simulation.timeSinceStep.ToString(@"hh\:mm\:ss\.FFFFFFF")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), StepTimespan, () => this.Simulation.stepTimeSpan.ToString(@"hh\:mm\:ss\.FFFFFFF")),
             };
         }
     }

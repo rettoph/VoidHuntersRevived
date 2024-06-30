@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
     {
         private readonly IScene _scene;
         private readonly IImGui _imgui;
-        private (ISimulation, IImGuiComponent[])[] _data;
+        private (IStrategy, IImGuiComponent[])[] _data;
         private readonly ISimulationService _simulations;
 
         public ImGuiEngineComponent(
@@ -34,15 +34,15 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
             _scene = scene;
             _imgui = imgui;
             _simulations = simulations;
-            _data = Array.Empty<(ISimulation, IImGuiComponent[])>();
+            _data = Array.Empty<(IStrategy, IImGuiComponent[])>();
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            _data = _simulations.Instances.Select(x => (
-                (x as ISimulation)!,
+            _data = _simulations.Instances.SelectMany(x => x.Strategies).Select(x => (
+                (x as IStrategy)!,
                 x.Scope.Resolve<IEngineService>().OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray()
             )).ToArray();
         }

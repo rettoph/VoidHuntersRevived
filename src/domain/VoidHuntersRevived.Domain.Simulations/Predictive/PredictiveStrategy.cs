@@ -6,14 +6,14 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
-    internal sealed class PredictiveSimulation : Simulation
+    internal sealed class PredictiveStrategy : Strategy
     {
         private static readonly Pool<PredictedEvent> PredictionPool = new Pool<PredictedEvent>(ushort.MaxValue);
         private ILockstepSimulation _lockstep;
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private readonly Queue<EventDto> _confirmedEvents;
 
 
-        public PredictiveSimulation(ILifetimeScope scope) : base(SimulationType.Predictive, scope)
+        public PredictiveStrategy(ILifetimeScope scope) : base(StrategyTypeEnum.Predictive, scope)
         {
             _lockstep = null!;
             _step = new Step();
@@ -33,11 +33,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             _confirmedEvents = new Queue<EventDto>();
         }
 
-        public override void Initialize(ISimulationService simulations)
+        public override void Initialize(ISimulation simulation)
         {
-            base.Initialize(simulations);
+            base.Initialize(simulation);
 
-            _lockstep = simulations.First(SimulationType.Lockstep) as ILockstepSimulation ?? throw new NotImplementedException();
+            _lockstep = simulation.First(StrategyTypeEnum.Lockstep) as ILockstepSimulation ?? throw new NotImplementedException();
             _lockstep.OnEvent += this.HandleLockstepEvent;
             _synchronizations = this.engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
 
@@ -99,19 +99,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             if (!@event.Data.IsPredictable)
             {
-                this.logger.Verbose("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value, @event.Data.IsPredictable);
+                this.logger.Verbose("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", nameof(PredictiveStrategy), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value, @event.Data.IsPredictable);
                 return;
             }
 
             ref PredictedEvent? predictiveEvent = ref _predictedEvents.GetOrEnqueue(@event.Id, out bool exists);
             if (exists == true)
             {
-                this.logger.Error("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; duplicate event?", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
+                this.logger.Error("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; duplicate event?", nameof(PredictiveStrategy), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
                 return;
             }
 
             predictiveEvent = this.GetPredictionEvent(@event);
-            this.logger.Verbose("{ClassName}::{MethodName} - Predicting event {EventName}, {EventId}", nameof(PredictiveSimulation), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
+            this.logger.Verbose("{ClassName}::{MethodName} - Predicting event {EventName}, {EventId}", nameof(PredictiveStrategy), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
 
             base.Publish(@event);
         }
@@ -122,12 +122,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 if (confirmedEvent.Data is EndOfTick endOfTick)
                 {
-                    this.logger.Verbose("{ClassName}::{MethodName} - End of Tick {TickId}", nameof(PredictiveSimulation), nameof(Confirm), endOfTick.TickId);
+                    this.logger.Verbose("{ClassName}::{MethodName} - End of Tick {TickId}", nameof(PredictiveStrategy), nameof(Confirm), endOfTick.TickId);
 
                     break;
                 }
 
-                this.logger.Verbose("{ClassName}::{MethodName} - Confirming Event {EventName}, {EventId}", nameof(PredictiveSimulation), nameof(Confirm), confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
+                this.logger.Verbose("{ClassName}::{MethodName} - Confirming Event {EventName}, {EventId}", nameof(PredictiveStrategy), nameof(Confirm), confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
 
                 if (!_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published))
                 {

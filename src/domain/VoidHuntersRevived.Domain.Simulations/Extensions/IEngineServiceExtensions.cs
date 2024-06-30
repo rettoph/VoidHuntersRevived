@@ -8,12 +8,12 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 {
     internal static class IEngineServiceExtensions
     {
-        public static void InitializeSimulationEngines(this IEngineService enginesService, ISimulation simulation)
+        public static void InitializeStrategyEngines(this IEngineService enginesService, IStrategy strategy)
         {
-            Type simulationEngineType = typeof(ISimulationEngine<>).MakeGenericType(simulation.GetType());
+            Type simulationEngineType = typeof(IStrategyEngine<>).MakeGenericType(strategy.GetType());
             IEngine[] engines = enginesService.All().Where(x => x.GetType().IsAssignableTo(simulationEngineType)).ToArray();
-            MethodInfo initializeMethod = simulationEngineType.GetMethod(nameof(ISimulationEngine<ISimulation>.Initialize), BindingFlags.Public | BindingFlags.Instance, new[] { simulation.GetType() }) ?? throw new NotImplementedException();
-            object[] args = new[] { simulation };
+            MethodInfo initializeMethod = simulationEngineType.GetMethod(nameof(IStrategyEngine<IStrategy>.Initialize), BindingFlags.Public | BindingFlags.Instance, new[] { strategy.GetType() }) ?? throw new NotImplementedException();
+            object[] args = new[] { strategy };
 
             foreach (IEngine engine in engines)
             {

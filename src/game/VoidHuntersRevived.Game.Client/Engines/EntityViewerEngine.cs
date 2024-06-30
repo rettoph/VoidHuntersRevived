@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public string? Group => nameof(IEntityService);
 
         private readonly IScene _scene;
-        private readonly ISimulation _simulation;
+        private readonly IStrategy _strategy;
         private readonly IEntityService _entities;
         private readonly IEntityTypeService _entityTypes;
         private readonly IEntityDescriptorService _entityDescriptors;
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public EntityViewerEngine(
             IScene scene,
-            ISimulation simulation,
+            IStrategy strategy,
             IEntityService entities,
             IEntityTypeService entityTypes,
             IEntityDescriptorService entityDescriptors,
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             IObjectTextFilterService objectFilter,
             IImGui imgui)
         {
-            _simulation = simulation;
+            _strategy = strategy;
             _scene = scene;
             _entities = entities;
             _entityTypes = entityTypes;
@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _imgui.Begin($"Entity Viewer - {_simulation.Type}, {_scene.Name} {_scene.Id}", ref _entityViewerEnabled);
+            _imgui.Begin($"Entity Viewer - {_strategy.Type}, {_scene.Name} {_scene.Id}", ref _entityViewerEnabled);
 
             _imgui.InputText("Filter", ref _filter, 255);
 

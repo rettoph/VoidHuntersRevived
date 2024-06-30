@@ -25,9 +25,9 @@ namespace VoidHuntersRevived.Domain.Teams.Services
             _types = types;
         }
 
-        public unsafe override void Initialize(ISimulation simulation)
+        public unsafe override void Initialize(IStrategy strategy)
         {
-            base.Initialize(simulation);
+            base.Initialize(strategy);
 
             foreach (var ((teams, entityIds, count), group) in _entities.QueryEntities<Team, EntityId>())
             {

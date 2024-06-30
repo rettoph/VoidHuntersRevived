@@ -6,11 +6,12 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationFilter(SimulationType.Predictive)]
+    [StrategyFilter(StrategyTypeEnum.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     internal sealed class DrawActiveThrustableEngine : BasicEngine
     {
@@ -35,9 +36,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _camera = camera;
         }
 
-        public override void Initialize(ISimulation simulation)
+        public override void Initialize(IStrategy strategy)
         {
-            base.Initialize(simulation);
+            base.Initialize(strategy);
         }
 
         // public void Step(in GameTimeTeam _param)

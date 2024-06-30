@@ -1,51 +1,33 @@
-﻿using Autofac;
-using Guppy.Game.Common;
+﻿using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common
 {
-    public interface ISimulation : IScene, IDisposable
+    public interface ISimulation : IDisposable
     {
-        SimulationType Type { get; }
-        ILifetimeScope Scope { get; }
+        public VhId Id { get; }
+        IReadOnlyCollection<IStrategy> Strategies { get; }
 
-        void Initialize(ISimulationService simulations);
+        IStrategy this[StrategyTypeEnum type] { get; }
 
-        /// <summary>
-        /// Publish an event
-        /// </summary>
-        /// <param name="event"></param>
-        void Publish(EventDto @event);
+        void Draw(GameTime gameTime);
+
+        void Update(GameTime gameTime);
 
         /// <summary>
-        /// Publish an event
-        /// </summary>
-        /// <param name="event"></param>
-        void Publish(VhId sourceId, IEventData data);
-
-
-        /// <summary>
-        /// Publish input data
+        /// Publish input event
         /// </summary>
         /// <param name="sourceId"></param>
         /// <param name="data"></param>
         void Input(VhId sourceId, IInputData data);
 
         /// <summary>
-        /// <para>Enqueue an event to be published after the next <see cref="Step"/>.</para>
-        /// <para><see cref="IEventData"/> instances may only be enqueued if <see cref="IEventData.IsPrivate"/> == false</para>
+        /// Iterate through the given <paramref name="strategies"/> and return the first
+        /// matching <see cref="IStrategy"/> instance, if any
         /// </summary>
-        /// <param name="sourceId"></param>
-        /// <param name="data"></param>
-        void Enqueue(VhId sourceId, IEventData data);
-
-
-        /// <summary>
-        /// <para>Enqueue an event to be published after the next <see cref="Step"/>.</para>
-        /// <para><see cref="IEventData"/> instances may only be enqueued if <see cref="IEventData.IsPrivate"/> == false</para>
-        /// </summary>
-        /// <param name="event"></param>
-        void Enqueue(EventDto @event);
+        /// <param name="strategies"></param>
+        /// <returns></returns>
+        IStrategy? First(params StrategyTypeEnum[] strategies);
     }
 }

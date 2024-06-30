@@ -22,7 +22,7 @@ AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
 
 engine.Scenes.Create<ServerGameScene>(builder =>
 {
-    builder.RegisterNetScope<ISimulation>(PeerType.Server, NetScopeIds.Game);
+    builder.RegisterNetScope<IStrategy>(PeerType.Server, NetScopeIds.Game);
 });
 
 var source = new CancellationTokenSource();

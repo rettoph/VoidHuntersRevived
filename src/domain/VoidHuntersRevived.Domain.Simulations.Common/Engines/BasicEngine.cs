@@ -5,8 +5,8 @@ using Svelto.ECS;
 namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     [Service<IEngine>(ServiceLifetime.Scoped, true)]
-    public abstract class BasicEngine<TSimulation> : ISimulationEngine<TSimulation>
-        where TSimulation : ISimulation
+    public abstract class BasicEngine<TSimulation> : IStrategyEngine<TSimulation>
+        where TSimulation : IStrategy
     {
         public TSimulation Simulation { get; private set; } = default!;
 
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
         }
     }
 
-    public abstract class BasicEngine : BasicEngine<ISimulation>
+    public abstract class BasicEngine : BasicEngine<IStrategy>
     {
 
     }

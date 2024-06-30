@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [SimulationFilter<ILockstepSimulation>]
     internal class LockstepSimulationTickExplorerDebugEngine : BasicEngine<ILockstepSimulation>, IDebugEngine, IImGuiComponent
     {
-        public string? Group => nameof(ISimulation);
+        public string? Group => nameof(IStrategy);
 
         private readonly IImGui _imgui;
         private readonly IImGuiObjectExplorerService _objectExplorer;

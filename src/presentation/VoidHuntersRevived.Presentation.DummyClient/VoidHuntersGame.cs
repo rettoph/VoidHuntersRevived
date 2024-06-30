@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Presentation.Client
 
                 engine.Scenes.Create<MultiplayerGameScene>(builder =>
                 {
-                    builder.RegisterNetScope<ISimulation>(PeerType.Client, NetScopeIds.Game);
+                    builder.RegisterNetScope<IStrategy>(PeerType.Client, NetScopeIds.Game);
                 });
                 //_engine.Guppies.Create<EditorGuppy>();
 

@@ -11,15 +11,15 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [PeerFilter(PeerType.Client)]
-    internal sealed class LockstepSimulation_Client : LockstepSimulation,
+    internal sealed class LockstepStrategy_Client : LockstepStrategy,
         IDisposable
     {
-        private readonly INetScope<ISimulation> _netScope;
+        private readonly INetScope<IStrategy> _netScope;
 
         internal readonly TickBuffer _ticks;
 
-        public LockstepSimulation_Client(
-            INetScope<ISimulation> netScope,
+        public LockstepStrategy_Client(
+            INetScope<IStrategy> netScope,
             TickBuffer ticks,
             ILifetimeScope scope) : base(scope)
         {

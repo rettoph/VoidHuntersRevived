@@ -6,12 +6,13 @@ using Svelto.ECS;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationFilter(SimulationType.Predictive)]
+    [StrategyFilter(StrategyTypeEnum.Predictive)]
     internal class ShaderAntiAliasingEngine : BasicEngine, IStepEngine<FrameStart>, IStepEngine<FrameEnd>, IDisposable
     {
         private readonly GraphicsDevice _graphics;

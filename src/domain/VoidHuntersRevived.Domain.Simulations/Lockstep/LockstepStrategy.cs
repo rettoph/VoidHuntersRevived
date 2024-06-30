@@ -9,14 +9,14 @@ using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [SceneFilter<IVoidHuntersGameScene>()]
-    internal abstract class LockstepSimulation : Simulation, ILockstepSimulation
+    internal abstract class LockstepStrategy : Strategy, ILockstepSimulation
     {
         private IStepGroupEngine<Tick> _tickStepEnginesGroup;
         private readonly List<Tick> _history;
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public event OnEventDelegate<EventDto>? OnEvent;
 
-        public LockstepSimulation(ILifetimeScope scope) : base(SimulationType.Lockstep, scope)
+        public LockstepStrategy(ILifetimeScope scope) : base(StrategyTypeEnum.Lockstep, scope)
         {
             _history = new List<Tick>();
             _tickStepEnginesGroup = null!;
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             this.stepInterval = Settings.StepInterval.Value;
             this.stepsSinceTick = 0;
             this.timeSinceStep = TimeSpan.Zero;
-            this.stepTimeSpan = TimeSpan.FromSeconds((double)stepInterval);
+            this.stepTimeSpan = TimeSpan.FromSeconds((double)this.stepInterval);
             this.step = new Step()
             {
                 ElapsedTime = this.stepInterval,
@@ -54,9 +54,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             this.CurrentTick = Tick.First(Array.Empty<EventDto>());
         }
 
-        public override void Initialize(ISimulationService simulations)
+        public override void Initialize(ISimulation simulation)
         {
-            base.Initialize(simulations);
+            base.Initialize(simulation);
 
             _tickStepEnginesGroup = this.engines.All().CreateStepEnginesGroup<Tick>();
         }
@@ -105,7 +105,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             this.OnEvent?.Invoke(new EventDto()
             {
-                SourceId = NameSpace<LockstepSimulation>.Instance,
+                SourceId = NameSpace<LockstepStrategy>.Instance,
                 Data = new EndOfTick()
                 {
                     TickId = tick.Id

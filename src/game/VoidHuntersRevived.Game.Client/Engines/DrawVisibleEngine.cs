@@ -8,9 +8,9 @@ using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
-using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Game.Client.Common.Engines;
 using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
@@ -20,7 +20,7 @@ using VoidHuntersRevived.Game.Client.Common.Utilities;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationFilter(SimulationType.Predictive)]
+    [StrategyFilter(StrategyTypeEnum.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal sealed class DrawVisibleEngine : BasicEngine, IDrawVisibleEngine
     {

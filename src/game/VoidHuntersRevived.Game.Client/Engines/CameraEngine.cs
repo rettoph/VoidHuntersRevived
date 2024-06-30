@@ -13,14 +13,14 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationFilter(SimulationType.Lockstep)]
+    [StrategyFilter(StrategyTypeEnum.Lockstep)]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     [PeerFilter(PeerType.Client)]
     internal sealed class CameraEngine : BasicEngine, IStepEngine<GameTime>,

@@ -6,15 +6,15 @@ using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    [SimulationFilter(SimulationType.Predictive)]
+    [StrategyFilter(StrategyTypeEnum.Predictive)]
     internal class DrawSocketsEngine : BasicEngine
     {
         private readonly IScreen _screen;

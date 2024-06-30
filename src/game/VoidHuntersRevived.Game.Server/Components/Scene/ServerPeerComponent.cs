@@ -20,9 +20,9 @@ namespace VoidHuntersRevived.Game.Server.Components.Scene
     internal class ServerPeerComponent : SceneComponent, IGuppyUpdateable
     {
         private readonly IServerPeer _server;
-        private readonly INetScope<ISimulation> _scope;
+        private readonly INetScope<IStrategy> _scope;
 
-        public ServerPeerComponent(IServerPeer server, INetScope<ISimulation> scope)
+        public ServerPeerComponent(IServerPeer server, INetScope<IStrategy> scope)
         {
             _server = server;
             _scope = scope;

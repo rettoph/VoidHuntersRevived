@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common
         /// unshared event.
         /// </para>
         /// <para>
-        /// If false, the event may be enqueued with <see cref="ISimulation.Enqueue(EventDto)"/>
+        /// If false, the event may be enqueued with <see cref="IStrategy.Enqueue(EventDto)"/>
         /// </para>
         /// </summary>
         bool IsPrivate => false;

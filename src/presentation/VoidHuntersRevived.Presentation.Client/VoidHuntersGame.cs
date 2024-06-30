@@ -70,13 +70,13 @@ namespace VoidHuntersRevived.Presentation.Client
                 {
                     engine.Scenes.Create<ServerGameScene>(builder =>
                     {
-                        builder.RegisterNetScope<ISimulation>(PeerType.Server, NetScopeIds.Game);
+                        builder.RegisterNetScope<IStrategy>(PeerType.Server, NetScopeIds.Game);
                     });
                 }
 
                 engine.Scenes.Create<MultiplayerGameScene>(builder =>
                 {
-                    builder.RegisterNetScope<ISimulation>(PeerType.Client, NetScopeIds.Game);
+                    builder.RegisterNetScope<IStrategy>(PeerType.Client, NetScopeIds.Game);
                 });
                 //_engine.Guppies.Create<EditorGuppy>();
 

@@ -2,7 +2,8 @@
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Components.Guppy
@@ -23,7 +24,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
         {
             base.Initialize();
 
-            _simluations.Configure(SimulationType.Lockstep | SimulationType.Predictive);
+            _simluations.Create(VhId.Empty, StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep);
         }
     }
 }

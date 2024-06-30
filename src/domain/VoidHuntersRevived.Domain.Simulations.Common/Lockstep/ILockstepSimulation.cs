@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
 {
-    public interface ILockstepSimulation : ISimulation
+    public interface ILockstepSimulation : IStrategy
     {
         Tick CurrentTick { get; }
 

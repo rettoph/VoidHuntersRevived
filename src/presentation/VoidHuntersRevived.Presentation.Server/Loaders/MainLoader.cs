@@ -28,11 +28,11 @@ namespace VoidHuntersRevived.Presentation.Server.Loaders
                 config
                     .WriteTo.File(
                         path: source.Path,
-                        outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}",
+                        outputTemplate: "[{PeerType}][{StrategyType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}",
                         retainedFileCountLimit: 5,
                         shared: true
                     )
-                    .WriteTo.Console(outputTemplate: "[{PeerType}][{SimulationType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+                    .WriteTo.Console(outputTemplate: "[{PeerType}][{StrategyType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
             });
         }
     }

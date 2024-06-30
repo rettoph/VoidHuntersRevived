@@ -11,18 +11,17 @@ using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [PeerFilter(PeerType.Server)]
-    internal sealed class LockstepSimulation_Server : LockstepSimulation,
+    internal sealed class LockstepStrategy_Server : LockstepStrategy,
         ISubscriber<INetIncomingMessage<EventDto>>
     {
         private readonly IBus _bus;
         private readonly List<EventDto> _inputs;
 
-        public LockstepSimulation_Server(IBus bus, ILifetimeScope scope) : base(scope)
+        public LockstepStrategy_Server(IBus bus, ILifetimeScope scope) : base(scope)
         {
             Fix64 stepInterval = Settings.StepInterval.Value;
 
@@ -30,9 +29,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _inputs = new List<EventDto>();
         }
 
-        public override void Initialize(ISimulationService simulations)
+        public override void Initialize(ISimulation simulation)
         {
-            base.Initialize(simulations);
+            base.Initialize(simulation);
 
             _bus.Subscribe(this);
 

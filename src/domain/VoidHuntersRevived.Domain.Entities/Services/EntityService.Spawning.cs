@@ -177,8 +177,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             // Enqueue SoftSpawn entity event
             // This is enqueued before HardSpawn is published in case the initializer
-            // Spawns any other entities. This ensture the first entitiy SoftSpawn
-            // event is called first every time.
+            // Spawns any other entities. This ensture a first in first out order of
+            // SoftSpawn events
+
             this.Simulation.Enqueue(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),

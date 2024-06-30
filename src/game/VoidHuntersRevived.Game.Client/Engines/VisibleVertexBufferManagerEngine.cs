@@ -14,6 +14,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
 using VoidHuntersRevived.Game.Client.Common.Services;
 using VoidHuntersRevived.Game.Client.Common.Utilities;
@@ -22,7 +23,7 @@ using VoidHuntersRevived.Game.Client.Graphics.Effects;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationFilter(SimulationType.Predictive)]
+    [StrategyFilter(StrategyTypeEnum.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal sealed class VisibleVertexBufferManagerEngine : BasicEngine, IEngineEngine, IStepEngine<GameTime>, IDisposable,
         IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>
@@ -98,9 +99,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
             target_top = new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Vector4, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
         }
 
-        public override void Initialize(ISimulation simulation)
+        public override void Initialize(IStrategy strategy)
         {
-            base.Initialize(simulation);
+            base.Initialize(strategy);
 
             foreach (var ((typeEntities, visibles, zIndices, count), group) in _entities.QueryEntities<TypeEntity, Visible, zIndex>())
             {

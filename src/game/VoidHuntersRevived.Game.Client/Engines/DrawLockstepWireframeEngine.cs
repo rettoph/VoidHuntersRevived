@@ -1,18 +1,18 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common.Enums;
 using Guppy.Core.Messaging.Common;
+using Guppy.Game.Common.Enums;
 using Serilog;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationFilter(SimulationType.Lockstep)]
+    [StrategyFilter(StrategyTypeEnum.Lockstep)]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     internal sealed class DrawLockstepWireframeEngine : BasicEngine,
         ISubscriber<Input_Toggle_LockstepWireframe>
@@ -33,9 +33,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _logger = logger;
         }
 
-        public override void Initialize(ISimulation simulation)
+        public override void Initialize(IStrategy strategy)
         {
-            base.Initialize(simulation);
+            base.Initialize(strategy);
         }
 
         // public void Step(in GameTimeTeam _param)

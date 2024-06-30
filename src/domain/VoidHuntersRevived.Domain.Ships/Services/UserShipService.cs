@@ -18,10 +18,10 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         IEventEngine<SetUserShipUserId>
     {
         private readonly Map<EntityId, int> _shipVhIdUserIdMap;
-        private readonly INetScope<ISimulation> _netScope;
+        private readonly INetScope<IStrategy> _netScope;
         private readonly IEntityService _entities;
 
-        public UserShipService(INetScope<ISimulation> netScope, IEntityService entities)
+        public UserShipService(INetScope<IStrategy> netScope, IEntityService entities)
         {
             _netScope = netScope;
             _shipVhIdUserIdMap = new Map<EntityId, int>();

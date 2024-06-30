@@ -9,25 +9,26 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
     [AutoLoad]
     [PeerFilter(PeerType.Server)]
-    [SimulationFilter(SimulationType.Lockstep)]
+    [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal class LockstepServer_UserEngine : BasicEngine
     {
         private readonly INetScope _scope;
 
-        public LockstepServer_UserEngine(INetScope<ISimulation> scope)
+        public LockstepServer_UserEngine(INetScope<IStrategy> scope)
         {
             _scope = scope;
         }
 
-        public override void Initialize(ISimulation simulation)
+        public override void Initialize(IStrategy strategy)
         {
-            base.Initialize(simulation);
+            base.Initialize(strategy);
 
             _scope.Group.Users.OnUserJoined += this.HandleUserJoined;
         }
