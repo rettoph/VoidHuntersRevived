@@ -3,6 +3,7 @@ using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Extensions;
 using Guppy.Game;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Extensions;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -63,9 +64,12 @@ namespace VoidHuntersRevived.Presentation.Client
                     builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window).RegisterCoreNetworkServices();
                 }).Start();
 
-                engine.Scenes.Create<MultiplayerGameScene>(builder =>
+                engine.Scenes.Create<MultiplayerGameScene>(configuration =>
                 {
-                    builder.RegisterNetScope<IStrategy>(PeerType.Client, NetScopeIds.Game);
+                    configuration.WithContainerBuilder(builder =>
+                    {
+                        builder.RegisterNetScope<IStrategy>(PeerType.Client, NetScopeIds.Game);
+                    });
                 });
                 //_engine.Guppies.Create<EditorGuppy>();
 

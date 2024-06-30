@@ -4,7 +4,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Providers;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
 {
-    [Service<IEntityInitializer>(ServiceLifetime.Scoped, true)]
+    [Service<IEntityInitializer>(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public interface IEntityInitializer
     {
         /// <summary>

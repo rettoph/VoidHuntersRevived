@@ -3,6 +3,7 @@ using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Extensions;
 using Guppy.Game;
+using Guppy.Game.Common.Extensions;
 using Guppy.Game.Console.Extensions;
 using Guppy.Game.Helpers;
 using VoidHuntersRevived.Domain.Common.Constants;
@@ -20,9 +21,12 @@ AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
     engine.Dispose();
 });
 
-engine.Scenes.Create<ServerGameScene>(builder =>
+engine.Scenes.Create<ServerGameScene>(configuration =>
 {
-    builder.RegisterNetScope<IStrategy>(PeerType.Server, NetScopeIds.Game);
+    configuration.WithContainerBuilder(builder =>
+    {
+        builder.RegisterNetScope<IStrategy>(PeerType.Server, NetScopeIds.Game);
+    });
 });
 
 var source = new CancellationTokenSource();

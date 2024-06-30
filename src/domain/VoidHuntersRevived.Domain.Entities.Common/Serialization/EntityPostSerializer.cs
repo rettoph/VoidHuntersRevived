@@ -6,7 +6,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Options;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    [Service<EntityPostSerializer>(ServiceLifetime.Scoped, true)]
+    [Service<EntityPostSerializer>(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public abstract class EntityPostSerializer
     {
         public readonly Type Type;

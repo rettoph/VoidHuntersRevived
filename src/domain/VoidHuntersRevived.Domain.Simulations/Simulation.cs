@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Game.Common.Extensions;
 using Guppy.Game.Common.Services;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
@@ -51,10 +52,13 @@ namespace VoidHuntersRevived.Domain.Simulations
             ISceneService scenes = _scope.Resolve<ISceneService>();
             foreach (Type simulationType in simulationTypes)
             {
-                IStrategy strategy = (IStrategy)scenes.Create(simulationType, builder =>
+                IStrategy strategy = (IStrategy)scenes.Create(simulationType, configuration =>
                 {
-                    builder.RegisterInstance(this).As<ISimulation>();
-                    builder.RegisterNetScope<IStrategy>(netScope.Group.Peer.Type, netScope.Group.Id);
+                    configuration.WithContainerBuilder(builder =>
+                    {
+                        builder.RegisterInstance(this).As<ISimulation>();
+                        builder.RegisterNetScope<IStrategy>(netScope.Group.Peer.Type, netScope.Group.Id);
+                    });
                 });
 
                 _strategyTypes.Add(strategy.Type, strategy);

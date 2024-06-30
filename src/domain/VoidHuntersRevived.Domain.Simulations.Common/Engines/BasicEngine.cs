@@ -1,10 +1,9 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
-using Svelto.ECS;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
-    [Service<IEngine>(ServiceLifetime.Scoped, true)]
+    [Service(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute | ServiceRegistrationFlags.AsImplementedInterfaces)]
     public abstract class BasicEngine<TSimulation> : IStrategyEngine<TSimulation>
         where TSimulation : IStrategy
     {
