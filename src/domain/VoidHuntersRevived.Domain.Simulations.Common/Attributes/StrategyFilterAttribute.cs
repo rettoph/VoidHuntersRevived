@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Attributes
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
-            builder.RegisterFilter(new StateServiceFilter<StrategyTypeEnum>(classType, new State<StrategyTypeEnum>(this.RequiredStrategyType)));
+            builder.RegisterFilter(new StateServiceFilter<StrategyTypeEnum>(classType, StateKey<StrategyTypeEnum>.Default, this.RequiredStrategyType));
         }
     }
 
@@ -27,9 +27,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Attributes
     {
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
-            builder.RegisterFilter(new StateServiceFilter<Type>(classType, new State<Type>(
-                key: StateKey<Type>.Create<IStrategy>(),
-                value: typeof(TSimulation))));
+            builder.RegisterFilter(new StateServiceFilter<Type?>(classType, StateKey<Type?>.Create<IStrategy>(), typeof(TSimulation)));
         }
     }
 }

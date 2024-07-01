@@ -41,8 +41,8 @@ namespace VoidHuntersRevived.Presentation.DummyClient.Loaders
                     .WriteTo.Terminal(scope.Resolve<ITerminal>(), outputTemplate: "[{PeerType}][{StrategyType}][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
 
                 IStateService states = scope.Resolve<IStateService>();
-                config.Enrich.WithProperty("PeerType", states.GetByKey(StateKey<PeerType>.Create()).Value);
-                config.Enrich.WithProperty("StrategyType", states.GetByKey(StateKey<StrategyTypeEnum>.Create()).Value);
+                config.Enrich.WithProperty("PeerType", states.GetByKey(StateKey<PeerType>.Create()));
+                config.Enrich.WithProperty("StrategyType", states.GetByKey(StateKey<StrategyTypeEnum>.Create()));
             });
         }
     }
