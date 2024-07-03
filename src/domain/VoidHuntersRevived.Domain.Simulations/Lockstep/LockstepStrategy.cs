@@ -17,7 +17,7 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [SceneFilter<IVoidHuntersGameScene>()]
-    internal abstract class LockstepStrategy : Strategy, ILockstepSimulation
+    public abstract class LockstepStrategy : Strategy, ILockstepSimulation
     {
         private IStepGroupEngine<Tick> _tickStepEnginesGroup;
         private readonly List<Tick> _history;
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public event OnEventDelegate<EventDto>? OnEvent;
 
-        public LockstepStrategy(
+        internal LockstepStrategy(
             Lazy<ISimulation> simulation,
             Lazy<IEngineService> engines,
             Lazy<ILogger> logger) : base(StrategyTypeEnum.Lockstep, simulation, engines, logger)

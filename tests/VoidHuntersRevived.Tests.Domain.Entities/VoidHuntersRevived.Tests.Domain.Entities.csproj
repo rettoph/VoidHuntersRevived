@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\domain\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Tests.Domain.Simulations.Common\VoidHuntersRevived.Tests.Domain.Simulations.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

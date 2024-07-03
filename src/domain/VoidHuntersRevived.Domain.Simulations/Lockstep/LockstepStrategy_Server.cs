@@ -16,7 +16,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [PeerFilter(PeerType.Server)]
-    internal sealed class LockstepStrategy_Server : LockstepStrategy,
+    public sealed class LockstepStrategy_Server : LockstepStrategy,
         ISubscriber<INetIncomingMessage<EventDto>>
     {
         private readonly IBus _bus;

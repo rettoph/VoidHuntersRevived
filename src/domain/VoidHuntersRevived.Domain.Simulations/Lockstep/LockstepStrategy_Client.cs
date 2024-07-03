@@ -12,7 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [PeerFilter(PeerType.Client)]
-    internal sealed class LockstepStrategy_Client : LockstepStrategy,
+    public sealed class LockstepStrategy_Client : LockstepStrategy,
         IDisposable
     {
         private readonly INetScope<IStrategy> _netScope;

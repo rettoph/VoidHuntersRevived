@@ -1,9 +1,12 @@
-﻿using Moq;
+﻿using Guppy.Core.Network.Common.Enums;
+using Moq;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Factories;
+using VoidHuntersRevived.Tests.Common;
 
 namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
 {
@@ -12,23 +15,19 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
         private static StrategyTypeEnum[] PredictiveLockstep = [StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep];
         private static StrategyTypeEnum[] Lockstep = [StrategyTypeEnum.Lockstep];
 
-        private static Mock<IStrategiesFactory> StrategiesFactoryMock;
 
-        static SimulationFactory()
+        public static Simulation Build(VhId id, PeerType peerType, Dictionary<StrategyTypeEnum, IEngine[]> strategies)
         {
-            StrategiesFactoryMock = new Mock<IStrategiesFactory>();
+            IMock<IStrategiesFactory> StrategiesFactoryMock = MockBuilder<IStrategiesFactory>.Create()
+                .Setup<IEnumerable<IStrategy>, ISimulation, StrategyTypeEnum[]>(
+                    factory => factory.BuildStrategies(It.IsAny<ISimulation>(), PredictiveLockstep),
+                    (simulation, _) =>
+                    {
+                        return Enumerable.Empty<IStrategy>();
+                    })
+                .Build();
 
-            // StrategiesFactoryMock.Setup(factory => factory.BuildStrategies(It.IsAny<ISimulation>(), PredictiveLockstep)).Returns()
-        }
-
-        public static Simulation Build(VhId id, params StrategyTypeEnum[] strategies)
-        {
-            return new Simulation(id, StrategiesFactoryMock.Object, strategies);
-        }
-
-        private static IEnumerable<IStrategy> BuildClientPredictiveLockstepStrategies()
-        {
-            throw new NotImplementedException();
+            return new Simulation(id, StrategiesFactoryMock.Object, strategies.Keys.ToArray());
         }
     }
 }

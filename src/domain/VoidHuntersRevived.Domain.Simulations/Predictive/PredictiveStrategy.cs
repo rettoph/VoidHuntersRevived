@@ -14,7 +14,7 @@ using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
-    internal sealed class PredictiveStrategy : Strategy
+    public sealed class PredictiveStrategy : Strategy
     {
         private static readonly Pool<PredictedEvent> PredictionPool = new Pool<PredictedEvent>(ushort.MaxValue);
         private ILockstepSimulation _lockstep;
