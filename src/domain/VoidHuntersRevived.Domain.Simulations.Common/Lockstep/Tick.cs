@@ -1,6 +1,5 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
 {
@@ -9,14 +8,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
         public readonly int Id;
         public readonly EventDto[] Events;
         public readonly VhId Hash;
-        public readonly TickQueue Queue;
 
-        private Tick(int id, EventDto[] events, TickQueue queue)
+        private Tick(int id, EventDto[] events)
         {
             this.Id = id;
             this.Events = events;
             this.Hash = HashBuilder<Tick, int>.Instance.Calculate(id);
-            this.Queue = queue;
 
             foreach (EventDto @event in events)
             {
@@ -29,24 +26,24 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
             return $"Id = {Id}, Events: {this.Events.Length}, Hash = {Hash}";
         }
 
-        public Tick Next(EventDto[] events, TickQueue queue = TickQueue.One)
+        public Tick Next(EventDto[] events)
         {
-            return new Tick(Id + 1, events, queue);
+            return new Tick(Id + 1, events);
         }
 
-        public static Tick First(EventDto[] events, TickQueue queue = TickQueue.One)
+        public static Tick First(EventDto[] events)
         {
-            return new Tick(0, events, queue);
+            return new Tick(0, events);
         }
 
-        public static Tick Empty(int id, TickQueue queue = TickQueue.One)
+        public static Tick Empty(int id)
         {
-            return new Tick(id, Array.Empty<EventDto>(), queue);
+            return new Tick(id, Array.Empty<EventDto>());
         }
 
-        public static Tick Create(int id, EventDto[] events, TickQueue queue = TickQueue.One)
+        public static Tick Create(int id, EventDto[] events)
         {
-            return new Tick(id, events, queue);
+            return new Tick(id, events);
         }
     }
 }

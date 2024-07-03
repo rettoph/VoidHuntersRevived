@@ -3,8 +3,8 @@ using Guppy.Core.Network.Common.Providers;
 using Guppy.Core.Network.Common.Serialization;
 using Guppy.Core.Network.Common.Services;
 using LiteNetLib.Utils;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
@@ -23,15 +23,14 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 
         public override Tick Deserialize(NetDataReader reader)
         {
-            var hash = reader.GetVhId();
-            var id = reader.GetInt();
-            var queue = reader.GetEnum<TickQueue>();
-            var count = reader.GetByte();
+            VhId hash = reader.GetVhId();
+            int id = reader.GetInt();
+            byte count = reader.GetByte();
             Tick tick = default!;
 
             if (count == 0)
             {
-                tick = Tick.Empty(id, queue);
+                tick = Tick.Empty(id);
 
                 if (tick.Hash != hash)
                 {
@@ -51,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
                 }
             }
 
-            tick = Tick.Create(id, items, queue);
+            tick = Tick.Create(id, items);
             if (tick.Hash != hash)
             {
                 throw new Exception();
@@ -64,12 +63,9 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
         {
             writer.Put(instance.Hash);
             writer.Put(instance.Id);
-            writer.Put(instance.Queue);
 
-            var count = (byte)instance.Events.Length;
-
+            byte count = (byte)instance.Events.Length;
             writer.Put(count);
-
             foreach (EventDto input in instance.Events)
             {
                 _serializers.Serialize(writer, input);
