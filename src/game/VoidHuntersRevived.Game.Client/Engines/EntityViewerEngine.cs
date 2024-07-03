@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
-    internal class EntityViewerEngine : BasicEngine, IDebugEngine, IImGuiComponent
+    internal class EntityViewerEngine : StrategyEngine, IDebugEngine, IImGuiComponent
     {
         public string? Group => nameof(IEntityService);
 

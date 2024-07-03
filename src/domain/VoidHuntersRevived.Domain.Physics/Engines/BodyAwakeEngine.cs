@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
     [Sequence<StepSequence>(StepSequence.PostResourceManagerUpdate)]
-    internal sealed class BodyAwakeEngine : BasicEngine, IStepEngine<Step>
+    internal sealed class BodyAwakeEngine : StrategyEngine, IStepEngine<Step>
     {
         public string name { get; } = nameof(BodyAwakeEngine);
 

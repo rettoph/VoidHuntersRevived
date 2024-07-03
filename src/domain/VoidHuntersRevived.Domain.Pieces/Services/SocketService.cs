@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal sealed partial class SocketService : BasicEngine, ISocketService
+    internal sealed partial class SocketService : StrategyEngine, ISocketService
     {
         private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
 

@@ -2,7 +2,7 @@
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Simulations.Common;
 
-namespace VoidHuntersRevived.Domain.Entities.Events
+namespace VoidHuntersRevived.Domain.Entities.Common.Events
 {
     public sealed class DespawnEntity : IEventData
     {

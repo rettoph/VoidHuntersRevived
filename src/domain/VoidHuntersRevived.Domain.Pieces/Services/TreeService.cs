@@ -6,7 +6,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal partial class TreeService : BasicEngine, ITreeService
+    internal partial class TreeService : StrategyEngine, ITreeService
     {
         private readonly IEntityService _entities;
         private readonly IBlueprintService _blueprints;

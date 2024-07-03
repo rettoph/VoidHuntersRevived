@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     [Sequence<StepSequence>(StepSequence.PreStep)]
-    internal sealed class TreeEngine : BasicEngine,
+    internal sealed class TreeEngine : StrategyEngine,
         IOnSpawnEngine<Tree>,
         IOnDespawnEngine<Tree>,
         IStepEngine<Step>

@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class SocketIdsEngine : BasicEngine,
+    internal sealed class SocketIdsEngine : StrategyEngine,
         IOnDespawnEngine<Sockets<SocketId>>
     {
         private readonly IEntityService _entities;

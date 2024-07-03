@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    internal class TractorBeamHighlightEngine : BasicEngine, IStepEngine<GameTime>
+    internal class TractorBeamHighlightEngine : StrategyEngine, IStepEngine<GameTime>
     {
         private readonly ILogger _logger;
         private readonly IEntityService _entities;

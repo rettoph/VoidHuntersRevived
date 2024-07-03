@@ -3,6 +3,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Common.Events;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -210,7 +211,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 throw new NotImplementedException();
             }
 
-            EntityInitializer initializer = _types.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
+            EntityInitializer initializer = _entityTypeService.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
         }
 
         public void Process(VhId eventId, HardSpawnEntity<EntityInitializerDelegate> data)
@@ -221,7 +222,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 throw new NotImplementedException();
             }
 
-            EntityInitializer initializer = _types.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
+            EntityInitializer initializer = _entityTypeService.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
             data.Initializer.Invoke(this, data.Type, id, ref initializer);
         }
 
@@ -242,7 +243,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
 
             Id<IEntityType> typeId = this.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
-            _types.GetProviderByTypeId(typeId).SoftSpawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
+            _entityTypeService.GetProviderByTypeId(typeId).SoftSpawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
             status.Value = EntityStatusEnum.SoftSpawned;
         }
 
@@ -360,7 +361,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             Id<IEntityType> typeId = this.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
-            _types.GetProviderByTypeId(typeId).SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
+            _entityTypeService.GetProviderByTypeId(typeId).SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
             status.Value = EntityStatusEnum.SoftDespawned;
         }
 
@@ -393,7 +394,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             Id<IEntityType> typeId = this.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
-            IEntityTypeProvider descriptorEngine = _types.GetProviderByTypeId(typeId);
+            IEntityTypeProvider descriptorEngine = _entityTypeService.GetProviderByTypeId(typeId);
 
             if (status.Value < EntityStatusEnum.SoftDespawned)
             { // Ensure an entity gets soft despawned if it hasn't been already

@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal sealed class DrawVisibleEngine : BasicEngine, IDrawVisibleEngine
+    internal sealed class DrawVisibleEngine : StrategyEngine, IDrawVisibleEngine
     {
         private readonly IEntityService _entities;
         private readonly IEntityTypeService _types;

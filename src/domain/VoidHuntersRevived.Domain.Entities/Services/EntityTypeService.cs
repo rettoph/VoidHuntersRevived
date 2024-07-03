@@ -16,7 +16,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class EntityTypeService : BasicEngine, IEntityTypeService, IQueryingEntitiesEngine, IEngineEngine
+    internal sealed class EntityTypeService : StrategyEngine, IEntityTypeService, IQueryingEntitiesEngine, IEngineEngine
     {
         private readonly IFiltered<IEntityInitializer> _initializers;
         private readonly Lazy<IComponentSerializerService> _serializers;

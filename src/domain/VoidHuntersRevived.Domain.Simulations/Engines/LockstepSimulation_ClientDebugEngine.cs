@@ -8,8 +8,8 @@ using VoidHuntersRevived.Domain.Simulations.Lockstep;
 namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
-    [SimulationFilter<LockstepStrategy_Client>]
-    internal class LockstepSimulation_ClientDebugEngine : BasicEngine<LockstepStrategy_Client>, ISimpleDebugEngine
+    [StrategyFilter<LockstepStrategy_Client>]
+    internal class LockstepSimulation_ClientDebugEngine : StrategyEngine<LockstepStrategy_Client>, ISimpleDebugEngine
     {
         public const string Time = nameof(Time);
         public const string Tick = nameof(Tick);

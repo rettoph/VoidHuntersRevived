@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
-    public sealed partial class TractorBeamEmitterService : BasicEngine, ITractorBeamEmitterService
+    public sealed partial class TractorBeamEmitterService : StrategyEngine, ITractorBeamEmitterService
     {
         private static Fix64 QueryRadius = (Fix64)3;
 

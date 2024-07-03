@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class RigidEngine : BasicEngine,
+    internal sealed class RigidEngine : StrategyEngine,
         IOnSpawnEngine<Rigid>,
         IOnDespawnEngine<Rigid>
     {

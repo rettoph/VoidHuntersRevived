@@ -12,7 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class TractorableEngine : BasicEngine,
+    internal sealed class TractorableEngine : StrategyEngine,
         IOnSpawnEngine<Tractorable>,
         IOnDespawnEngine<Tractorable>
     {

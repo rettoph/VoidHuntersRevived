@@ -10,7 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    internal class BodyLocationPredictiveSynchronizationEngine : BasicEngine, IPredictiveSynchronizationEngine
+    internal class BodyLocationPredictiveSynchronizationEngine : StrategyEngine, IPredictiveSynchronizationEngine
     {
         private readonly ISpace _predictiveSpace;
         private ISpace _lockstepSpace;

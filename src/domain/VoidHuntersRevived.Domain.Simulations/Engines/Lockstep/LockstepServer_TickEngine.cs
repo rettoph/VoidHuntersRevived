@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     [AutoLoad]
     [PeerFilter(PeerType.Server)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    internal class LockstepServer_TickEngine : BasicEngine<ILockstepSimulation>,
+    internal class LockstepServer_TickEngine : StrategyEngine<ILockstepSimulation>,
         ITickEngine,
         IEventEngine<UserJoined>
     {

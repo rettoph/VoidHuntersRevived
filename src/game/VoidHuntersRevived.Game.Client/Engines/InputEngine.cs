@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [PeerFilter(PeerType.Client)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    internal class InputEngine : BasicEngine,
+    internal class InputEngine : StrategyEngine,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
         IInputSubscriber<Input_Spam_Click>,

@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
     [Sequence<StepSequence>(StepSequence.PostResourceManagerUpdate)]
-    internal sealed class BodyLocationEngine : BasicEngine, IStepEngine<Step>
+    internal sealed class BodyLocationEngine : StrategyEngine, IStepEngine<Step>
     {
         private readonly IEntityService _entities;
         private readonly ISpace _space;

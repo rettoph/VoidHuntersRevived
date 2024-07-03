@@ -19,7 +19,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class NodeEngine : BasicEngine,
+    internal sealed class NodeEngine : StrategyEngine,
         IOnSpawnEngine<Node>,
         IOnDespawnEngine<Node>,
         IStepEngine<Step>

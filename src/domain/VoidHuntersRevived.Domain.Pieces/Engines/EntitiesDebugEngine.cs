@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal class EntitiesDebugEngine : BasicEngine, ISimpleDebugEngine
+    internal class EntitiesDebugEngine : StrategyEngine, ISimpleDebugEngine
     {
         public const string Trees = nameof(Trees);
         public const string Nodes = nameof(Nodes);

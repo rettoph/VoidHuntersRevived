@@ -8,9 +8,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
-    [SimulationFilter<Strategy>]
+    [StrategyFilter<Strategy>]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
-    internal class SimulationDebugEngine : BasicEngine<Strategy>, ISimpleDebugEngine
+    internal class SimulationDebugEngine : StrategyEngine<Strategy>, ISimpleDebugEngine
     {
         public const string Time = nameof(Time);
 

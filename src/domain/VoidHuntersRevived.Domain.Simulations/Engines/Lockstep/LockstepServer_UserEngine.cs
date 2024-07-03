@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     [AutoLoad]
     [PeerFilter(PeerType.Server)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    internal class LockstepServer_UserEngine : BasicEngine
+    internal class LockstepServer_UserEngine : StrategyEngine
     {
         private readonly INetScope _scope;
 

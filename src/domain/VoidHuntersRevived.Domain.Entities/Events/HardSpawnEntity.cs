@@ -1,6 +1,6 @@
 ﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<SpawnEntity, VhId, VhId, Id<IEntityType>>.Instance.Calculate(in source, this.VhId, this.Type.Id);
+            return HashBuilder<HardSpawnEntity, VhId, VhId, Id<IEntityType>>.Instance.Calculate(in source, this.VhId, this.Type.Id);
         }
     }
 

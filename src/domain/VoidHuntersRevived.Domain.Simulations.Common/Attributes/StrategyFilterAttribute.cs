@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Attributes
         }
     }
 
-    public sealed class SimulationFilterAttribute<TSimulation> : GuppyConfigurationAttribute
+    public sealed class StrategyFilterAttribute<TSimulation> : GuppyConfigurationAttribute
         where TSimulation : IStrategy
     {
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)

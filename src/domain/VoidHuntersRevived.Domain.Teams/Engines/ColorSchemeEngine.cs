@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
     /// 
     /// </summary>
     [AutoLoad]
-    internal class ColorSchemeEngine : BasicEngine, IReactOnAddEx<ColorScheme>
+    internal class ColorSchemeEngine : StrategyEngine, IReactOnAddEx<ColorScheme>
     {
         private readonly IEntityService _entities;
 

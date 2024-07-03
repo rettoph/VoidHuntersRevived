@@ -12,7 +12,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
-    internal class UserShipService : BasicEngine, IUserShipService,
+    internal class UserShipService : StrategyEngine, IUserShipService,
         IOnSpawnEngine<UserId>,
         IOnDespawnEngine<UserId>,
         IEventEngine<SetUserShipUserId>

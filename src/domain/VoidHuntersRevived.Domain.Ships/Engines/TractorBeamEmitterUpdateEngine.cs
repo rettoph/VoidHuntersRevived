@@ -20,7 +20,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
-    internal sealed class TractorBeamEmitterUpdateEngine : BasicEngine,
+    internal sealed class TractorBeamEmitterUpdateEngine : StrategyEngine,
         IStepEngine<Step>
     {
         private readonly IEntityService _entities;

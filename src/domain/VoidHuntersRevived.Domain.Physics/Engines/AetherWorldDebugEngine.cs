@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines.Debug
 {
     [AutoLoad]
-    internal class AetherWorldDebugEngine : BasicEngine, ISimpleDebugEngine
+    internal class AetherWorldDebugEngine : StrategyEngine, ISimpleDebugEngine
     {
         private const string Bodies = nameof(Bodies);
         private const string Contacts = nameof(Contacts);

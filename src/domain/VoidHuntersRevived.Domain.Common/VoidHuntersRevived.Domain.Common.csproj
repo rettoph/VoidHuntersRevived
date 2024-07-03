@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Network.Common\Guppy.Core.Network.Common.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
     <ProjectReference Include="..\..\..\libraries\Svelto.ECS\com.sebaslab.svelto.common\Svelto.Common.csproj" />
+    <ProjectReference Include="..\..\common\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Ships.Common\VoidHuntersRevived.Domain.Ships.Common.csproj" />
   </ItemGroup>
 

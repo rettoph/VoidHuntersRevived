@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    internal class DrawSocketsEngine : BasicEngine
+    internal class DrawSocketsEngine : StrategyEngine
     {
         private readonly IScreen _screen;
         private readonly IEntityService _entities;

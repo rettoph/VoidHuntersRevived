@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal sealed class VisibleVertexBufferManagerEngine : BasicEngine, IEngineEngine, IStepEngine<GameTime>, IDisposable,
+    internal sealed class VisibleVertexBufferManagerEngine : StrategyEngine, IEngineEngine, IStepEngine<GameTime>, IDisposable,
         IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>
     {
         private readonly IEntityService _entities;

@@ -1,15 +1,17 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
+using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
+    [StrategyFilter<IStrategy>]
     [Service(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute | ServiceRegistrationFlags.AsImplementedInterfaces)]
-    public abstract class BasicEngine<TSimulation> : IStrategyEngine<TSimulation>
+    public abstract class StrategyEngine<TSimulation> : IStrategyEngine<TSimulation>
         where TSimulation : IStrategy
     {
         public TSimulation Simulation { get; private set; } = default!;
 
-        public BasicEngine()
+        public StrategyEngine()
         {
         }
 
@@ -23,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
         }
     }
 
-    public abstract class BasicEngine : BasicEngine<IStrategy>
+    public abstract class StrategyEngine : StrategyEngine<IStrategy>
     {
 
     }

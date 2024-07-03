@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal class DrawGameTimeEnginesEngine : BasicEngine, IStepEngine<Frame>, IEngineEngine
+    internal class DrawGameTimeEnginesEngine : StrategyEngine, IStepEngine<Frame>, IEngineEngine
     {
         private IStepGroupEngine<GameTime> _drawEnginesGroup = null!;
 

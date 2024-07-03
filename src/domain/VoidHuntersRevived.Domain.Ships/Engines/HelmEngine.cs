@@ -10,7 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
-    internal sealed class HelmEngine : BasicEngine,
+    internal sealed class HelmEngine : StrategyEngine,
         IEventEngine<Helm_SetDirection>
     {
         private readonly IEntityService _entities;

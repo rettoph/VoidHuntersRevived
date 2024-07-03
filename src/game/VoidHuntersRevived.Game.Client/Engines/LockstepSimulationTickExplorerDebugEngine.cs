@@ -12,8 +12,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SimulationFilter<ILockstepSimulation>]
-    internal class LockstepSimulationTickExplorerDebugEngine : BasicEngine<ILockstepSimulation>, IDebugEngine, IImGuiComponent
+    [StrategyFilter<ILockstepSimulation>]
+    internal class LockstepSimulationTickExplorerDebugEngine : StrategyEngine<ILockstepSimulation>, IDebugEngine, IImGuiComponent
     {
         public string? Group => nameof(IStrategy);
 

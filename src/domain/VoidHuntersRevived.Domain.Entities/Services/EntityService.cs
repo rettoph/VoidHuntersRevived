@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     [Sequence<EngineSequence>(EngineSequence.Group01)]
-    internal partial class EntityService : BasicEngine, IEntityService, IQueryingEntitiesEngine, IEngineEngine, IDisposable
+    internal partial class EntityService : StrategyEngine, IEntityService, IQueryingEntitiesEngine, IEngineEngine, IDisposable
     {
         private readonly ILogger _logger;
         private readonly ILifetimeScope _scope;
@@ -22,11 +22,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityReader _reader;
         private EntityWriter _writer;
-        private IEntityTypeService _types;
+        private IEntityTypeService _entityTypeService;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public IEntityTypeService Types => _types;
+        public IEntityTypeService Types => _entityTypeService;
 
         public EntityService(
             ILogger logger,
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             _writer = null!;
             _reader = null!;
-            _types = null!;
+            _entityTypeService = null!;
 
             _ref = new UnmanagedReference<IEntityService>(this);
         }
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _writer = new EntityWriter(this, _logger);
             _reader = new EntityReader(_scope.Resolve<IEntityTypeService>(), this, _logger);
-            _types = _scope.Resolve<IEntityTypeService>();
+            _entityTypeService = _scope.Resolve<IEntityTypeService>();
         }
 
         public UnmanagedReference<IEntityService> GetReference()

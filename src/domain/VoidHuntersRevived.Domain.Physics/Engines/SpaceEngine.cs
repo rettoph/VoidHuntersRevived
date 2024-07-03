@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
     [Sequence<StepSequence>(StepSequence.ResourceManagerUpdate)]
-    internal sealed class SpaceEngine : BasicEngine,
+    internal sealed class SpaceEngine : StrategyEngine,
         IStepEngine<Step>
     {
         private readonly ISpace _space;

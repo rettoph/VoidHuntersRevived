@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class AetherWorldDebugViewEngine : BasicEngine, IDebugEngine, IStepEngine<GameTime>, IImGuiComponent
+    internal class AetherWorldDebugViewEngine : StrategyEngine, IDebugEngine, IStepEngine<GameTime>, IImGuiComponent
     {
         public string? Group => typeof(World).Name;
 

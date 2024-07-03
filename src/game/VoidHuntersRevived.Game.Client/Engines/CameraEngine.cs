@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     [PeerFilter(PeerType.Client)]
-    internal sealed class CameraEngine : BasicEngine, IStepEngine<GameTime>,
+    internal sealed class CameraEngine : StrategyEngine, IStepEngine<GameTime>,
         IInputSubscriber<CursorScroll>
     {
         private readonly Camera2D _camera;

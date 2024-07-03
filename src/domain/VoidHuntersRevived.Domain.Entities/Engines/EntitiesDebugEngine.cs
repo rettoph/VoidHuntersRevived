@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines.Debug
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
-    internal class EntitiesDebugEngine : BasicEngine, ISimpleDebugEngine
+    internal class EntitiesDebugEngine : StrategyEngine, ISimpleDebugEngine
     {
         public const string Entities = nameof(Entities);
 

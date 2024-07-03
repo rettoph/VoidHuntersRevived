@@ -18,7 +18,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 namespace VoidHuntersRevived.Game.Core.Engines
 {
     [AutoLoad]
-    internal sealed class UserEngine : BasicEngine, IGetReadyEngine,
+    internal sealed class UserEngine : StrategyEngine, IGetReadyEngine,
         IEventEngine<UserJoined>
     {
         private readonly INetScope<IStrategy> _scope;

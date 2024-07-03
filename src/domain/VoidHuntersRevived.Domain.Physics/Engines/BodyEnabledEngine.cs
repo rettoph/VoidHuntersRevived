@@ -7,7 +7,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
     [Sequence<StepSequence>(StepSequence.Cleanup)]
-    internal class BodyEnabledEngine : BasicEngine
+    internal class BodyEnabledEngine : StrategyEngine
     {
     }
 }

@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Services
 {
-    internal class TeamService : BasicEngine, ITeamService
+    internal class TeamService : StrategyEngine, ITeamService
     {
         private BelongsTo<Team, TeamMember> _belongsToDefaultTeamComponent;
         private Dictionary<Id<Team>, GroupIndex> _groupIndices;

@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
     [Sequence<StepSequence>(StepSequence.PostResourceManagerUpdate)]
-    internal class BodyPhysicsBubbleEngine : BasicEngine, IStepEngine<Step>, IOnDespawnEngine<Enabled>
+    internal class BodyPhysicsBubbleEngine : StrategyEngine, IStepEngine<Step>, IOnDespawnEngine<Enabled>
     {
         private static readonly Fix64 Two = (Fix64)2;
 

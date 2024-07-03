@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
     [Sequence<StepSequence>(StepSequence.PreStep)]
-    internal sealed class TacticalEngine : BasicEngine,
+    internal sealed class TacticalEngine : StrategyEngine,
         IEventEngine<Tactical_SetTarget>,
         IStepEngine<Step>
     {
