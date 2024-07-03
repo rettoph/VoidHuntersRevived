@@ -1,12 +1,11 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal partial class EntityService
+    public partial class EntityService
     {
         public EntityData Serialize(EntityId id, SerializationOptions options)
         {

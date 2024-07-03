@@ -11,7 +11,6 @@ using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
@@ -89,13 +88,13 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
 
             foreach (var (simulation, renderers) in _data)
             {
-                var simpleEngines = simulation.Scope.Resolve<IEngineService>().OfType<ISimpleDebugEngine>()
+                var simpleEngines = simulation.Engines.OfType<ISimpleDebugEngine>()
                     .Sequence(DrawSequence.Draw)
                     .SelectMany(x => x.Lines)
                     .GroupBy(x => x.Group)
                     .ToDictionary(x => x.Key, x => x.ToArray());
 
-                var engines = simulation.Scope.Resolve<IEngineService>().OfType<IDebugEngine>()
+                var engines = simulation.Engines.OfType<IDebugEngine>()
                     .Where(x => x.Group is not null)
                     .Sequence(DrawSequence.Draw)
                     .GroupBy(x => x.Group!)

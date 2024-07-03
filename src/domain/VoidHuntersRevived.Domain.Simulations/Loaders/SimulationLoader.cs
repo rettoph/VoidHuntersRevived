@@ -3,8 +3,10 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Loaders;
 using LiteNetLib;
 using System.Runtime.CompilerServices;
+using VoidHuntersRevived.Domain.Simulations.Common.Factories;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Factories;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Services;
@@ -16,12 +18,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
     [AutoLoad]
     public sealed class SimulationLoader : IServiceLoader
     {
-        public void ConfigureServices(ContainerBuilder services)
+        public void ConfigureServices(ContainerBuilder builder)
         {
-            services.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
+            builder.RegisterType<StrategiesFactory>().As<IStrategiesFactory>().InstancePerLifetimeScope();
+            builder.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
+            builder.RegisterType<EngineService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            this.ConfigureLockstep(services);
-            this.ConfigurePredictive(services);
+            this.ConfigureLockstep(builder);
+            this.ConfigurePredictive(builder);
         }
 
         private void ConfigureLockstep(ContainerBuilder services)

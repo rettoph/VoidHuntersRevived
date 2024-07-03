@@ -2,9 +2,7 @@
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
@@ -12,15 +10,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal class DrawGameTimeEnginesEngine : StrategyEngine, IStepEngine<Frame>, IEngineEngine
+    internal class DrawGameTimeEnginesEngine : StrategyEngine, IStepEngine<Frame>
     {
         private IStepGroupEngine<GameTime> _drawEnginesGroup = null!;
 
         public string name => nameof(DrawGameTimeEnginesEngine);
 
-        public void Initialize(IEngineService engines)
+        public override void Initialize(IStrategy simulation)
         {
-            _drawEnginesGroup = engines.All().CreateSequencedStepEnginesGroup<GameTime, DrawSequence>(DrawSequence.Draw);
+            base.Initialize(simulation);
+
+            _drawEnginesGroup = simulation.Engines.All().CreateSequencedStepEnginesGroup<GameTime, DrawSequence>(DrawSequence.Draw);
         }
 
         public void Step(in Frame param)

@@ -11,7 +11,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal partial class EntityService :
+    public partial class EntityService :
         IEventEngine<SpawnEntity>,
         IEventEngine<SpawnEntity<EntityInitializerDelegate>>,
         IEventEngine<HardSpawnEntity>,
@@ -22,7 +22,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IEventEngine<DespawnEntity>,
         IRevertEventEngine<DespawnEntity>,
         IEventEngine<SoftDespawnEntity>,
-        IEventEngine<EnqueueHardDespawn>,
         IEventEngine<HardDespawnEntity>
     {
         public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid)
@@ -333,10 +332,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 }
             });
 
-            this.Simulation.Publish(new EventDto()
+            this.Simulation.Enqueue(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                Data = new EnqueueHardDespawn()
+                Data = new HardDespawnEntity()
                 {
                     VhId = data.VhId
                 }
@@ -363,18 +362,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             Id<IEntityType> typeId = this.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
             _entityTypeService.GetProviderByTypeId(typeId).SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
             status.Value = EntityStatusEnum.SoftDespawned;
-        }
-
-        public void Process(VhId eventId, EnqueueHardDespawn data)
-        {
-            this.Simulation.Enqueue(new EventDto()
-            {
-                SourceId = NameSpace<EntityService>.Instance.Create(eventId),
-                Data = new HardDespawnEntity()
-                {
-                    VhId = data.VhId
-                }
-            });
         }
 
         public void Process(VhId eventId, HardDespawnEntity data)

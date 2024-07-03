@@ -5,15 +5,15 @@ using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     [Sequence<EngineSequence>(EngineSequence.Group01)]
-    internal partial class EntityService : StrategyEngine, IEntityService, IQueryingEntitiesEngine, IEngineEngine, IDisposable
+    public partial class EntityService : StrategyEngine, IEntityService, IQueryingEntitiesEngine, IDisposable
     {
         private readonly ILogger _logger;
         private readonly ILifetimeScope _scope;
@@ -49,8 +49,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _ref.Dispose(false);
         }
 
-        public void Initialize(IEngineService engines)
+        public override void Initialize(IStrategy simulation)
         {
+            base.Initialize(simulation);
+
             _writer = new EntityWriter(this, _logger);
             _reader = new EntityReader(_scope.Resolve<IEntityTypeService>(), this, _logger);
             _entityTypeService = _scope.Resolve<IEntityTypeService>();

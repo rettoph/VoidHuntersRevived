@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
@@ -9,7 +8,6 @@ using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
@@ -43,7 +41,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Guppy
 
             _data = _simulations.Instances.SelectMany(x => x.Strategies).Select(x => (
                 (x as IStrategy)!,
-                x.Scope.Resolve<IEngineService>().OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray()
+                x.Engines.OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray()
             )).ToArray();
         }
 

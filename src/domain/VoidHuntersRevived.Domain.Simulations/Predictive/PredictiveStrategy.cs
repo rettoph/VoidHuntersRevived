@@ -1,6 +1,6 @@
-﻿using Autofac;
-using Guppy.Core.Common.Collections;
+﻿using Guppy.Core.Common.Collections;
 using Microsoft.Xna.Framework;
+using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -8,6 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
@@ -24,7 +25,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private readonly Queue<EventDto> _confirmedEvents;
 
 
-        public PredictiveStrategy(ILifetimeScope scope) : base(StrategyTypeEnum.Predictive, scope)
+        public PredictiveStrategy(
+            Lazy<ISimulation> simulation,
+            Lazy<IEngineService> engines,
+            Lazy<ILogger> logger) : base(StrategyTypeEnum.Predictive, simulation, engines, logger)
         {
             _lockstep = null!;
             _step = new Step();
@@ -39,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             _lockstep = simulation.First(StrategyTypeEnum.Lockstep) as ILockstepSimulation ?? throw new NotImplementedException();
             _lockstep.OnEvent += this.HandleLockstepEvent;
-            _synchronizations = this.engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
+            _synchronizations = this.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
 
             foreach (IPredictiveSynchronizationEngine synchronization in _synchronizations)
             {

@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Game.Common;
+﻿using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Serilog;
@@ -7,16 +6,18 @@ using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Strategy : Scene, IStrategy, IDisposable
     {
+        private readonly Lazy<ILogger> _logger;
+        private readonly Lazy<ISimulation> _simulation;
+        private readonly Lazy<IEngineService> _engines;
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
 
@@ -28,35 +29,35 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly Frame _frame;
         private readonly FrameEnd _frameEnd;
 
-        protected ILogger logger { get; private set; }
-        protected IEngineService engines { get; private set; }
+        protected ILogger logger => _logger.Value;
 
         public readonly StrategyTypeEnum Type;
-        public ILifetimeScope Scope { get; private set; }
-        public ISimulation Simulation { get; private set; }
+        public ISimulation Simulation => _simulation.Value;
+        public IEngineService Engines => _engines.Value;
 
         public Step CurrentStep { get; private set; }
 
         StrategyTypeEnum IStrategy.Type => this.Type;
-        ILifetimeScope IStrategy.Scope => this.Scope;
 
-        protected Strategy(StrategyTypeEnum type, ILifetimeScope scope)
+        protected Strategy(
+            StrategyTypeEnum type,
+            Lazy<ISimulation> simulation,
+            Lazy<IEngineService> engines,
+            Lazy<ILogger> logger)
         {
+            _simulation = simulation;
+            _engines = engines;
+            _logger = logger;
             _enqueued = new Queue<EventDto>();
             _publishers = new Dictionary<Type, EventPublisher>();
 
             this.Type = type;
-            this.Scope = scope;
-
-            this.logger = null!;
-            this.engines = null!;
 
             _frameStartEnginesGroup = null!;
             _frameEnginesGroup = null!;
             _frameEndEnginesGroup = null!;
 
             this.CurrentStep = new Step();
-            this.Simulation = null!;
 
             _frameStart = new FrameStart();
             _frame = new Frame(_frameStart);
@@ -65,26 +66,19 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Initialize(ISimulation simulation)
         {
-            this.logger = this.Scope.Resolve<ILogger>();
-            this.engines = this.Scope.Resolve<IEngineService>();
+            this.Engines.Initialize(this);
 
-            this.engines.Initialize();
-            this.engines.InitializeStrategyEngines(this);
 
-            this.Simulation = simulation;
+            EventPublisher.PopulatePublishers(this.Engines, this.logger, _publishers);
 
-            EventPublisher.PopulatePublishers(this.engines, this.logger, _publishers);
-
-            _frameStartEnginesGroup = this.engines.All().CreateSequencedStepEnginesGroup<FrameStart, DrawSequence>(DrawSequence.Draw);
-            _frameEnginesGroup = this.engines.All().CreateSequencedStepEnginesGroup<Frame, DrawSequence>(DrawSequence.Draw);
-            _frameEndEnginesGroup = this.engines.All().CreateSequencedStepEnginesGroup<FrameEnd, DrawSequence>(DrawSequence.Draw, true);
+            _frameStartEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<FrameStart, DrawSequence>(DrawSequence.Draw);
+            _frameEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<Frame, DrawSequence>(DrawSequence.Draw);
+            _frameEndEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<FrameEnd, DrawSequence>(DrawSequence.Draw, true);
         }
 
         public virtual void Dispose()
         {
-            this.engines.Dispose();
-
-            this.Scope.Dispose();
+            this.Engines.Dispose();
         }
 
         public override void Draw(GameTime realTime)
@@ -114,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
         protected virtual void DoStep(Step step)
         {
-            this.engines.Step(step);
+            this.Engines.Step(step);
             while (_enqueued.TryDequeue(out EventDto? enqueued))
             {
                 this.Publish(enqueued);
@@ -151,15 +145,10 @@ namespace VoidHuntersRevived.Domain.Simulations
                 Data = data
             });
         }
+
         public void Enqueue(EventDto @event)
         {
-            if (@event.Data.IsPrivate == true)
-            {
-                _enqueued.Enqueue(@event);
-                return;
-            }
-
-            this.logger.Error("{ClassName}::{MethodName} - Failed to enqueue event {Id}; Type = {Type}, IsPrivate = {IsPrivate}", nameof(Strategy), nameof(Enqueue), @event.Id, @event.Data.GetType().GetFormattedName(), @event.Data.IsPrivate);
+            _enqueued.Enqueue(@event);
         }
     }
 }

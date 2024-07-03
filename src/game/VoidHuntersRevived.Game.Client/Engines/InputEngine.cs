@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Game.Input.Common;
@@ -69,10 +68,10 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             IStrategy readStrategy = _simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
 
-            _entities = readStrategy.Scope.Resolve<IEntityService>();
-            _tractorBeamEmitters = readStrategy.Scope.Resolve<ITractorBeamEmitterService>();
-            _sockets = readStrategy.Scope.Resolve<ISocketService>();
-            _userShips = readStrategy.Scope.Resolve<IUserShipService>();
+            _entities = readStrategy.Engines.Get<IEntityService>();
+            _tractorBeamEmitters = readStrategy.Engines.Get<ITractorBeamEmitterService>();
+            _sockets = readStrategy.Engines.Get<ISocketService>();
+            _userShips = readStrategy.Engines.Get<IUserShipService>();
         }
 
         public void Process(in Guid messageId, Input_Helm_SetDirection message)

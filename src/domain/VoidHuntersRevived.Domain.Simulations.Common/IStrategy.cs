@@ -1,15 +1,15 @@
-﻿using Autofac;
-using Guppy.Game.Common;
+﻿using Guppy.Game.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common
 {
     public interface IStrategy : IScene, IDisposable
     {
         StrategyTypeEnum Type { get; }
-        ILifetimeScope Scope { get; }
         ISimulation Simulation { get; }
+        IEngineService Engines { get; }
 
         void Initialize(ISimulation simulation);
 

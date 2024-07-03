@@ -1,6 +1,6 @@
-﻿using Autofac;
-using Guppy.Game.Common.Attributes;
+﻿using Guppy.Game.Common.Attributes;
 using Microsoft.Xna.Framework;
+using Serilog;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
@@ -11,6 +11,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
@@ -35,7 +36,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public event OnEventDelegate<EventDto>? OnEvent;
 
-        public LockstepStrategy(ILifetimeScope scope) : base(StrategyTypeEnum.Lockstep, scope)
+        public LockstepStrategy(
+            Lazy<ISimulation> simulation,
+            Lazy<IEngineService> engines,
+            Lazy<ILogger> logger) : base(StrategyTypeEnum.Lockstep, simulation, engines, logger)
         {
             _history = new List<Tick>();
             _tickStepEnginesGroup = null!;
@@ -58,7 +62,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             base.Initialize(simulation);
 
-            _tickStepEnginesGroup = this.engines.All().CreateStepEnginesGroup<Tick>();
+            _tickStepEnginesGroup = this.Engines.All().CreateStepEnginesGroup<Tick>();
         }
 
         public override void Update(GameTime realTime)

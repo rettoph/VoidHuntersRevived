@@ -1,9 +1,9 @@
-﻿using Autofac;
-using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
 using Microsoft.Xna.Framework;
+using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -11,6 +11,7 @@ using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -21,7 +22,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         private readonly IBus _bus;
         private readonly List<EventDto> _inputs;
 
-        public LockstepStrategy_Server(IBus bus, ILifetimeScope scope) : base(scope)
+        public LockstepStrategy_Server(
+            IBus bus,
+            Lazy<ISimulation> simulation,
+            Lazy<IEngineService> engines,
+            Lazy<ILogger> logger) : base(simulation, engines, logger)
         {
             Fix64 stepInterval = Settings.StepInterval.Value;
 

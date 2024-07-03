@@ -1,6 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common.Attributes;
-using VoidHuntersRevived.Common;
+﻿using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Common;
@@ -23,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void Initialize(ILockstepSimulation lockstep)
         {
-            _lockstepSpace = lockstep.Scope.Resolve<ISpace>();
+            _lockstepSpace = lockstep.Engines.Get<ISpace>();
         }
 
         public void Synchronize(Step step)

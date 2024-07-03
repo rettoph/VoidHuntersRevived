@@ -4,7 +4,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal partial class EntityService
+    public partial class EntityService
     {
         private readonly Dictionary<VhId, EntityId> _ids = new Dictionary<VhId, EntityId>();
 

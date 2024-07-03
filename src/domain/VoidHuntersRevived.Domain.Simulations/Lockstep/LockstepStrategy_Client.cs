@@ -1,12 +1,13 @@
-﻿using Autofac;
-using Guppy.Core.Network.Common;
+﻿using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
 using Microsoft.Xna.Framework;
+using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -21,7 +22,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepStrategy_Client(
             INetScope<IStrategy> netScope,
             TickBuffer ticks,
-            ILifetimeScope scope) : base(scope)
+            Lazy<ISimulation> simulation,
+            Lazy<IEngineService> engines,
+            Lazy<ILogger> logger) : base(simulation, engines, logger)
         {
             _netScope = netScope;
             _ticks = ticks;

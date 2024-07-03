@@ -3,7 +3,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal partial class EntityService
+    public partial class EntityService
     {
         public ref EntityFilterCollection GetFilter<T>(EntityId id, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent

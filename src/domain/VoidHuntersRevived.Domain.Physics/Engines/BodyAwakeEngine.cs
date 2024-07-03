@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -19,10 +18,10 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private readonly ILogger _logger;
         private readonly IEntityService _entities;
-        private readonly Space _space;
+        private readonly ISpace _space;
         private readonly Queue<IBody> _awakeChangedBodies;
 
-        public BodyAwakeEngine(IEntityService entities, ILogger logger, Space space)
+        public BodyAwakeEngine(IEntityService entities, ILogger logger, ISpace space)
         {
             _entities = entities;
             _space = space;

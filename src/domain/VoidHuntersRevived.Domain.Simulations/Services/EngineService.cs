@@ -6,14 +6,15 @@ using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
-namespace VoidHuntersRevived.Domain.Entities.Services
+namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    internal sealed class EngineService : IEngineService
+    public sealed class EngineService : IEngineService
     {
         private readonly IBrokerService _brokers;
         private readonly EnginesRoot _enginesRoot;
@@ -39,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _engines = engines.ToList();
         }
 
-        public void Initialize()
+        public void Initialize(IStrategy strategy)
         {
             _engines.AddRange(_engineProviders.Value.SelectMany(x => x.GetEngines()));
             _engines = _engines.Sequence(EngineSequence.Group03).ToList();
@@ -52,16 +53,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 }
 
                 _enginesRoot.AddEngine(engine);
-
-                if (engine is IEngineEngine engineEngine)
-                {
-                    engineEngine.Initialize(this);
-                }
             }
 
             _stepEngines = _engines.CreateSequencedStepEnginesGroup<Step, StepSequence>(StepSequence.Step);
 
-            _scheduler.SubmitEntities();
+            this.InitializeStrategyEngines(strategy, _scheduler);
         }
 
         public void Dispose()

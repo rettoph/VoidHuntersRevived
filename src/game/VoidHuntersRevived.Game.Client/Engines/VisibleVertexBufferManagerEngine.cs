@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
@@ -25,7 +24,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal sealed class VisibleVertexBufferManagerEngine : StrategyEngine, IEngineEngine, IStepEngine<GameTime>, IDisposable,
+    internal sealed class VisibleVertexBufferManagerEngine : StrategyEngine, IStepEngine<GameTime>, IDisposable,
         IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>
     {
         private readonly IEntityService _entities;
@@ -103,18 +102,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             base.Initialize(strategy);
 
-            foreach (var ((typeEntities, visibles, zIndices, count), group) in _entities.QueryEntities<TypeEntity, Visible, zIndex>())
+            _stepEngines = strategy.Engines.All().CreateSequencedStepEnginesGroup<IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>, DrawSequence>(DrawSequence.Draw);
+
+            foreach (var ((typeEntities, visibles, zIndices, count), _) in _entities.QueryEntities<TypeEntity, Visible, zIndex>())
             {
                 for (int i = 0; i < count; i++)
                 {
                     _managers.Add(typeEntities[i].TypeId, VisibleVertexBufferManagerEngine.BuildVertexBufferManager(typeEntities[i].TypeId, visibles[i], zIndices[i], _graphics));
                 }
             }
-        }
-
-        public void Initialize(IEngineService engines)
-        {
-            _stepEngines = engines.All().CreateSequencedStepEnginesGroup<IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>, DrawSequence>(DrawSequence.Draw);
         }
 
         public void Step(in GameTime param)

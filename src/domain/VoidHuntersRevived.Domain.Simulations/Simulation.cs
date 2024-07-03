@@ -1,25 +1,16 @@
-﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Network.Common;
-using Guppy.Core.Network.Common.Enums;
-using Guppy.Game.Common;
-using Guppy.Game.Common.Extensions;
-using Guppy.Game.Common.Services;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Common.Factories;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    internal sealed class Simulation : ISimulation
+    public sealed class Simulation : ISimulation
     {
         private Dictionary<StrategyTypeEnum, IStrategy> _strategyTypes;
         private List<IStrategy> _strategies;
-        private ILifetimeScope _scope;
 
         public VhId Id { get; }
 
@@ -27,48 +18,13 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public IReadOnlyCollection<IStrategy> Strategies { get; }
 
-        public Simulation(VhId id, ILifetimeScope scope, params StrategyTypeEnum[] strategies)
+        public Simulation(VhId id, IStrategiesFactory strategiesFactory, params StrategyTypeEnum[] strategies)
         {
-            _scope = scope;
-            _strategies = new List<IStrategy>();
-            _strategyTypes = new Dictionary<StrategyTypeEnum, IStrategy>();
+            _strategies = strategiesFactory.BuildStrategies(this, strategies).ToList();
+            _strategyTypes = _strategies.ToDictionary(x => x.Type, x => x);
 
             this.Id = id;
             this.Strategies = new ReadOnlyCollection<IStrategy>(_strategies);
-
-            INetScope<IStrategy> netScope = _scope.Resolve<INetScope<IStrategy>>();
-            List<Type> simulationTypes = new List<Type>();
-            if (netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Predictive))
-            {
-                simulationTypes.Add(typeof(PredictiveStrategy));
-            }
-            if (netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Lockstep))
-            {
-                simulationTypes.Add(typeof(LockstepStrategy_Client));
-            }
-            if (netScope.Group.Peer.Type == PeerType.Server && strategies.Contains(StrategyTypeEnum.Lockstep))
-            {
-                simulationTypes.Add(typeof(LockstepStrategy_Server));
-            }
-
-            ISceneService scenes = _scope.Resolve<ISceneService>();
-            ITerminal terminal = _scope.Resolve<ITerminal>();
-            foreach (Type simulationType in simulationTypes)
-            {
-                IStrategy strategy = (IStrategy)scenes.Create(simulationType, configuration =>
-                {
-                    configuration.WithContainerBuilder(builder =>
-                    {
-                        builder.RegisterInstanceFrom<ITerminal>(scope).AsImplementedInterfaces();
-
-                        builder.RegisterInstance(this).As<ISimulation>();
-                        builder.RegisterNetScope<IStrategy>(netScope.Group.Peer.Type, netScope.Group.Id);
-                    });
-                });
-
-                _strategyTypes.Add(strategy.Type, strategy);
-                _strategies.Add(strategy);
-            }
 
             foreach (IStrategy strategy in _strategies)
             {

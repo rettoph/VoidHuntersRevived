@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Collections;
 using Guppy.Core.Resources.Common;
 using Svelto.ECS;
@@ -6,17 +7,18 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Providers;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal sealed class EntityTypeService : StrategyEngine, IEntityTypeService, IQueryingEntitiesEngine, IEngineEngine
+    [Sequence<EngineSequence>(EngineSequence.Group00)]
+    public sealed class EntityTypeService : StrategyEngine, IEntityTypeService, IQueryingEntitiesEngine
     {
         private readonly IFiltered<IEntityInitializer> _initializers;
         private readonly Lazy<IComponentSerializerService> _serializers;
@@ -51,11 +53,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _distinctComponentTypes = new HashSet<Type>();
         }
 
-        public void Initialize(IEngineService engines)
+        public override void Initialize(IStrategy simulation)
         {
+            base.Initialize(simulation);
+
             IEntityFactory factory = _enginesRoot.GenerateEntityFactory();
             IEntityFunctions functions = _enginesRoot.GenerateEntityFunctions();
-            EntityService entities = engines.Get<EntityService>();
+            EntityService entities = this.Simulation.Engines.Get<EntityService>();
 
 
             // Create EntityTypeProviders for all registered IEntityType instances
@@ -70,7 +74,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                             _initializers.Where(init => init.ShouldInitialize(type)),
                             factory,
                             functions,
-                            engines,
+                            this.Simulation.Engines,
                             _serializers.Value,
                             this.entitiesDB
                         );

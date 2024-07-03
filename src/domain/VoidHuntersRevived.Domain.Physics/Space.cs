@@ -1,14 +1,18 @@
-﻿using Serilog;
+﻿using Guppy.Core.Common.Attributes;
+using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Physics.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
-    public class Space : ISpace
+    [AutoLoad]
+    [Sequence<EngineSequence>(EngineSequence.Group01)]
+    public class Space : StrategyEngine, ISpace
     {
         private readonly Dictionary<VhId, Body> _bodies;
         private readonly ILogger _logger;

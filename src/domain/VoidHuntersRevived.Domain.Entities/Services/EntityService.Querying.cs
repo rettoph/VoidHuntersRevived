@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    internal partial class EntityService
+    public partial class EntityService
     {
         public bool TryQueryById<T>(EntityId id, out T value)
             where T : unmanaged, IEntityComponent

@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public sealed class SoftSpawnEntity : IEventData
     {
-        public bool IsPrivate => true;
+        public bool IsPrivate => false;
         public bool IsPredictable => true;
 
         public required VhId VhId { get; init; }
