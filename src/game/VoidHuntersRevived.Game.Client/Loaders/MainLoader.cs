@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
 
             services.Configure<ISceneConfiguration<VoidHuntersGameScene>>((scope, configuration) =>
             {
-                configuration.SetSceneHasDebugWindow(true);
+                configuration.SetSceneHasDebugWindow(true).SetSceneHasTerminalWindow(true);
             });
         }
     }
