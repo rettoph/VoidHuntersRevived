@@ -4,6 +4,9 @@ using Guppy.Core.Common;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Services;
 using Guppy.Core.Network.Common;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
+using Guppy.Tests.Common;
 using Guppy.Tests.Common.Extensions;
 using Guppy.Tests.Common.Mocks;
 using Moq;
@@ -11,6 +14,7 @@ using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
@@ -23,8 +27,8 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
 {
     public static class StrategyFactory
     {
-        private const int StepsPerTick = 3;
-        private static readonly Fix64 StepInterval = (Fix64)20 / (Fix64)1000;
+        private static readonly SettingValue<int> StepsPerTick = new SettingValue<int>(Settings.StepsPerTick, 3);
+        private static readonly SettingValue<Fix64> StepInterval = new SettingValue<Fix64>(Settings.StepInterval, (Fix64)20 / (Fix64)1000);
 
         public static IStrategy BuildPredictive(ISimulation simulation, Func<ILifetimeScope, IEnumerable<IEngine>>? customEnginesFactory)
         {
@@ -67,6 +71,10 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
 
             IMock<INetScope<IStrategy>> netScope = MockBuilder<INetScope<IStrategy>>.Create().Build();
             tickBuffer ??= new TickBuffer();
+            IMock<ISettingService> settingsService = MockBuilder<ISettingService>.Create()
+                .Setup(settings => settings.GetValue<Fix64>(Settings.StepInterval), () => StepInterval)
+                .Setup(settings => settings.GetValue<int>(Settings.StepsPerTick), () => StepsPerTick)
+                .Build();
             IFiltered<IEngine> engines = new MockFiltered<IEngine>(customEnginesFactory?.Invoke(automock.Container) ?? Enumerable.Empty<IEngine>());
             IMock<IBrokerService> brokerService = MockBuilder<IBrokerService>.Create().Build();
             IMock<ILogger> logger = MockBuilder<ILogger>.Create().Build();
@@ -81,8 +89,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
             return new LockstepStrategy_Client(
                 netScope.Object,
                 tickBuffer,
-                StepsPerTick,
-                StepInterval,
+                settingsService.Object,
                 simulation.ToLazy(),
                 enginesService.ToLazy(),
                 logger.Object.ToLazy());
@@ -100,6 +107,10 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
             }).Build();
 
             IMock<IBus> bus = MockBuilder<IBus>.Create().Build();
+            IMock<ISettingService> settingsService = MockBuilder<ISettingService>.Create()
+                .Setup(settings => settings.GetValue<Fix64>(Settings.StepInterval), () => StepInterval)
+                .Setup(settings => settings.GetValue<int>(Settings.StepsPerTick), () => StepsPerTick)
+                .Build();
             IFiltered<IEngine> engines = new MockFiltered<IEngine>(customEnginesFactory?.Invoke(automock.Container) ?? Enumerable.Empty<IEngine>());
             IMock<IBrokerService> brokerService = MockBuilder<IBrokerService>.Create().Build();
             IMock<ILogger> logger = MockBuilder<ILogger>.Create().Build();
@@ -113,8 +124,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
 
             return new LockstepStrategy_Server(
                 bus.Object,
-                StepsPerTick,
-                StepInterval,
+                settingsService.Object,
                 simulation.ToLazy(),
                 enginesService.ToLazy(),
                 logger.Object.ToLazy());

@@ -3,6 +3,7 @@ using Autofac.Extras.Moq;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Contexts;
 using Guppy.Core.Extensions;
+using Guppy.Tests.Common;
 using System.Reflection;
 
 namespace VoidHuntersRevived.Tests.Common

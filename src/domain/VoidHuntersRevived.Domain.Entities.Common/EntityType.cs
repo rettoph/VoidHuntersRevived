@@ -39,6 +39,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             this.Components = components.ToDictionary(x => x.GetType(), x => x);
         }
 
+        public override string ToString()
+        {
+            return $"{this.Key}:{this.Descriptor.Name}";
+        }
+
         public static IEnumerable<EntityType> All()
         {
             return _list;

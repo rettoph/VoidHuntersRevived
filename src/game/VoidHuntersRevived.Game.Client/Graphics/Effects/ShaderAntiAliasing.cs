@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Core.Resources.Common.Services;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Game.Client.Common;
 
@@ -11,7 +12,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Effects
             set => this.Parameters[nameof(Pixel)].SetValue(value);
         }
 
-        public ShaderAntiAliasingEffect(GraphicsDevice graphicsDevice) : base(graphicsDevice, Resources.EffectCodes.ShaderAntiAliasing.Value)
+        public ShaderAntiAliasingEffect(GraphicsDevice graphicsDevice, IResourceService resources) : base(graphicsDevice, resources.GetValue(Resources.EffectCodes.ShaderAntiAliasing).Value)
         {
         }
     }

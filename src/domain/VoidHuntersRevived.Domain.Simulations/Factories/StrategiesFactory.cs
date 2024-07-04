@@ -27,21 +27,21 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
 
         public IEnumerable<IStrategy> BuildStrategies(ISimulation simulation, StrategyTypeEnum[] strategies)
         {
-            List<(Type, Func<ILifetimeScope, object>)> strategyFactories = new List<(Type, Func<ILifetimeScope, object>)>();
+            List<Type> strategyTypes = new List<Type>();
             if (_netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Predictive))
             {
-                strategyFactories.Add((typeof(PredictiveStrategy), PredictiveStrategy.Factory));
+                strategyTypes.Add(typeof(PredictiveStrategy));
             }
             if (_netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Lockstep))
             {
-                strategyFactories.Add((typeof(LockstepStrategy_Client), LockstepStrategy_Client.Factory));
+                strategyTypes.Add(typeof(LockstepStrategy_Client));
             }
             if (_netScope.Group.Peer.Type == PeerType.Server && strategies.Contains(StrategyTypeEnum.Lockstep))
             {
-                strategyFactories.Add((typeof(LockstepStrategy_Server), LockstepStrategy_Server.Factory));
+                strategyTypes.Add(typeof(LockstepStrategy_Server));
             }
 
-            foreach ((Type type, Func<ILifetimeScope, object> factory) in strategyFactories)
+            foreach (Type type in strategyTypes)
             {
                 IStrategy strategy = (IStrategy)_scenes.Create(type, configuration =>
                 {
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
                         builder.RegisterInstance(simulation).As<ISimulation>();
                         builder.RegisterNetScope<IStrategy>(_netScope.Group.Peer.Type, _netScope.Group.Id);
                     });
-                }, factory);
+                });
 
                 yield return strategy;
             }

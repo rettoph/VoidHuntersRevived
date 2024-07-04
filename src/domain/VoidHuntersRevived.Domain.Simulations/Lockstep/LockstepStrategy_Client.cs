@@ -1,13 +1,11 @@
-﻿using Autofac;
-using Guppy.Core.Network.Common;
+﻿using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
@@ -25,11 +23,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepStrategy_Client(
             INetScope<IStrategy> netScope,
             TickBuffer ticks,
-            int stepsPerInterval,
-            Fix64 stepInterval,
+            ISettingService settings,
             Lazy<ISimulation> simulation,
             Lazy<IEngineService> engines,
-            Lazy<ILogger> logger) : base(stepsPerInterval, stepInterval, simulation, engines, logger)
+            Lazy<ILogger> logger) : base(settings, simulation, engines, logger)
         {
             _netScope = netScope;
             _ticks = ticks;
@@ -90,18 +87,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 SourceId = sourceId,
                 Data = data
             });
-        }
-
-        public static object Factory(ILifetimeScope scope)
-        {
-            return new LockstepStrategy_Client(
-                scope.Resolve<INetScope<IStrategy>>(),
-                scope.Resolve<TickBuffer>(),
-                Settings.StepsPerTick.Value,
-                Settings.StepInterval.Value,
-                scope.Resolve<Lazy<ISimulation>>(),
-                scope.Resolve<Lazy<IEngineService>>(),
-                scope.Resolve<Lazy<ILogger>>());
         }
     }
 }

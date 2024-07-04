@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Tests.Common;
 using Moq;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -8,7 +9,6 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Factories;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
-using VoidHuntersRevived.Tests.Common;
 
 namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
 {

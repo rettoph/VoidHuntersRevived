@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Core.Resources.Common.Services;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Game.Client.Common;
 
@@ -26,7 +27,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Effects
             set => this.Parameters[nameof(AccumTexture)].SetValue(value);
         }
 
-        public VisibleFinalEffect(GraphicsDevice graphicsDevice) : base(graphicsDevice, Resources.EffectCodes.VisibleFinal.Value)
+        public VisibleFinalEffect(GraphicsDevice graphicsDevice, IResourceService resource) : base(graphicsDevice, resource.GetValue(Resources.EffectCodes.VisibleFinal).Value)
         {
         }
     }

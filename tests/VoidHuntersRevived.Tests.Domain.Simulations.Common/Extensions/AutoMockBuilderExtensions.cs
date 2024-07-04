@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Tests.Common;
 using Moq;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;

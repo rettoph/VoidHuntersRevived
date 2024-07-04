@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Serilog;
@@ -26,6 +27,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         private readonly IEntityService _entities;
         private readonly IEntityTypeService _types;
+        private readonly IResourceService _resources;
         private readonly ILogger _logger;
         private readonly Camera2D _camera;
 
@@ -35,10 +37,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ILogger logger,
             IEntityService entities,
             IEntityTypeService types,
+            IResourceService resources,
             Camera2D camera)
         {
             _entities = entities;
             _types = types;
+            _resources = resources;
             _logger = logger;
             _camera = camera;
         }
@@ -75,8 +79,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                             ref VertexInstanceVisible instanceVertex = ref vertexBufferManager.GetNextVertexUnsafe();
 
                             instanceVertex.LocalTransformation = node.XnaTransformation;
-                            instanceVertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
-                            instanceVertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
+                            instanceVertex.PrimaryColor = _resources.GetValue(colorScheme.Primary).Value.PackedValue;
+                            instanceVertex.SecondaryColor = _resources.GetValue(colorScheme.Secondary).Value.PackedValue;
                         }
                     }
                 }

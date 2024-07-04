@@ -23,7 +23,6 @@ namespace VoidHuntersRevived.Presentation.Core.Loaders
         {
             services.Configure<LoggerConfiguration>((scope, config) =>
             {
-                ISerilogSinkConfigurator configurator = scope.Resolve<ISerilogSinkConfigurator>();
                 IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
 
                 string template = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}";
@@ -47,6 +46,7 @@ namespace VoidHuntersRevived.Presentation.Core.Loaders
                     shared: true
                 );
 
+                ISerilogSinkConfigurator configurator = scope.Resolve<ISerilogSinkConfigurator>();
                 configurator.Configure(config, template);
             });
         }

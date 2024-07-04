@@ -1,4 +1,5 @@
-﻿using Guppy.Game.Common.Attributes;
+﻿using Guppy.Core.Resources.Common.Services;
+using Guppy.Game.Common.Attributes;
 using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
@@ -6,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
+using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -47,8 +49,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public event OnEventDelegate<EventDto>? OnEvent;
 
         internal LockstepStrategy(
-            int stepsPerInterval,
-            Fix64 stepInterval,
+            ISettingService settings,
             Lazy<ISimulation> simulation,
             Lazy<IEngineService> engines,
             Lazy<ILogger> logger) : base(StrategyTypeEnum.Lockstep, simulation, engines, logger)
@@ -59,12 +60,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _timeSinceStep = TimeSpan.Zero;
             _step = new Step()
             {
-                ElapsedTime = stepInterval,
-                TotalTime = stepInterval
+                ElapsedTime = settings.GetValue(Settings.StepInterval),
+                TotalTime = settings.GetValue(Settings.StepInterval)
             };
 
-            this.StepsPerTick = stepsPerInterval;
-            this.StepInterval = stepInterval;
+            this.StepsPerTick = settings.GetValue(Settings.StepsPerTick);
+            this.StepInterval = settings.GetValue(Settings.StepInterval);
             this.StepTimeSpan = TimeSpan.FromSeconds((double)this.StepInterval);
 
             this.CurrentTick = Tick.First(Array.Empty<EventDto>());

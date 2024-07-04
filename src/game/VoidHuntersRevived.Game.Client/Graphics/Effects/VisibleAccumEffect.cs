@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Core.Resources.Common.Services;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Game.Client.Common;
 
@@ -11,7 +12,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Effects
             set => this.Parameters[nameof(WorldViewProjection)].SetValue(value);
         }
 
-        public VisibleAccumEffect(GraphicsDevice graphicsDevice) : base(graphicsDevice, Resources.EffectCodes.VisibleAccum.Value)
+        public VisibleAccumEffect(GraphicsDevice graphicsDevice, IResourceService resourceService) : base(graphicsDevice, resourceService.GetValue(Resources.EffectCodes.VisibleAccum).Value)
         {
         }
     }
