@@ -27,13 +27,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
             this.Lines = new[]
             {
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Tick, () => this.Simulation.CurrentTick.Id.ToString("#,###,##0")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Step, () => $"{this.Simulation.stepsSinceTick}/{this.Simulation.stepsPerTick}"),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Step, () => $"{this.Simulation.StepsSinceTick}/{this.Simulation.StepsPerTick}"),
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), BufferHead, () => $"{(this.Simulation._ticks.Head?.Id.ToString()) ?? "null"}"),
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), BufferTail, () => $"{(this.Simulation._ticks.Tail?.Id.ToString()) ?? "null"}"),
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), BufferCount, () => this.Simulation._ticks.Count.ToString("#,##0")),
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), BufferCount, () => this.Simulation._ticks.Count.ToString("#,##0")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), TimeSinceStep, () => this.Simulation.timeSinceStep.ToString(@"hh\:mm\:ss\.FFFFFFF")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), StepTimespan, () => this.Simulation.stepTimeSpan.ToString(@"hh\:mm\:ss\.FFFFFFF")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), TimeSinceStep, () => this.Simulation.TimeSinceStep.ToString(@"hh\:mm\:ss\.FFFFFFF")),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), StepTimespan, () => this.Simulation.StepTimeSpan.ToString(@"hh\:mm\:ss\.FFFFFFF")),
             };
         }
     }

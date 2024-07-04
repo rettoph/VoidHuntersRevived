@@ -7,7 +7,7 @@ using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 
-namespace VoidHuntersRevived.Game.Client.Components.Guppy
+namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<MultiplayerGameScene>]

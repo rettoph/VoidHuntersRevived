@@ -1,26 +1,29 @@
-﻿using VoidHuntersRevived.Domain.Simulations.Common;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     internal class PredictedEvent
     {
-        public static readonly TimeSpan Lifetime = TimeSpan.FromSeconds(5);
+        public static readonly Fix64 Lifetime = (Fix64)5; // Represent 5 seconds
 
         private EventDto _event = null!;
 
-        public EventDto Event
-        {
-            get => _event;
-            set
-            {
-                _event = value;
-                PublishedAt = DateTime.Now;
-            }
-        }
+        public EventDto Event => _event;
         public PredictedEventStatus Status { get; set; }
-        public DateTime PublishedAt { get; private set; }
+        public Fix64 PublishedAt { get; private set; }
 
-        public bool Expired => DateTime.Now - PublishedAt >= Lifetime;
+        public void SetEvent(EventDto @event, Step currentStep)
+        {
+            _event = @event;
+            this.PublishedAt = currentStep.TotalTime;
+        }
+
+        public bool IsExpired(Step currentStep)
+        {
+            return currentStep.TotalTime - this.PublishedAt >= Lifetime;
+        }
     }
 }

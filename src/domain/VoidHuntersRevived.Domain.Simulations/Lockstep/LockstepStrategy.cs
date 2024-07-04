@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
-using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -22,12 +21,23 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         private IStepGroupEngine<Tick> _tickStepEnginesGroup;
         private readonly List<Tick> _history;
 
-        internal int stepsPerTick;
-        internal int stepsSinceTick;
-        internal TimeSpan timeSinceStep;
-        internal TimeSpan stepTimeSpan;
-        internal Fix64 stepInterval;
-        internal Step step;
+        private TimeSpan _timeSinceStep;
+        private int _stepsSinceTick;
+        private Step _step;
+
+        public readonly int StepsPerTick;
+        public readonly Fix64 StepInterval;
+        public readonly TimeSpan StepTimeSpan;
+        public TimeSpan TimeSinceStep
+        {
+            get => _timeSinceStep;
+            protected set => _timeSinceStep = value;
+        }
+        public int StepsSinceTick
+        {
+            get => _stepsSinceTick;
+            protected set => _stepsSinceTick = value;
+        }
 
 
         public Tick CurrentTick { get; private set; }
@@ -37,23 +47,25 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public event OnEventDelegate<EventDto>? OnEvent;
 
         internal LockstepStrategy(
+            int stepsPerInterval,
+            Fix64 stepInterval,
             Lazy<ISimulation> simulation,
             Lazy<IEngineService> engines,
             Lazy<ILogger> logger) : base(StrategyTypeEnum.Lockstep, simulation, engines, logger)
         {
             _history = new List<Tick>();
             _tickStepEnginesGroup = null!;
-
-            this.stepsPerTick = Settings.StepsPerTick.Value;
-            this.stepInterval = Settings.StepInterval.Value;
-            this.stepsSinceTick = 0;
-            this.timeSinceStep = TimeSpan.Zero;
-            this.stepTimeSpan = TimeSpan.FromSeconds((double)this.stepInterval);
-            this.step = new Step()
+            _stepsSinceTick = 0;
+            _timeSinceStep = TimeSpan.Zero;
+            _step = new Step()
             {
-                ElapsedTime = this.stepInterval,
-                TotalTime = this.stepInterval
+                ElapsedTime = stepInterval,
+                TotalTime = stepInterval
             };
+
+            this.StepsPerTick = stepsPerInterval;
+            this.StepInterval = stepInterval;
+            this.StepTimeSpan = TimeSpan.FromSeconds((double)this.StepInterval);
 
             this.CurrentTick = Tick.First(Array.Empty<EventDto>());
         }
@@ -67,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public override void Update(GameTime realTime)
         {
-            this.timeSinceStep += realTime.ElapsedGameTime;
+            _timeSinceStep += realTime.ElapsedGameTime;
 
             base.Update(realTime);
 
@@ -77,11 +89,26 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             }
         }
 
+        protected abstract bool ShouldStep(GameTime realTime);
+
+        protected override bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step)
+        {
+            if (this.ShouldStep(realTime) == false)
+            {
+                step = null;
+                return false;
+            }
+
+            _step.TotalTime += _step.ElapsedTime;
+            step = _step;
+            return true;
+        }
+
         protected override void DoStep(Step step)
         {
             base.DoStep(step);
 
-            this.stepsSinceTick++;
+            _stepsSinceTick++;
 
             if (this.TryGetNextTick(this.CurrentTick, out Tick? next))
             {
@@ -95,7 +122,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             this.CurrentTick = tick;
 
             _tickStepEnginesGroup.Step(tick);
-            this.stepsSinceTick = 0;
+            _stepsSinceTick = 0;
 
             if (tick.Events.Length == 0)
             {

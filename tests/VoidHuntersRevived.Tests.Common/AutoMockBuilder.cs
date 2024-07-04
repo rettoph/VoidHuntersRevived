@@ -1,5 +1,9 @@
 ﻿using Autofac;
 using Autofac.Extras.Moq;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Contexts;
+using Guppy.Core.Extensions;
+using System.Reflection;
 
 namespace VoidHuntersRevived.Tests.Common
 {
@@ -9,6 +13,8 @@ namespace VoidHuntersRevived.Tests.Common
 
         public AutoMockBuilder()
         {
+            this.Register(x => x.RegisterCoreServices(
+                context: MockBuilder<IGuppyContext>.Create().Build().Object));
         }
 
         public static AutoMockBuilder Create()
@@ -23,9 +29,20 @@ namespace VoidHuntersRevived.Tests.Common
             return this;
         }
 
+        public AutoMockBuilder ConfigureAllGuppyConfigurationAttributesInAssembly(Assembly assembly)
+        {
+            return this.Register(builder =>
+            {
+                using (AutoMock boot = AutoMock.GetLoose())
+                {
+                    GuppyConfigurationAttribute.TryConfigureAllInAssembly(assembly, boot.Container, builder);
+                }
+            });
+        }
+
         public AutoMock Build()
         {
-            return AutoMock.GetLoose(_builders);
+            return AutoMock.GetLoose(builder => _builders?.Invoke(builder));
         }
     }
 }

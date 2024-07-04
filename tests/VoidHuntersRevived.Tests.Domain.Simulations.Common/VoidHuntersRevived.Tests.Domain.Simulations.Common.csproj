@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Guppy\libraries\Autofac\src\Autofac\Autofac.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\tests\Guppy.Tests.Common\Guppy.Tests.Common.csproj" />
     <ProjectReference Include="..\..\src\domain\VoidHuntersRevived.Domain.Simulations.Common\VoidHuntersRevived.Domain.Simulations.Common.csproj" />
     <ProjectReference Include="..\..\src\domain\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Tests.Common\VoidHuntersRevived.Tests.Common.csproj" />

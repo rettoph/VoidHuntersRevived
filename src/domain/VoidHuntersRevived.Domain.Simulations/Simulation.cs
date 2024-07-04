@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             for (int i = 0; i < _strategies.Count; i++)
             {
-                _strategies[i].Draw(gameTime);
+                _strategies[i].Update(gameTime);
             }
         }
 

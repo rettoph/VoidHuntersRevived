@@ -27,23 +27,23 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
 
         public IEnumerable<IStrategy> BuildStrategies(ISimulation simulation, StrategyTypeEnum[] strategies)
         {
-            List<Type> simulationTypes = new List<Type>();
+            List<(Type, Func<ILifetimeScope, object>)> strategyFactories = new List<(Type, Func<ILifetimeScope, object>)>();
             if (_netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Predictive))
             {
-                simulationTypes.Add(typeof(PredictiveStrategy));
+                strategyFactories.Add((typeof(PredictiveStrategy), PredictiveStrategy.Factory));
             }
             if (_netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Lockstep))
             {
-                simulationTypes.Add(typeof(LockstepStrategy_Client));
+                strategyFactories.Add((typeof(LockstepStrategy_Client), LockstepStrategy_Client.Factory));
             }
             if (_netScope.Group.Peer.Type == PeerType.Server && strategies.Contains(StrategyTypeEnum.Lockstep))
             {
-                simulationTypes.Add(typeof(LockstepStrategy_Server));
+                strategyFactories.Add((typeof(LockstepStrategy_Server), LockstepStrategy_Server.Factory));
             }
 
-            foreach (Type simulationType in simulationTypes)
+            foreach ((Type type, Func<ILifetimeScope, object> factory) in strategyFactories)
             {
-                IStrategy strategy = (IStrategy)_scenes.Create(simulationType, configuration =>
+                IStrategy strategy = (IStrategy)_scenes.Create(type, configuration =>
                 {
                     configuration.WithContainerBuilder(builder =>
                     {
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
                         builder.RegisterInstance(simulation).As<ISimulation>();
                         builder.RegisterNetScope<IStrategy>(_netScope.Group.Peer.Type, _netScope.Group.Id);
                     });
-                });
+                }, factory);
 
                 yield return strategy;
             }

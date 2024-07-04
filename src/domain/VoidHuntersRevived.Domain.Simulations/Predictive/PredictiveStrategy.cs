@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Collections;
+﻿using Autofac;
+using Guppy.Core.Common.Collections;
 using Microsoft.Xna.Framework;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
@@ -78,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 synchronization.Synchronize(step);
             }
 
-            while (_predictedEvents.TryPeek(out PredictedEvent? prediction) && prediction.Expired)
+            while (_predictedEvents.TryPeek(out PredictedEvent? prediction) && prediction.IsExpired(this.CurrentStep))
             {
                 if (prediction.Status == PredictedEventStatus.Unconfirmed)
                 {
@@ -117,6 +118,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             predictiveEvent = this.GetPredictionEvent(@event);
             this.logger.Verbose("{ClassName}::{MethodName} - Predicting event {EventName}, {EventId}", nameof(PredictiveStrategy), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
 
+            if (@event.Data.IsPrivate)
+            { // Private events may as well be immidiately confirmed, right? They will never get verified
+                predictiveEvent.Status = PredictedEventStatus.Confirmed;
+            }
+
             base.Publish(@event);
         }
 
@@ -133,7 +139,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
                 this.logger.Verbose("{ClassName}::{MethodName} - Confirming Event {EventName}, {EventId}", nameof(PredictiveStrategy), nameof(Confirm), confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
 
-                if (!_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published))
+                if (_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published) == false)
                 {
                     published = this.GetPredictionEvent(confirmedEvent);
                     _predictedEvents.TryEnqueue(confirmedEvent.Id, published);
@@ -160,8 +166,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
 
             prediction.Status = @event.Data.IsPrivate ? PredictedEventStatus.Confirmed : PredictedEventStatus.Unconfirmed;
-            prediction.Event = @event;
+            prediction.SetEvent(@event, this.CurrentStep);
             return prediction;
+        }
+
+        public static object Factory(ILifetimeScope scope)
+        {
+            return new PredictiveStrategy(scope.Resolve<Lazy<ISimulation>>(), scope.Resolve<Lazy<IEngineService>>(), scope.Resolve<Lazy<ILogger>>());
         }
     }
 }

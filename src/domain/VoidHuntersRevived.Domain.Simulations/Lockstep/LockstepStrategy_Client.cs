@@ -1,10 +1,13 @@
-﻿using Guppy.Core.Network.Common;
+﻿using Autofac;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
 using Microsoft.Xna.Framework;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
@@ -22,9 +25,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepStrategy_Client(
             INetScope<IStrategy> netScope,
             TickBuffer ticks,
+            int stepsPerInterval,
+            Fix64 stepInterval,
             Lazy<ISimulation> simulation,
             Lazy<IEngineService> engines,
-            Lazy<ILogger> logger) : base(simulation, engines, logger)
+            Lazy<ILogger> logger) : base(stepsPerInterval, stepInterval, simulation, engines, logger)
         {
             _netScope = netScope;
             _ticks = ticks;
@@ -39,41 +44,37 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             base.DoStep(step);
 
-            this.timeSinceStep = TimeSpan.Zero;
+            this.TimeSinceStep = TimeSpan.Zero;
         }
 
-        protected override bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step)
+        protected override bool ShouldStep(GameTime realTime)
         {
-            if (this.stepsSinceTick > this.stepsPerTick)
+            if (this.StepsSinceTick > this.StepsPerTick)
             {
                 throw new Exception();
             }
 
-            if (this.stepsSinceTick == this.stepsPerTick)
+            if (this.StepsSinceTick == this.StepsPerTick)
             {
-                step = null;
                 return false;
             }
 
-            if (this.timeSinceStep < this.stepTimeSpan && _ticks.Count == 0)
+            if (this.TimeSinceStep < this.StepTimeSpan && _ticks.Count == 0)
             {
-                step = null;
                 return false;
             }
 
-            this.step.TotalTime += this.step.ElapsedTime;
-            step = this.step;
             return true;
         }
 
         protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)
         {
-            if (this.stepsSinceTick > this.stepsPerTick)
+            if (this.StepsSinceTick > this.StepsPerTick)
             {
                 throw new Exception();
             }
 
-            if (this.stepsSinceTick < this.stepsPerTick)
+            if (this.StepsSinceTick < this.StepsPerTick)
             {
                 next = null;
                 return false;
@@ -89,6 +90,18 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 SourceId = sourceId,
                 Data = data
             });
+        }
+
+        public static object Factory(ILifetimeScope scope)
+        {
+            return new LockstepStrategy_Client(
+                scope.Resolve<INetScope<IStrategy>>(),
+                scope.Resolve<TickBuffer>(),
+                Settings.StepsPerTick.Value,
+                Settings.StepInterval.Value,
+                scope.Resolve<Lazy<ISimulation>>(),
+                scope.Resolve<Lazy<IEngineService>>(),
+                scope.Resolve<Lazy<ILogger>>());
         }
     }
 }

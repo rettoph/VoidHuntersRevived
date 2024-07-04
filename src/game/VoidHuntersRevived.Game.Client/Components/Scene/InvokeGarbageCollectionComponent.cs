@@ -4,7 +4,7 @@ using Guppy.Game.Common.Components;
 using Serilog;
 using VoidHuntersRevived.Game.Client.Messages;
 
-namespace VoidHuntersRevived.Game.Client.Components.Guppy
+namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     internal class InvokeGarbageCollectionComponent : SceneComponent,

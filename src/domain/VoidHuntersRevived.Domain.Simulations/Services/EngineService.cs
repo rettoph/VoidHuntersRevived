@@ -63,6 +63,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         public void Dispose()
         {
             _brokers.RemoveSubscribers(_engines.OfType<IBaseSubscriber>());
+            _enginesRoot.Dispose();
         }
 
         public IEnumerable<T> OfType<T>()

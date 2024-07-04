@@ -14,7 +14,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
-namespace VoidHuntersRevived.Game.Client.Components.Guppy
+namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<IVoidHuntersGameScene>]

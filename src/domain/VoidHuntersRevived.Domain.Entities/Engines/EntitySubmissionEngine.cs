@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
     [Sequence<StepSequence>(StepSequence.EntitySubmission)]
-    internal sealed class EntitySubmissionEngine : IEngine, IStepEngine<Step>
+    public sealed class EntitySubmissionEngine : IEngine, IStepEngine<Step>
     {
         private readonly IEntityService _entities;
 

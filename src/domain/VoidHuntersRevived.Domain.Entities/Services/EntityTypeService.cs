@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common;
+﻿using Autofac;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Collections;
 using Guppy.Core.Resources.Common;
@@ -33,6 +34,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityTypeService(
             IFiltered<IEntityInitializer> initializers,
+            IEnumerable<IEntityType> types,
             Lazy<IComponentSerializerService> serializers,
             EnginesRoot enginesRoot)
         {
@@ -43,11 +45,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             // Load all IEntityType instances for which there is an initializer (or has been imported as a resource)
             IEnumerable<IEntityType> importedInitializers = Resource<IEntityType>.GetAll().Select(x => x.Value);
-            _types = _initializers.SelectMany(init => init.ExplicitEntityTypes)
-                .Concat(importedInitializers)
-                .Distinct()
-                .Where(x => x.Flags.HasFlag(EntityTypeFlags.Partial) == false)
-                .ToDictionary(x => x.Id, x => x);
+            _types = types.ToDictionary(x => x.Id, x => x);
 
             _byDescriptor = new Dictionary<Type, object>();
             _distinctComponentTypes = new HashSet<Type>();
@@ -140,6 +138,21 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             return _distinctComponentTypes;
+        }
+
+        public static EntityTypeService Factory(IComponentContext ctx)
+        {
+            IFiltered<IEntityInitializer> initializers = ctx.Resolve<IFiltered<IEntityInitializer>>();
+            IEnumerable<IEntityType> types = initializers.SelectMany(init => init.ExplicitEntityTypes)
+                .Concat(Resource<IEntityType>.GetAll().Select(x => x.Value))
+                .Distinct()
+                .Where(x => x.Flags.HasFlag(EntityTypeFlags.Partial) == false);
+
+            return new EntityTypeService(
+                initializers,
+                types,
+                ctx.Resolve<Lazy<IComponentSerializerService>>(),
+                ctx.Resolve<EnginesRoot>());
         }
     }
 }

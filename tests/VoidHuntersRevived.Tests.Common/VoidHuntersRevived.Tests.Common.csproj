@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Guppy\libraries\Autofac\src\Autofac\Autofac.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
+    <ProjectReference Include="..\..\libraries\Guppy\src\core\Guppy.Core\Guppy.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Utilities;
 using Serilog;
 using Svelto.ECS;
@@ -16,30 +15,28 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     public partial class EntityService : StrategyEngine, IEntityService, IQueryingEntitiesEngine, IDisposable
     {
         private readonly ILogger _logger;
-        private readonly ILifetimeScope _scope;
         private readonly EntitiesSubmissionScheduler _scheduler;
         private readonly UnmanagedReference<IEntityService> _ref;
 
         private EntityReader _reader;
         private EntityWriter _writer;
-        private IEntityTypeService _entityTypeService;
+        private Lazy<IEntityTypeService> _entityTypeService;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public IEntityTypeService Types => _entityTypeService;
+        public IEntityTypeService Types => _entityTypeService.Value;
 
         public EntityService(
             ILogger logger,
-            ILifetimeScope scope,
+            Lazy<IEntityTypeService> entityTypeService,
             EntitiesSubmissionScheduler scheduler)
         {
             _logger = logger;
-            _scope = scope;
+            _entityTypeService = entityTypeService;
             _scheduler = scheduler;
 
             _writer = null!;
             _reader = null!;
-            _entityTypeService = null!;
 
             _ref = new UnmanagedReference<IEntityService>(this);
         }
@@ -54,8 +51,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             base.Initialize(simulation);
 
             _writer = new EntityWriter(this, _logger);
-            _reader = new EntityReader(_scope.Resolve<IEntityTypeService>(), this, _logger);
-            _entityTypeService = _scope.Resolve<IEntityTypeService>();
+            _reader = new EntityReader(this.Types, this, _logger);
         }
 
         public UnmanagedReference<IEntityService> GetReference()

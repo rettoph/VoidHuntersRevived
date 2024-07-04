@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
             this.Lines = new[]
             {
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Tick, () => this.Simulation.CurrentTick.Id.ToString("#,###,##0")),
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Step, () => $"{this.Simulation.stepsSinceTick}/{this.Simulation.stepsPerTick}"),
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Step, () => $"{this.Simulation.StepsSinceTick}/{this.Simulation.StepsPerTick}"),
             };
         }
     }

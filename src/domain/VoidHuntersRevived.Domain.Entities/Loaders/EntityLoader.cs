@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
         {
             builder.RegisterType<ComponentSerializerService>().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
 
-            builder.RegisterType<EntityTypeService>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
+            builder.Register(EntityTypeService.Factory).AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<EntityDescriptorService>().As<IEntityDescriptorService>().AsSelf().InstancePerLifetimeScope();
 

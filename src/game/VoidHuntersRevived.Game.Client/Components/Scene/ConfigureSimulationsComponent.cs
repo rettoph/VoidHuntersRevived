@@ -6,7 +6,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
-namespace VoidHuntersRevived.Game.Client.Components.Guppy
+namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<LocalGameScene>]

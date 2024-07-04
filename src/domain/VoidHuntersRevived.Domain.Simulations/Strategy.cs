@@ -62,12 +62,14 @@ namespace VoidHuntersRevived.Domain.Simulations
             _frameStart = new FrameStart();
             _frame = new Frame(_frameStart);
             _frameEnd = new FrameEnd(_frame);
+
+            this.Enabled = false;
+            this.Visible = false;
         }
 
         public virtual void Initialize(ISimulation simulation)
         {
             this.Engines.Initialize(this);
-
 
             EventPublisher.PopulatePublishers(this.Engines, this.logger, _publishers);
 

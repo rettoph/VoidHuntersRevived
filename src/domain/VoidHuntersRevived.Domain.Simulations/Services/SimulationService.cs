@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Xna.Framework;
+using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -37,6 +38,22 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             _simulations.Add(simulation);
 
             return simulation;
+        }
+
+        public void Draw(GameTime gameTime)
+        {
+            foreach (ISimulation simulation in _simulations)
+            {
+                simulation.Draw(gameTime);
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            foreach (ISimulation simulation in _simulations)
+            {
+                simulation.Update(gameTime);
+            }
         }
     }
 }
