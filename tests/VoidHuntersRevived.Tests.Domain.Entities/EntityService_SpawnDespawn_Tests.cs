@@ -55,8 +55,8 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                 { StrategyTypeEnum.Lockstep, ctx => EntityEnginesFactory(scope: ctx, customEntityTypes: TestEntityType.Yield()) }
             }, _tickBuffer);
 
-            _lockstep = ((LockstepStrategy_Client?)_simulation.First(StrategyTypeEnum.Lockstep)) ?? throw new NotImplementedException();
-            _predictive = ((PredictiveStrategy?)_simulation.First(StrategyTypeEnum.Predictive)) ?? throw new NotImplementedException();
+            _lockstep = (LockstepStrategy_Client?)_simulation[StrategyTypeEnum.Lockstep] ?? throw new NotImplementedException();
+            _predictive = (PredictiveStrategy?)_simulation[StrategyTypeEnum.Predictive] ?? throw new NotImplementedException();
         }
 
         public void Dispose()
@@ -106,7 +106,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             // This means 2 things:
             //  - There should only ever be 1 actual "real" "valid" entity within both simulations at any one time.
             //  - Most entities created on the predictive strategy will need to be reverted
-            // This is all done in an effort to simulate smap clicking the tracktor beam to radically spawn/despawn pieces in game
+            // This is all done in an effort to simulate spam clicking the tracktor beam to rapidly spawn/despawn pieces in game
             // Ideally the total number of entities within both simulations should be the same. A mismatch indicates some sort of desyncronization between 
             // the predictive and lockstep strategies
             totals = this.CalculateTotalEntities<TestComponent>();
