@@ -1,9 +1,13 @@
 using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
+using Guppy.Tests.Common;
 using Guppy.Tests.Common.Extensions;
 using Guppy.Tests.Common.Mocks;
 using Microsoft.Xna.Framework;
+using Moq;
 using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
@@ -170,15 +174,17 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         {
             IFiltered<ComponentSerializer> componentSerializers = new MockFiltered<ComponentSerializer>(customComponentSerializers ?? Enumerable.Empty<ComponentSerializer>());
             IFiltered<IEntityInitializer> entityInitializers = new MockFiltered<IEntityInitializer>(customEntityInitializers ?? Enumerable.Empty<IEntityInitializer>());
-            IFiltered<IEntityType> entityTypes = new MockFiltered<IEntityType>(customEntityTypes ?? Enumerable.Empty<IEntityType>());
 
+            IMock<IResourceService> resourceService = MockBuilder<IResourceService>.Create()
+                .Setup(x => x.GetValues<IEntityType>(), customEntityTypes?.Select(x => new ResourceValue<IEntityType>(default, x.Yield())) ?? Enumerable.Empty<ResourceValue<IEntityType>>())
+                .Build();
             ILogger logger = scope.Resolve<ILogger>();
             EnginesRoot enginesRoot = scope.Resolve<EnginesRoot>();
             EntitiesSubmissionScheduler scheduler = scope.Resolve<EntitiesSubmissionScheduler>();
 
             IComponentSerializerService componentSerializerService = new ComponentSerializerService(componentSerializers);
 
-            EntityTypeService entityTypeService = new EntityTypeService(entityInitializers, entityTypes, componentSerializerService.ToLazy(), enginesRoot);
+            EntityTypeService entityTypeService = new EntityTypeService(entityInitializers, resourceService.Object, componentSerializerService.ToLazy(), enginesRoot);
             EntityService entityService = new EntityService(logger, ((IEntityTypeService)entityTypeService).ToLazy(), scheduler);
 
             yield return entityTypeService;

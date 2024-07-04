@@ -2,7 +2,7 @@
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Collections;
-using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityTypeService(
             IFiltered<IEntityInitializer> initializers,
-            IEnumerable<IEntityType> types,
+            IResourceService resources,
             Lazy<IComponentSerializerService> serializers,
             EnginesRoot enginesRoot)
         {
@@ -44,8 +44,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _providers = null!;
 
             // Load all IEntityType instances for which there is an initializer (or has been imported as a resource)
-            IEnumerable<IEntityType> importedInitializers = Resource<IEntityType>.GetAll().Select(x => x.Value);
-            _types = types.ToDictionary(x => x.Id, x => x);
+            IEnumerable<IEntityType> resourceEntityTypes = resources.GetValues<IEntityType>().Select(x => x.Value);
+            _types = initializers.SelectMany(init => init.ExplicitEntityTypes)
+                .Concat(resourceEntityTypes)
+                .Distinct()
+                .Where(x => x.Flags.HasFlag(EntityTypeFlags.Partial) == false)
+                .ToDictionary(x => x.Id, x => x);
 
             _byDescriptor = new Dictionary<Type, object>();
             _distinctComponentTypes = new HashSet<Type>();
@@ -138,21 +142,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             return _distinctComponentTypes;
-        }
-
-        public static EntityTypeService Factory(IComponentContext ctx)
-        {
-            IFiltered<IEntityInitializer> initializers = ctx.Resolve<IFiltered<IEntityInitializer>>();
-            IEnumerable<IEntityType> types = initializers.SelectMany(init => init.ExplicitEntityTypes)
-                .Concat(Resource<IEntityType>.GetAll().Select(x => x.Value))
-                .Distinct()
-                .Where(x => x.Flags.HasFlag(EntityTypeFlags.Partial) == false);
-
-            return new EntityTypeService(
-                initializers,
-                types,
-                ctx.Resolve<Lazy<IComponentSerializerService>>(),
-                ctx.Resolve<EnginesRoot>());
         }
     }
 }

@@ -1,14 +1,12 @@
-﻿using Autofac;
-using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
@@ -25,11 +23,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public LockstepStrategy_Server(
             IBus bus,
-            int stepsPerInterval,
-            Fix64 stepInterval,
+            ISettingService settings,
             Lazy<ISimulation> simulation,
             Lazy<IEngineService> engines,
-            Lazy<ILogger> logger) : base(stepsPerInterval, stepInterval, simulation, engines, logger)
+            Lazy<ILogger> logger) : base(settings, simulation, engines, logger)
         {
             _bus = bus;
             _inputs = new List<EventDto>();
@@ -109,17 +106,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             }
 
             this.Input(message.Body.SourceId, input);
-        }
-
-        public static object Factory(ILifetimeScope scope)
-        {
-            return new LockstepStrategy_Server(
-                scope.Resolve<IBus>(),
-                Settings.StepsPerTick.Value,
-                Settings.StepInterval.Value,
-                scope.Resolve<Lazy<ISimulation>>(),
-                scope.Resolve<Lazy<IEngineService>>(),
-                scope.Resolve<Lazy<ILogger>>());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -8,6 +9,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
     internal class ColorSchemeJsonConverter : JsonConverter<ColorScheme>
     {
+        private readonly IResourceService _resources;
+
+        public ColorSchemeJsonConverter(IResourceService resources)
+        {
+            _resources = resources;
+        }
+
         public override ColorScheme Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             Resource<Color> primary = default!;
@@ -35,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new ColorScheme(primary, secondary);
+            return new ColorScheme(_resources.GetValue(primary), _resources.GetValue(secondary));
         }
 
         public override void Write(Utf8JsonWriter writer, ColorScheme value, JsonSerializerOptions options)

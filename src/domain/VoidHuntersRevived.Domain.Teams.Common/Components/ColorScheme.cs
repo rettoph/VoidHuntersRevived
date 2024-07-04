@@ -8,10 +8,10 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Components
     [PolymorphicJsonType<IEntityComponent>(nameof(ColorScheme))]
     public struct ColorScheme : IEntityComponent
     {
-        public readonly Resource<Color> Primary;
-        public readonly Resource<Color> Secondary;
+        public readonly ResourceValue<Color> Primary;
+        public readonly ResourceValue<Color> Secondary;
 
-        public ColorScheme(Resource<Color> primary, Resource<Color> secondary)
+        public ColorScheme(ResourceValue<Color> primary, ResourceValue<Color> secondary)
         {
             this.Primary = primary;
             this.Secondary = secondary;

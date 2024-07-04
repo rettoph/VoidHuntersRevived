@@ -1,8 +1,11 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Services;
+using Guppy.Game.ImGui.Common.Styling;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,12 +36,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private bool _debugViewEnabled;
         private bool _aetherExplorerEnabled;
         private string _filter;
+        private ResourceValue<ImStyle> _buttonRedStyle;
+        private ResourceValue<ImStyle> _buttonGreenStyle;
 
         public AetherWorldDebugViewEngine(
             IStrategy strategy,
             IScene scene,
             IImGui imgui,
             IImGuiObjectExplorerService objectExplorer,
+            IResourceService resourceService,
             World world,
             GraphicsDevice graphics,
             Camera2D camera)
@@ -50,8 +56,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _world = world;
             _debug = new DebugView(world);
             _camera = camera;
-            _debug.LoadContent(graphics, Common.Resources.SpriteFonts.Default.Value);
+            _debug.LoadContent(graphics, resourceService.GetValue(Common.Resources.SpriteFonts.Default));
             _filter = string.Empty;
+
+            _buttonRedStyle = resourceService.GetValue(Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed);
+            _buttonGreenStyle = resourceService.GetValue(Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen);
         }
 
         public void Step(in GameTime param)
@@ -90,7 +99,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void RenderDebugInfo(GameTime gameTime)
         {
-            var buttonStyle = _debugViewEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen;
+            ResourceValue<ImStyle> buttonStyle = _debugViewEnabled ? _buttonRedStyle : _buttonRedStyle;
 
             using (_imgui.Apply(buttonStyle))
             {
@@ -100,7 +109,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 }
             }
 
-            buttonStyle = _aetherExplorerEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen;
+            buttonStyle = _aetherExplorerEnabled ? _buttonRedStyle : _buttonRedStyle;
 
             using (_imgui.Apply(buttonStyle))
             {
