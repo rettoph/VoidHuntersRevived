@@ -51,8 +51,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         internal LockstepStrategy(
             ISettingService settings,
             Lazy<ISimulation> simulation,
-            Lazy<IEngineService> engines,
-            Lazy<ILogger> logger) : base(StrategyTypeEnum.Lockstep, simulation, engines, logger)
+            Lazy<IEngineService> engineService,
+            Lazy<ILogger> logger) : base(StrategyTypeEnum.Lockstep, simulation, engineService, logger)
         {
             _history = new List<Tick>();
             _tickStepEnginesGroup = null!;

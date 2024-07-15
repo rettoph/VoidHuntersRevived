@@ -17,13 +17,16 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         public string name { get; } = nameof(BodyAwakeEngine);
 
         private readonly ILogger _logger;
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
         private readonly Queue<IBody> _awakeChangedBodies;
 
-        public BodyAwakeEngine(IEntityQueryService entities, ILogger logger, ISpace space)
+        public BodyAwakeEngine(
+            IEntityQueryService entityQueryService,
+            ILogger logger,
+            ISpace space)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _space = space;
             _logger = logger;
             _awakeChangedBodies = new Queue<IBody>();
@@ -47,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
             while (_awakeChangedBodies.TryDequeue(out IBody? body))
             {
-                ref Awake awake = ref _entities.QueryById<Awake>(body.Id, out _, out bool exists);
+                ref Awake awake = ref _entityQueryService.QueryById<Awake>(body.Id, out _, out bool exists);
 
                 if (exists)
                 {
@@ -62,7 +65,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Awake awake = ref _entities.QueryById<Awake>(body.Id);
+            ref Awake awake = ref _entityQueryService.QueryById<Awake>(body.Id);
             body.SleepingAllowed = awake.SleepingAllowed;
         }
 

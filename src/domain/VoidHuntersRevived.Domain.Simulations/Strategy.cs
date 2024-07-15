@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Simulations
     {
         private readonly Lazy<ILogger> _logger;
         private readonly Lazy<ISimulation> _simulation;
-        private readonly Lazy<IEngineService> _engines;
+        private readonly Lazy<IEngineService> _engineService;
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
 
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public readonly StrategyTypeEnum Type;
         public ISimulation Simulation => _simulation.Value;
-        public IEngineService Engines => _engines.Value;
+        public IEngineService Engines => _engineService.Value;
 
         public Step CurrentStep { get; private set; }
 
@@ -42,11 +42,11 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected Strategy(
             StrategyTypeEnum type,
             Lazy<ISimulation> simulation,
-            Lazy<IEngineService> engines,
+            Lazy<IEngineService> engineService,
             Lazy<ILogger> logger)
         {
             _simulation = simulation;
-            _engines = engines;
+            _engineService = engineService;
             _logger = logger;
             _enqueued = new Queue<EventDto>();
             _publishers = new Dictionary<Type, EventPublisher>();

@@ -10,16 +10,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService;
-        private readonly IBlueprintService _blueprints;
+        private readonly IBlueprintService _blueprintService;
 
         public TreeService(
             IEntityQueryService entityQueryService,
             IEntitySpawnService entitySpawnService,
-            IBlueprintService blueprints)
+            IBlueprintService blueprintService)
         {
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
-            _blueprints = blueprints;
+            _blueprintService = blueprintService;
         }
 
         public ref Node GetHead(in Tree tree)

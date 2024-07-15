@@ -7,16 +7,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal sealed class NodeService : INodeService
     {
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
 
-        public NodeService(IEntityQueryService entities)
+        public NodeService(IEntityQueryService entityQueryService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
         }
 
         public ref Tree GetTree(in Node node)
         {
-            return ref _entities.QueryById<Tree>(node.TreeId);
+            return ref _entityQueryService.QueryById<Tree>(node.TreeId);
         }
 
         public bool IsHead(in Node node)
@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public bool IsHead(in Node node, in GroupIndex treeGroupIndex)
         {
-            if (_entities.TryQueryByGroupIndex<Tree>(treeGroupIndex, out Tree tree))
+            if (_entityQueryService.TryQueryByGroupIndex<Tree>(treeGroupIndex, out Tree tree))
             {
                 return tree.HeadId == node.Id;
             }

@@ -19,16 +19,16 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
     [AutoLoad]
     internal class ColorSchemeEngine : StrategyEngine, IReactOnAddEx<ColorScheme>
     {
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
 
-        public ColorSchemeEngine(IEntityQueryService entities)
+        public ColorSchemeEngine(IEntityQueryService entityQueryService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
         }
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<ColorScheme> entities, ExclusiveGroupStruct groupID)
         {
-            if (_entities.HasAll<InstanceEntity, BelongsTo<Team, TeamMember>, BelongsTo<TypeEntity, InstanceEntity>>(groupID, out var components) == false)
+            if (_entityQueryService.HasAll<InstanceEntity, BelongsTo<Team, TeamMember>, BelongsTo<TypeEntity, InstanceEntity>>(groupID, out var components) == false)
             {
                 return;
             }
@@ -41,14 +41,14 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
                 ref ColorScheme colorScheme = ref colorSchemes[i];
 
                 ref BelongsTo<Team, TeamMember> belongsToTeam = ref belongsToTeams[i];
-                if (_entities.TryQueryByVhId<ColorScheme>(belongsToTeam.OwnerVhId, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
+                if (_entityQueryService.TryQueryByVhId<ColorScheme>(belongsToTeam.OwnerVhId, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
                 {
                     colorScheme = teamColorScheme;
                     continue;
                 }
 
                 ref BelongsTo<TypeEntity, InstanceEntity> belongsToType = ref belongsToTypes[i];
-                if (_entities.TryQueryByVhId<ColorScheme>(belongsToTypes[i].OwnerVhId, out ColorScheme typeColorScheme))
+                if (_entityQueryService.TryQueryByVhId<ColorScheme>(belongsToTypes[i].OwnerVhId, out ColorScheme typeColorScheme))
                 {
                     colorScheme = typeColorScheme;
                     continue;

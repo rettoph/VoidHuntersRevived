@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
             IMock<IBrokerService> brokerService = MockBuilder<IBrokerService>.Create().Build();
             IMock<ILogger> logger = MockBuilder<ILogger>.Create().Build();
 
-            IEngineService enginesService = new EngineService(
+            IEngineService engineService = new EngineService(
                 engines,
                 brokerService.Object,
                 new MockFiltered<IEngineProvider>().ToLazy<IFiltered<IEngineProvider>>(),
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
 
             return new PredictiveStrategy(
                 simulation.ToLazy(),
-                enginesService.ToLazy(),
+                engineService.ToLazy(),
                 logger.Object.ToLazy());
         }
 
@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
             IMock<IBrokerService> brokerService = MockBuilder<IBrokerService>.Create().Build();
             IMock<ILogger> logger = MockBuilder<ILogger>.Create().Build();
 
-            IEngineService enginesService = new EngineService(
+            IEngineService engineService = new EngineService(
                 engines,
                 brokerService.Object,
                 new MockFiltered<IEngineProvider>().ToLazy<IFiltered<IEngineProvider>>(),
@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
                 tickBuffer,
                 settingsService.Object,
                 simulation.ToLazy(),
-                enginesService.ToLazy(),
+                engineService.ToLazy(),
                 logger.Object.ToLazy());
         }
 
@@ -115,7 +115,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
             IMock<IBrokerService> brokerService = MockBuilder<IBrokerService>.Create().Build();
             IMock<ILogger> logger = MockBuilder<ILogger>.Create().Build();
 
-            IEngineService enginesService = new EngineService(
+            IEngineService engineService = new EngineService(
                 engines,
                 brokerService.Object,
                 new MockFiltered<IEngineProvider>().ToLazy<IFiltered<IEngineProvider>>(),
@@ -126,7 +126,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Common
                 bus.Object,
                 settingsService.Object,
                 simulation.ToLazy(),
-                enginesService.ToLazy(),
+                engineService.ToLazy(),
                 logger.Object.ToLazy());
         }
     }

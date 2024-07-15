@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
                 }
             }
         }
-        private readonly ISimulationService _simulations;
+        private readonly ISimulationService _simulationService;
         private (IStrategy, Dictionary<string, DebugEngineGroupRenderer>)[] _data;
         private readonly IImGui _imgui;
         private readonly IScene _scene;
@@ -70,11 +70,11 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         public DebugEngineComponent(
             IScene scene,
             IImGui imgui,
-            ISimulationService simulations)
+            ISimulationService simulationService)
         {
             _scene = scene;
             _imgui = imgui;
-            _simulations = simulations;
+            _simulationService = simulationService;
             _data = Array.Empty<(IStrategy, Dictionary<string, DebugEngineGroupRenderer>)>();
         }
 
@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         {
             base.Initialize();
 
-            _data = _simulations.Instances.SelectMany(x => x.Strategies).Select(x => (
+            _data = _simulationService.Instances.SelectMany(x => x.Strategies).Select(x => (
                 (x as IStrategy)!,
                 new Dictionary<string, DebugEngineGroupRenderer>())).ToArray();
 

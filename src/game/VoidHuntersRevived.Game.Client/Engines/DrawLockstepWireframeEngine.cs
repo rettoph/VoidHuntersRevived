@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         ISubscriber<Input_Toggle_LockstepWireframe>
     {
         private readonly short[] _indexBuffer;
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ILogger _logger;
         private bool _visible;
 
@@ -26,9 +26,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public DrawLockstepWireframeEngine(
             ILogger logger,
-            IEntityQueryService entities)
+            IEntityQueryService entityQueryService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _indexBuffer = new short[3];
             _logger = logger;
         }

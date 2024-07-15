@@ -7,21 +7,21 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 {
     internal class TacticalService : ITacticalService
     {
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
 
-        public TacticalService(IEntityQueryService entities)
+        public TacticalService(IEntityQueryService entityQueryService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
         }
 
         public void AddUse(EntityId tacticalId)
         {
-            _entities.QueryById<Tactical>(tacticalId).AddUse();
+            _entityQueryService.QueryById<Tactical>(tacticalId).AddUse();
         }
 
         public void RemoveUse(EntityId tacticalId)
         {
-            _entities.QueryById<Tactical>(tacticalId).RemoveUse();
+            _entityQueryService.QueryById<Tactical>(tacticalId).RemoveUse();
         }
     }
 }

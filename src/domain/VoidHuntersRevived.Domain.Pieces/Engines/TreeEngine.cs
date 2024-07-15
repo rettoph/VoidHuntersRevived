@@ -30,12 +30,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         public TreeEngine(
             IEntityQueryService entityQueryService,
             IEntitySpawnService entitySpawnService,
-            IEntityDescriptorService entityDescriptors,
+            IEntityDescriptorService entityDescriptorService,
             ILogger logger)
         {
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
-            _entityDescriptorService = entityDescriptors;
+            _entityDescriptorService = entityDescriptorService;
             _logger = logger;
         }
 

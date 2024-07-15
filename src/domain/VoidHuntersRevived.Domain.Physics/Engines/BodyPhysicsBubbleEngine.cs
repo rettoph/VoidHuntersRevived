@@ -1,12 +1,10 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
@@ -21,16 +19,16 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
     {
         private static readonly Fix64 Two = (Fix64)2;
 
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
         private FixRectangle[] _bubbleBuffer;
         private int _bubbleBufferCount;
 
         public string name { get; } = nameof(BodyPhysicsBubbleEngine);
 
-        public BodyPhysicsBubbleEngine(IEntityQueryService entities, ISpace space)
+        public BodyPhysicsBubbleEngine(IEntityQueryService entityQueryService, ISpace space)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _space = space;
             _bubbleBuffer = new FixRectangle[8];
             _bubbleBufferCount = 0;
@@ -39,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         public void Step(in Step param)
         {
             _bubbleBufferCount = 0;
-            foreach (var ((bubbles, locations, count), _) in _entities.QueryEntities<PhysicsBubble, Location>())
+            foreach (var ((bubbles, locations, count), _) in _entityQueryService.QueryEntities<PhysicsBubble, Location>())
             {
                 this.EnsureBubbleBufferCapacity(count);
 
@@ -63,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 }
             }
 
-            foreach (var ((ids, enableds, locations, statuses, count), _) in _entities.QueryEntities<EntityId, Enabled, Location, EntityStatus>())
+            foreach (var ((ids, enableds, locations, statuses, count), _) in _entityQueryService.QueryEntities<EntityId, Enabled, Location, EntityStatus>())
             {
                 for (int i = 0; i < count; i++)
                 {

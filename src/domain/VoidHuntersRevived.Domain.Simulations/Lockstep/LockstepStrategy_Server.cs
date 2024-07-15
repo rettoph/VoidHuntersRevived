@@ -25,8 +25,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             IBus bus,
             ISettingService settings,
             Lazy<ISimulation> simulation,
-            Lazy<IEngineService> engines,
-            Lazy<ILogger> logger) : base(settings, simulation, engines, logger)
+            Lazy<IEngineService> engineService,
+            Lazy<ILogger> logger) : base(settings, simulation, engineService, logger)
         {
             _bus = bus;
             _inputs = new List<EventDto>();

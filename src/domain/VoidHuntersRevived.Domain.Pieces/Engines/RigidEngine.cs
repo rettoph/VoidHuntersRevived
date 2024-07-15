@@ -18,13 +18,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IOnDespawnEngine<Rigid>
     {
         private readonly ISpace _space;
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ILogger _logger;
 
-        public RigidEngine(ISpace space, IEntityQueryService entities, ILogger logger)
+        public RigidEngine(ISpace space, IEntityQueryService entityQueryService, ILogger logger)
         {
             _space = space;
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _logger = logger;
 
             _space.OnBodyEnabled += this.HandleBodyEnabled;
@@ -32,18 +32,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            if (_entities.HasAny<Tree>(body.Id.EGID.groupID) == false)
+            if (_entityQueryService.HasAny<Tree>(body.Id.EGID.groupID) == false)
             {
                 _logger.Warning("{ClassName}::{MethodName} - No Tree detected. BodyId = {BodyId}", nameof(RigidEngine), nameof(HandleBodyEnabled), body.Id.VhId);
                 return;
             }
 
-            ref var filter = ref _entities.GetFilter<Node>(body.Id, Tree.NodeFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(body.Id, Tree.NodeFilterContextId);
             foreach (var (indices, group) in filter)
             {
-                if (_entities.HasAny<Rigid>(group))
+                if (_entityQueryService.HasAny<Rigid>(group))
                 {
-                    var (nodes, rigids, _) = _entities.QueryEntities<Node, Rigid>(group);
+                    var (nodes, rigids, _) = _entityQueryService.QueryEntities<Node, Rigid>(group);
 
                     for (int i = 0; i < indices.count; i++)
                     {
@@ -62,9 +62,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(RigidEngine), nameof(OnSpawn), id.VhId);
 
-            Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
+            Node node = _entityQueryService.QueryByGroupIndex<Node>(groupIndex);
 
-            if (_entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
+            if (_entityQueryService.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
             {
                 if (enabled)
                 {
@@ -82,9 +82,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(RigidEngine), nameof(OnDespawn), id.VhId);
 
-            Node node = _entities.QueryByGroupIndex<Node>(groupIndex);
+            Node node = _entityQueryService.QueryByGroupIndex<Node>(groupIndex);
 
-            if (_entities.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
+            if (_entityQueryService.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
             {
                 if (enabled)
                 {

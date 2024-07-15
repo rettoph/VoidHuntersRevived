@@ -32,20 +32,20 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             IEntityQueryService entityQueryService,
             IEntitySpawnService entitySpawnService,
             IEntitySerializationService entitySerializationService,
-            INodeService nodes,
-            ITreeService trees,
-            ISocketService sockets,
-            ITeamService teams,
+            INodeService nodeService,
+            ITreeService treeService,
+            ISocketService socketService,
+            ITeamService teamService,
             ILogger logger)
         {
             _space = space;
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
             _entitySerializationService = entitySerializationService;
-            _nodeService = nodes;
-            _treeService = trees;
-            _socketService = sockets;
-            _teamService = teams;
+            _nodeService = nodeService;
+            _treeService = treeService;
+            _socketService = socketService;
+            _teamService = teamService;
             _logger = logger;
         }
 

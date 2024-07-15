@@ -1,8 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -20,19 +18,20 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
     {
         private static readonly Fix64 AimDamping = Fix64.One / (Fix64)32;
 
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
 
-        public TacticalEngine(IEntityQueryService entities)
+        public TacticalEngine(
+            IEntityQueryService entityQueryService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
         }
 
         public string name { get; } = nameof(TacticalEngine);
 
         public void Process(VhId eventId, Tactical_SetTarget data)
         {
-            EntityId id = _entities.GetId(data.ShipVhId);
-            ref Tactical tactical = ref _entities.QueryById<Tactical>(id);
+            EntityId id = _entityQueryService.GetId(data.ShipVhId);
+            ref Tactical tactical = ref _entityQueryService.QueryById<Tactical>(id);
 
             tactical.Target = data.Value;
 
@@ -44,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
         public void Step(in Step _param)
         {
-            foreach (var ((tacticals, count), groupId) in _entities.QueryEntities<Tactical>())
+            foreach (var ((tacticals, count), groupId) in _entityQueryService.QueryEntities<Tactical>())
             {
                 for (int i = 0; i < count; i++)
                 {

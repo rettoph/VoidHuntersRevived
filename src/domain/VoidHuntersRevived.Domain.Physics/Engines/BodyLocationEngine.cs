@@ -1,8 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
@@ -15,12 +13,14 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
     [Sequence<StepSequence>(StepSequence.PostResourceManagerUpdate)]
     internal sealed class BodyLocationEngine : StrategyEngine, IStepEngine<Step>
     {
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
 
-        public BodyLocationEngine(IEntityQueryService entities, ISpace space)
+        public BodyLocationEngine(
+            IEntityQueryService entityQueryService,
+            ISpace space)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _space = space;
 
             _space.OnBodyEnabled += this.HandleBodyEnabled;
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void Step(in Step _param)
         {
-            foreach (var ((ids, locations, enableds, awakes, count), _) in _entities.QueryEntities<EntityId, Location, Enabled, Awake>())
+            foreach (var ((ids, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityId, Location, Enabled, Awake>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Location location = ref _entities.QueryById<Location>(body.Id);
+            ref Location location = ref _entityQueryService.QueryById<Location>(body.Id);
             body.SetTransform(location.Position, location.Rotation);
         }
     }

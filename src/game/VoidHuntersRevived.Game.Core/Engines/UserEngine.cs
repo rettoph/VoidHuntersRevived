@@ -22,31 +22,36 @@ namespace VoidHuntersRevived.Game.Core.Engines
         IEventEngine<UserJoined>
     {
         private readonly INetScope<IStrategy> _scope;
-        private readonly ITreeService _trees;
-        private readonly ITeamService _teams;
-        private readonly IEntityTypeService _entityTypes;
-        private readonly IBlueprintService _blueprints;
+        private readonly ITreeService _treeService;
+        private readonly ITeamService _teamService;
+        private readonly IEntityTypeService _entityTypeService;
+        private readonly IBlueprintService _blueprintService;
 
-        public UserEngine(ITreeService trees, ITeamService teams, IEntityTypeService entityTypes, IBlueprintService blueprints, INetScope<IStrategy> scope)
+        public UserEngine(
+            ITreeService treeService,
+            ITeamService teamService,
+            IEntityTypeService entityTypeService,
+            IBlueprintService blueprintService,
+            INetScope<IStrategy> scope)
         {
             _scope = scope;
-            _trees = trees;
-            _teams = teams;
-            _entityTypes = entityTypes;
-            _blueprints = blueprints;
+            _treeService = treeService;
+            _teamService = teamService;
+            _entityTypeService = entityTypeService;
+            _blueprintService = blueprintService;
         }
 
         public string name { get; } = nameof(UserEngine);
 
         public void Process(VhId eventId, UserJoined data)
         {
-            var hull = _entityTypes.GetAll<HullDescriptor>().Last();
+            var hull = _entityTypeService.GetAll<HullDescriptor>().Last();
 
             //_trees.Spawn(shipId, Teams.TeamOne, EntityTypes.UserShip, hull.EntityType);
             // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
 
-            var blueprint = _blueprints.GetAll().First();
-            _trees.Spawn(eventId, eventId.Create(1), _teams.GetOpenTeamComponent(), EntityTypes.UserShip, blueprint, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+            var blueprint = _blueprintService.GetAll().First();
+            _treeService.Spawn(eventId, eventId.Create(1), _teamService.GetOpenTeamComponent(), EntityTypes.UserShip, blueprint, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(new Location()
                 {

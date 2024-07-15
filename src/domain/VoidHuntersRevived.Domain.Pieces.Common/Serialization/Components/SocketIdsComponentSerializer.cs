@@ -14,13 +14,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
     [AutoLoad]
     public class SocketIdsComponentSerializer : ComponentSerializer<Sockets<SocketId>>
     {
-        private readonly IEntityQueryService _entities;
-        private readonly ISocketService _sockets;
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly ISocketService _socketService;
 
-        public SocketIdsComponentSerializer(IEntityQueryService entities, ISocketService sockets)
+        public SocketIdsComponentSerializer(IEntityQueryService entityQueryService, ISocketService socketService)
         {
-            _entities = entities;
-            _sockets = sockets;
+            _entityQueryService = entityQueryService;
+            _socketService = socketService;
         }
 
         public override void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
@@ -43,11 +43,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
 
         private void WriteSocketCouplings(EntityWriter writer, SocketId socketId, SerializationOptions options)
         {
-            ref var filter = ref _sockets.GetCouplingFilter(socketId);
+            ref var filter = ref _socketService.GetCouplingFilter(socketId);
 
             foreach (var (indices, groupId) in filter)
             {
-                var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);
+                var (entityIds, _) = _entityQueryService.QueryEntities<EntityId>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {

@@ -1,9 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using System.Xml.Linq;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
@@ -26,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IEventEngine<Tree_Clean>,
         IStepEngine<Step>
     {
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
 
         private static readonly Fix64 Buffer = (Fix64)0.01m;
@@ -34,59 +32,59 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public string name { get; } = nameof(ThrustableEngine);
 
-        public ThrustableEngine(IEntityQueryService entities, ISpace space)
+        public ThrustableEngine(IEntityQueryService entityQueryService, ISpace space)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _space = space;
         }
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
         {
-            Node node = _entities.QueryByGroupIndex<Node>(in groupIndex);
+            Node node = _entityQueryService.QueryByGroupIndex<Node>(in groupIndex);
 
-            if (_entities.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
+            if (_entityQueryService.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
             {
                 return;
             }
 
-            ref var filter = ref _entities.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
             filter.Add(id, groupIndex);
         }
 
         public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
         {
-            Node node = _entities.QueryByGroupIndex<Node>(in groupIndex);
+            Node node = _entityQueryService.QueryByGroupIndex<Node>(in groupIndex);
 
-            if (_entities.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
+            if (_entityQueryService.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
             {
                 return;
             }
 
-            ref var filter = ref _entities.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
             filter.Remove(id);
         }
 
         public void Process(VhId eventId, Tree_Clean data)
         {
-            if (!_entities.TryGetId(data.TreeId, out EntityId treeId))
+            if (!_entityQueryService.TryGetId(data.TreeId, out EntityId treeId))
             {
                 return;
             }
-            if (!_entities.HasAny<Helm>(treeId.EGID.groupID))
+            if (!_entityQueryService.HasAny<Helm>(treeId.EGID.groupID))
             {
                 return;
             }
-            if (_entities.TryQueryById<Enabled>(treeId, out Enabled enabled) == false || enabled == false)
+            if (_entityQueryService.TryQueryById<Enabled>(treeId, out Enabled enabled) == false || enabled == false)
             {
                 return;
             }
 
             IBody treeBody = _space.GetBody(treeId);
-            ref var filter = ref _entities.GetFilter<Thrustable>(treeId, Helm.ThrustableFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Thrustable>(treeId, Helm.ThrustableFilterContextId);
 
             foreach (var (thrustableIndices, group) in filter)
             {
-                var (thrustables, nodes, _) = _entities.QueryEntities<Thrustable, Node>(group);
+                var (thrustables, nodes, _) = _entityQueryService.QueryEntities<Thrustable, Node>(group);
 
                 for (int i = 0; i < thrustableIndices.count; i++)
                 {
@@ -98,7 +96,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public void Step(in Step param)
         {
-            foreach (var ((ids, enableds, helms, count), groupId) in _entities.QueryEntities<EntityId, Enabled, Helm>())
+            foreach (var ((ids, enableds, helms, count), groupId) in _entityQueryService.QueryEntities<EntityId, Enabled, Helm>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -112,7 +110,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     }
 
                     IBody body = _space.GetBody(helmId);
-                    ref var filter = ref _entities.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
+                    ref var filter = ref _entityQueryService.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
 
                     this.TryApplyImpulse(param, body, helm.Direction, ref filter);
                 }
@@ -123,7 +121,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             foreach (var (indices, group) in filter)
             {
-                var (thrustables, nodes, _) = _entities.QueryEntities<Thrustable, Node>(group);
+                var (thrustables, nodes, _) = _entityQueryService.QueryEntities<Thrustable, Node>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {

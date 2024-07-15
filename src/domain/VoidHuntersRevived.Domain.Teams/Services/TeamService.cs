@@ -15,21 +15,19 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         private Dictionary<Id<Team>, GroupIndex> _groupIndices;
 
 
-        private readonly IEntityQueryService _entities;
-        private readonly IEntityTypeService _types;
+        private readonly IEntityQueryService _entityQueryService;
 
-        public TeamService(IEntityQueryService entities, IEntityTypeService types)
+        public TeamService(IEntityQueryService entityQueryService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _groupIndices = new Dictionary<Id<Team>, GroupIndex>();
-            _types = types;
         }
 
         public unsafe override void Initialize(IStrategy strategy)
         {
             base.Initialize(strategy);
 
-            foreach (var ((teams, entityIds, count), group) in _entities.QueryEntities<Team, EntityId>())
+            foreach (var ((teams, entityIds, count), group) in _entityQueryService.QueryEntities<Team, EntityId>())
             {
                 for (uint i = 0; i < count; i++)
                 {

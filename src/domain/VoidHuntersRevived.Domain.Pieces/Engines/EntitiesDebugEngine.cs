@@ -12,13 +12,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         public const string Trees = nameof(Trees);
         public const string Nodes = nameof(Nodes);
 
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public EntitiesDebugEngine(IEntityQueryService entities)
+        public EntitiesDebugEngine(IEntityQueryService entityQueryService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
 
             Lines = new[]
             {
@@ -29,12 +29,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private string GetTreesValue()
         {
-            return _entities.CalculateTotal<Tree>().ToString("#,###,##0");
+            return _entityQueryService.CalculateTotal<Tree>().ToString("#,###,##0");
         }
 
         private string GetNodesValue()
         {
-            return _entities.CalculateTotal<Node>().ToString("#,###,##0");
+            return _entityQueryService.CalculateTotal<Node>().ToString("#,###,##0");
         }
     }
 }

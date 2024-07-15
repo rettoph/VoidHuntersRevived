@@ -17,17 +17,21 @@ namespace VoidHuntersRevived.Game.Core.Engines
     [AutoLoad]
     internal sealed class SimulationEngine : StrategyEngine, IEventEngine<Simulation_Begin>
     {
-        private readonly ITreeService _trees;
-        private readonly ITeamService _teams;
-        private readonly IEntityTypeService _entityTypes;
-        private readonly IBlueprintService _blueprints;
+        private readonly ITreeService _treeService;
+        private readonly ITeamService _teamService;
+        private readonly IEntityTypeService _entityTypeService;
+        private readonly IBlueprintService _blueprintService;
 
-        public SimulationEngine(ITreeService treeFactory, ITeamService teams, IEntityTypeService entityTypes, IBlueprintService blueprints)
+        public SimulationEngine(
+            ITreeService treeService,
+            ITeamService teamService,
+            IEntityTypeService entityTypeService,
+            IBlueprintService blueprintService)
         {
-            _trees = treeFactory;
-            _teams = teams;
-            _entityTypes = entityTypes;
-            _blueprints = blueprints;
+            _treeService = treeService;
+            _teamService = teamService;
+            _entityTypeService = entityTypeService;
+            _blueprintService = blueprintService;
         }
 
         public void Process(VhId eventId, Simulation_Begin data)
@@ -43,12 +47,12 @@ namespace VoidHuntersRevived.Game.Core.Engines
             int radius = 2;
             int step = 2;
             FixVector2 offset = new FixVector2(0, 0);
-            var pieces = _entityTypes.GetAll<PieceDescriptor>();
+            var pieces = _entityTypeService.GetAll<PieceDescriptor>();
             for (int x = -radius; x < radius; x += step)
             {
                 for (int y = -radius; y < radius; y += step)
                 {
-                    _trees.Spawn(eventId, eventId.Create(i++), _teams.GetDefaultTeamComponent(), EntityTypes.Chain, pieces[i % pieces.Length], (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+                    _treeService.Spawn(eventId, eventId.Create(i++), _teamService.GetDefaultTeamComponent(), EntityTypes.Chain, pieces[i % pieces.Length], (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
                     {
                         initializer.Init(new Location()
                         {

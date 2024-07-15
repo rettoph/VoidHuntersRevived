@@ -18,18 +18,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService;
-        private readonly ISocketService _sockets;
+        private readonly ISocketService _socketService;
         private readonly ILogger _logger;
 
         public SocketIdsEngine(
             IEntityQueryService entityQueryService,
             IEntitySpawnService entitySpawnService,
-            ISocketService sockets,
+            ISocketService socketService,
             ILogger logger)
         {
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
-            _sockets = sockets;
+            _socketService = socketService;
             _logger = logger;
         }
 
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             for (int i = 0; i < sockets.Items.count; i++)
             {
-                var filter = _sockets.GetCouplingFilter(sockets.Items[i]);
+                var filter = _socketService.GetCouplingFilter(sockets.Items[i]);
                 foreach (var (indices, groupId) in filter)
                 {
                     var (entityIds, _) = _entityQueryService.QueryEntities<EntityId>(groupId);

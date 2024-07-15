@@ -9,12 +9,14 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
     [AutoLoad]
     internal sealed class BodyCollisionEngine : StrategyEngine
     {
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
 
-        public BodyCollisionEngine(IEntityQueryService entities, ISpace space)
+        public BodyCollisionEngine(
+            IEntityQueryService entityQueryService,
+            ISpace space)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _space = space;
 
             _space.OnBodyEnabled += this.HandleBodyEnabled;
@@ -22,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Collision collision = ref _entities.QueryById<Collision>(body.Id);
+            ref Collision collision = ref _entityQueryService.QueryById<Collision>(body.Id);
             body.CollisionCategories = collision.Categories;
             body.CollidesWith = collision.CollidesWith;
         }

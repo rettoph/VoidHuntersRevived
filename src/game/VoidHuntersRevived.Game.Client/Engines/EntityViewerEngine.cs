@@ -29,9 +29,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private readonly IScene _scene;
         private readonly IStrategy _strategy;
-        private readonly IEntityQueryService _entities;
-        private readonly IEntityTypeService _entityTypes;
-        private readonly IEntityDescriptorService _entityDescriptors;
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly IEntityTypeService _entityTypeService;
+        private readonly IEntityDescriptorService _entityDescriptorService;
         private readonly IImGuiObjectExplorerService _objectExplorer;
         private readonly IObjectTextFilterService _objectFilter;
         private readonly IImGui _imgui;
@@ -47,18 +47,18 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public EntityViewerEngine(
             IScene scene,
             IStrategy strategy,
-            IEntityQueryService entities,
-            IEntityTypeService entityTypes,
-            IEntityDescriptorService entityDescriptors,
+            IEntityQueryService entityQueryService,
+            IEntityTypeService entityTypeService,
+            IEntityDescriptorService entityDescriptorService,
             IImGuiObjectExplorerService objectExplorer,
             IObjectTextFilterService objectFilter,
             IImGui imgui)
         {
             _strategy = strategy;
             _scene = scene;
-            _entities = entities;
-            _entityTypes = entityTypes;
-            _entityDescriptors = entityDescriptors;
+            _entityQueryService = entityQueryService;
+            _entityTypeService = entityTypeService;
+            _entityDescriptorService = entityDescriptorService;
             _objectExplorer = objectExplorer;
             _imgui = imgui;
             _objectFilter = objectFilter;
@@ -90,9 +90,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             _imgui.InputText("Filter", ref _filter, 255);
 
-            foreach (VoidHuntersEntityDescriptor descriptor in _entityDescriptors.GetAll())
+            foreach (VoidHuntersEntityDescriptor descriptor in _entityDescriptorService.GetAll())
             {
-                var (instanceEntities, ids, statuses, nativeIds, count) = _entities.QueryEntities<InstanceEntity, EntityId, EntityStatus>(descriptor.InstanceGroup);
+                var (instanceEntities, ids, statuses, nativeIds, count) = _entityQueryService.QueryEntities<InstanceEntity, EntityId, EntityStatus>(descriptor.InstanceGroup);
                 this.RenderTeamDescriptorGroup(descriptor, instanceEntities, ids, statuses, nativeIds, count);
             }
 
@@ -153,7 +153,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
                 if (_imgui.CollapsingHeader(label, color))
                 {
-                    _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
+                    _entityQueryService.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
 
                     _imgui.Indent();
                     using (_imgui.ApplyID(nameof(EntityId)))
@@ -165,7 +165,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     {
                         using (_imgui.ApplyID(componentType.AssemblyQualifiedName ?? string.Empty))
                         {
-                            object component = GetComponent(componentType, _entities, ref groupIndex);
+                            object component = GetComponent(componentType, _entityQueryService, ref groupIndex);
                             result = result.Max(_objectExplorer.DrawObjectExplorer(component, _filter));
                         }
                     }
@@ -212,14 +212,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private TextFilterResult FilterEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityType type)
         {
-            _entities.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
+            _entityQueryService.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
             TextFilterResult result = this.BasicFilter($"{entityId.VhId}{descriptor.Name}{type.Key}");
 
             foreach (Type componentType in descriptor.Instance.componentsToBuild.Select(x => x.GetEntityComponentType()).Where(x => x.IsAssignableTo<IEntityComponent>()))
             {
                 using (_imgui.ApplyID(componentType.AssemblyQualifiedName ?? string.Empty))
                 {
-                    object component = GetComponent(componentType, _entities, ref groupIndex);
+                    object component = GetComponent(componentType, _entityQueryService, ref groupIndex);
                     result = result.Max(_objectFilter.Filter(component, _filter));
                 }
             }

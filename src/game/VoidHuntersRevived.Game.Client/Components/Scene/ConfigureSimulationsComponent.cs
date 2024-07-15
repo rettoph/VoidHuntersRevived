@@ -13,18 +13,18 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
     internal class ConfigureSimulationsComponent : SceneComponent
     {
-        private readonly ISimulationService _simluations;
+        private readonly ISimulationService _simulationService;
 
-        public ConfigureSimulationsComponent(ISimulationService simluations)
+        public ConfigureSimulationsComponent(ISimulationService simulationService)
         {
-            _simluations = simluations;
+            _simulationService = simulationService;
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            _simluations.Create(VhId.Empty, StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep);
+            _simulationService.Create(VhId.Empty, StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep);
         }
     }
 }

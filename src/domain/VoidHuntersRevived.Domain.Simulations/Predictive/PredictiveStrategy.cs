@@ -28,8 +28,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         public PredictiveStrategy(
             Lazy<ISimulation> simulation,
-            Lazy<IEngineService> engines,
-            Lazy<ILogger> logger) : base(StrategyTypeEnum.Predictive, simulation, engines, logger)
+            Lazy<IEngineService> engineService,
+            Lazy<ILogger> logger) : base(StrategyTypeEnum.Predictive, simulation, engineService, logger)
         {
             _lockstep = null!;
             _step = new Step();

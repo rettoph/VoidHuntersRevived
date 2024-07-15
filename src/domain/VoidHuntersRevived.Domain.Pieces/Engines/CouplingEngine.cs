@@ -15,12 +15,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IOnSpawnEngine<Coupling>,
         IOnDespawnEngine<Coupling>
     {
-        private readonly ISocketService _sockets;
+        private readonly ISocketService _socketService;
         private readonly ILogger _logger;
 
-        public CouplingEngine(ISocketService sockets, ILogger logger)
+        public CouplingEngine(ISocketService socketService, ILogger logger)
         {
-            _sockets = sockets;
+            _socketService = socketService;
             _logger = logger;
         }
 
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 return;
             }
 
-            ref var filter = ref _sockets.GetCouplingFilter(coupling.SocketId);
+            ref var filter = ref _socketService.GetCouplingFilter(coupling.SocketId);
             filter.Add(in id, in groupIndex);
         }
 
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 return;
             }
 
-            ref var filter = ref _sockets.GetCouplingFilter(coupling.SocketId);
+            ref var filter = ref _socketService.GetCouplingFilter(coupling.SocketId);
             filter.Remove(in id);
         }
     }

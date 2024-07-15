@@ -11,21 +11,21 @@ namespace VoidHuntersRevived.Game.Core.Components.Scene
     [SceneFilter<VoidHuntersGameScene>]
     internal class SimulationFrameComponent : SceneComponent, IGuppyDrawable, IGuppyUpdateable
     {
-        private readonly ISimulationService _simluations;
+        private readonly ISimulationService _simulationService;
 
-        public SimulationFrameComponent(ISimulationService simluations)
+        public SimulationFrameComponent(ISimulationService simulationService)
         {
-            _simluations = simluations;
+            _simulationService = simulationService;
         }
 
         public void Draw(GameTime gameTime)
         {
-            _simluations.Draw(gameTime);
+            _simulationService.Draw(gameTime);
         }
 
         public void Update(GameTime gameTime)
         {
-            _simluations.Update(gameTime);
+            _simulationService.Update(gameTime);
         }
     }
 }

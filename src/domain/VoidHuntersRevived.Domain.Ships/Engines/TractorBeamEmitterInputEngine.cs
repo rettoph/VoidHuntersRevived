@@ -14,43 +14,46 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         IEventEngine<Input_TractorBeamEmitter_Select>,
         IEventEngine<Input_TractorBeamEmitter_Deselect>
     {
-        private readonly ITractorBeamEmitterService _tractorBeamEmitters;
-        private readonly IEntityQueryService _entities;
+        private readonly ITractorBeamEmitterService _tractorBeamEmitterService;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ILogger _logger;
 
-        public TractorBeamEmitterInputEngine(ITractorBeamEmitterService tractorBeamEmitters, IEntityQueryService entities, ILogger logger)
+        public TractorBeamEmitterInputEngine(
+            ITractorBeamEmitterService tractorBeamEmitterService,
+            IEntityQueryService entityQueryService,
+            ILogger logger)
         {
-            _tractorBeamEmitters = tractorBeamEmitters;
-            _entities = entities;
+            _tractorBeamEmitterService = tractorBeamEmitterService;
+            _entityQueryService = entityQueryService;
             _logger = logger;
         }
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Select data)
         {
-            if (!_entities.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId))
+            if (!_entityQueryService.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId))
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - ShipVhId {ShipId} not found.", nameof(TractorBeamEmitterInputEngine), nameof(Process), nameof(Input_TractorBeamEmitter_Select), data.ShipVhId.Value);
                 return;
             }
 
-            if (!_entities.TryGetId(data.TargetVhId, out EntityId targetNodeId))
+            if (!_entityQueryService.TryGetId(data.TargetVhId, out EntityId targetNodeId))
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId {TargetId} not found.", nameof(TractorBeamEmitterInputEngine), nameof(Process), nameof(Input_TractorBeamEmitter_Select), data.TargetVhId.Value);
                 return;
             }
 
-            _tractorBeamEmitters.Select(eventId, tractorBeamEmitterId, targetNodeId);
+            _tractorBeamEmitterService.Select(eventId, tractorBeamEmitterId, targetNodeId);
         }
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Deselect data)
         {
-            if (!_entities.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId))
+            if (!_entityQueryService.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId))
             {
                 _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - ShipVhId {ShipId} not found.", nameof(TractorBeamEmitterInputEngine), nameof(Process), nameof(Input_TractorBeamEmitter_Deselect), data.ShipVhId.Value);
                 return;
             }
 
-            _tractorBeamEmitters.Deselect(eventId, tractorBeamEmitterId, data.AttachToSocketVhId);
+            _tractorBeamEmitterService.Deselect(eventId, tractorBeamEmitterId, data.AttachToSocketVhId);
         }
     }
 }

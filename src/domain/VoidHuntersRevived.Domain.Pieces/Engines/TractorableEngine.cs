@@ -16,16 +16,20 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IOnSpawnEngine<Tractorable>,
         IOnDespawnEngine<Tractorable>
     {
-        private readonly ITractorBeamEmitterService _tractorBeamEmitters;
-        private readonly ITacticalService _tacticals;
-        private readonly IEntityQueryService _entities;
+        private readonly ITractorBeamEmitterService _tractorBeamEmitterService;
+        private readonly ITacticalService _tacticalService;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ILogger _logger;
 
-        public TractorableEngine(ITractorBeamEmitterService tractorBeamEmitters, ITacticalService tacticals, IEntityQueryService entities, ILogger logger)
+        public TractorableEngine(
+            ITractorBeamEmitterService tractorBeamEmitterService,
+            ITacticalService tacticalService,
+            IEntityQueryService entityQueryService,
+            ILogger logger)
         {
-            _tractorBeamEmitters = tractorBeamEmitters;
-            _tacticals = tacticals;
-            _entities = entities;
+            _tractorBeamEmitterService = tractorBeamEmitterService;
+            _tacticalService = tacticalService;
+            _entityQueryService = entityQueryService;
             _logger = logger;
         }
 
@@ -37,10 +41,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
 
             // Add the tractorable to its owning tractor beam emitter's filter
-            ref var filter = ref _tractorBeamEmitters.GetTractorableFilter(tractorable.TractorBeamEmitter);
+            ref var filter = ref _tractorBeamEmitterService.GetTractorableFilter(tractorable.TractorBeamEmitter);
             filter.Add(in id, in groupIndex);
 
-            _tacticals.AddUse(tractorable.TractorBeamEmitter);
+            _tacticalService.AddUse(tractorable.TractorBeamEmitter);
             _logger.Verbose("{ClassName}::{MethodName} - Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(OnSpawn), id.VhId.Value, tractorable.TractorBeamEmitter.VhId.Value);
         }
 
@@ -51,10 +55,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 return;
             }
 
-            ref var filter = ref _tractorBeamEmitters.GetTractorableFilter(tractorable.TractorBeamEmitter);
+            ref var filter = ref _tractorBeamEmitterService.GetTractorableFilter(tractorable.TractorBeamEmitter);
             filter.Remove(id);
 
-            _tacticals.RemoveUse(tractorable.TractorBeamEmitter);
+            _tacticalService.RemoveUse(tractorable.TractorBeamEmitter);
             _logger.Verbose("{ClassName}::{MethodName} - Removed tractorable {TractorableId} from emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(OnDespawn), id, tractorable.TractorBeamEmitter.VhId.Value);
         }
     }

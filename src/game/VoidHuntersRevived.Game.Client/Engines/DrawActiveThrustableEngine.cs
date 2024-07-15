@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal sealed class DrawActiveThrustableEngine : StrategyEngine
     {
         private readonly short[] _indexBuffer;
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly IEntityTypeService _entityTypes;
         private readonly ILogger _logger;
         private readonly Camera2D _camera;
@@ -25,11 +25,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public DrawActiveThrustableEngine(
             ILogger logger,
-            IEntityQueryService entities,
+            IEntityQueryService entityQueryService,
             IEntityTypeService pieceTypes,
             Camera2D camera)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _entityTypes = pieceTypes;
             _indexBuffer = new short[3];
             _logger = logger;

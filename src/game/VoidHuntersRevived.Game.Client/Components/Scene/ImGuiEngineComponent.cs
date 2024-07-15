@@ -22,16 +22,16 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         private readonly IScene _scene;
         private readonly IImGui _imgui;
         private (IStrategy, IImGuiComponent[])[] _data;
-        private readonly ISimulationService _simulations;
+        private readonly ISimulationService _simulationService;
 
         public ImGuiEngineComponent(
             IScene scene,
             IImGui imgui,
-            ISimulationService simulations)
+            ISimulationService simulationService)
         {
             _scene = scene;
             _imgui = imgui;
-            _simulations = simulations;
+            _simulationService = simulationService;
             _data = Array.Empty<(IStrategy, IImGuiComponent[])>();
         }
 
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         {
             base.Initialize();
 
-            _data = _simulations.Instances.SelectMany(x => x.Strategies).Select(x => (
+            _data = _simulationService.Instances.SelectMany(x => x.Strategies).Select(x => (
                 (x as IStrategy)!,
                 x.Engines.OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray()
             )).ToArray();

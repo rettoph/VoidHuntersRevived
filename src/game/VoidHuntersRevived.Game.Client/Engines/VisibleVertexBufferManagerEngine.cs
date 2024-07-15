@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal sealed class VisibleVertexBufferManagerEngine : StrategyEngine, IStepEngine<GameTime>, IDisposable,
         IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>
     {
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly Dictionary<Id<IEntityType>, VertexBufferManager<VertexInstanceVisible>> _managers;
         private readonly GraphicsDevice _graphics;
         private readonly GameWindow _window;
@@ -45,14 +45,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public string name { get; } = nameof(VisibleVertexBufferManagerEngine);
 
         public VisibleVertexBufferManagerEngine(
-            IEntityQueryService entities,
+            IEntityQueryService entityQueryService,
             GraphicsDevice graphics,
             GameWindow window,
             Camera2D camera,
             VisibleAccumEffect visibleAccumEffect,
             VisibleFinalEffect visibleFinalEffect)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _graphics = graphics;
             _window = window;
             _camera = camera;
@@ -104,7 +104,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             _stepEngines = strategy.Engines.All().CreateSequencedStepEnginesGroup<IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>, DrawSequence>(DrawSequence.Draw);
 
-            foreach (var ((typeEntities, visibles, zIndices, count), _) in _entities.QueryEntities<TypeEntity, Visible, zIndex>())
+            foreach (var ((typeEntities, visibles, zIndices, count), _) in _entityQueryService.QueryEntities<TypeEntity, Visible, zIndex>())
             {
                 for (int i = 0; i < count; i++)
                 {

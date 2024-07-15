@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IOnDespawnEngine<Node>,
         IStepEngine<Step>
     {
-        private readonly ISocketService _sockets;
+        private readonly ISocketService _socketService;
         private readonly IEntityQueryService _entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService;
         private readonly ILogger _logger;
@@ -33,12 +33,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         public NodeEngine(
             IEntityQueryService entityQueryService,
             IEntitySpawnService entitySpawnService,
-            ISocketService sockets,
+            ISocketService socketService,
             ILogger logger)
         {
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
-            _sockets = sockets;
+            _socketService = socketService;
             _logger = logger;
             _dirtyTrees = new DictionaryQueue<EntityId, VhId>();
         }
@@ -104,7 +104,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             try
             {
                 ref Plug plug = ref _entityQueryService.QueryByGroupIndex<Plug>(groupIndex);
-                Socket socketNode = _sockets.GetSocket(coupling.SocketId);
+                Socket socketNode = _socketService.GetSocket(coupling.SocketId);
 
                 node.SetLocationTransformation(plug.Location.Transformation.Invert() * socketNode.LocalTransformation);
             }

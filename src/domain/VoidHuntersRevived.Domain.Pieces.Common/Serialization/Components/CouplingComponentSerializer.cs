@@ -11,11 +11,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
     [AutoLoad]
     public sealed class CouplingComponentSerializer : ComponentSerializer<Coupling>
     {
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
 
-        public CouplingComponentSerializer(IEntityQueryService entities)
+        public CouplingComponentSerializer(IEntityQueryService entityQueryService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
         }
 
         protected override Coupling Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
                 VhId nodeVhId = reader.ReadVhId(options.Seed);
                 byte index = reader.ReadByte();
 
-                if (_entities.TryGetId(nodeVhId, out EntityId nodeId))
+                if (_entityQueryService.TryGetId(nodeVhId, out EntityId nodeId))
                 {
                     return new Coupling(
                         socketId: new SocketId(

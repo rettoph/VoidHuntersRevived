@@ -21,30 +21,30 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal class TractorBeamHighlightEngine : StrategyEngine, IStepEngine<GameTime>
     {
         private readonly ILogger _logger;
-        private readonly IEntityQueryService _entities;
-        private readonly ISocketService _sockets;
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly ISocketService _socketService;
         private readonly Camera2D _camera;
-        private readonly ITractorBeamEmitterService _tractorBeamEmitters;
-        private readonly IUserShipService _userShips;
+        private readonly ITractorBeamEmitterService _tractorBeamEmitterService;
+        private readonly IUserShipService _userShipService;
 
         public string name { get; } = nameof(TractorBeamHighlightEngine);
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
         public TractorBeamHighlightEngine(
-            ILogger logger,
-            IEntityQueryService entities,
-            ISocketService sockets,
             Camera2D camera,
-            ITractorBeamEmitterService tractorBeamEmitters,
-            IUserShipService userShips)
+            IEntityQueryService entityQueryService,
+            ISocketService socketService,
+            ITractorBeamEmitterService tractorBeamEmitterService,
+            IUserShipService userShipService,
+            ILogger logger)
         {
             _camera = camera;
-            _entities = entities;
-            _sockets = sockets;
+            _entityQueryService = entityQueryService;
+            _socketService = socketService;
             _logger = logger;
-            _tractorBeamEmitters = tractorBeamEmitters;
-            _userShips = userShips;
+            _tractorBeamEmitterService = tractorBeamEmitterService;
+            _userShipService = userShipService;
         }
 
         public override void Ready()

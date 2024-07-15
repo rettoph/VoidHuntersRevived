@@ -10,16 +10,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
     [AutoLoad]
     public sealed class NodeComponentSerializer : ComponentSerializer<Node>
     {
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
 
-        public NodeComponentSerializer(IEntityQueryService entities)
+        public NodeComponentSerializer(IEntityQueryService entityQueryService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
         }
 
         protected override Node Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
         {
-            return new Node(id, _entities.GetId(options.Owner));
+            return new Node(id, _entityQueryService.GetId(options.Owner));
         }
 
         protected override void Write(EntityWriter writer, in Node instance, in SerializationOptions options)

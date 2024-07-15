@@ -41,9 +41,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly ISimulation _simulation;
 
         private IEntityQueryService _readEntityQueryService;
-        private ITractorBeamEmitterService _readTractorBeamEmitters;
-        private ISocketService _readSockets;
-        private IUserShipService _readUserShips;
+        private ITractorBeamEmitterService _readTractorBeamEmitterService;
+        private ISocketService _readSocketService;
+        private IUserShipService _readUserShipService;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
@@ -58,9 +58,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _simulation = simulation;
 
             _readEntityQueryService = null!;
-            _readTractorBeamEmitters = null!;
-            _readSockets = null!;
-            _readUserShips = null!;
+            _readTractorBeamEmitterService = null!;
+            _readSocketService = null!;
+            _readUserShipService = null!;
         }
 
         public override void Initialize(IStrategy strategy)
@@ -70,14 +70,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
             IStrategy readStrategy = _simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
 
             _readEntityQueryService = readStrategy.Engines.Get<IEntityService>().Query;
-            _readTractorBeamEmitters = readStrategy.Engines.Get<ITractorBeamEmitterService>();
-            _readSockets = readStrategy.Engines.Get<ISocketService>();
-            _readUserShips = readStrategy.Engines.Get<IUserShipService>();
+            _readTractorBeamEmitterService = readStrategy.Engines.Get<ITractorBeamEmitterService>();
+            _readSocketService = readStrategy.Engines.Get<ISocketService>();
+            _readUserShipService = readStrategy.Engines.Get<IUserShipService>();
         }
 
         public void Process(in Guid messageId, Input_Helm_SetDirection message)
         {
-            if (_readUserShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
+            if (_readUserShipService.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
                 return;
             }
@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Process(in Guid messageId, Input_TractorBeamEmitter_SetActive message)
         {
-            if (_readUserShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
+            if (_readUserShipService.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
                 return;
             }
@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             if (message.Value)
             {
-                if (_readTractorBeamEmitters.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
+                if (_readTractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
                 {
                     return;
                 }
@@ -128,7 +128,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             else
             {
                 ref Tactical tactical = ref _readEntityQueryService.QueryById<Tactical>(shipId);
-                SocketVhId? attachToSocket = _readSockets.TryGetClosestOpenSocket(shipId, tactical.Target, out Socket socket)
+                SocketVhId? attachToSocket = _readSocketService.TryGetClosestOpenSocket(shipId, tactical.Target, out Socket socket)
                             ? socket.Id.VhId : null;
 
                 _simulation.Input(
@@ -143,7 +143,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in Tick _param)
         {
-            if (_readUserShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
+            if (_readUserShipService.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
                 return;
             }

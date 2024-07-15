@@ -29,16 +29,21 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly Camera2D _camera;
         private readonly IScreen _screen;
         private Vector2 _offset;
-        private readonly IUserShipService _userShips;
-        private readonly IEntityQueryService _entities;
+        private readonly IUserShipService _userShipService;
+        private readonly IEntityQueryService _entitieQueryService;
 
-        public CameraEngine(IScreen screen, Camera2D camera, IUserShipService userShips, IEntityQueryService entities)
+        public CameraEngine(
+            Camera2D camera,
+            IScreen screen,
+            IUserShipService userShipService,
+            IEntityQueryService entityQueryService)
         {
-            _screen = screen;
             _camera = camera;
             _camera.Zoom = 100;
-            _userShips = userShips;
-            _entities = entities;
+
+            _screen = screen;
+            _userShipService = userShipService;
+            _entitieQueryService = entityQueryService;
         }
 
         public string name { get; } = nameof(CameraEngine);
@@ -69,9 +74,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
 
             Vector2 location = Vector2.Zero;
-            if (_userShips.TryGetCurrentUserShipId(out EntityId shipId))
+            if (_userShipService.TryGetCurrentUserShipId(out EntityId shipId))
             {
-                location = _entities.QueryById<Location>(shipId).Position.ToXna();
+                location = _entitieQueryService.QueryById<Location>(shipId).Position.ToXna();
             }
 
             _camera.TargetPosition = location + _offset;

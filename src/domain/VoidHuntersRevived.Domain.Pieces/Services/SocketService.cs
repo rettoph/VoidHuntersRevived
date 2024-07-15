@@ -21,20 +21,20 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         private readonly IEntityQueryService _entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService;
         private readonly IEntitySerializationService _entitySerializationService;
-        private readonly ITreeService _trees;
+        private readonly ITreeService _treeService;
 
         public SocketService(
             IEntityQueryService entityQueryService,
             IEntitySpawnService entitySpawnService,
             IEntitySerializationService entitySerializationService,
-            ITreeService trees,
+            ITreeService treeService,
             ILogger logger)
         {
             _logger = logger;
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
             _entitySerializationService = entitySerializationService;
-            _trees = trees;
+            _treeService = treeService;
         }
 
         public Socket GetSocket(SocketId socketId)

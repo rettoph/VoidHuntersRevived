@@ -24,8 +24,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal sealed class DrawVisibleEngine : StrategyEngine, IDrawVisibleEngine
     {
-        private readonly IEntityQueryService _entities;
-        private readonly IEntityTypeService _types;
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly IEntityTypeService _entityTypeService;
         private readonly ILogger _logger;
         private readonly Camera2D _camera;
 
@@ -33,19 +33,19 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public DrawVisibleEngine(
             ILogger logger,
-            IEntityQueryService entities,
-            IEntityTypeService types,
+            IEntityQueryService entityQueryService,
+            IEntityTypeService entityTypeService,
             Camera2D camera)
         {
-            _entities = entities;
-            _types = types;
+            _entityQueryService = entityQueryService;
+            _entityTypeService = entityTypeService;
             _logger = logger;
             _camera = camera;
         }
 
         public void Step(in IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>> param)
         {
-            foreach (var ((typeEntities, hasManyInstances, _, typeCount), _) in _entities.QueryEntities<TypeEntity, HasMany<InstanceEntity, TypeEntity>, Visible>())
+            foreach (var ((typeEntities, hasManyInstances, _, typeCount), _) in _entityQueryService.QueryEntities<TypeEntity, HasMany<InstanceEntity, TypeEntity>, Visible>())
             {
                 for (int i = 0; i < typeCount; i++)
                 {
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
                     foreach (var (indices, group) in hasManyIntances.Items)
                     {
-                        var (statuses, nodes, colorSchemes, instanceCount) = _entities.QueryEntities<EntityStatus, Node, ColorScheme>(group);
+                        var (statuses, nodes, colorSchemes, instanceCount) = _entityQueryService.QueryEntities<EntityStatus, Node, ColorScheme>(group);
                         vertexBufferManager.EnsureFit(instanceCount);
 
                         for (int j = 0; j < indices.count; j++)

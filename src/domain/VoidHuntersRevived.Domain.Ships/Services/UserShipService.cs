@@ -19,13 +19,13 @@ namespace VoidHuntersRevived.Domain.Ships.Services
     {
         private readonly Map<EntityId, int> _shipVhIdUserIdMap;
         private readonly INetScope<IStrategy> _netScope;
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
 
-        public UserShipService(INetScope<IStrategy> netScope, IEntityQueryService entities)
+        public UserShipService(INetScope<IStrategy> netScope, IEntityQueryService entityQueryService)
         {
             _netScope = netScope;
             _shipVhIdUserIdMap = new Map<EntityId, int>();
-            _entities = entities;
+            _entityQueryService = entityQueryService;
         }
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref UserId userId, in GroupIndex groupIndex)
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
         public void Process(VhId eventId, SetUserShipUserId data)
         {
-            if (_entities.TryGetId(data.ShipVhId, out EntityId shipId) == false)
+            if (_entityQueryService.TryGetId(data.ShipVhId, out EntityId shipId) == false)
             {
                 throw new Exception();
             }
@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
         public bool TryGetUserId(VhId shipVhId, out int userId)
         {
-            if (_entities.TryGetId(shipVhId, out EntityId shipId))
+            if (_entityQueryService.TryGetId(shipVhId, out EntityId shipId))
             {
                 return this.TryGetUserId(shipId, out userId);
             }

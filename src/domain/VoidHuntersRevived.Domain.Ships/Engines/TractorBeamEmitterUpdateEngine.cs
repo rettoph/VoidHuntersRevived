@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -23,31 +23,31 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
     internal sealed class TractorBeamEmitterUpdateEngine : StrategyEngine,
         IStepEngine<Step>
     {
-        private readonly IEntityQueryService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
         private readonly ILogger _logger;
-        private readonly ITractorBeamEmitterService _tractorBeamEmitters;
-        private readonly ISocketService _sockets;
+        private readonly ITractorBeamEmitterService _tractorBeamEmitterService;
+        private readonly ISocketService _socketService;
 
         public string name { get; } = nameof(TractorBeamEmitterUpdateEngine);
 
         public TractorBeamEmitterUpdateEngine(
-            IEntityQueryService entities,
+            IEntityQueryService entityQueryService,
             ISpace space,
             ILogger logger,
-            ITractorBeamEmitterService tractorBeamEmitters,
-            ISocketService sockets)
+            ITractorBeamEmitterService tractorBeamEmitterService,
+            ISocketService socketService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _space = space;
             _logger = logger;
-            _tractorBeamEmitters = tractorBeamEmitters;
-            _sockets = sockets;
+            _tractorBeamEmitterService = tractorBeamEmitterService;
+            _socketService = socketService;
         }
 
         public void Step(in Step _param)
         {
-            foreach (var ((vhids, tacticals, tractorBeamEmitters, count), _) in _entities.QueryEntities<EntityId, Tactical, TractorBeamEmitter>())
+            foreach (var ((vhids, tacticals, tractorBeamEmitters, count), _) in _entityQueryService.QueryEntities<EntityId, Tactical, TractorBeamEmitter>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -58,10 +58,10 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
         private void UpdateTractorBeamEmitterTractorables(in EntityId tractorBeamEmitterId, ref Tactical tactical, ref TractorBeamEmitter tractorBeamEmitter)
         {
-            ref var filter = ref _tractorBeamEmitters.GetTractorableFilter(tractorBeamEmitterId);
+            ref var filter = ref _tractorBeamEmitterService.GetTractorableFilter(tractorBeamEmitterId);
             foreach (var (indices, groupId) in filter)
             {
-                var (entityIds, statuses, enableds, _) = _entities.QueryEntities<EntityId, EntityStatus, Enabled>(groupId);
+                var (entityIds, statuses, enableds, _) = _entityQueryService.QueryEntities<EntityId, EntityStatus, Enabled>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
@@ -74,12 +74,12 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                         {
                             IBody targetBody = _space.GetBody(in tractorableId);
 
-                            EntityId targetId = _entities.GetId(tractorableId.VhId);
-                            ref Tree target = ref _entities.QueryById<Tree>(targetId);
+                            EntityId targetId = _entityQueryService.GetId(tractorableId.VhId);
+                            ref Tree target = ref _entityQueryService.QueryById<Tree>(targetId);
 
-                            Location targetHeadChildLocation = _entities.QueryById<Plug>(target.HeadId).Location;
+                            Location targetHeadChildLocation = _entityQueryService.QueryById<Plug>(target.HeadId).Location;
 
-                            if (_sockets.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
+                            if (_socketService.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
                             {
                                 FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.Transformation;
                                 FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                         else
                         {
                             _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = {Enabled}.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId, enableds[index]);
-                            _tractorBeamEmitters.Deselect(
+                            _tractorBeamEmitterService.Deselect(
                                 sourceId: HashBuilder<TractorBeamEmitterUpdateEngine, VhId>.Instance.Calculate(tractorableId.VhId),
                                 tractorBeamEmitterId: tractorBeamEmitterId,
                                 attachToSocketVhId: null);
