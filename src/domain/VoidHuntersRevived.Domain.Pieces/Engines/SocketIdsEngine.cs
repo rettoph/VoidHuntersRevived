@@ -16,13 +16,19 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
     internal sealed class SocketIdsEngine : StrategyEngine,
         IOnDespawnEngine<Sockets<SocketId>>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService;
         private readonly ISocketService _sockets;
         private readonly ILogger _logger;
 
-        public SocketIdsEngine(IEntityService entities, ISocketService sockets, ILogger logger)
+        public SocketIdsEngine(
+            IEntityQueryService entityQueryService,
+            IEntitySpawnService entitySpawnService,
+            ISocketService sockets,
+            ILogger logger)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
+            _entitySpawnService = entitySpawnService;
             _sockets = sockets;
             _logger = logger;
         }
@@ -34,11 +40,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 var filter = _sockets.GetCouplingFilter(sockets.Items[i]);
                 foreach (var (indices, groupId) in filter)
                 {
-                    var (entityIds, _) = _entities.QueryEntities<EntityId>(groupId);
+                    var (entityIds, _) = _entityQueryService.QueryEntities<EntityId>(groupId);
 
                     for (int j = 0; j < indices.count; j++)
                     {
-                        _entities.Despawn(sourceEventId, entityIds[indices[j]]);
+                        _entitySpawnService.Despawn(sourceEventId, entityIds[indices[j]]);
                     }
                 }
             }

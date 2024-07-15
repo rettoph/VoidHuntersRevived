@@ -7,9 +7,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 {
     internal class TacticalService : ITacticalService
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
 
-        public TacticalService(IEntityService entities)
+        public TacticalService(IEntityQueryService entities)
         {
             _entities = entities;
         }

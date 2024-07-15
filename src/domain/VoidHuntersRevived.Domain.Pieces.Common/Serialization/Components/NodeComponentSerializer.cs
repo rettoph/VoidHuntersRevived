@@ -10,9 +10,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
     [AutoLoad]
     public sealed class NodeComponentSerializer : ComponentSerializer<Node>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
 
-        public NodeComponentSerializer(IEntityService entities)
+        public NodeComponentSerializer(IEntityQueryService entities)
         {
             _entities = entities;
         }

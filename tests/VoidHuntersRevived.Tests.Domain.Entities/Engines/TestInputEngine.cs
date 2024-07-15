@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Engines
 {
     internal class TestInputEngine : StrategyEngine, IEventEngine<TestSpawnInput>, IEventEngine<TestDepawnInput>
     {
-        private IEntityService _entities = null!;
+        private IEntityQueryService _entities = null!;
 
         public override void Initialize(IStrategy simulation)
         {

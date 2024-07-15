@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal sealed class DrawVisibleEngine : StrategyEngine, IDrawVisibleEngine
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly IEntityTypeService _types;
         private readonly ILogger _logger;
         private readonly Camera2D _camera;
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public DrawVisibleEngine(
             ILogger logger,
-            IEntityService entities,
+            IEntityQueryService entities,
             IEntityTypeService types,
             Camera2D camera)
         {

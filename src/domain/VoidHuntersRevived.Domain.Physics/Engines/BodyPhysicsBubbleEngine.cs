@@ -21,14 +21,14 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
     {
         private static readonly Fix64 Two = (Fix64)2;
 
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ISpace _space;
         private FixRectangle[] _bubbleBuffer;
         private int _bubbleBufferCount;
 
         public string name { get; } = nameof(BodyPhysicsBubbleEngine);
 
-        public BodyPhysicsBubbleEngine(IEntityService entities, ISpace space)
+        public BodyPhysicsBubbleEngine(IEntityQueryService entities, ISpace space)
         {
             _entities = entities;
             _space = space;

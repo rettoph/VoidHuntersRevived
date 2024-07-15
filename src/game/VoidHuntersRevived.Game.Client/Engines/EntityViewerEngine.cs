@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private readonly IScene _scene;
         private readonly IStrategy _strategy;
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly IEntityTypeService _entityTypes;
         private readonly IEntityDescriptorService _entityDescriptors;
         private readonly IImGuiObjectExplorerService _objectExplorer;
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public EntityViewerEngine(
             IScene scene,
             IStrategy strategy,
-            IEntityService entities,
+            IEntityQueryService entities,
             IEntityTypeService entityTypes,
             IEntityDescriptorService entityDescriptors,
             IImGuiObjectExplorerService objectExplorer,
@@ -180,10 +180,10 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
         }
 
-        private static MethodInfo QueryByGroupIndexMethod = typeof(IEntityService).GetMethod(nameof(IEntityService.QueryByGroupIndex), 1, new[] { typeof(GroupIndex).MakeByRefType() }) ?? throw new Exception();
-        private static object GetComponent(Type type, IEntityService entities, ref GroupIndex groupIndex)
+        private static MethodInfo QueryByGroupIndexMethod = typeof(IEntityQueryService).GetMethod(nameof(IEntityQueryService.QueryByGroupIndex), 1, new[] { typeof(GroupIndex).MakeByRefType() }) ?? throw new Exception();
+        private static object GetComponent(Type type, IEntityQueryService entityQueryService, ref GroupIndex groupIndex)
         {
-            object? component = QueryByGroupIndexMethod.MakeGenericMethod(type).Invoke(entities, new object[] { groupIndex });
+            object? component = QueryByGroupIndexMethod.MakeGenericMethod(type).Invoke(entityQueryService, new object[] { groupIndex });
 
             return component ?? new object();
         }

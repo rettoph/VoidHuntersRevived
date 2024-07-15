@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;

@@ -9,10 +9,10 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
     [AutoLoad]
     internal sealed class BodyCollisionEngine : StrategyEngine
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ISpace _space;
 
-        public BodyCollisionEngine(IEntityService entities, ISpace space)
+        public BodyCollisionEngine(IEntityQueryService entities, ISpace space)
         {
             _entities = entities;
             _space = space;

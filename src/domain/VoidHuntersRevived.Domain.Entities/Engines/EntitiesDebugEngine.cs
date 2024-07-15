@@ -13,17 +13,17 @@ namespace VoidHuntersRevived.Domain.Entities.Engines.Debug
     {
         public const string Entities = nameof(Entities);
 
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entityQueryService;
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public EntitiesDebugEngine(IEntityService entities)
+        public EntitiesDebugEngine(IEntityQueryService entityQueryService)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
 
             this.Lines = new[]
             {
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(IEntityService), Entities, () => _entities.CalculateTotal<EntityId>().ToString("#,###,##0"))
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IEntityService), Entities, () => _entityQueryService.CalculateTotal<EntityId>().ToString("#,###,##0"))
             };
         }
     }

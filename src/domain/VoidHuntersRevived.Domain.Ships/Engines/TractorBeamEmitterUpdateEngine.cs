@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
     internal sealed class TractorBeamEmitterUpdateEngine : StrategyEngine,
         IStepEngine<Step>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ISpace _space;
         private readonly ILogger _logger;
         private readonly ITractorBeamEmitterService _tractorBeamEmitters;
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         public string name { get; } = nameof(TractorBeamEmitterUpdateEngine);
 
         public TractorBeamEmitterUpdateEngine(
-            IEntityService entities,
+            IEntityQueryService entities,
             ISpace space,
             ILogger logger,
             ITractorBeamEmitterService tractorBeamEmitters,

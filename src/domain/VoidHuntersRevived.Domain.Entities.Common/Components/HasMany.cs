@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Components
         private readonly UnmanagedReference<IEntityService> _entities;
         private readonly CombinedFilterID _filterId;
 
-        public EntityFilterCollection Items => _entities.Value.GetFilter<TItems>(_filterId);
+        public EntityFilterCollection Items => _entities.Value.Query.GetFilter<TItems>(_filterId);
 
         public HasMany(EntityId id, UnmanagedReference<IEntityService> entities)
         {

@@ -20,9 +20,9 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
     {
         private static readonly Fix64 AimDamping = Fix64.One / (Fix64)32;
 
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
 
-        public TacticalEngine(IEntityService entities)
+        public TacticalEngine(IEntityQueryService entities)
         {
             _entities = entities;
         }

@@ -15,10 +15,10 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         private Dictionary<Id<Team>, GroupIndex> _groupIndices;
 
 
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly IEntityTypeService _types;
 
-        public TeamService(IEntityService entities, IEntityTypeService types)
+        public TeamService(IEntityQueryService entities, IEntityTypeService types)
         {
             _entities = entities;
             _groupIndices = new Dictionary<Id<Team>, GroupIndex>();

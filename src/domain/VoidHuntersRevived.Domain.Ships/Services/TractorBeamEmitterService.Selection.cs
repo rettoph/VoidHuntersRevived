@@ -25,10 +25,10 @@ namespace VoidHuntersRevived.Domain.Ships.Services
     {
         public void Select(VhId sourceId, EntityId tractorBeamEmitterId, EntityId nodeId)
         {
-            if (_entities.IsSpawned(nodeId, out GroupIndex nodeGroupIndex))
+            if (_entityQueryService.IsSpawned(nodeId, out GroupIndex nodeGroupIndex))
             {
-                ref Node node = ref _entities.QueryByGroupIndex<Node>(nodeGroupIndex);
-                if (_entities.IsSpawned(node.TreeId))
+                ref Node node = ref _entityQueryService.QueryByGroupIndex<Node>(nodeGroupIndex);
+                if (_entityQueryService.IsSpawned(node.TreeId))
                 {
                     _logger.Verbose("{ClassName}::{MethodName} - Selecting {NodeId} with TractorBeamEmitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, tractorBeamEmitterId.VhId);
 
@@ -37,20 +37,20 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         data: new TractorBeamEmitter_Select()
                         {
                             TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
-                            TargetData = _entities.Serialize(nodeId, SerializationOptions.Default),
+                            TargetData = _entitySerializationService.Serialize(nodeId, SerializationOptions.Default),
                             Location = node.Transformation.ToLocation()
                         });
 
 
-                    if (_nodes.IsHead(in node))
+                    if (_nodeService.IsHead(in node))
                     {
                         _logger.Verbose("{ClassName}::{MethodName} - Despawning Node {NodeVhId} Tree {TreeId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, node.TreeId.VhId);
-                        _entities.Despawn(sourceId, node.TreeId);
+                        _entitySpawnService.Despawn(sourceId, node.TreeId);
                     }
                     else
                     {
                         _logger.Verbose("{ClassName}::{MethodName} - Despawning Node {NodeVhId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId);
-                        _entities.Despawn(sourceId, nodeId);
+                        _entitySpawnService.Despawn(sourceId, nodeId);
                     }
                 }
                 else
@@ -66,8 +66,8 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
         public void Deselect(VhId sourceId, EntityId tractorBeamEmitterId)
         {
-            ref Tactical tactical = ref _entities.QueryById<Tactical>(tractorBeamEmitterId);
-            SocketVhId? attachToSocketVhId = _sockets.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Target, out Socket socket)
+            ref Tactical tactical = ref _entityQueryService.QueryById<Tactical>(tractorBeamEmitterId);
+            SocketVhId? attachToSocketVhId = _socketService.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Target, out Socket socket)
                 ? socket.Id.VhId : default;
 
             this.Deselect(sourceId, tractorBeamEmitterId, attachToSocketVhId);
@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             ref var filter = ref this.GetTractorableFilter(tractorBeamEmitterId);
             foreach (var (indices, groupId) in filter)
             {
-                var (entityIds, statuses, trees, locations, _) = _entities.QueryEntities<EntityId, EntityStatus, Tree, Location>(groupId);
+                var (entityIds, statuses, trees, locations, _) = _entityQueryService.QueryEntities<EntityId, EntityStatus, Tree, Location>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
@@ -108,12 +108,12 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     Data = new TractorBeamEmitter_Deselect()
                     {
                         TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
-                        TargetData = _entities.Serialize(deselected.headId, SerializationOptions.Default),
+                        TargetData = _entitySerializationService.Serialize(deselected.headId, SerializationOptions.Default),
                         Location = deselected.location,
                         AttachToSocketVhId = attachToSocketVhId
                     }
                 });
-                _entities.Despawn(nextSourceId, deselected.id);
+                _entitySpawnService.Despawn(nextSourceId, deselected.id);
             }
         }
 
@@ -121,15 +121,15 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         {
             try
             {
-                EntityId cloneId = _trees.Spawn(
+                EntityId cloneId = _treeService.Spawn(
                     sourceId: eventId,
                     vhid: eventId.Create(1),
-                    belongsToTeam: _teams.GetDefaultTeamComponent(),
+                    belongsToTeam: _teamService.GetDefaultTeamComponent(),
                     tree: EntityTypes.Chain,
                     nodes: data.TargetData,
                     initializer: (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
                     {
-                        if (!entities.TryGetId(data.TractorBeamEmitterVhId, out EntityId tractorBeamEmitterId))
+                        if (!entities.Query.TryGetId(data.TractorBeamEmitterVhId, out EntityId tractorBeamEmitterId))
                         {
                             throw new ArgumentException($"Unable to locate {nameof(TractorBeamEmitter)} {data.TractorBeamEmitterVhId.Value}");
                         }
@@ -152,16 +152,16 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         {
             try
             {
-                if (data.AttachToSocketVhId.HasValue && _sockets.TryGetSocket(data.AttachToSocketVhId.Value, out Socket attachToSocket))
+                if (data.AttachToSocketVhId.HasValue && _socketService.TryGetSocket(data.AttachToSocketVhId.Value, out Socket attachToSocket))
                 { // Spawn a new piece attached to the input node
-                    _sockets.Spawn(eventId, attachToSocket, data.TargetData);
+                    _socketService.Spawn(eventId, attachToSocket, data.TargetData);
                 }
                 else
                 { // Spawn a new free floating chain
-                    EntityId cloneId = _trees.Spawn(
+                    EntityId cloneId = _treeService.Spawn(
                         sourceId: eventId,
                         vhid: eventId.Create(2),
-                        belongsToTeam: _teams.GetDefaultTeamComponent(),
+                        belongsToTeam: _teamService.GetDefaultTeamComponent(),
                         tree: EntityTypes.Chain,
                         nodes: data.TargetData,
                         initializer: (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>

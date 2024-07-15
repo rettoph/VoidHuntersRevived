@@ -1,9 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -24,26 +22,32 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         public string name { get; } = nameof(TreeEngine);
 
         private HashSet<EGID> _removedNodes = new HashSet<EGID>();
-        private readonly IEntityService _entities;
-        private readonly IEntityDescriptorService _entityDescriptors;
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService;
+        private readonly IEntityDescriptorService _entityDescriptorService;
         private readonly ILogger _logger;
 
-        public TreeEngine(IEntityService entities, IEntityDescriptorService entityDescriptors, ILogger logger)
+        public TreeEngine(
+            IEntityQueryService entityQueryService,
+            IEntitySpawnService entitySpawnService,
+            IEntityDescriptorService entityDescriptors,
+            ILogger logger)
         {
-            _entities = entities;
-            _entityDescriptors = entityDescriptors;
+            _entityQueryService = entityQueryService;
+            _entitySpawnService = entitySpawnService;
+            _entityDescriptorService = entityDescriptors;
             _logger = logger;
         }
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
-            if (_entityDescriptors.GetByGroup(groupIndex.GroupID) is not TreeDescriptor)
+            if (_entityDescriptorService.GetByGroup(groupIndex.GroupID) is not TreeDescriptor)
             {
                 throw new Exception();
             }
 
-            ref Location location = ref _entities.QueryByGroupIndex<Location>(groupIndex);
-            ref var filter = ref _entities.GetFilter<Node>(id, Tree.NodeFilterContextId);
+            ref Location location = ref _entityQueryService.QueryByGroupIndex<Location>(groupIndex);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(id, Tree.NodeFilterContextId);
 
             this.TransformNodes(ref location, ref filter);
         }
@@ -51,14 +55,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - Despawning Tree {TreeId}, HeadId = {HeadId}", nameof(TreeEngine), nameof(OnDespawn), id.VhId, component.HeadId.VhId);
-            _entities.Despawn(sourceEventId, component.HeadId);
+            _entitySpawnService.Despawn(sourceEventId, component.HeadId);
         }
 
 
         public void Step(in Step _param)
         {
-            var groups = _entities.FindGroups<Tree, Location, Enabled, Awake>();
-            foreach (var ((ids, locations, enableds, awakes, count), _) in _entities.QueryEntities<EntityId, Location, Enabled, Awake>(groups))
+            var groups = _entityQueryService.FindGroups<Tree, Location, Enabled, Awake>();
+            foreach (var ((ids, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityId, Location, Enabled, Awake>(groups))
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
@@ -67,7 +71,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                         continue;
                     }
 
-                    ref var filter = ref _entities.GetFilter<Node>(ids[treeIndex], Tree.NodeFilterContextId);
+                    ref var filter = ref _entityQueryService.GetFilter<Node>(ids[treeIndex], Tree.NodeFilterContextId);
                     this.TransformNodes(ref locations[treeIndex], ref filter);
                 }
             }
@@ -77,7 +81,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             foreach (var (indices, group) in filter)
             {
-                var (nodes, _) = _entities.QueryEntities<Node>(group);
+                var (nodes, _) = _entityQueryService.QueryEntities<Node>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {

@@ -7,9 +7,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal sealed class NodeService : INodeService
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
 
-        public NodeService(IEntityService entities)
+        public NodeService(IEntityQueryService entities)
         {
             _entities = entities;
         }

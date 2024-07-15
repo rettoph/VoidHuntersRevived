@@ -18,12 +18,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal class DrawSocketsEngine : StrategyEngine
     {
         private readonly IScreen _screen;
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly Camera2D _camera;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private readonly PrimitiveShape _jointShape;
 
-        public DrawSocketsEngine(IScreen screen, IEntityService entities, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
+        public DrawSocketsEngine(IScreen screen, IEntityQueryService entities, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
         {
             _screen = screen;
             _entities = entities;

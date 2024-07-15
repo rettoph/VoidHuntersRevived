@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Domain.Pieces
         //     return children;
         // }
 
-        // public EntityId Spawn(VhId treeId, Id<ITeam> teamId, IEntityService entities)
+        // public EntityId Spawn(VhId treeId, Id<ITeam> teamId, IEntityQueryService entities)
         // {
         //     VhId vhid = HashBuilder<BlueprintPieceDto, VhId, Id<BlueprintDto>>.Instance.Calculate(treeId, this.Blueprint.Id);
         // 

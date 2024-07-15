@@ -30,9 +30,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly IScreen _screen;
         private Vector2 _offset;
         private readonly IUserShipService _userShips;
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
 
-        public CameraEngine(IScreen screen, Camera2D camera, IUserShipService userShips, IEntityService entities)
+        public CameraEngine(IScreen screen, Camera2D camera, IUserShipService userShips, IEntityQueryService entities)
         {
             _screen = screen;
             _camera = camera;

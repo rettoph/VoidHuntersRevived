@@ -18,17 +18,17 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         public EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializerDelegate = null)
         {
-            BelongsTo<Team, TeamMember> belongsToTeam = _entities.QueryById<BelongsTo<Team, TeamMember>>(socket.Node.TreeId);
+            BelongsTo<Team, TeamMember> belongsToTeam = _entityQueryService.QueryById<BelongsTo<Team, TeamMember>>(socket.Node.TreeId);
             SocketVhId socketVhId = socket.Id.VhId;
             VhId treeId = socket.Node.TreeId.VhId;
 
-            return _entities.Spawn(sourceId, node, nodeVhId, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, node, nodeVhId, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(belongsToTeam);
-                initializer.Init(new Node(id, entities.GetId(treeId)));
+                initializer.Init(new Node(id, entities.Query.GetId(treeId)));
                 initializer.Init<Coupling>(new Coupling(
                     socketId: new SocketId(
-                        nodeId: entities.GetId(socketVhId.NodeVhId),
+                        nodeId: entities.Query.GetId(socketVhId.NodeVhId),
                         index: socketVhId.Index))
                 );
 
@@ -38,10 +38,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public EntityId Spawn(VhId sourceId, Socket socket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
         {
-            BelongsTo<Team, TeamMember> belongsToTeam = _entities.QueryById<BelongsTo<Team, TeamMember>>(socket.Node.TreeId);
+            BelongsTo<Team, TeamMember> belongsToTeam = _entityQueryService.QueryById<BelongsTo<Team, TeamMember>>(socket.Node.TreeId);
             SocketVhId socketVhId = socket.Id.VhId;
 
-            EntityId nodeId = _entities.Deserialize(
+            EntityId nodeId = _entitySerializationService.Deserialize(
                 sourceId: sourceId,
                 options: new DeserializationOptions
                 {
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 {
                     initializer.Init<Coupling>(new Coupling(
                         socketId: new SocketId(
-                            nodeId: entities.GetId(socketVhId.NodeVhId),
+                            nodeId: entities.Query.GetId(socketVhId.NodeVhId),
                             index: socketVhId.Index))
                         );
 

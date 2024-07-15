@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IEventEngine<Tree_Clean>,
         IStepEngine<Step>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ISpace _space;
 
         private static readonly Fix64 Buffer = (Fix64)0.01m;
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         public string name { get; } = nameof(ThrustableEngine);
 
-        public ThrustableEngine(IEntityService entities, ISpace space)
+        public ThrustableEngine(IEntityQueryService entities, ISpace space)
         {
             _entities = entities;
             _space = space;

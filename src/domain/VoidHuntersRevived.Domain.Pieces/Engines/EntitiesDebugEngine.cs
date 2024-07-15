@@ -12,11 +12,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         public const string Trees = nameof(Trees);
         public const string Nodes = nameof(Nodes);
 
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public EntitiesDebugEngine(IEntityService entities)
+        public EntitiesDebugEngine(IEntityQueryService entities)
         {
             _entities = entities;
 

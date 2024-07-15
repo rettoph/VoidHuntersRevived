@@ -8,29 +8,34 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal partial class TreeService : StrategyEngine, ITreeService
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService;
         private readonly IBlueprintService _blueprints;
 
-        public TreeService(IEntityService entities, IBlueprintService blueprints)
+        public TreeService(
+            IEntityQueryService entityQueryService,
+            IEntitySpawnService entitySpawnService,
+            IBlueprintService blueprints)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
+            _entitySpawnService = entitySpawnService;
             _blueprints = blueprints;
         }
 
         public ref Node GetHead(in Tree tree)
         {
-            return ref _entities.QueryById<Node>(tree.HeadId);
+            return ref _entityQueryService.QueryById<Node>(tree.HeadId);
         }
 
         public ref Node GetHead(in EntityId treeId)
         {
-            ref Tree tree = ref _entities.QueryById<Tree>(treeId);
+            ref Tree tree = ref _entityQueryService.QueryById<Tree>(treeId);
             return ref this.GetHead(in tree);
         }
 
         public ref Node GetHead(in GroupIndex treeGroupIndex)
         {
-            ref Tree tree = ref _entities.QueryByGroupIndex<Tree>(treeGroupIndex);
+            ref Tree tree = ref _entityQueryService.QueryByGroupIndex<Tree>(treeGroupIndex);
             return ref this.GetHead(in tree);
         }
     }

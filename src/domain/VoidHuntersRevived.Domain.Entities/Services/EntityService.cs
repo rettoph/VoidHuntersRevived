@@ -1,42 +1,48 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Utilities;
-using Serilog;
 using Svelto.ECS;
-using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     [Sequence<EngineSequence>(EngineSequence.Group01)]
-    public partial class EntityService : StrategyEngine, IEntityService, IQueryingEntitiesEngine, IDisposable
+    public partial class EntityService : StrategyEngine, IEntityService, IDisposable
     {
-        private readonly ILogger _logger;
-        private readonly EntitiesSubmissionScheduler _scheduler;
         private readonly UnmanagedReference<IEntityService> _ref;
-
-        private EntityReader _reader;
-        private EntityWriter _writer;
-        private Lazy<IEntityTypeService> _entityTypeService;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public IEntityTypeService Types => _entityTypeService.Value;
+
+        private readonly Lazy<EntityTypeService> _entityTypeService;
+        private readonly Lazy<EntityQueryService> _entityQueryService;
+        private readonly Lazy<EntitySpawnService> _entitySpawnService;
+        private readonly Lazy<EntitySerializationService> _entitySerializationService;
+
+        public EntityTypeService Types => _entityTypeService.Value;
+        public EntityQueryService Query => _entityQueryService.Value;
+        public EntitySpawnService Spawn => _entitySpawnService.Value;
+        public EntitySerializationService Serialization => _entitySerializationService.Value;
+
+        IEntityTypeService IEntityService.Types => this.Types;
+
+        IEntityQueryService IEntityService.Query => this.Query;
+
+        IEntitySpawnService IEntityService.Spawn => this.Spawn;
+
+        IEntitySerializationService IEntityService.Serialization => this.Serialization;
 
         public EntityService(
-            ILogger logger,
-            Lazy<IEntityTypeService> entityTypeService,
-            EntitiesSubmissionScheduler scheduler)
+            Lazy<EntityTypeService> entityTypeService,
+            Lazy<EntityQueryService> entityQueryService,
+            Lazy<EntitySpawnService> entitySpawnService,
+            Lazy<EntitySerializationService> entitySerialzationService)
         {
-            _logger = logger;
             _entityTypeService = entityTypeService;
-            _scheduler = scheduler;
-
-            _writer = null!;
-            _reader = null!;
+            _entityQueryService = entityQueryService;
+            _entitySpawnService = entitySpawnService;
+            _entitySerializationService = entitySerialzationService;
 
             _ref = new UnmanagedReference<IEntityService>(this);
         }
@@ -44,14 +50,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public void Dispose()
         {
             _ref.Dispose(false);
-        }
-
-        public override void Initialize(IStrategy simulation)
-        {
-            base.Initialize(simulation);
-
-            _writer = new EntityWriter(this, _logger);
-            _reader = new EntityReader(this.Types, this, _logger);
         }
 
         public UnmanagedReference<IEntityService> GetReference()

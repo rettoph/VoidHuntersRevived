@@ -15,10 +15,10 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         IEventEngine<Input_TractorBeamEmitter_Deselect>
     {
         private readonly ITractorBeamEmitterService _tractorBeamEmitters;
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ILogger _logger;
 
-        public TractorBeamEmitterInputEngine(ITractorBeamEmitterService tractorBeamEmitters, IEntityService entities, ILogger logger)
+        public TractorBeamEmitterInputEngine(ITractorBeamEmitterService tractorBeamEmitters, IEntityQueryService entities, ILogger logger)
         {
             _tractorBeamEmitters = tractorBeamEmitters;
             _entities = entities;

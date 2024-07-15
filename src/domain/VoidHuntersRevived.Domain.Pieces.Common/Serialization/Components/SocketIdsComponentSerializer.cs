@@ -14,10 +14,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
     [AutoLoad]
     public class SocketIdsComponentSerializer : ComponentSerializer<Sockets<SocketId>>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ISocketService _sockets;
 
-        public SocketIdsComponentSerializer(IEntityService entities, ISocketService sockets)
+        public SocketIdsComponentSerializer(IEntityQueryService entities, ISocketService sockets)
         {
             _entities = entities;
             _sockets = sockets;

@@ -12,17 +12,23 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
     {
         private static unsafe long EntityHeaderSize = sizeof(VhId) + sizeof(Id<IEntityType>);
 
-        private readonly IEntityTypeService _types;
-        private readonly IEntityService _entities;
+        private readonly IEntityTypeService _entityTypeService;
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService;
         private readonly ILogger _logger;
 
         private EntityData _loaded;
 
-        public EntityReader(IEntityTypeService types, IEntityService entities, ILogger logger) : base(new MemoryStream())
+        public EntityReader(
+            IEntityTypeService types,
+            IEntityQueryService entityQueryService,
+            IEntitySpawnService entitySpawnService,
+            ILogger logger) : base(new MemoryStream())
         {
             _loaded = EntityData.Default;
-            _types = types;
-            _entities = entities;
+            _entityTypeService = types;
+            _entityQueryService = entityQueryService;
+            _entitySpawnService = entitySpawnService;
             _logger = logger;
         }
 
@@ -115,7 +121,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
                 this.InternalDeserialize(sourceId, data, data.Positions[i], options, initializer);
             }
 
-            return _entities.GetId(vhid);
+            return _entityQueryService.GetId(vhid);
         }
 
         internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
@@ -127,7 +133,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
                 this.InternalDeserialize(sourceId, data, data.Positions[i], options, initializer);
             }
 
-            return _entities.GetId(vhid);
+            return _entityQueryService.GetId(vhid);
         }
 
         private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, EntityInitializerDelegate initializerDelegate)
@@ -135,11 +141,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             this.Load(data, position);
             VhId vhid = this.ReadVhId(options.Seed);
             Id<IEntityType> typeId = this.ReadStruct<Id<IEntityType>>();
-            IEntityType type = _types.GetById(typeId);
+            IEntityType type = _entityTypeService.GetById(typeId);
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
 
-            _entities.Spawn(sourceId, type, vhid, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+            _entitySpawnService.Spawn(sourceId, type, vhid, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
                 entities.Types.GetProviderByType(type).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
@@ -155,11 +161,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             this.Load(data, position);
             VhId vhid = this.ReadVhId(options.Seed);
             Id<IEntityType> typeId = this.ReadStruct<Id<IEntityType>>();
-            IEntityType type = _types.GetById(typeId);
+            IEntityType type = _entityTypeService.GetById(typeId);
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
 
-            _entities.Spawn(sourceId, type, vhid, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+            _entitySpawnService.Spawn(sourceId, type, vhid, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
                 entities.Types.GetProviderByType(type).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);

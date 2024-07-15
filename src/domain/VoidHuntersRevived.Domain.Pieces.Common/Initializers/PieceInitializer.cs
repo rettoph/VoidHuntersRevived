@@ -7,9 +7,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Initializers
     internal sealed class PieceInitializer : BaseEntityInitializer
     {
         // private readonly IResourceProvider _resources;
-        // private readonly IEntityService _entities;
+        // private readonly IEntityQueryService _entities;
         // 
-        // public PieceInitializer(IResourceProvider resources, IEntityService entities)
+        // public PieceInitializer(IResourceProvider resources, IEntityQueryService entities)
         // {
         //     _resources = resources;
         //     _entities = entities;

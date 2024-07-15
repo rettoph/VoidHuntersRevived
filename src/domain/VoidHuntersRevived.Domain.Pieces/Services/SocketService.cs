@@ -1,9 +1,9 @@
 ﻿using Serilog;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
+using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
@@ -18,13 +18,22 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
 
         private readonly ILogger _logger;
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService;
+        private readonly IEntitySerializationService _entitySerializationService;
         private readonly ITreeService _trees;
 
-        public SocketService(IEntityService entities, ITreeService trees, ILogger logger)
+        public SocketService(
+            IEntityQueryService entityQueryService,
+            IEntitySpawnService entitySpawnService,
+            IEntitySerializationService entitySerializationService,
+            ITreeService trees,
+            ILogger logger)
         {
             _logger = logger;
-            _entities = entities;
+            _entityQueryService = entityQueryService;
+            _entitySpawnService = entitySpawnService;
+            _entitySerializationService = entitySerializationService;
             _trees = trees;
         }
 
@@ -32,8 +41,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         {
             _logger.Verbose("{ClassName}::{MethodName} - Locating {NodeId}:{SocketIndex} - Node EGID {EntityId}:{GroupId}", nameof(SocketService), nameof(GetSocket), socketId.NodeId.VhId.Value, socketId.Index, socketId.NodeId.EGID.entityID, socketId.NodeId.EGID.groupID);
 
-            ref Node node = ref _entities.QueryById<Node>(socketId.NodeId, out GroupIndex groupIndex);
-            var (socketIds, socketLocations, _) = _entities.QueryEntities<Sockets<SocketId>, Sockets<Location>>(groupIndex.GroupID);
+            ref Node node = ref _entityQueryService.QueryById<Node>(socketId.NodeId, out GroupIndex groupIndex);
+            var (socketIds, socketLocations, _) = _entityQueryService.QueryEntities<Sockets<SocketId>, Sockets<Location>>(groupIndex.GroupID);
 
             Socket socket = new Socket(node, socketIds[groupIndex.Index].Items[socketId.Index], socketLocations[groupIndex.Index].Items[socketId.Index]);
 
@@ -42,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public bool TryGetSocket(SocketVhId socketVhId, out Socket socket)
         {
-            if (_entities.TryGetId(socketVhId.NodeVhId, out EntityId nodeId))
+            if (_entityQueryService.TryGetId(socketVhId.NodeVhId, out EntityId nodeId))
             {
                 socket = this.GetSocket(new SocketId(nodeId, socketVhId.Index));
                 return true;
@@ -54,25 +63,25 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public ref EntityFilterCollection GetCouplingFilter(SocketId socketId)
         {
-            return ref _entities.GetFilter<Coupling>(socketId.NodeId, socketId.FilterContextId);
+            return ref _entityQueryService.GetFilter<Coupling>(socketId.NodeId, socketId.FilterContextId);
         }
 
         public bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out Socket socket)
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
-            ref var filter = ref _entities.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
             Fix64 closestOpenSocketDistance = OpenNodemaximumDistance;
             socket = default!;
             bool result = false;
 
             foreach (var (indeces, group) in filter)
             {
-                if (!_entities.HasAny<Sockets<Location>>(group))
+                if (!_entityQueryService.HasAny<Sockets<Location>>(group))
                 {
                     continue;
                 }
 
-                var (statuses, nodes, socketIds, socketLocations, _) = _entities.QueryEntities<EntityStatus, Node, Sockets<SocketId>, Sockets<Location>>(group);
+                var (statuses, nodes, socketIds, socketLocations, _) = _entityQueryService.QueryEntities<EntityStatus, Node, Sockets<SocketId>, Sockets<Location>>(group);
 
                 for (int i = 0; i < indeces.count; i++)
                 {
@@ -110,7 +119,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 int count = 0;
                 foreach (var (indices, groupId) in filter)
                 {
-                    var (entityStatuses, _) = _entities.QueryEntities<EntityStatus>(groupId);
+                    var (entityStatuses, _) = _entityQueryService.QueryEntities<EntityStatus>(groupId);
 
                     for (int i = 0; i < indices.count; i++)
                     {

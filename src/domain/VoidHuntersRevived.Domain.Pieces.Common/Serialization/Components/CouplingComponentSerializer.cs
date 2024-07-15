@@ -11,9 +11,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
     [AutoLoad]
     public sealed class CouplingComponentSerializer : ComponentSerializer<Coupling>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
 
-        public CouplingComponentSerializer(IEntityService entities)
+        public CouplingComponentSerializer(IEntityQueryService entities)
         {
             _entities = entities;
         }

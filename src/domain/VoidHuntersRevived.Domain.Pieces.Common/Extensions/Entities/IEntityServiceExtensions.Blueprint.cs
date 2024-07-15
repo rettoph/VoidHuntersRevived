@@ -11,25 +11,25 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
 {
     public static class IEntityServiceExtensions
     {
-        public static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, BelongsTo<Team, TeamMember> belongsToTeam, Blueprint blueprint)
+        public static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, VhId treeId, BelongsTo<Team, TeamMember> belongsToTeam, Blueprint blueprint)
         {
             VhId vhid = HashBuilder<Blueprint, VhId, Id<Blueprint>>.Instance.Calculate(treeId, blueprint.Id);
 
-            return entities.Spawn(sourceId, treeId, belongsToTeam, vhid, blueprint.Head, default);
+            return entitySpawnService.Spawn(sourceId, treeId, belongsToTeam, vhid, blueprint.Head, default);
         }
 
-        private static EntityId Spawn(this IEntityService entities, VhId sourceId, VhId treeId, BelongsTo<Team, TeamMember> belongsToTeam, VhId vhid, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
+        private static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, VhId treeId, BelongsTo<Team, TeamMember> belongsToTeam, VhId vhid, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
         {
-            return entities.Spawn(sourceId, blueprintPiece.PieceType, vhid, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+            return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceType, vhid, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(belongsToTeam);
-                initializer.Init(new Node(id, entities.GetId(treeId)));
+                initializer.Init(new Node(id, entities.Query.GetId(treeId)));
 
                 if (socketVhId != default)
                 {
                     initializer.Init<Coupling>(new Coupling(
                         socketId: new SocketId(
-                            nodeId: entities.GetId(socketVhId.NodeVhId),
+                            nodeId: entities.Query.GetId(socketVhId.NodeVhId),
                             index: socketVhId.Index))
                     );
                 }
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
                             i,
                             j);
 
-                        entities.Spawn(
+                        entities.Spawn.Spawn(
                             sourceId,
                             treeId,
                             belongsToTeam,

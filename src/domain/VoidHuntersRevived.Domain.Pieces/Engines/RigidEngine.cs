@@ -18,10 +18,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IOnDespawnEngine<Rigid>
     {
         private readonly ISpace _space;
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ILogger _logger;
 
-        public RigidEngine(ISpace space, IEntityService entities, ILogger logger)
+        public RigidEngine(ISpace space, IEntityQueryService entities, ILogger logger)
         {
             _space = space;
             _entities = entities;

@@ -19,9 +19,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
     {
         private readonly Map<EntityId, int> _shipVhIdUserIdMap;
         private readonly INetScope<IStrategy> _netScope;
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
 
-        public UserShipService(INetScope<IStrategy> netScope, IEntityService entities)
+        public UserShipService(INetScope<IStrategy> netScope, IEntityQueryService entities)
         {
             _netScope = netScope;
             _shipVhIdUserIdMap = new Map<EntityId, int>();

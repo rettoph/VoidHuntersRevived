@@ -1,12 +1,59 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public partial class EntityService
+    public sealed class EntityQueryService : IEntityQueryService, IQueryingEntitiesEngine
     {
+        public EntitiesDB entitiesDB { get; set; } = null!;
+        private readonly Dictionary<VhId, EntityId> _ids = new Dictionary<VhId, EntityId>();
+
+        public void Ready()
+        {
+            //
+        }
+
+        public EntityId GetId(VhId vhid)
+        {
+            return _ids[vhid];
+        }
+
+        public bool TryGetId(VhId vhid, out EntityId id)
+        {
+            return _ids.TryGetValue(vhid, out id);
+        }
+
+        public ref EntityId GetOrAddId(VhId vhid, out bool exists)
+        {
+            return ref CollectionsMarshal.GetValueRefOrAddDefault(_ids, vhid, out exists);
+        }
+
+        public bool AddId(EntityId id)
+        {
+            if (_ids.TryAdd(id.VhId, id))
+            {
+                return true;
+            }
+
+            throw new Exception();
+        }
+
+        public bool RemoveId(EntityId id)
+        {
+            if (_ids.Remove(id.VhId))
+            {
+                return true;
+            }
+
+            throw new Exception();
+        }
+
         public bool TryQueryById<T>(EntityId id, out T value)
             where T : unmanaged, IEntityComponent
         {
@@ -276,6 +323,82 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             return total;
+        }
+
+        public bool IsSpawned(EntityId id)
+        {
+            if (this.TryQueryById<EntityStatus>(id, out EntityStatus status))
+            {
+                return status.IsSpawned;
+            }
+
+            return false;
+        }
+
+        public bool IsSpawned(EntityId id, out GroupIndex groupIndex)
+        {
+            if (this.TryQueryById<EntityStatus>(id, out groupIndex, out EntityStatus status))
+            {
+                return status.IsSpawned;
+            }
+
+            return false;
+        }
+
+        public bool IsSpawned(in GroupIndex groupIndex)
+        {
+            if (this.TryQueryByGroupIndex<EntityStatus>(in groupIndex, out EntityStatus status))
+            {
+                return status.IsSpawned;
+            }
+
+            return false;
+        }
+
+        public bool IsDespawned(EntityId id)
+        {
+            if (this.TryQueryById<EntityStatus>(id, out EntityStatus status))
+            {
+                return status.IsDespawned;
+            }
+
+            return false;
+        }
+
+        public bool IsDespawned(EntityId id, out GroupIndex groupIndex)
+        {
+            if (this.TryQueryById<EntityStatus>(id, out groupIndex, out EntityStatus status))
+            {
+                return status.IsDespawned;
+            }
+
+            return false;
+        }
+
+        public bool IsDespawned(in GroupIndex groupIndex)
+        {
+            if (this.TryQueryByGroupIndex<EntityStatus>(in groupIndex, out EntityStatus status))
+            {
+                return status.IsDespawned;
+            }
+
+            return false;
+        }
+
+        public ref EntityFilterCollection GetFilter<T>(EntityId id, FilterContextID filterContext)
+            where T : unmanaged, IEntityComponent
+        {
+            ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(unchecked((int)id.EGID.entityID), filterContext);
+
+            return ref filter;
+        }
+
+        public ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
+            where T : unmanaged, IEntityComponent
+        {
+            ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(filterId);
+
+            return ref filter;
         }
     }
 }

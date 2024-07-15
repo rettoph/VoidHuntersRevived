@@ -23,12 +23,12 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         where TOwner : unmanaged, IEntityComponent
         where TItems : unmanaged, IEntityComponent
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly ILogger _logger;
 
-        public BelongsToEngine(IEntityService entities, ILogger logger)
+        public BelongsToEngine(IEntityQueryService entityQueryService, ILogger logger)
         {
-            _entities = entities;
+            _entityQueryService = entityQueryService;
             _logger = logger;
         }
 
@@ -40,8 +40,8 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
                 return;
             }
 
-            EntityId ownerId = _entities.GetId(belongsTo.OwnerVhId);
-            HasMany<TItems, TOwner> hasMany = _entities.QueryById<HasMany<TItems, TOwner>>(ownerId);
+            EntityId ownerId = _entityQueryService.GetId(belongsTo.OwnerVhId);
+            HasMany<TItems, TOwner> hasMany = _entityQueryService.QueryById<HasMany<TItems, TOwner>>(ownerId);
             hasMany.Items.Add(id, groupIndex);
         }
     }

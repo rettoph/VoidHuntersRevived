@@ -20,9 +20,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
             this.Head = head;
         }
 
-        // public EntityId Spawn(VhId treeId, VhId vhid, Id<ITeam> teamId, IEntityService entities)
+        // public EntityId Spawn(VhId treeId, VhId vhid, Id<ITeam> teamId, IEntityQueryService entities)
         // {
-        //     return entities.Spawn(_piece.EntityType, vhid, teamId, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+        //     return entities.Spawn(_piece.EntityType, vhid, teamId, (IEntityQueryService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
         //     {
         //         initializer.Init(new Node(id, entities.GetId(treeId)));
         //     });

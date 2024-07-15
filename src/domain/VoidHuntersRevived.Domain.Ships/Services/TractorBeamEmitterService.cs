@@ -1,7 +1,7 @@
 ﻿using Serilog;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
@@ -18,32 +18,45 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         private static Fix64 QueryRadius = (Fix64)3;
 
         private readonly ISpace _space;
-        private readonly IEntityService _entities;
-        private readonly INodeService _nodes;
-        private readonly ITreeService _trees;
-        private readonly ITeamService _teams;
-        private readonly ISocketService _sockets;
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService;
+        private readonly IEntitySerializationService _entitySerializationService;
+        private readonly INodeService _nodeService;
+        private readonly ITreeService _treeService;
+        private readonly ITeamService _teamService;
+        private readonly ISocketService _socketService;
         private readonly ILogger _logger;
 
-        public TractorBeamEmitterService(ISpace space, IEntityService entities, INodeService nodes, ITreeService trees, ISocketService sockets, ITeamService teams, ILogger logger)
+        public TractorBeamEmitterService(
+            ISpace space,
+            IEntityQueryService entityQueryService,
+            IEntitySpawnService entitySpawnService,
+            IEntitySerializationService entitySerializationService,
+            INodeService nodes,
+            ITreeService trees,
+            ISocketService sockets,
+            ITeamService teams,
+            ILogger logger)
         {
             _space = space;
-            _entities = entities;
-            _nodes = nodes;
-            _trees = trees;
-            _sockets = sockets;
-            _teams = teams;
+            _entityQueryService = entityQueryService;
+            _entitySpawnService = entitySpawnService;
+            _entitySerializationService = entitySerializationService;
+            _nodeService = nodes;
+            _treeService = trees;
+            _socketService = sockets;
+            _teamService = teams;
             _logger = logger;
         }
 
         public ref EntityFilterCollection GetTractorableFilter(EntityId tractorBeamEmitterId)
         {
-            return ref _entities.GetFilter<Tractorable>(tractorBeamEmitterId, TractorBeamEmitter.TractorableFilterContext);
+            return ref _entityQueryService.GetFilter<Tractorable>(tractorBeamEmitterId, TractorBeamEmitter.TractorableFilterContext);
         }
 
         public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Node targetNode)
         {
-            if (!_entities.TryQueryById(tractorBeamEmitterId, out TractorBeamEmitter tractorBeamEmitter))
+            if (!_entityQueryService.TryQueryById(tractorBeamEmitterId, out TractorBeamEmitter tractorBeamEmitter))
             {
                 targetNode = default;
                 return false;
@@ -55,10 +68,10 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
             _space.QueryAABB(fixture =>
             {
-                if (_entities.IsSpawned(fixture.EntityId))
+                if (_entityQueryService.IsSpawned(fixture.EntityId))
                 {
-                    ref Node queryNode = ref _entities.QueryById<Node>(fixture.EntityId, out GroupIndex nodeGroupIndex);
-                    ref Rigid queryRigid = ref _entities.QueryByGroupIndex<Rigid>(nodeGroupIndex);
+                    ref Node queryNode = ref _entityQueryService.QueryById<Node>(fixture.EntityId, out GroupIndex nodeGroupIndex);
+                    ref Rigid queryRigid = ref _entityQueryService.QueryByGroupIndex<Rigid>(nodeGroupIndex);
 
                     FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Centeroid, queryNode.Transformation);
                     FixVector2.Distance(ref target, ref queryNodePosition, out Fix64 queryNodeDistance);
@@ -68,10 +81,10 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         return true;
                     }
 
-                    ref Tree tree = ref _entities.QueryById<Tree>(queryNode.TreeId, out GroupIndex treeGroupIndex);
-                    if (_entities.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitter == default)
+                    ref Tree tree = ref _entityQueryService.QueryById<Tree>(queryNode.TreeId, out GroupIndex treeGroupIndex);
+                    if (_entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitter == default)
                     { // Target resides within a tractorable tree, so we want to grab the head
-                        callbackTargetNode = tree.HeadId == queryNode.Id ? queryNode : _entities.QueryById<Node>(tree.HeadId);
+                        callbackTargetNode = tree.HeadId == queryNode.Id ? queryNode : _entityQueryService.QueryById<Node>(tree.HeadId);
                     }
                     else if (queryNode.TreeId == tractorBeamEmitterId && tree.HeadId != queryNode.Id)
                     { // The node belongs to the current tractor beam emitter's ship and is not the head
@@ -82,7 +95,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         return true;
                     }
 
-                    if (!_entities.IsSpawned(treeGroupIndex))
+                    if (!_entityQueryService.IsSpawned(treeGroupIndex))
                     { // Tree has been soft despawned
                         return true;
                     }

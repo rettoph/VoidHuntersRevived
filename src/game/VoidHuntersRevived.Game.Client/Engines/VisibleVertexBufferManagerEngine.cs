@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal sealed class VisibleVertexBufferManagerEngine : StrategyEngine, IStepEngine<GameTime>, IDisposable,
         IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly Dictionary<Id<IEntityType>, VertexBufferManager<VertexInstanceVisible>> _managers;
         private readonly GraphicsDevice _graphics;
         private readonly GameWindow _window;
@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public string name { get; } = nameof(VisibleVertexBufferManagerEngine);
 
         public VisibleVertexBufferManagerEngine(
-            IEntityService entities,
+            IEntityQueryService entities,
             GraphicsDevice graphics,
             GameWindow window,
             Camera2D camera,

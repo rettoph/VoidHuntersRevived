@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal class TractorBeamHighlightEngine : StrategyEngine, IStepEngine<GameTime>
     {
         private readonly ILogger _logger;
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ISocketService _sockets;
         private readonly Camera2D _camera;
         private readonly ITractorBeamEmitterService _tractorBeamEmitters;
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public TractorBeamHighlightEngine(
             ILogger logger,
-            IEntityService entities,
+            IEntityQueryService entities,
             ISocketService sockets,
             Camera2D camera,
             ITractorBeamEmitterService tractorBeamEmitters,

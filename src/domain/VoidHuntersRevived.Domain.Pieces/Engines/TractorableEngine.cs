@@ -18,10 +18,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
     {
         private readonly ITractorBeamEmitterService _tractorBeamEmitters;
         private readonly ITacticalService _tacticals;
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ILogger _logger;
 
-        public TractorableEngine(ITractorBeamEmitterService tractorBeamEmitters, ITacticalService tacticals, IEntityService entities, ILogger logger)
+        public TractorableEngine(ITractorBeamEmitterService tractorBeamEmitters, ITacticalService tacticals, IEntityQueryService entities, ILogger logger)
         {
             _tractorBeamEmitters = tractorBeamEmitters;
             _tacticals = tacticals;

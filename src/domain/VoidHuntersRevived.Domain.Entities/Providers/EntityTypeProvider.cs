@@ -207,7 +207,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // These instance components are automatically applied to all created instance entities
             belongsToTypeInstanceEntityComponent = new BelongsTo<TypeEntity, InstanceEntity>(id.VhId);
 
-            _entities.AddId(id);
+            _entities.Query.AddId(id);
 
             return id;
         }

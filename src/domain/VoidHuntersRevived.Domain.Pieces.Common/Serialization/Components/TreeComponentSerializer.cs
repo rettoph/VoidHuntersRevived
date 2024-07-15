@@ -7,9 +7,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
     [AutoLoad]
     public sealed class TreeComponentSerializer : NotImplementedComponentSerializer<Tree>
     {
-        //private readonly IEntityService _entities;
+        //private readonly IEntityQueryService _entities;
         //
-        //public TreeComponentSerializer(IEntityService entities)
+        //public TreeComponentSerializer(IEntityQueryService entities)
         //{
         //    _entities = entities;
         //}

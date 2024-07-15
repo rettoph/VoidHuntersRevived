@@ -17,11 +17,11 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         public string name { get; } = nameof(BodyAwakeEngine);
 
         private readonly ILogger _logger;
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ISpace _space;
         private readonly Queue<IBody> _awakeChangedBodies;
 
-        public BodyAwakeEngine(IEntityService entities, ILogger logger, ISpace space)
+        public BodyAwakeEngine(IEntityQueryService entities, ILogger logger, ISpace space)
         {
             _entities = entities;
             _space = space;

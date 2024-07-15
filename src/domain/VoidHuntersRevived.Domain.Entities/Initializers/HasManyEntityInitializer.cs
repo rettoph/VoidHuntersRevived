@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
         private readonly Dictionary<IEntityType, EntityInitializerDelegate> _instanceInitializers;
         private readonly Dictionary<IEntityType, EntityInitializerDelegate> _typeInitializers;
 
-        public HasManyEntityInitializer(IEntityService entities)
+        public HasManyEntityInitializer()
         {
             _instanceInitializers = new Dictionary<IEntityType, EntityInitializerDelegate>();
             _typeInitializers = new Dictionary<IEntityType, EntityInitializerDelegate>();

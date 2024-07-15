@@ -13,11 +13,11 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
     internal sealed class HelmEngine : StrategyEngine,
         IEventEngine<Helm_SetDirection>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ISpace _space;
         private EntityId _dirtyHelmId;
 
-        public HelmEngine(IEntityService entities, ISpace space)
+        public HelmEngine(IEntityQueryService entities, ISpace space)
         {
             _entities = entities;
             _space = space;

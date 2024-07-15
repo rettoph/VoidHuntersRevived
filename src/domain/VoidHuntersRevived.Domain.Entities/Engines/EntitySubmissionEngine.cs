@@ -1,26 +1,26 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
+using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
     [Sequence<StepSequence>(StepSequence.EntitySubmission)]
     public sealed class EntitySubmissionEngine : IEngine, IStepEngine<Step>
     {
-        private readonly IEntityService _entities;
+        private readonly EntitiesSubmissionScheduler _scheduler;
 
-        public EntitySubmissionEngine(IEntityService entities)
+        public EntitySubmissionEngine(EntitiesSubmissionScheduler scheduler)
         {
-            _entities = entities;
+            _scheduler = scheduler;
         }
 
         public string name { get; } = nameof(EntitySubmissionEngine);
 
         public void Step(in Step _param)
         {
-            _entities.Flush();
+            _scheduler.SubmitEntities();
         }
     }
 }

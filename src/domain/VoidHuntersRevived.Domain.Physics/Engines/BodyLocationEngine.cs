@@ -15,10 +15,10 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
     [Sequence<StepSequence>(StepSequence.PostResourceManagerUpdate)]
     internal sealed class BodyLocationEngine : StrategyEngine, IStepEngine<Step>
     {
-        private readonly IEntityService _entities;
+        private readonly IEntityQueryService _entities;
         private readonly ISpace _space;
 
-        public BodyLocationEngine(IEntityService entities, ISpace space)
+        public BodyLocationEngine(IEntityQueryService entities, ISpace space)
         {
             _entities = entities;
             _space = space;

@@ -40,10 +40,10 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly Camera2D _camera;
         private readonly ISimulation _simulation;
 
-        private IEntityService _entities;
-        private ITractorBeamEmitterService _tractorBeamEmitters;
-        private ISocketService _sockets;
-        private IUserShipService _userShips;
+        private IEntityQueryService _readEntityQueryService;
+        private ITractorBeamEmitterService _readTractorBeamEmitters;
+        private ISocketService _readSockets;
+        private IUserShipService _readUserShips;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
@@ -51,15 +51,16 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public InputEngine(
             Camera2D camera,
+            IEntityQueryService entityQueryService,
             ISimulation simulation)
         {
             _camera = camera;
             _simulation = simulation;
 
-            _entities = null!;
-            _tractorBeamEmitters = null!;
-            _sockets = null!;
-            _userShips = null!;
+            _readEntityQueryService = null!;
+            _readTractorBeamEmitters = null!;
+            _readSockets = null!;
+            _readUserShips = null!;
         }
 
         public override void Initialize(IStrategy strategy)
@@ -68,15 +69,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             IStrategy readStrategy = _simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
 
-            _entities = readStrategy.Engines.Get<IEntityService>();
-            _tractorBeamEmitters = readStrategy.Engines.Get<ITractorBeamEmitterService>();
-            _sockets = readStrategy.Engines.Get<ISocketService>();
-            _userShips = readStrategy.Engines.Get<IUserShipService>();
+            _readEntityQueryService = readStrategy.Engines.Get<IEntityService>().Query;
+            _readTractorBeamEmitters = readStrategy.Engines.Get<ITractorBeamEmitterService>();
+            _readSockets = readStrategy.Engines.Get<ISocketService>();
+            _readUserShips = readStrategy.Engines.Get<IUserShipService>();
         }
 
         public void Process(in Guid messageId, Input_Helm_SetDirection message)
         {
-            if (_userShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
+            if (_readUserShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
                 return;
             }
@@ -93,7 +94,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Process(in Guid messageId, Input_TractorBeamEmitter_SetActive message)
         {
-            if (_userShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
+            if (_readUserShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
                 return;
             }
@@ -102,7 +103,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             if (message.Value)
             {
-                if (_tractorBeamEmitters.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
+                if (_readTractorBeamEmitters.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
                 {
                     return;
                 }
@@ -126,8 +127,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
             else
             {
-                ref Tactical tactical = ref _entities.QueryById<Tactical>(shipId);
-                SocketVhId? attachToSocket = _sockets.TryGetClosestOpenSocket(shipId, tactical.Target, out Socket socket)
+                ref Tactical tactical = ref _readEntityQueryService.QueryById<Tactical>(shipId);
+                SocketVhId? attachToSocket = _readSockets.TryGetClosestOpenSocket(shipId, tactical.Target, out Socket socket)
                             ? socket.Id.VhId : null;
 
                 _simulation.Input(
@@ -142,7 +143,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Step(in Tick _param)
         {
-            if (_userShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
+            if (_readUserShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
                 return;
             }
@@ -159,7 +160,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 }
             }
 
-            ref Tactical tactical = ref _entities.QueryById<Tactical>(shipId);
+            ref Tactical tactical = ref _readEntityQueryService.QueryById<Tactical>(shipId);
             if (tactical.Uses == 0)
             {
                 return;
