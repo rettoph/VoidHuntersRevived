@@ -12,8 +12,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [StrategyFilter<ILockstepSimulation>]
-    internal class LockstepSimulationTickExplorerDebugEngine : StrategyEngine<ILockstepSimulation>, IDebugEngine, IImGuiComponent
+    [StrategyFilter<ILockstepStrategy>]
+    internal class LockstepStrategyTickExplorerDebugEngine : StrategyEngine<ILockstepStrategy>, IDebugEngine, IImGuiComponent
     {
         public string? Group => nameof(IStrategy);
 
@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private bool _historyViewerEnabled;
         private string _filter;
 
-        public LockstepSimulationTickExplorerDebugEngine(
+        public LockstepStrategyTickExplorerDebugEngine(
             IImGui imgui,
             IImGuiObjectExplorerService objectExplorer,
             IScene guppy)
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _imgui.Begin($"Tick History Explorer - {this.Simulation.Type}, {_scene.Name} {_scene.Id}", ref _historyViewerEnabled);
             _imgui.InputText("Filter", ref _filter, 255);
 
-            using (_imgui.ApplyID(nameof(ILockstepSimulation.History)))
+            using (_imgui.ApplyID(nameof(ILockstepStrategy.History)))
             {
                 _objectExplorer.DrawObjectExplorer(this.Simulation.History, _filter, 8);
             }

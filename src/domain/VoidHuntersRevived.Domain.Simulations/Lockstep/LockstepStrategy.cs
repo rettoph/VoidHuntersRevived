@@ -18,7 +18,7 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [SceneFilter<IVoidHuntersGameScene>()]
-    public abstract class LockstepStrategy : Strategy, ILockstepSimulation
+    public abstract class LockstepStrategy : Strategy, ILockstepStrategy
     {
         private IStepGroupEngine<Tick> _tickStepEnginesGroup;
         private readonly List<Tick> _history;

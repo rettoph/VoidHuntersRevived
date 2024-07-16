@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     public sealed class PredictiveStrategy : Strategy
     {
         private static readonly Pool<PredictedEvent> PredictionPool = new Pool<PredictedEvent>(ushort.MaxValue);
-        private ILockstepSimulation _lockstep;
+        private ILockstepStrategy _lockstep;
         private Step _step;
         private double _lastStepTime;
         private IPredictiveSynchronizationEngine[] _synchronizations;
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             base.Initialize(simulation);
 
-            _lockstep = simulation.First(StrategyTypeEnum.Lockstep) as ILockstepSimulation ?? throw new NotImplementedException();
+            _lockstep = simulation.First(StrategyTypeEnum.Lockstep) as ILockstepStrategy ?? throw new NotImplementedException();
             _lockstep.OnEvent += this.HandleLockstepEvent;
             _synchronizations = this.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
 

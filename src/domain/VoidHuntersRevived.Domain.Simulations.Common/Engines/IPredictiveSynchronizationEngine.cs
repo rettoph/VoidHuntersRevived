@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     public interface IPredictiveSynchronizationEngine : IEngine
     {
-        void Initialize(ILockstepSimulation lockstep);
+        void Initialize(ILockstepStrategy lockstep);
 
         void Synchronize(Step step);
     }

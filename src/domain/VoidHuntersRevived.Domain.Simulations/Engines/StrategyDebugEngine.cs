@@ -10,13 +10,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
     [AutoLoad]
     [StrategyFilter<Strategy>]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
-    internal class SimulationDebugEngine : StrategyEngine<Strategy>, ISimpleDebugEngine
+    internal class StrategyDebugEngine : StrategyEngine<Strategy>, ISimpleDebugEngine
     {
         public const string Time = nameof(Time);
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public SimulationDebugEngine()
+        public StrategyDebugEngine()
         {
             this.Lines = [
                 new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Time, () => TimeSpan.FromSeconds((float)Simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'))

@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             _lockstepSpace = null!;
         }
 
-        public void Initialize(ILockstepSimulation lockstep)
+        public void Initialize(ILockstepStrategy lockstep)
         {
             _lockstepSpace = lockstep.Engines.Get<ISpace>();
         }

@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
     [StrategyFilter<LockstepStrategy_Client>]
-    internal class LockstepSimulation_ClientDebugEngine : StrategyEngine<LockstepStrategy_Client>, ISimpleDebugEngine
+    internal class LockstepStrategy_ClientDebugEngine : StrategyEngine<LockstepStrategy_Client>, ISimpleDebugEngine
     {
         public const string Time = nameof(Time);
         public const string Tick = nameof(Tick);
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
 
         public ISimpleDebugEngine.SimpleDebugLine[] Lines { get; }
 
-        public LockstepSimulation_ClientDebugEngine()
+        public LockstepStrategy_ClientDebugEngine()
         {
             this.Lines = new[]
             {
