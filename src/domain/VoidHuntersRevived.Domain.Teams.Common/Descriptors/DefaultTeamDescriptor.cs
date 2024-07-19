@@ -5,12 +5,12 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 namespace VoidHuntersRevived.Domain.Teams.Common.Descriptors
 {
     [AutoLoad]
-    public class TeamDescriptor : BaseTeamDescriptor
+    public class DefaultTeamDescriptor : BaseTeamDescriptor
     {
-        public TeamDescriptor()
+        public DefaultTeamDescriptor()
         {
             this.WithTypeComponents([
-                new ComponentBuilder<ColorScheme>()
+                new ComponentBuilder<DefaultTeam>()
             ]);
         }
     }

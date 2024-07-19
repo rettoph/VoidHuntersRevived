@@ -1,6 +1,6 @@
 {
   "Key": "Team.Zero",
-  "Descriptor": "TeamDescriptor",
+  "Descriptor": "DefaultTeamDescriptor",
   "Components": {
     "Team": {
       "Name": "String.TeamZeroName"

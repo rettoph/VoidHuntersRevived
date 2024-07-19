@@ -7,6 +7,7 @@ using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -45,12 +46,12 @@ namespace VoidHuntersRevived.Game.Core.Engines
 
         public void Process(VhId eventId, UserJoined data)
         {
-            var hull = _entityTypeService.GetAll<HullDescriptor>().Last();
+            IEntityType<HullDescriptor> hull = _entityTypeService.GetAll<HullDescriptor>().Last();
 
             //_trees.Spawn(shipId, Teams.TeamOne, EntityTypes.UserShip, hull.EntityType);
             // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
 
-            var blueprint = _blueprintService.GetAll().First();
+            Blueprint blueprint = _blueprintService.GetAll().First();
             _treeService.Spawn(eventId, eventId.Create(1), _teamService.GetOpenTeamComponent(), EntityTypes.UserShip, blueprint, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(new Location()

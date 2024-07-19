@@ -11,8 +11,15 @@ namespace VoidHuntersRevived.Domain.Teams.Services
 {
     internal class TeamService : StrategyEngine, ITeamService
     {
-        private BelongsTo<Team, TeamMember> _belongsToDefaultTeamComponent;
-        private Dictionary<Id<Team>, GroupIndex> _groupIndices;
+        private struct TeamData
+        {
+            public required Id<Team> Id { get; init; }
+            public required GroupIndex GroupIndex { get; init; }
+            public required BelongsTo<Team, TeamMember> Component { get; init; }
+        }
+
+        private BelongsTo<Team, TeamMember> _defaultTeamComponent;
+        private Dictionary<Id<Team>, TeamData> _teams;
 
 
         private readonly IEntityQueryService _entityQueryService;
@@ -20,37 +27,77 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         public TeamService(IEntityQueryService entityQueryService)
         {
             _entityQueryService = entityQueryService;
-            _groupIndices = new Dictionary<Id<Team>, GroupIndex>();
+            _teams = new Dictionary<Id<Team>, TeamData>();
         }
 
         public unsafe override void Initialize(IStrategy strategy)
         {
             base.Initialize(strategy);
 
-            foreach (var ((teams, entityIds, count), group) in _entityQueryService.QueryEntities<Team, EntityId>())
-            {
-                for (uint i = 0; i < count; i++)
-                {
-                    var team = teams[i];
-                    _groupIndices.Add(team.Id, new GroupIndex(group, i));
-                    _belongsToDefaultTeamComponent = new BelongsTo<Team, TeamMember>(entityIds[i].VhId);
-                }
-            }
+
+            _defaultTeamComponent = this.BuildDeaultTeamComponent();
+
+            this.BuildTeams(_teams);
         }
 
         public bool TryGetGroupIndex(Id<Team> teamId, out GroupIndex groupIndex)
         {
-            return _groupIndices.TryGetValue(teamId, out groupIndex);
+            if (_teams.TryGetValue(teamId, out TeamData data) == false)
+            {
+                groupIndex = default;
+                return false;
+            }
+
+            groupIndex = data.GroupIndex;
+            return true;
         }
 
         public BelongsTo<Team, TeamMember> GetDefaultTeamComponent()
         {
-            return _belongsToDefaultTeamComponent;
+            return _defaultTeamComponent;
         }
 
         public BelongsTo<Team, TeamMember> GetOpenTeamComponent()
         {
-            return _belongsToDefaultTeamComponent;
+            return _teams.First().Value.Component;
+        }
+
+        private BelongsTo<Team, TeamMember> BuildDeaultTeamComponent()
+        {
+            foreach (var ((teams, entityIds, _, count), group) in _entityQueryService.QueryEntities<Team, EntityId, DefaultTeam>())
+            {
+                if (count == 0)
+                {
+                    throw new NotImplementedException();
+                }
+
+                if (count >= 2)
+                {
+                    throw new NotImplementedException();
+                }
+
+                var team = teams[0];
+                return new BelongsTo<Team, TeamMember>(entityIds[0].VhId);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        private void BuildTeams(Dictionary<Id<Team>, TeamData> dictionary)
+        {
+            foreach (var ((teams, entityIds, _, count), group) in _entityQueryService.QueryEntities<Team, EntityId, ColorScheme>())
+            {
+                for (uint i = 0; i < count; i++)
+                {
+                    var team = teams[i];
+                    dictionary.Add(team.Id, new TeamData()
+                    {
+                        Id = team.Id,
+                        GroupIndex = new GroupIndex(group, i),
+                        Component = new BelongsTo<Team, TeamMember>(entityIds[i].VhId)
+                    });
+                }
+            }
         }
     }
 }
