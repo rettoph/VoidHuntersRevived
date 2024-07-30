@@ -1,22 +1,14 @@
-using Autofac;
-using Guppy.Core.Common;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
-using Guppy.Tests.Common;
-using Guppy.Tests.Common.Extensions;
-using Guppy.Tests.Common.Mocks;
 using Microsoft.Xna.Framework;
-using Moq;
-using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Events;
-using VoidHuntersRevived.Domain.Entities.Common.Initializers;
-using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.Services;
@@ -25,22 +17,32 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
+using VoidHuntersRevived.Tests.Common.Entities.Services;
 using VoidHuntersRevived.Tests.Common.Extensions;
+using VoidHuntersRevived.Tests.Common.Simulations;
+using VoidHuntersRevived.Tests.Common.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Domain.Entities.Components;
 using VoidHuntersRevived.Tests.Domain.Entities.Descriptors;
 using VoidHuntersRevived.Tests.Domain.Entities.Engines;
 using VoidHuntersRevived.Tests.Domain.Entities.Events;
-using VoidHuntersRevived.Tests.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {
     public class EntityService_SpawnDespawn_Tests : IDisposable
     {
+        private static readonly SettingValue<int> StepsPerTick = new SettingValue<int>(Settings.StepsPerTick, 3);
+        private static readonly SettingValue<Fix64> StepInterval = new SettingValue<Fix64>(Settings.StepInterval, (Fix64)20 / (Fix64)1000);
+        private static readonly StrategyTypeEnum[] StrategyTypes = [
+            StrategyTypeEnum.Predictive,
+            StrategyTypeEnum.Lockstep
+        ];
+
         public const string TestEntityTypeName = nameof(TestEntityTypeName);
-        public static IEntityType TestEntityType = new EntityType<TestEntityDescriptor>(TestEntityTypeName);
+        public static IEntityType[] TestEntityTypes = [new EntityType<TestEntityDescriptor>(TestEntityTypeName)];
 
         private int _sourceIdGeneratorIndex;
         private TickBuffer _tickBuffer;
+        private SimulationBuilder _builder;
         private ISimulation _simulation;
         private GameTime _gameTime;
         private List<EventDto> _inputs;
@@ -53,11 +55,11 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             _inputs = new List<EventDto>();
             _gameTime = new GameTime(TimeSpan.Zero, TimeSpan.Zero);
             _tickBuffer = new TickBuffer();
-            _simulation = SimulationFactory.Build(VhId.Empty, PeerType.Client, [StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep], new()
-            {
-                { StrategyTypeEnum.Predictive, ctx => EntityEnginesFactory(scope: ctx, customEntityTypes: TestEntityType.Yield()) },
-                { StrategyTypeEnum.Lockstep, ctx => EntityEnginesFactory(scope: ctx, customEntityTypes: TestEntityType.Yield()) }
-            }, _tickBuffer);
+
+            _builder = new SimulationBuilder(VhId.Empty, PeerType.Client);
+            _builder.StrategiesFactoryBuilder.Configure(this.ConfigureStrategy);
+
+            _simulation = _builder.BuildInstance(StrategyTypes);
 
             _lockstep = (LockstepStrategy_Client?)_simulation[StrategyTypeEnum.Lockstep] ?? throw new NotImplementedException();
             _predictive = (PredictiveStrategy?)_simulation[StrategyTypeEnum.Predictive] ?? throw new NotImplementedException();
@@ -79,7 +81,8 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             Assert.Equal(0, totals[StrategyTypeEnum.Lockstep]);
 
             // "Predict" 10 initial entities to be discarded
-            this.InputMany(this.GenerateTestSpawnInput, true, segment, 0).Update(simulatedRealtimeIntervalInMilliseconds, 4);
+            this.InputMany(this.GenerateTestSpawnInput, true, segment, 0)
+                .Update(simulatedRealtimeIntervalInMilliseconds, 4);
 
             // Ensure the prediction was made in the predictive strategy but not on the lockstep strategy
             totals = this.CalculateTotalEntities<TestComponent>();
@@ -95,6 +98,10 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                     this.Update(simulatedRealtimeIntervalInMilliseconds, 1)
                         .Input(this.GenerateTestDepawnInput(y, doDiscard))
                         .Input(this.GenerateTestSpawnInput(y + range, doDiscard));
+
+#if DEBUG
+                    totals = this.CalculateTotalEntities<TestComponent>();
+#endif
                 }
 
                 this.Update(simulatedRealtimeIntervalInMilliseconds, 10);
@@ -166,36 +173,48 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             return this;
         }
 
-        private static IEnumerable<IEngine> EntityEnginesFactory(
-            ILifetimeScope scope,
-            IEnumerable<ComponentSerializer>? customComponentSerializers = null,
-            IEnumerable<IEntityInitializer>? customEntityInitializers = null,
-            IEnumerable<IEntityType>? customEntityTypes = null)
+        private void ConfigureStrategy(IStrategyBuilder builder)
         {
-            IFiltered<ComponentSerializer> componentSerializers = new MockFiltered<ComponentSerializer>(customComponentSerializers ?? Enumerable.Empty<ComponentSerializer>());
-            IFiltered<IEntityInitializer> entityInitializers = new MockFiltered<IEntityInitializer>(customEntityInitializers ?? Enumerable.Empty<IEntityInitializer>());
+            // Setup mocks
+            EntitiesSubmissionScheduler entitiesSubmissionScheduler = new EntitiesSubmissionScheduler();
+            EnginesRoot enginesRoot = new EnginesRoot(entitiesSubmissionScheduler);
 
-            IMock<IResourceService> resourceService = MockBuilder<IResourceService>.Create()
-                .Setup(x => x.GetValues<IEntityType>(), customEntityTypes?.Select(x => new ResourceValue<IEntityType>(default, x.Yield())) ?? Enumerable.Empty<ResourceValue<IEntityType>>())
-                .Build();
-            ILogger logger = scope.Resolve<ILogger>();
-            EnginesRoot enginesRoot = scope.Resolve<EnginesRoot>();
-            EntitiesSubmissionScheduler scheduler = scope.Resolve<EntitiesSubmissionScheduler>();
+            EntityTypeServiceBuilder entityTypeService = new EntityTypeServiceBuilder();
+            entityTypeService.EnginesRoot.SetInstance(enginesRoot);
+            entityTypeService.ResourceService
+                .Setup(
+                    expression: x => x.GetValues<IEntityType>(),
+                    result: TestEntityTypes.Select(x => new ResourceValue<IEntityType>(default, x.Yield()))
+                );
 
-            IComponentSerializerService componentSerializerService = new ComponentSerializerService(componentSerializers);
+            EntityServiceBuilder entityService = new EntityServiceBuilder();
+            entityService.EntityTypeService.SetInstance(entityTypeService.GetInstance());
+            entityService.EntityQueryService.SetInstance(new EntityQueryService());
+            entityService.EntitySpawnService.SetInstance(new EntitySpawnService(entityService.EntityQueryService.GetInstance(), entityService.GetInstance(), builder.Logger.GetInstance()));
 
-            EntityTypeService entityTypeService = new EntityTypeService(entityInitializers, resourceService.Object, componentSerializerService.ToLazy(), enginesRoot);
-            EntityService entityService = new EntityService(logger, ((IEntityTypeService)entityTypeService).ToLazy(), scheduler);
 
-            yield return entityTypeService;
-            yield return entityService;
-            yield return new EntitySubmissionEngine(entityService);
-            yield return new TestInputEngine();
+            // Configure strategy
+            builder.TickBuffer.SetInstance(this._tickBuffer);
+            builder.EngineServiceBuilder.EntitiesSubmissionScheduler.SetInstance(entitiesSubmissionScheduler);
+            builder.EngineServiceBuilder.EnginesRoot.SetInstance(enginesRoot);
+
+            builder.SettingService
+                .Setup(settings => settings.GetValue<Fix64>(Settings.StepInterval), () => StepInterval)
+                .Setup(settings => settings.GetValue<int>(Settings.StepsPerTick), () => StepsPerTick);
+
+            builder.EngineServiceBuilder.Engines.AddRange([
+                entityTypeService.GetInstance(),
+                entityService.GetInstance(),
+                entityService.EntityQueryService.GetInstance(),
+                entityService.EntitySpawnService.GetInstance(),
+                new EntitySubmissionEngine(entitiesSubmissionScheduler),
+                new TestInputEngine()
+            ]);
         }
 
         private TestSpawnInput GenerateTestSpawnInput(int id, bool doDiscard)
         {
-            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityDescriptor, int>.Instance.Calculate(id), EntityType = TestEntityType, DoDiscard = doDiscard };
+            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityDescriptor, int>.Instance.Calculate(id), EntityType = TestEntityTypes[0], DoDiscard = doDiscard };
         }
 
         private TestDepawnInput GenerateTestDepawnInput(int id, bool doDiscard)
@@ -211,7 +230,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         private Dictionary<StrategyTypeEnum, int> CalculateTotalEntities<T>()
             where T : unmanaged, IEntityComponent
         {
-            return _simulation.Strategies.ToDictionary(x => x.Type, x => x.Engines.Get<IEntityService>().CalculateTotal<T>());
+            return _simulation.Strategies.ToDictionary(x => x.Type, x => x.Engines.Get<IEntityQueryService>().CalculateTotal<T>());
         }
     }
 }

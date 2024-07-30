@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public sealed class EntitySerializationService : StrategyEngine, IEntitySerializationService
+    public class EntitySerializationService : StrategyEngine, IEntitySerializationService
     {
         private readonly EntityReader _reader;
         private readonly EntityWriter _writer;

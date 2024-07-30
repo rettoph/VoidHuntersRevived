@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public sealed class EntityQueryService : IEntityQueryService, IQueryingEntitiesEngine
+    public class EntityQueryService : IEntityQueryService, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; } = null!;
         private readonly Dictionary<VhId, EntityId> _ids = new Dictionary<VhId, EntityId>();

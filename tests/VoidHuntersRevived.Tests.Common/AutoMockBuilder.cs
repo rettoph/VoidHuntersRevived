@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Tests.Common
         public AutoMockBuilder()
         {
             this.Register(x => x.RegisterCoreServices(
-                context: MockBuilder<IGuppyContext>.Create().Build().Object));
+                context: Mocker<IGuppyContext>.Create().AsMock().Object));
         }
 
         public static AutoMockBuilder Create()

@@ -19,7 +19,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     [Sequence<EngineSequence>(EngineSequence.Group00)]
-    public sealed class EntityTypeService : StrategyEngine, IEntityTypeService, IQueryingEntitiesEngine
+    public class EntityTypeService : StrategyEngine, IEntityTypeService, IQueryingEntitiesEngine
     {
         private readonly IFiltered<IEntityInitializer> _initializers;
         private readonly Lazy<IComponentSerializerService> _serializers;

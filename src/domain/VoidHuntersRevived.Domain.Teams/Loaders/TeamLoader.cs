@@ -18,6 +18,7 @@ namespace VoidHuntersRevived.Domain.Teams.Loaders
         {
             builder.RegisterType<TeamJsonConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<ColorSchemeJsonConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<zIndexJsonConverter>().As<JsonConverter>().SingleInstance();
 
             builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 

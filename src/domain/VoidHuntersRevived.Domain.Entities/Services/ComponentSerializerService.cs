@@ -6,7 +6,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public sealed class ComponentSerializerService : IComponentSerializerService
+    public class ComponentSerializerService : IComponentSerializerService
     {
         private Dictionary<Type, ComponentSerializer> _serializers;
 

@@ -19,11 +19,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Descriptors
             ]);
 
             this.WithTypeComponents([
-                new ComponentBuilder<Visible>(),
-                new ComponentBuilder<zIndex>(this.GetZIndex()),
+                new ComponentBuilder<Visible>()
             ]);
         }
-
-        protected abstract zIndex GetZIndex();
     }
 }

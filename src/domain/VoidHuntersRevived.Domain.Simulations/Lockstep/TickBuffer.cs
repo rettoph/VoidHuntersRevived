@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
-    public sealed class TickBuffer : IEnumerable<Tick>
+    public class TickBuffer : IEnumerable<Tick>
     {
         [DebuggerDisplay("Id: {Data.Id}")]
         private sealed class Node

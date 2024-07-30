@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public sealed class EntityDescriptorService : IEntityDescriptorService
+    public class EntityDescriptorService : IEntityDescriptorService
     {
         private readonly Dictionary<Id<VoidHuntersEntityDescriptor>, VoidHuntersEntityDescriptor> _ids;
         private readonly Dictionary<ExclusiveGroupStruct, VoidHuntersEntityDescriptor> _groups;

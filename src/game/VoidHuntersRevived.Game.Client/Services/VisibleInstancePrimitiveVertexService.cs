@@ -5,6 +5,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
+using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
 using VoidHuntersRevived.Game.Client.Common.Services;
 using VoidHuntersRevived.Game.Client.Common.Utilities;
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Game.Client.Services
             {
                 for (int i = 0; i < count; i++)
                 {
-                    _providers.Add(typeEntities[i].TypeId, VisibleInstancePrimitiveVertexService.BuildVertexBufferManager(typeEntities[i].TypeId, visibles[i], zIndices[i], _graphics));
+                    _providers.Add(typeEntities[i].TypeId, VisibleInstancePrimitiveVertexService.BuildVisibleInstanceVertexProvider(typeEntities[i].TypeId, visibles[i], zIndices[i], _graphics));
                 }
             }
         }
@@ -53,14 +54,14 @@ namespace VoidHuntersRevived.Game.Client.Services
             return _providers.Values;
         }
 
-        private static readonly short[] _indexBuffer = new short[10];
-        private static InstanceVertexProvider<VertexInstanceVisible> BuildVertexBufferManager(
+        private static InstanceVertexProvider<VertexInstanceVisible> BuildVisibleInstanceVertexProvider(
             Id<IEntityType> entityType,
             Visible visible,
             zIndex zIndex,
             GraphicsDevice graphics)
         {
             int count;
+            short[] indexBuffer = new short[10];
 
             List<VertexStaticVisible> fillVertices = new List<VertexStaticVisible>();
             List<short> fillIndices = new List<short>();
@@ -70,22 +71,22 @@ namespace VoidHuntersRevived.Game.Client.Services
             {
                 Shape shape = visible.Fill[shape_i];
 
-                _indexBuffer[0] = (short)fillVertices.Count;
+                indexBuffer[0] = (short)fillVertices.Count;
                 fillVertices.Add(new VertexStaticVisible(shape.Vertices[0], zIndex.Value));
                 count++;
 
-                _indexBuffer[1] = (short)fillVertices.Count;
+                indexBuffer[1] = (short)fillVertices.Count;
                 fillVertices.Add(new VertexStaticVisible(shape.Vertices[1], zIndex.Value));
                 count++;
 
                 for (int vertex_i = 2; vertex_i < shape.Vertices.count; vertex_i++)
                 {
-                    _indexBuffer[2] = (short)fillVertices.Count;
+                    indexBuffer[2] = (short)fillVertices.Count;
                     fillVertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i], zIndex.Value));
                     count++;
 
-                    fillIndices.AddRange(_indexBuffer[..3]);
-                    _indexBuffer[1] = _indexBuffer[2];
+                    fillIndices.AddRange(indexBuffer[..3]);
+                    indexBuffer[1] = indexBuffer[2];
                 }
             }
 
@@ -97,18 +98,18 @@ namespace VoidHuntersRevived.Game.Client.Services
             {
                 Shape shape = visible.Trace[shape_i];
 
-                _indexBuffer[0] = (short)traceVertices.Count;
+                indexBuffer[0] = (short)traceVertices.Count;
                 traceVertices.Add(new VertexStaticVisible(shape.Vertices[0], zIndex.Value, true));
                 count++;
 
                 for (int vertex_i = 1; vertex_i < shape.Vertices.count; vertex_i++)
                 {
-                    _indexBuffer[1] = (short)traceVertices.Count;
+                    indexBuffer[1] = (short)traceVertices.Count;
                     traceVertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i], zIndex.Value, true));
                     count++;
 
-                    traceIndices.AddRange(_indexBuffer[..2]);
-                    _indexBuffer[0] = _indexBuffer[1];
+                    traceIndices.AddRange(indexBuffer[..2]);
+                    indexBuffer[0] = indexBuffer[1];
                 }
             }
 

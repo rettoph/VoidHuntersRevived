@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public sealed class EntitySpawnService : StrategyEngine, IEntitySpawnService,
+    public class EntitySpawnService : StrategyEngine, IEntitySpawnService,
         IEventEngine<SpawnEntity>,
         IEventEngine<SpawnEntity<EntityInitializerDelegate>>,
         IEventEngine<HardSpawnEntity>,

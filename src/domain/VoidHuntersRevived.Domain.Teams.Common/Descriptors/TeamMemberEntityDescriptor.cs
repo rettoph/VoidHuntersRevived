@@ -12,11 +12,13 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Descriptors
             this.WithInstanceComponents([
                 new ComponentBuilder<TeamMember>(),
                 new ComponentBuilder<ColorScheme>(),
+                new ComponentBuilder<zIndex>(),
                 new ComponentBuilder<BelongsTo<Team, TeamMember>>()
             ]);
 
             this.WithTypeComponents([
-                new ComponentBuilder<ColorScheme>()
+                new ComponentBuilder<ColorScheme>(),
+                new ComponentBuilder<zIndex>()
             ]);
         }
     }
