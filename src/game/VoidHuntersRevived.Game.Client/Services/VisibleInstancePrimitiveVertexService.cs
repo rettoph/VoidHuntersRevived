@@ -5,7 +5,6 @@ using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
-using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
 using VoidHuntersRevived.Game.Client.Common.Services;
 using VoidHuntersRevived.Game.Client.Common.Utilities;
@@ -27,11 +26,11 @@ namespace VoidHuntersRevived.Game.Client.Services
 
         public void Initialize()
         {
-            foreach (var ((typeEntities, visibles, zIndices, count), _) in _entityQueryService.QueryEntities<TypeEntity, Visible, zIndex>())
+            foreach (var ((typeEntities, visibles, zIndices, count), _) in _entityQueryService.QueryEntities<TypeEntity, Visible>())
             {
                 for (int i = 0; i < count; i++)
                 {
-                    _providers.Add(typeEntities[i].TypeId, VisibleInstancePrimitiveVertexService.BuildVisibleInstanceVertexProvider(typeEntities[i].TypeId, visibles[i], zIndices[i], _graphics));
+                    _providers.Add(typeEntities[i].TypeId, VisibleInstancePrimitiveVertexService.BuildVisibleInstanceVertexProvider(typeEntities[i].TypeId, visibles[i], _graphics));
                 }
             }
         }
@@ -57,7 +56,6 @@ namespace VoidHuntersRevived.Game.Client.Services
         private static InstanceVertexProvider<VertexInstanceVisible> BuildVisibleInstanceVertexProvider(
             Id<IEntityType> entityType,
             Visible visible,
-            zIndex zIndex,
             GraphicsDevice graphics)
         {
             int count;
@@ -72,17 +70,17 @@ namespace VoidHuntersRevived.Game.Client.Services
                 Shape shape = visible.Fill[shape_i];
 
                 indexBuffer[0] = (short)fillVertices.Count;
-                fillVertices.Add(new VertexStaticVisible(shape.Vertices[0], zIndex.Value));
+                fillVertices.Add(new VertexStaticVisible(shape.Vertices[0]));
                 count++;
 
                 indexBuffer[1] = (short)fillVertices.Count;
-                fillVertices.Add(new VertexStaticVisible(shape.Vertices[1], zIndex.Value));
+                fillVertices.Add(new VertexStaticVisible(shape.Vertices[1]));
                 count++;
 
                 for (int vertex_i = 2; vertex_i < shape.Vertices.count; vertex_i++)
                 {
                     indexBuffer[2] = (short)fillVertices.Count;
-                    fillVertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i], zIndex.Value));
+                    fillVertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i]));
                     count++;
 
                     fillIndices.AddRange(indexBuffer[..3]);
@@ -99,13 +97,13 @@ namespace VoidHuntersRevived.Game.Client.Services
                 Shape shape = visible.Trace[shape_i];
 
                 indexBuffer[0] = (short)traceVertices.Count;
-                traceVertices.Add(new VertexStaticVisible(shape.Vertices[0], zIndex.Value, true));
+                traceVertices.Add(new VertexStaticVisible(shape.Vertices[0], true));
                 count++;
 
                 for (int vertex_i = 1; vertex_i < shape.Vertices.count; vertex_i++)
                 {
                     indexBuffer[1] = (short)traceVertices.Count;
-                    traceVertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i], zIndex.Value, true));
+                    traceVertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i], true));
                     count++;
 
                     traceIndices.AddRange(indexBuffer[..2]);

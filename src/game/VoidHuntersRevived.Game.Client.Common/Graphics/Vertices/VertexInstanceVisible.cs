@@ -10,21 +10,26 @@ namespace VoidHuntersRevived.Game.Client.Common.Graphics.Vertices
         VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
         private static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration
         (
-            new VertexElement(00, VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 0),
-            new VertexElement(16, VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 1),
-            new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 2),
-            new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 3),
-            new VertexElement(64, VertexElementFormat.Single, VertexElementUsage.Color, 0),
-            new VertexElement(68, VertexElementFormat.Single, VertexElementUsage.Color, 1)
+            new VertexElement(0, VertexElementFormat.Single, VertexElementUsage.Color, 0),
+            new VertexElement(4, VertexElementFormat.Single, VertexElementUsage.Color, 1),
+            new VertexElement(8, VertexElementFormat.Single, VertexElementUsage.Color, 2),
+
+            new VertexElement(12 + (16 * 0), VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 0),
+            new VertexElement(12 + (16 * 1), VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 1),
+            new VertexElement(12 + (16 * 2), VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 2),
+            new VertexElement(12 + (16 * 3), VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 3)
         );
 
         [FieldOffset(0)]
-        public Matrix LocalTransformation;
-
-        [FieldOffset(64)]
         public uint PrimaryColor;
 
-        [FieldOffset(68)]
+        [FieldOffset(4)]
         public uint SecondaryColor;
+
+        [FieldOffset(8)]
+        public float Z;
+
+        [FieldOffset(12)]
+        public Matrix LocalTransformation;
     }
 }

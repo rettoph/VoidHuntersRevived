@@ -1,6 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -31,23 +30,22 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
                 ref zIndex instanceComponent = ref instanceComponents[i];
+                short instanceValue = instanceComponent.Value;
 
                 ref BelongsTo<Team, TeamMember> belongsToTeam = ref belongsToTeams[i];
-                if (_entityQueryService.TryQueryByVhId<zIndex>(belongsToTeam.OwnerVhId, out zIndex teamComponent) && teamComponent.IsDefault() == false)
+                if (_entityQueryService.TryQueryByVhId<zIndex>(belongsToTeam.OwnerVhId, out zIndex teamComponent))
                 {
-                    instanceComponent = teamComponent;
-                    continue;
+                    instanceValue += teamComponent.Value;
                 }
 
                 ref BelongsTo<TypeEntity, InstanceEntity> belongsToType = ref belongsToTypes[i];
                 if (_entityQueryService.TryQueryByVhId<zIndex>(belongsToTypes[i].OwnerVhId, out zIndex typeComponent))
                 {
-                    instanceComponent = typeComponent;
-                    continue;
+                    instanceValue += typeComponent.Value;
                 }
 
                 // No valid team or type value, reset to default
-                instanceComponent = default;
+                instanceComponent = new zIndex(instanceValue);
             }
         }
     }

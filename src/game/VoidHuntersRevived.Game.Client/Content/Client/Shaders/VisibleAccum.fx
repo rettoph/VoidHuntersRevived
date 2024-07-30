@@ -13,8 +13,8 @@ VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, uint instanceI
 {
     VertexShaderOutput output = (VertexShaderOutput) 0;
 
-    output.Position = TransformStaticPosition(staticInput.Position, instanceInput.LocalTranformation);
-    output.Color = GetColor(staticInput.Flags.x, instanceInput.PrimaryColor, instanceInput.SecondaryColor);
+    output.Position = TransformStaticPosition(staticInput.Position, instanceInput.Z, instanceInput.LocalTranformation);
+    output.Color = GetColor(staticInput.Flags.IsTrace, instanceInput.PrimaryColor, instanceInput.SecondaryColor);
     
     return output;
 }
@@ -23,7 +23,7 @@ float4 MainPS(VertexShaderOutput input) : SV_TARGET
 {
     float4 output = input.Color;
 
-    return output + float4(0, 0, 0, 1000);
+    return output + float4(0.f, 0.f, 0.f, 1000.f);
 }
 
 technique BasicColorDrawing

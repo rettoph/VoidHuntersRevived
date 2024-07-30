@@ -20,8 +20,8 @@ VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, uint instanceI
 {
     VertexShaderOutput output = (VertexShaderOutput) 0;
 
-    output.Position = TransformStaticPosition(staticInput.Position, instanceInput.LocalTranformation);
-    output.Color = GetColor(staticInput.Flags.x, instanceInput.PrimaryColor, instanceInput.SecondaryColor);
+    output.Position = TransformStaticPosition(staticInput.Position, instanceInput.Z, instanceInput.LocalTranformation);
+    output.Color = GetColor(staticInput.Flags.IsTrace, instanceInput.PrimaryColor, instanceInput.SecondaryColor);
     
     // Convert to normalized device coordinates
     output.TextureCoordinates = output.Position.xy / output.Position.w;

@@ -1,26 +1,39 @@
-﻿static const uint RMask = 0x000000ff;
+﻿/// ------------------------------------------------------------
+/// WARNING:
+/// Updating this file will not change the source file hash at
+/// .fx.cache.json
+/// When making changes to this file you must manually clear the
+/// cache for th changes to be picked up and applied
+/// ------------------------------------------------------------
+
+static const uint RMask = 0x000000ff;
 static const uint GMask = 0x0000ff00;
 static const uint BMask = 0x00ff0000;
 static const uint AMask = 0xff000000;
-static const uint IsTraceFlag = 0x00000001;
-static const uint IsOuterFlag = 0x00000002;
 
 matrix WorldViewProjection;
 
 float TraceScale;
 float TraceDiffusionScale;
 
+struct VertexShaderStaticInputFlags
+{
+    bool IsTrace;
+    bool1x3 Undefined;
+};
+
 struct VertexShaderStaticInput
 {
-    float3 Position : POSITION0;
-    bool4 Flags : BLENDINDICES0;
+    VertexShaderStaticInputFlags Flags : BLENDINDICES0;
+    float2 Position : POSITION0;
 };
 
 struct VertexShaderInstanceInput
 {
-    matrix LocalTranformation : BLENDWEIGHT0;
     uint PrimaryColor : COLOR0;
     uint SecondaryColor : COLOR1;
+    float Z : COLOR2;
+    matrix LocalTranformation : BLENDWEIGHT0;
 };
 
 float ByteToFloat(uint byte)
@@ -37,9 +50,9 @@ float4 UnpackColor(uint packed)
         ByteToFloat((packed & AMask) >> 24));
 }
 
-float4 TransformStaticPosition(float3 position, float4x4 instance)
+float4 TransformStaticPosition(float2 position, float z, float4x4 transformation)
 {
-    float4 result = mul(float4(position, 1), instance);
+    float4 result = mul(float4(position, z, 1.f), transformation);
     result = mul(result, WorldViewProjection);
     
     return result;
