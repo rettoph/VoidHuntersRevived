@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
         public StrategyDebugEngine()
         {
             this.Lines = [
-                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Time, () => TimeSpan.FromSeconds((float)Simulation.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'))
+                new ISimpleDebugEngine.SimpleDebugLine(nameof(IStrategy), Time, () => TimeSpan.FromSeconds((float)Strategy.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'))
             ];
         }
     }

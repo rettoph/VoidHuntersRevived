@@ -6,10 +6,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     [StrategyFilter<IStrategy>]
     [Service(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute | ServiceRegistrationFlags.AsImplementedInterfaces)]
-    public abstract class StrategyEngine<TSimulation> : IStrategyEngine<TSimulation>
-        where TSimulation : IStrategy
+    public abstract class StrategyEngine<TStrategy> : IStrategyEngine<TStrategy>
+        where TStrategy : IStrategy
     {
-        public TSimulation Simulation { get; private set; } = default!;
+        public TStrategy Strategy { get; private set; } = default!;
 
         public StrategyEngine()
         {
@@ -19,9 +19,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
         {
         }
 
-        public virtual void Initialize(TSimulation simulation)
+        public virtual void Initialize(TStrategy strategy)
         {
-            this.Simulation = simulation;
+            this.Strategy = strategy;
         }
     }
 

@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref UserId userId, in GroupIndex groupIndex)
         {
-            this.Simulation.Publish(sourceEventId, new SetUserShipUserId()
+            this.Strategy.Publish(sourceEventId, new SetUserShipUserId()
             {
                 ShipVhId = id.VhId,
                 UserId = userId.Value
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
         public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref UserId userId, in GroupIndex groupIndex)
         {
-            this.Simulation.Publish(sourceEventId, new SetUserShipUserId()
+            this.Strategy.Publish(sourceEventId, new SetUserShipUserId()
             {
                 ShipVhId = id.VhId,
                 UserId = userId.Value
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
             if (this.TryGetShipId(data.UserId.Value, out EntityId oldShipId))
             {
-                this.Simulation.Publish(eventId, new SetUserShipUserId()
+                this.Strategy.Publish(eventId, new SetUserShipUserId()
                 {
                     ShipVhId = shipId.VhId,
                     UserId = null
@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
         public void SetUserId(VhId sourceId, EntityId shipId, int? userId)
         {
-            this.Simulation.Publish(sourceId, new SetUserShipUserId()
+            this.Strategy.Publish(sourceId, new SetUserShipUserId()
             {
                 ShipVhId = shipId.VhId,
                 UserId = userId

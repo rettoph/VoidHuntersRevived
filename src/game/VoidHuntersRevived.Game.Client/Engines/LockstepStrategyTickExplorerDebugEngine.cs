@@ -41,12 +41,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _imgui.Begin($"Tick History Explorer - {this.Simulation.Type}, {_scene.Name} {_scene.Id}", ref _historyViewerEnabled);
+            _imgui.Begin($"Tick History Explorer - {this.Strategy.Type}, {_scene.Name} {_scene.Id}", ref _historyViewerEnabled);
             _imgui.InputText("Filter", ref _filter, 255);
 
             using (_imgui.ApplyID(nameof(ILockstepStrategy.History)))
             {
-                _objectExplorer.DrawObjectExplorer(this.Simulation.History, _filter, 8);
+                _objectExplorer.DrawObjectExplorer(this.Strategy.History, _filter, 8);
             }
 
             _imgui.End();

@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         private void HandleUserJoined(INetScopeUserService sender, IUser args)
         {
-            this.Simulation.Input(VhId.NewId(), new UserJoined()
+            this.Strategy.Input(VhId.NewId(), new UserJoined()
             {
                 UserDto = args.ToDto(ClaimAccessibility.Public)
             });

@@ -1,0 +1,130 @@
+﻿using Microsoft.Xna.Framework.Graphics;
+using Svelto.ECS;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
+using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
+using VoidHuntersRevived.Game.Client.Common.Services;
+using VoidHuntersRevived.Game.Client.Common.Utilities;
+
+namespace VoidHuntersRevived.Game.Client.Services
+{
+    internal sealed class VisibleInstancePrimitiveVertexService : IVisibleInstanceVertexService, IDisposable
+    {
+        private readonly IEntityQueryService _entityQueryService;
+        private readonly GraphicsDevice _graphics;
+        private readonly Dictionary<Id<IEntityType>, InstanceVertexProvider<VertexInstanceVisible>> _providers;
+
+        public VisibleInstancePrimitiveVertexService(IEntityQueryService entityQueryService, GraphicsDevice grapphics)
+        {
+            _entityQueryService = entityQueryService;
+            _graphics = grapphics;
+            _providers = new Dictionary<Id<IEntityType>, InstanceVertexProvider<VertexInstanceVisible>>();
+        }
+
+        public void Initialize()
+        {
+            foreach (var ((typeEntities, visibles, zIndices, count), _) in _entityQueryService.QueryEntities<TypeEntity, Visible, zIndex>())
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    _providers.Add(typeEntities[i].TypeId, VisibleInstancePrimitiveVertexService.BuildVertexBufferManager(typeEntities[i].TypeId, visibles[i], zIndices[i], _graphics));
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (InstanceVertexProvider<VertexInstanceVisible> provider in _providers.Values)
+            {
+                provider.Dispose();
+            }
+        }
+
+        public InstanceVertexProvider<VertexInstanceVisible> GetInstanceVertexProviderById(Id<IEntityType> id)
+        {
+            return _providers[id];
+        }
+
+        public IEnumerable<InstanceVertexProvider<VertexInstanceVisible>> GetAllInstanceVertexProviders()
+        {
+            return _providers.Values;
+        }
+
+        private static readonly short[] _indexBuffer = new short[10];
+        private static InstanceVertexProvider<VertexInstanceVisible> BuildVertexBufferManager(
+            Id<IEntityType> entityType,
+            Visible visible,
+            zIndex zIndex,
+            GraphicsDevice graphics)
+        {
+            int count;
+
+            List<VertexStaticVisible> fillVertices = new List<VertexStaticVisible>();
+            List<short> fillIndices = new List<short>();
+
+            count = 0;
+            for (int shape_i = 0; shape_i < visible.Fill.count; shape_i++)
+            {
+                Shape shape = visible.Fill[shape_i];
+
+                _indexBuffer[0] = (short)fillVertices.Count;
+                fillVertices.Add(new VertexStaticVisible(shape.Vertices[0], zIndex.Value));
+                count++;
+
+                _indexBuffer[1] = (short)fillVertices.Count;
+                fillVertices.Add(new VertexStaticVisible(shape.Vertices[1], zIndex.Value));
+                count++;
+
+                for (int vertex_i = 2; vertex_i < shape.Vertices.count; vertex_i++)
+                {
+                    _indexBuffer[2] = (short)fillVertices.Count;
+                    fillVertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i], zIndex.Value));
+                    count++;
+
+                    fillIndices.AddRange(_indexBuffer[..3]);
+                    _indexBuffer[1] = _indexBuffer[2];
+                }
+            }
+
+            List<VertexStaticVisible> traceVertices = new List<VertexStaticVisible>();
+            List<short> traceIndices = new List<short>();
+
+            count = 0;
+            for (int shape_i = 0; shape_i < visible.Trace.count; shape_i++)
+            {
+                Shape shape = visible.Trace[shape_i];
+
+                _indexBuffer[0] = (short)traceVertices.Count;
+                traceVertices.Add(new VertexStaticVisible(shape.Vertices[0], zIndex.Value, true));
+                count++;
+
+                for (int vertex_i = 1; vertex_i < shape.Vertices.count; vertex_i++)
+                {
+                    _indexBuffer[1] = (short)traceVertices.Count;
+                    traceVertices.Add(new VertexStaticVisible(shape.Vertices[vertex_i], zIndex.Value, true));
+                    count++;
+
+                    traceIndices.AddRange(_indexBuffer[..2]);
+                    _indexBuffer[0] = _indexBuffer[1];
+                }
+            }
+
+            VertexBuffer fillBuffer = new VertexBuffer(graphics, typeof(VertexStaticVisible), fillVertices.Count, BufferUsage.WriteOnly);
+            fillBuffer.SetData(fillVertices.ToArray());
+
+            IndexBuffer fillIndexBuffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, fillIndices.Count, BufferUsage.WriteOnly);
+            fillIndexBuffer.SetData(fillIndices.ToArray());
+
+            VertexBuffer traceBuffer = new VertexBuffer(graphics, typeof(VertexStaticVisible), traceVertices.Count, BufferUsage.WriteOnly);
+            traceBuffer.SetData(traceVertices.ToArray());
+
+            IndexBuffer traceIndexBuffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, traceIndices.Count, BufferUsage.WriteOnly);
+            traceIndexBuffer.SetData(traceIndices.ToArray());
+
+            return new InstanceVertexProvider<VertexInstanceVisible>(graphics, [fillBuffer, traceBuffer], [fillIndexBuffer, traceIndexBuffer], [PrimitiveType.TriangleList, PrimitiveType.LineList]);
+        }
+    }
+}

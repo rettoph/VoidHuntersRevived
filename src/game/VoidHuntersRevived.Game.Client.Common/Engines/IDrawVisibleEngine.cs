@@ -1,11 +1,9 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
 using VoidHuntersRevived.Game.Client.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Common.Engines
 {
-    public interface IDrawVisibleEngine : IStepEngine<IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>>>
+    public interface IDrawVisibleEngine : IStepEngine<IVisibleInstanceVertexService>
     {
     }
 }

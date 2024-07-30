@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             IEntityFactory factory = _enginesRoot.GenerateEntityFactory();
             IEntityFunctions functions = _enginesRoot.GenerateEntityFunctions();
-            EntityService entities = this.Simulation.Engines.Get<EntityService>();
+            EntityService entities = this.Strategy.Engines.Get<EntityService>();
 
 
             // Create EntityTypeProviders for all registered IEntityType instances
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                             _initializers.Where(init => init.ShouldInitialize(type)),
                             factory,
                             functions,
-                            this.Simulation.Engines,
+                            this.Strategy.Engines,
                             _serializers.Value,
                             this.entitiesDB
                         );

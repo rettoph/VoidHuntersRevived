@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
                 return;
             }
 
-            var currentTickId = this.Simulation.CurrentTick.Id;
+            var currentTickId = this.Strategy.CurrentTick.Id;
 
             _scope.CreateMessage(new TickHistoryStart()
             {

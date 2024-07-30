@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _camera = camera;
         }
 
-        public void Step(in IVertexBufferManagerService<VertexInstanceVisible, Id<IEntityType>> param)
+        public void Step(in IVisibleInstanceVertexService param)
         {
             foreach (var ((typeEntities, hasManyInstances, _, typeCount), _) in _entityQueryService.QueryEntities<TypeEntity, HasMany<InstanceEntity, TypeEntity>, Visible>())
             {
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
                     ref HasMany<InstanceEntity, TypeEntity> hasManyIntances = ref hasManyInstances[i];
 
-                    VertexBufferManager<VertexInstanceVisible> vertexBufferManager = param.GetById(entityType);
+                    InstanceVertexProvider<VertexInstanceVisible> vertexBufferManager = param.GetInstanceVertexProviderById(entityType);
 
                     foreach (var (indices, group) in hasManyIntances.Items)
                     {

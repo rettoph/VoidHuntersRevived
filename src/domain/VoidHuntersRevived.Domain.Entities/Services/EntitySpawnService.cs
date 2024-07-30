@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid)
         {
-            this.Simulation.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
+            this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
                 Type = type,
                 VhId = vhid
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, EntityInitializerDelegate initializer)
         {
-            this.Simulation.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
+            this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
                 Type = type,
                 VhId = vhid,
@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityVhId = {EntityVhId}", nameof(EntitySpawnService), nameof(Despawn), vhid);
 
-            this.Simulation.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
+            this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
             {
                 VhId = vhid
             });
@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             // This is enqueued before HardSpawn is published in case the initializer
             // Spawns any other entities. This ensture the first entitiy SoftSpawn
             // event is called first every time.
-            this.Simulation.Enqueue(new EventDto()
+            this.Strategy.Enqueue(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                 Data = new SoftSpawnEntity()
@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 }
             });
 
-            this.Simulation.Publish(new EventDto()
+            this.Strategy.Publish(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                 Data = new HardSpawnEntity()
@@ -131,7 +131,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             // Spawns any other entities. This ensture a first in first out order of
             // SoftSpawn events
 
-            this.Simulation.Enqueue(new EventDto()
+            this.Strategy.Enqueue(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                 Data = new SoftSpawnEntity()
@@ -141,7 +141,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             });
 
             // Publish HardSPawn even immidiately
-            this.Simulation.Publish(new EventDto()
+            this.Strategy.Publish(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                 Data = new HardSpawnEntity<EntityInitializerDelegate>()
@@ -227,7 +227,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             int spawnCount = 0;
             if ((spawnCount = status.Increment(EntityModificationTypeEnum.Despawned)) == 0)
             {
-                this.Simulation.Enqueue(new EventDto()
+                this.Strategy.Enqueue(new EventDto()
                 {
                     SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                     Data = new SoftDespawnEntity()
@@ -243,7 +243,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             // TODO: Investigate why the HardDespawn event is published despite the SoftDespawn being locked behind the Despawn counter
             // I dont remember if this was by design or if its just a bug
-            this.Simulation.Enqueue(new EventDto()
+            this.Strategy.Enqueue(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                 Data = new HardDespawnEntity()
@@ -276,7 +276,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
 
-            this.Simulation.Enqueue(new EventDto()
+            this.Strategy.Enqueue(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                 Data = new SoftDespawnEntity()
@@ -285,7 +285,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 }
             });
 
-            this.Simulation.Enqueue(new EventDto()
+            this.Strategy.Enqueue(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                 Data = new HardDespawnEntity()
@@ -368,7 +368,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            this.Simulation.Enqueue(new EventDto()
+            this.Strategy.Enqueue(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                 Data = new SoftSpawnEntity()

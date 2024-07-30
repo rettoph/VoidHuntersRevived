@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Game.Client.Common.Utilities
 {
-    public class VertexBufferManager<TVertexInstance> : IDisposable
+    public class InstanceVertexProvider<TVertexInstance> : IDisposable
         where TVertexInstance : struct, IVertexType
     {
         private const int DefaultBufferSize = 256;
@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Game.Client.Common.Utilities
         public int InstanceCount => _instanceCount;
         public Func<int, int> PrimitiveCount => (idx) => this.StaticPrimitiveCount[idx] * this.InstanceCount;
 
-        public VertexBufferManager(GraphicsDevice graphics, VertexBuffer[] staticBuffers, IndexBuffer[] indexBuffers, PrimitiveType[] primitiveTypes)
+        public InstanceVertexProvider(GraphicsDevice graphics, VertexBuffer[] staticBuffers, IndexBuffer[] indexBuffers, PrimitiveType[] primitiveTypes)
         {
             if (staticBuffers.Length != indexBuffers.Length || staticBuffers.Length != primitiveTypes.Length)
             {
@@ -99,6 +99,11 @@ namespace VoidHuntersRevived.Game.Client.Common.Utilities
         public ref TVertexInstance GetNextVertex()
         {
             this.EnsureFit(1);
+            return ref _instanceVertices[_instanceCount++];
+        }
+
+        public ref TVertexInstance GetNextVertexFast()
+        {
             return ref _instanceVertices[_instanceCount++];
         }
 

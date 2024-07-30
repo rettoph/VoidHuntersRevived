@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 {
                     _logger.Verbose("{ClassName}::{MethodName} - Selecting {NodeId} with TractorBeamEmitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, tractorBeamEmitterId.VhId);
 
-                    this.Simulation.Publish(
+                    this.Strategy.Publish(
                         sourceId: NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId),
                         data: new TractorBeamEmitter_Select()
                         {
@@ -102,7 +102,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             while (_deselecteds.TryDequeue(out (EntityId id, EntityId headId, Location location) deselected))
             {
                 _logger.Verbose("{ClassName}::{MethodName} - Attempting to deselect {TreeId} with emitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Deselect), deselected.id.VhId.Value, tractorBeamEmitterId.VhId);
-                this.Simulation.Publish(new EventDto()
+                this.Strategy.Publish(new EventDto()
                 {
                     SourceId = nextSourceId,
                     Data = new TractorBeamEmitter_Deselect()

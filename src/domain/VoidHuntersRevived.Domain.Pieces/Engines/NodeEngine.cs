@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             {
                 if (_entityQueryService.IsSpawned(dirtyTreeId))
                 {
-                    this.Simulation.Publish(dirtyTreeEventId, new Tree_Clean()
+                    this.Strategy.Publish(dirtyTreeEventId, new Tree_Clean()
                     {
                         IsPrivate = true,
                         TreeId = dirtyTreeId.VhId
