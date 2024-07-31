@@ -13,13 +13,16 @@ Write-Information "Loaded cache: '$($cacheFile)'"
 
 $mgfxcPath = Get-File ($PSScriptRoot + "\..\libraries\Guppy\libraries\MonoGame\Artifacts\MonoGame.Effect.Compiler\Release\mgfxc.exe")
 
-Write-Output $mgfxcPath
-
-if([IO.Path]::Exists($mgfxcPath) -eq $false)
+function Invoke-MGFXC([string]$inputPath, [string]$outputPath)
 {
-    Write-Information "Publishing mgfxc.exe"
-    $mgfxcProj = [IO.Path]::GetFullPath($PSScriptRoot + "\..\libraries\Guppy\libraries\MonoGame\Tools\MonoGame.Effect.Compiler\MonoGame.Effect.Compiler.csproj")
-    dotnet publish $mgfxcProj -c Release
+    if([IO.Path]::Exists($mgfxcPath) -eq $false)
+    {
+        Write-Information "Publishing mgfxc.exe"
+        $mgfxcProj = [IO.Path]::GetFullPath($PSScriptRoot + "\..\libraries\Guppy\libraries\MonoGame\Tools\MonoGame.Effect.Compiler\MonoGame.Effect.Compiler.csproj")
+        dotnet publish $mgfxcProj -c Release
+    }
+
+    & $mgfxcPath $inputPath $outputPath /Profile:OpenGL 2>&1
 }
 
 function Get-EffectHash($fxPath)
@@ -39,7 +42,7 @@ function Get-EffectHash($fxPath)
     foreach($capture in $result.Captures)
     {
         $includePath = Get-File "$fxDirectory\$($capture.Groups[1])"
-        $hash += (Get-FileHash $includePath).Hash
+        $hash += Get-EffectHash $includePath
     }
 
     return $hash
@@ -81,7 +84,7 @@ foreach ($file in $files)
         Write-Information "Updating: $($file.Name)"
 
         $compiledPath = "$outputDirectory\$($file.BaseName).mgfx"
-        $allOutput = & $mgfxcPath $file.FullName $compiledPath /Profile:OpenGL 2>&1
+        $allOutput = Invoke-MGFXC $file.FullName $compiledPath
         $stderr = $allOutput | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] }
         $cleaned++
 
