@@ -1,0 +1,17 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CompileFX",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\scripts\\compile-fx.ps1",
+            "args": [ 
+                "'${workspaceFolder}\\src\\game\\VoidHuntersRevived.Game.Client\\Content\\Client\\Shaders'", 
+                "'${workspaceFolder}\\src\\game\\VoidHuntersRevived.Game.Client\\Content\\Client\\Shaders\\Compiled'" ]
+        }
+    ]
+}

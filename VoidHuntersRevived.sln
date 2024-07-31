@@ -35,6 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImPlot.NET", "libraries\Gup
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{F38772AD-EAEE-4F89-B8CF-239B92DC5714}"
 	ProjectSection(SolutionItems) = preProject
+		mgfxc-compile.ps1 = mgfxc-compile.ps1
 		scripts\refresh-modules.ps1 = scripts\refresh-modules.ps1
 		scripts\remote-debug.ps1 = scripts\remote-debug.ps1
 		scripts\reset.bat = scripts\reset.bat
@@ -199,9 +200,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Tests.Common", "libra
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{A11E99FB-C799-4DE8-BFB8-60E94A128018}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Tests.Common.Entities", "tests\VoidHuntersRevived.Tests.Common.Entities\VoidHuntersRevived.Tests.Common.Entities.csproj", "{02B75662-35D4-4BD5-8526-D4C54F1F13CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Tests.Common.Entities", "tests\VoidHuntersRevived.Tests.Common.Entities\VoidHuntersRevived.Tests.Common.Entities.csproj", "{02B75662-35D4-4BD5-8526-D4C54F1F13CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Tests.Common.Simulations", "tests\VoidHuntersRevived.Tests.Common.Simulations\VoidHuntersRevived.Tests.Common.Simulations.csproj", "{26CAE4AE-453B-4B23-A453-7D4E6ABF5C3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Tests.Common.Simulations", "tests\VoidHuntersRevived.Tests.Common.Simulations\VoidHuntersRevived.Tests.Common.Simulations.csproj", "{26CAE4AE-453B-4B23-A453-7D4E6ABF5C3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
