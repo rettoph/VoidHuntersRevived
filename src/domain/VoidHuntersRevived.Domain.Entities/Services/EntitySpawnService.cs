@@ -40,10 +40,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _logger = logger;
         }
 
-        public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid)
+        public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, bool isPrivate = false)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
+                IsPrivate = isPrivate,
                 Type = type,
                 VhId = vhid
             });
@@ -51,10 +52,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _entityQueryService.GetId(vhid);
         }
 
-        public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, EntityInitializerDelegate initializer)
+        public EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, EntityInitializerDelegate initializer, bool isPrivate = false)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
+                IsPrivate = isPrivate,
                 Type = type,
                 VhId = vhid,
                 Initializer = initializer
@@ -63,19 +65,20 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _entityQueryService.GetId(vhid);
         }
 
-        public void Despawn(VhId sourceId, VhId vhid)
+        public void Despawn(VhId sourceId, VhId vhid, bool isPrivate = false)
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityVhId = {EntityVhId}", nameof(EntitySpawnService), nameof(Despawn), vhid);
 
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
             {
+                IsPrivate = isPrivate,
                 VhId = vhid
             });
         }
 
-        public void Despawn(VhId sourceId, EntityId id)
+        public void Despawn(VhId sourceId, EntityId id, bool isPrivate = false)
         {
-            this.Despawn(sourceId, id.VhId);
+            this.Despawn(sourceId, id.VhId, isPrivate);
         }
 
         public void Process(VhId eventId, SpawnEntity data)
@@ -130,7 +133,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             // This is enqueued before HardSpawn is published in case the initializer
             // Spawns any other entities. This ensture a first in first out order of
             // SoftSpawn events
-
             this.Strategy.Enqueue(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
@@ -140,7 +142,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 }
             });
 
-            // Publish HardSPawn even immidiately
+            // Publish HardSpawn event immidiately
             this.Strategy.Publish(new EventDto()
             {
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
@@ -190,7 +192,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(Process), nameof(SoftSpawnEntity), id.VhId, exists, exists ? status.Value : null);
                 return;
             }
-
 
             Id<IEntityType> typeId = _entityQueryService.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
             _entityService.Types.GetProviderByTypeId(typeId).SoftSpawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
@@ -290,7 +291,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 SourceId = NameSpace<EntityService>.Instance.Create(eventId),
                 Data = new HardDespawnEntity()
                 {
-                    IsPrivate = false,
+                    IsPrivate = data.IsPrivate,
                     IsPredictable = false,
                     VhId = data.VhId
                 }

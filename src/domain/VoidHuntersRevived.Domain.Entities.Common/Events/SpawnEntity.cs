@@ -6,6 +6,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Events
 {
     public class SpawnEntity : IEventData
     {
+        public required bool IsPrivate { get; init; }
+
         public bool IsPredictable => true;
 
         public required VhId VhId { get; init; }

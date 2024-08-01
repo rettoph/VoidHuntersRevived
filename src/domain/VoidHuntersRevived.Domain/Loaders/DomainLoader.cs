@@ -10,6 +10,8 @@ using Serilog;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Common.Providers;
+using VoidHuntersRevived.Domain.Providers;
 using VoidHuntersRevived.Domain.Serialization.Json;
 
 namespace VoidHuntersRevived.Domain.Loaders
@@ -39,6 +41,8 @@ namespace VoidHuntersRevived.Domain.Loaders
                         .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
                 }
             });
+
+            services.RegisterType<UniqueNumberProvider>().As<IUniqueNumberProvider>().InstancePerLifetimeScope();
 
             services.RegisterType<Fix64Converter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<FixPolarConverter>().As<JsonConverter>().SingleInstance();

@@ -2,6 +2,7 @@
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
@@ -21,9 +22,8 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 {
     internal sealed class EntityTypeProvider : IEntityTypeProvider, IDisposable
     {
-        internal static AsyncLocal<uint> EntityId = new AsyncLocal<uint>();
-
         private readonly UnmanagedReference<IEntityType> _typeRef;
+        private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly EntityService _entities;
@@ -49,6 +49,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         public EntityTypeProvider(
             IEntityType type,
             IEnumerable<IEntityInitializer> initializers,
+            IUniqueNumberProvider uniqueNumberProvider,
             IEntityFactory factory,
             IEntityFunctions functions,
             IEngineService engines,
@@ -59,6 +60,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             this.Type = type;
 
             _typeRef = new UnmanagedReference<IEntityType>(this.Type);
+            _uniqueNumberProvider = uniqueNumberProvider;
             _factory = factory;
             _functions = functions;
             _entities = engines.Get<EntityService>();
@@ -122,7 +124,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         public EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id)
         {
             // Create a new EGID for the entity
-            EGID egid = new EGID(EntityId.Value++, this.Type.Descriptor.InstanceGroup);
+            EGID egid = new EGID(_uniqueNumberProvider.GetUInt32(), this.Type.Descriptor.InstanceGroup);
             id = new EntityId(egid, vhid);
 
             // Invoke Svelto factory and initialize instance with common component values
@@ -191,7 +193,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // Likewise, EntityId is the primary key associated with filters, meaning type entites can be added to filters
             // Or hold filtered instances.
             // Create a new EGID for the entity
-            EGID egid = new EGID(EntityId.Value++, this.Type.Descriptor.TypeGroup);
+            EGID egid = new EGID(_uniqueNumberProvider.GetUInt32(), this.Type.Descriptor.TypeGroup);
             EntityId id = new EntityId(egid, this.Type.Id.Value);
 
             // Configure global components

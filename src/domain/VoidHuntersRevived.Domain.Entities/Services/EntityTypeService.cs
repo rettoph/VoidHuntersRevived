@@ -6,6 +6,7 @@ using Guppy.Core.Resources.Common.Services;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using VoidHuntersRevived.Domain.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
@@ -21,6 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     [Sequence<EngineSequence>(EngineSequence.Group00)]
     public class EntityTypeService : StrategyEngine, IEntityTypeService, IQueryingEntitiesEngine
     {
+        private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IFiltered<IEntityInitializer> _initializers;
         private readonly Lazy<IComponentSerializerService> _serializers;
         private readonly EnginesRoot _enginesRoot;
@@ -34,11 +36,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityTypeService(
             IFiltered<IEntityInitializer> initializers,
+            IUniqueNumberProvider uniqueNumberProvider,
             IResourceService resources,
             Lazy<IComponentSerializerService> serializers,
             EnginesRoot enginesRoot)
         {
             _initializers = initializers;
+            _uniqueNumberProvider = uniqueNumberProvider;
             _serializers = serializers;
             _enginesRoot = enginesRoot;
             _providers = null!;
@@ -74,6 +78,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                         return (IEntityTypeProvider)new EntityTypeProvider(
                             type,
                             _initializers.Where(init => init.ShouldInitialize(type)),
+                            _uniqueNumberProvider,
                             factory,
                             functions,
                             this.Strategy.Engines,
