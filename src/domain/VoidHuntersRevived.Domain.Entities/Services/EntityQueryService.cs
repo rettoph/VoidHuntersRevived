@@ -34,6 +34,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref CollectionsMarshal.GetValueRefOrAddDefault(_ids, vhid, out exists);
         }
 
+        public ref EntityId AddId(VhId vhid)
+        {
+            ref EntityId id = ref this.GetOrAddId(vhid, out bool exists);
+            if (exists == true)
+            { // Unable to hard spawn - entity already exists
+                throw new NotImplementedException();
+            }
+
+            return ref id;
+        }
+
         public bool AddId(EntityId id)
         {
             if (_ids.TryAdd(id.VhId, id))

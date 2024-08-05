@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
-    public interface IEntitySpawnService
+    public interface IPrivateEntitySpawnService
     {
         EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid);
         EntityId Spawn(VhId sourceId, IEntityType type, VhId vhid, EntityInitializerDelegate initializer);

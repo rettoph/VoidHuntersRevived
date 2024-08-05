@@ -12,6 +12,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Events;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.Services;
+using VoidHuntersRevived.Domain.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
@@ -180,6 +181,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             EnginesRoot enginesRoot = new EnginesRoot(entitiesSubmissionScheduler);
 
             EntityTypeServiceBuilder entityTypeService = new EntityTypeServiceBuilder();
+            entityTypeService.UniqueNumberProviderService.SetInstance(new UniqueNumberProvider());
             entityTypeService.EnginesRoot.SetInstance(enginesRoot);
             entityTypeService.ResourceService
                 .Setup(
@@ -191,7 +193,6 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             entityService.EntityTypeService.SetInstance(entityTypeService.GetInstance());
             entityService.EntityQueryService.SetInstance(new EntityQueryService());
             entityService.EntitySpawnService.SetInstance(new EntitySpawnService(entityService.EntityQueryService.GetInstance(), entityService.GetInstance(), builder.Logger.GetInstance()));
-
 
             // Configure strategy
             builder.TickBuffer.SetInstance(this._tickBuffer);
