@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Utilities;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Utilities;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -8,6 +9,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
@@ -27,34 +29,40 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly EntityService _entities;
-        private readonly EntitiesDB _entitiesDB;
-        private readonly FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
-        private readonly FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
+        private EntitiesDB _entitiesDB;
+        private FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
+        private FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
 
-        private readonly InstanceEntity _instanceEntityComponent;
-        private readonly BelongsTo<TypeEntity, InstanceEntity> _belongsToTypeInstanceEntityComponent;
+        private InstanceEntity _instanceEntityComponent;
+        private BelongsTo<TypeEntity, InstanceEntity> _belongsToTypeInstanceEntityComponent;
 
-        private readonly FasterList<ComponentSerializer> _serializers;
+        private FasterList<ComponentSerializer> _instanceEntityComponentSerializers;
 
-        // Despite being nullable these delegates will have a default value defined
-        // within the constructor. No need to check
-        public EntityInitializerDelegate? InstanceEntityInitializer;
-        public EntityInitializerDelegate? TypeEntityInitializer;
+        private DynamicEntityDescriptor<VoidHuntersEntityDescriptor> _instanceEntityDescriptor;
+        private readonly ExclusiveGroupStruct _instanceEntityGroup;
 
-        public DisposeEntityInitializerDelegate? InstanceEntityDisposer;
-        public DisposeEntityInitializerDelegate? TypeEntityDisposer;
+        private DynamicEntityDescriptor<VoidHuntersEntityDescriptor> _typeEntityDescriptor;
+        private readonly ExclusiveGroupStruct _typeEntityGroup;
 
         public IEntityType Type { get; }
+        public IEntityType[] ImplementedTypes { get; }
+
+        public ComponentBuilderDictionary InstanceEntityComponentBuilders { get; }
+        public EntityInitializerDelegate? InstanceEntityInitializer { get; set; }
+        public DisposeEntityInitializerDelegate? InstanceEntityDisposer { get; set; }
+
+        public ComponentBuilderDictionary TypeEntityComponentBuilders { get; }
+        public EntityInitializerDelegate? TypeEntityInitializer { get; set; }
+        public DisposeEntityInitializerDelegate? TypeEntityDisposer { get; set; }
 
         public EntityTypeProvider(
             IEntityType type,
-            IEnumerable<IEntityInitializer> initializers,
+            IEntityTypeService entityTypeService,
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityFactory factory,
             IEntityFunctions functions,
-            IEngineService engines,
-            IComponentSerializerService serializers,
-            EntitiesDB entitiesDB
+            IFiltered<IEntityTypeProviderInitializer> entityTypeProviderInitializers,
+            EntityService entityService
         )
         {
             this.Type = type;
@@ -63,56 +71,112 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             _uniqueNumberProvider = uniqueNumberProvider;
             _factory = factory;
             _functions = functions;
-            _entities = engines.Get<EntityService>();
-            _entitiesDB = entitiesDB;
-            _serializers = serializers.GetInstanceComponentSerializers(this.Type);
+            _entities = entityService;
+            _entitiesDB = null!;
 
-            // Create a list of all OnDespawn & OnSpawn engines for components contained within the current
-            // TypeProvider Type
-            _onDespawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
-            _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
-            foreach (Type componentType in this.Type.Descriptor.Instance.componentsToBuild.Select(x => x.GetEntityComponentType()))
+            _onDespawnEngineInvokers = null!;
+            _onSpawnEngineInvokers = null!;
+            _instanceEntityComponentSerializers = null!;
+
+            this.ImplementedTypes = EntityTypeProvider.GetImplementedTypes(type, entityTypeService).ToArray();
+
+            // Import a dictionary of default component values based on all implemented types
+            this.InstanceEntityComponentBuilders = new ComponentBuilderDictionary(this.ImplementedTypes.Select(x => x.InstanceEntityComponentBuilders));
+            this.TypeEntityComponentBuilders = new ComponentBuilderDictionary(this.ImplementedTypes.Select(x => x.TypeEntityComponentBuilders));
+
+            // Values are defined within initialization method
+            this.InstanceEntityInitializer = null!;
+            this.InstanceEntityDisposer = null!;
+            this.TypeEntityDisposer = null!;
+            this.TypeEntityDisposer = null!;
+
+            // Invoke custom provider initialization
+            foreach (IEntityTypeProviderInitializer entityTypeProviderInitializer in entityTypeProviderInitializers)
             {
-                if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engines.All(), out var invoker))
-                {
-                    _onDespawnEngineInvokers.Add(invoker);
-                }
-
-                if (ComponentEngineInvoker.Create(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), componentType, engines.All(), out invoker))
-                {
-                    _onSpawnEngineInvokers.Add(invoker);
-                }
+                entityTypeProviderInitializer.InitializeEntityTypeProvider(this);
             }
 
-            // Append hard coded component initialization delegates
-            this.InstanceEntityInitializer += EntityInitializerHelper.BuildEntityInitializerDelegate(this.Type.InstanceComponents.Values);
-            this.TypeEntityInitializer += EntityInitializerHelper.BuildEntityInitializerDelegate(this.Type.Components.Values);
-
-            // Add relevent front-to-back delegates
-            foreach (IEntityInitializer initializer in initializers.OrderBy(x => x.Order))
+            // Add custom front-to-back delegates
+            foreach (IEntityTypeProviderInitializer entityTypeProviderInitializer in entityTypeProviderInitializers.OrderBy(x => x.Order))
             {
-                this.InstanceEntityInitializer += initializer.InstanceInitializer(Type);
-                this.TypeEntityInitializer += initializer.TypeInitializer(Type);
+                this.InstanceEntityInitializer += entityTypeProviderInitializer.GetInstanceEntityInitializer(this);
+                this.TypeEntityInitializer += entityTypeProviderInitializer.GetTypeEntityInitializer(this);
             }
 
-            // Add relevent back-to-front delegates
-            foreach (IEntityInitializer initializer in initializers.OrderByDescending(x => x.Order))
+            // Add custom back-to-front delegates
+            foreach (IEntityTypeProviderInitializer entityTypeProviderInitializer in entityTypeProviderInitializers.OrderByDescending(x => x.Order))
             {
-                this.InstanceEntityDisposer += initializer.InstanceDisposer(Type);
-                this.TypeEntityDisposer += initializer.TypeDisposer(Type);
+                this.InstanceEntityDisposer += entityTypeProviderInitializer.GetInstanceEntityDisposer(this);
+                this.TypeEntityDisposer += entityTypeProviderInitializer.GetTypeEntityDisposer(this);
             }
 
-            // Add some default values if no delegates were defined.
             this.InstanceEntityInitializer ??= EntityTypeProvider.DefaultInitializer;
             this.InstanceEntityDisposer ??= EntityTypeProvider.DefaultDisposer;
             this.TypeEntityInitializer ??= EntityTypeProvider.DefaultInitializer;
             this.TypeEntityDisposer ??= EntityTypeProvider.DefaultDisposer;
 
+            // BEGIN POST INITIALIZATION
+            // Once the entity type has been configured for the scope we can 
+            // Finalize initialization - create svelto descriptors, build automated engines
+            // ect...
+
             // This is very lowkey, but this is responsible for spawning the primary TypeEntity instance for the
             // Current provider's type.
+
+            //  Build type svelto descriptors
+            if (EntityTypeProvider.ValidateRequiredComponents(this.TypeEntityComponentBuilders, this.ImplementedTypes, x => x.RequiredTypeEntityComponents, out Type[] missingTypes) == false)
+            {
+                throw new EntityProviderTypeException(type.Key, $"Exception building {type.Key} provider - missing the following required {nameof(this.TypeEntityComponentBuilders)}: {string.Join(',', missingTypes.Select(x => x.GetFormattedName()))}");
+            }
+
+            _typeEntityDescriptor = new DynamicEntityDescriptor<VoidHuntersEntityDescriptor>(this.TypeEntityComponentBuilders);
+            _typeEntityGroup = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{this.Type.Key}_{nameof(_typeEntityGroup)}");
+
             this.SpawnTypeEntity(out _belongsToTypeInstanceEntityComponent);
             _instanceEntityComponent = new InstanceEntity(_typeRef);
 
+            // Update instance components with local strategy data
+            this.InstanceEntityComponentBuilders.Set(_instanceEntityComponent);
+            this.InstanceEntityComponentBuilders.Set(_belongsToTypeInstanceEntityComponent);
+
+            // Build instance svelto descriptors
+            if (EntityTypeProvider.ValidateRequiredComponents(this.InstanceEntityComponentBuilders, this.ImplementedTypes, x => x.RequiredInstanceEntityComponents, out missingTypes) == false)
+            {
+                throw new EntityProviderTypeException(type.Key, $"Exception building {type.Key} provider - missing the following required {nameof(this.InstanceEntityComponentBuilders)}: {string.Join(',', missingTypes.Select(x => x.GetFormattedName()))}");
+            }
+            _instanceEntityDescriptor = new DynamicEntityDescriptor<VoidHuntersEntityDescriptor>(this.InstanceEntityComponentBuilders);
+            _instanceEntityGroup = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{this.Type.Key}_{nameof(_instanceEntityGroup)}");
+        }
+
+        public void Initialize(
+            EntitiesDB entitiesDB,
+            IEngineService engineService,
+            IComponentSerializerService componentSerializerService,
+            IFiltered<IEntityTypeProviderInitializer> entityTypeProviderInitializers)
+        {
+            _entitiesDB = entitiesDB;
+
+            // Load serializers
+            IEnumerable<Type> instanceEntityComponentTypes = _instanceEntityDescriptor.componentsToBuild.Select(x => x.GetEntityComponentType());
+            ComponentSerializer[] instanceEntityComponentSerializers = componentSerializerService.GetComponentSerializers(instanceEntityComponentTypes).ToArray();
+            _instanceEntityComponentSerializers = new FasterList<ComponentSerializer>(instanceEntityComponentSerializers);
+
+            // Generate despawn engine invokers
+            // Responsible for calling IOnSpawnEngine & IOnDespawnEngine engines
+            _onDespawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
+            _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
+            foreach (Type componentType in this.Type.InstanceEntityComponentBuilders.Keys)
+            {
+                if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engineService.All(), out var invoker))
+                {
+                    _onDespawnEngineInvokers.Add(invoker);
+                }
+
+                if (ComponentEngineInvoker.Create(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), componentType, engineService.All(), out invoker))
+                {
+                    _onSpawnEngineInvokers.Add(invoker);
+                }
+            }
         }
 
         public void Dispose()
@@ -124,18 +188,16 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         public EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id)
         {
             // Create a new EGID for the entity
-            EGID egid = new EGID(_uniqueNumberProvider.GetUInt32(), this.Type.Descriptor.InstanceGroup);
+            EGID egid = new EGID(_uniqueNumberProvider.GetUInt32(), _instanceEntityGroup);
             id = new EntityId(egid, vhid);
 
             // Invoke Svelto factory and initialize instance with common component values
-            EntityInitializer initializer = _factory.BuildEntity(egid, this.Type.Descriptor.Instance);
+            EntityInitializer initializer = _factory.BuildEntity(egid, _instanceEntityDescriptor);
             initializer.Init(id);
             initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
-            initializer.Init(_instanceEntityComponent);
-            initializer.Init(_belongsToTypeInstanceEntityComponent);
 
             // Run custom instance initializer
-            this.InstanceEntityInitializer!(_entities, Type, id, ref initializer);
+            this.InstanceEntityInitializer!(_entities, this, id, ref initializer);
 
             return initializer;
         }
@@ -160,12 +222,12 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 
         public void HardDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
-            _functions.RemoveEntity<InstanceEntityDescriptor>(id.EGID);
+            _functions.RemoveEntity<VoidHuntersEntityDescriptor>(id.EGID);
         }
 
         public void SerializeInstanceEntity(EntityWriter writer, in GroupIndex groupIndex, in SerializationOptions options)
         {
-            foreach (ComponentSerializer serializer in _serializers)
+            foreach (ComponentSerializer serializer in _instanceEntityComponentSerializers)
             {
                 serializer.Serialize(writer, in groupIndex, _entitiesDB, in options);
             }
@@ -173,7 +235,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 
         public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
-            foreach (ComponentSerializer serializer in _serializers)
+            foreach (ComponentSerializer serializer in _instanceEntityComponentSerializers)
             {
                 serializer.Deserialize(in sourceId, in options, reader, ref initializer, in id);
             }
@@ -193,18 +255,18 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // Likewise, EntityId is the primary key associated with filters, meaning type entites can be added to filters
             // Or hold filtered instances.
             // Create a new EGID for the entity
-            EGID egid = new EGID(_uniqueNumberProvider.GetUInt32(), this.Type.Descriptor.TypeGroup);
-            EntityId id = new EntityId(egid, this.Type.Id.Value);
+            EGID egid = new EGID(_uniqueNumberProvider.GetUInt32(), _typeEntityGroup);
+            EntityId id = new EntityId(egid, this.Type.Key.Id);
 
             // Configure global components
             // This parallels the actions done in EntityService for instance spawning
-            EntityInitializer initializer = _factory.BuildEntity(egid, this.Type.Descriptor.Type);
+            EntityInitializer initializer = _factory.BuildEntity(egid, _typeEntityDescriptor);
             initializer.Init(id);
 
             TypeEntity typeEntityComponent = new TypeEntity(_typeRef);
             initializer.Init(typeEntityComponent);
 
-            this.TypeEntityInitializer!(_entities, Type, id, ref initializer);
+            this.TypeEntityInitializer!(_entities, this, id, ref initializer);
 
             // These instance components are automatically applied to all created instance entities
             belongsToTypeInstanceEntityComponent = new BelongsTo<TypeEntity, InstanceEntity>(id.VhId);
@@ -215,14 +277,71 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         }
         #endregion
 
-        private static void DefaultInitializer(IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer)
+        public IEnumerable<Type> GetAllDistinctComponentTypes()
+        {
+            return _instanceEntityDescriptor.componentsToBuild.Select(x => x.GetEntityComponentType())
+                .Concat(_typeEntityDescriptor.componentsToBuild.Select(x => x.GetEntityComponentType()))
+                .Distinct();
+        }
+
+        public bool Implements(IKey<IEntityType> key)
+        {
+            foreach (IEntityType implementedType in this.ImplementedTypes)
+            {
+                if (key == implementedType.Key)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void DefaultInitializer(IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer)
         {
             // throw new NotImplementedException();
         }
 
-        private static void DefaultDisposer(IEntityType type)
+        private static void DefaultDisposer(IEntityTypeProvider provider)
         {
             // throw new NotImplementedException();
+        }
+
+        private static IEnumerable<IEntityType> GetImplementedTypes(IEntityType entityType, IEntityTypeService entityTypeService, HashSet<IEntityType> result = null)
+        {
+            result ??= new HashSet<IEntityType>();
+
+            if (result.Contains(entityType) == true)
+            {
+                return result;
+            }
+
+            foreach (IKey<IEntityType> includedKey in entityType.Include)
+            {
+                IEntityType includedType = entityTypeService.GetByKey(includedKey);
+
+                EntityTypeProvider.GetImplementedTypes(includedType, entityTypeService, result);
+            }
+
+            if (result.Add(entityType) == false)
+            {
+                return result;
+            }
+
+            return result;
+        }
+
+        private static bool ValidateRequiredComponents<T>(
+            ComponentBuilderDictionary componentBuilders,
+            IEnumerable<IEntityType> importedTypes,
+            Func<IEntityType, T> memberExpression,
+            out Type[] missingTypes)
+                where T : HashSet<Type>
+        {
+            Type[] requiredTypes = importedTypes.SelectMany(x => memberExpression(x)).Distinct().ToArray();
+            missingTypes = requiredTypes.Except(componentBuilders.Keys).ToArray();
+
+            return missingTypes.Length == 0;
         }
     }
 }

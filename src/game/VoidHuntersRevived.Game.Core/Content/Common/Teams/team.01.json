@@ -1,7 +1,9 @@
 {
-  "Key": "Team.One",
-  "Descriptor": "TeamDescriptor",
-  "Components": {
+  "Key": {
+    "Name": "Team.One",
+    "Type": "TeamEntityType"
+  },
+  "TypeEntityComponents": {
     "Team": {
       "Name": "String.TeamOneName"
     },

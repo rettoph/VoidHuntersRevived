@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Engines
                 return;
             }
 
-            _entitySpawnService.Spawn(eventId.Create(1), data.EntityType, data.EntityId);
+            _entitySpawnService.Spawn(eventId.Create(1), data.EntityType.Key, data.EntityId);
         }
 
         public void Process(VhId eventId, TestDepawnInput data)

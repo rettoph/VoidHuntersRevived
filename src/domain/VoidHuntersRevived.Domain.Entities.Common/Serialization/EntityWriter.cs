@@ -11,12 +11,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
     {
         private readonly Stack<EntityId> _nested;
         private readonly List<long> _positions;
-        private readonly IEntityTypeService _entityTypeService;
+        private readonly IEntityTypeProviderService _entityTypeService;
         private readonly IEntityQueryService _entityQueryService;
         private readonly ILogger _logger;
 
         public EntityWriter(
-            IEntityTypeService entityTypeService,
+            IEntityTypeProviderService entityTypeService,
             IEntityQueryService entityQueryService,
             ILogger logger) : base(new MemoryStream())
         {
@@ -105,13 +105,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
         private void InternalSerialize(EntityId id, SerializationOptions options)
         {
-            Id<IEntityType> typeId = _entityQueryService.QueryById<InstanceEntity>(id, out GroupIndex groupIndex).TypeId;
+            IKey<IEntityType> typeKey = _entityQueryService.QueryById<InstanceEntity>(id, out GroupIndex groupIndex).Type.Key;
 
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to serialize {EntityId} of type {EntityType}", nameof(EntityWriter), nameof(InternalSerialize), id.VhId, typeId.Value);
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to serialize {EntityId} of type {EntityType}", nameof(EntityWriter), nameof(InternalSerialize), id.VhId, typeKey);
 
             this.Write(id.VhId);
-            this.WriteStruct(typeId);
-            _entityTypeService.GetProviderByTypeId(typeId).SerializeInstanceEntity(this, in groupIndex, in options);
+            this.Write(typeKey.Id);
+            _entityTypeService.GetByKey(typeKey).SerializeInstanceEntity(this, in groupIndex, in options);
         }
     }
 }

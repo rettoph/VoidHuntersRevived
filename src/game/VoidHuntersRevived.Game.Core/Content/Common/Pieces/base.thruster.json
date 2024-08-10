@@ -1,8 +1,10 @@
 {
-  "Key": "Piece.Base.Thruster",
-  "Descriptor": "ThrusterDescriptor",
+  "Key": {
+    "Name": "Piece.Base.Thruster",
+    "Type": "ThrusterEntityType"
+  },
   "Flags": "Partial",
-  "Components": {
+  "TypeEntityComponents": {
     "ColorScheme": {
       "Primary": "Color.ThrusterPrimaryColor",
       "Secondary": "Color.ThrusterSecondaryColor"

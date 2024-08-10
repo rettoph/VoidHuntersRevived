@@ -1,16 +1,17 @@
 ﻿using Svelto.ECS;
 using System.Diagnostics;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Physics.Common.Extensions.FixedPoint;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Ships.Common.Descriptors;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -125,9 +126,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     sourceId: eventId,
                     vhid: eventId.Create(1),
                     belongsToTeam: _teamService.GetDefaultTeamComponent(),
-                    tree: EntityTypes.Chain,
+                    treeTypeKey: ChainEntityType.ChainEntityTypeKey,
                     nodes: data.TargetData,
-                    initializer: (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+                    initializer: (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
                     {
                         if (!entities.Query.TryGetId(data.TractorBeamEmitterVhId, out EntityId tractorBeamEmitterId))
                         {
@@ -162,9 +163,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         sourceId: eventId,
                         vhid: eventId.Create(2),
                         belongsToTeam: _teamService.GetDefaultTeamComponent(),
-                        tree: EntityTypes.Chain,
+                        treeTypeKey: ChainEntityType.ChainEntityTypeKey,
                         nodes: data.TargetData,
-                        initializer: (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+                        initializer: (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
                         {
                             initializer.Init<Location>(data.Location);
                             initializer.Init<Tractorable>(new Tractorable()

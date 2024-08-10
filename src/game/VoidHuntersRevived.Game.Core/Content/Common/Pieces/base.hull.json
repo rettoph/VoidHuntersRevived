@@ -1,8 +1,10 @@
 {
-  "Key": "Piece.Base.Hull",
-  "Descriptor": "HullDescriptor",
+  "Key": {
+    "Name": "Piece.Base.Hull",
+    "Type": "HullEntityType"
+  },
   "Flags": "Partial",
-  "Components": {
+  "TypeEntityComponents": {
     "ColorScheme": {
       "Primary": "Color.HullPrimaryColor",
       "Secondary": "Color.HullSecondaryColor"

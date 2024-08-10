@@ -4,25 +4,24 @@ using System.Reflection;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Initializers
 {
     [AutoLoad]
-    internal class HasManyEntityInitializer : BaseEntityInitializer
+    internal class HasManyEntityInitializer : BaseEntityTypeProviderInitializer
     {
-        private readonly Dictionary<IEntityType, EntityInitializerDelegate> _instanceInitializers;
-        private readonly Dictionary<IEntityType, EntityInitializerDelegate> _typeInitializers;
+        private readonly Dictionary<IEntityTypeProvider, EntityInitializerDelegate> _instanceInitializers;
+        private readonly Dictionary<IEntityTypeProvider, EntityInitializerDelegate> _typeInitializers;
 
         public HasManyEntityInitializer()
         {
-            _instanceInitializers = new Dictionary<IEntityType, EntityInitializerDelegate>();
-            _typeInitializers = new Dictionary<IEntityType, EntityInitializerDelegate>();
+            _instanceInitializers = new Dictionary<IEntityTypeProvider, EntityInitializerDelegate>();
+            _typeInitializers = new Dictionary<IEntityTypeProvider, EntityInitializerDelegate>();
 
-            this.WithInstanceInitializer(type => type.Descriptor.Instance.componentsToBuild.Any(x =>
+            this.WithInstanceEntityInitializer(provider => provider.InstanceEntityComponentBuilders.Keys.Any(componentType =>
             {
-                Type componentType = x.GetEntityComponentType();
-
                 if (componentType.IsConstructedGenericType == false)
                 {
                     return false;
@@ -34,19 +33,17 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                 }
 
                 // Build initializer now
-                if (_instanceInitializers.ContainsKey(type) == false)
+                if (_instanceInitializers.ContainsKey(provider) == false)
                 {
-                    _instanceInitializers.Add(type, HasManyEntityInitializersBuilder(type.Descriptor.Instance.componentsToBuild));
+                    _instanceInitializers.Add(provider, HasManyEntityInitializersBuilder(provider.InstanceEntityComponentBuilders.Keys));
                 }
 
                 return true;
 
             }), this.InitializeInstanceParentComponents);
 
-            this.WithTypeInitializer(type => type.Descriptor.Type.componentsToBuild.Any(x =>
+            this.WithTypeEntityInitializer(provider => provider.TypeEntityComponentBuilders.Keys.Any(componentType =>
             {
-                Type componentType = x.GetEntityComponentType();
-
                 if (componentType.IsConstructedGenericType == false)
                 {
                     return false;
@@ -58,9 +55,9 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                 }
 
                 // Build initializer now
-                if (_typeInitializers.ContainsKey(type) == false)
+                if (_typeInitializers.ContainsKey(provider) == false)
                 {
-                    _typeInitializers.Add(type, HasManyEntityInitializersBuilder(type.Descriptor.Type.componentsToBuild));
+                    _typeInitializers.Add(provider, HasManyEntityInitializersBuilder(provider.TypeEntityComponentBuilders.Keys));
                 }
 
                 return true;
@@ -68,26 +65,24 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             }), this.InitializeTypeParentComponents);
         }
 
-        private void InitializeInstanceParentComponents(IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer)
+        private void InitializeInstanceParentComponents(IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer)
         {
-            _instanceInitializers[type](entities, type, id, ref initializer);
+            _instanceInitializers[provider](entities, provider, id, ref initializer);
         }
 
-        private void InitializeTypeParentComponents(IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer)
+        private void InitializeTypeParentComponents(IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer)
         {
-            _typeInitializers[type](entities, type, id, ref initializer);
+            _typeInitializers[provider](entities, provider, id, ref initializer);
         }
 
         private static MethodInfo hasManyComponentInitializerBuilderMethod = typeof(HasManyEntityInitializer).GetMethod(nameof(HasManyEntityInitializer.HasManyComponentInitializerBuilder), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new NotImplementedException();
-        private static EntityInitializerDelegate HasManyEntityInitializersBuilder(IComponentBuilder[] components)
+        private static EntityInitializerDelegate HasManyEntityInitializersBuilder(IEnumerable<Type> componentTypes)
         {
 
             EntityInitializerDelegate initializers = default!;
 
-            foreach (IComponentBuilder component in components)
+            foreach (Type componentType in componentTypes)
             {
-                Type componentType = component.GetEntityComponentType();
-
                 if (componentType.IsConstructedGenericType == false)
                 {
                     continue;
@@ -108,7 +103,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             where TItem : unmanaged, IEntityComponent
             where T : unmanaged, IEntityComponent
         {
-            return (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+            return (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(new HasMany<TItem, T>(id, entities.GetReference()));
             };

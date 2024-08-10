@@ -15,17 +15,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntitiesDB entitiesDB { get; set; } = null!;
 
 
-        private readonly Lazy<EntityTypeService> _entityTypeService;
+        private readonly Lazy<EntityTypeProviderService> _entityTypeService;
         private readonly Lazy<EntityQueryService> _entityQueryService;
         private readonly Lazy<EntitySpawnService> _entitySpawnService;
         private readonly Lazy<EntitySerializationService> _entitySerializationService;
 
-        public EntityTypeService Types => _entityTypeService.Value;
+        public EntityTypeProviderService Types => _entityTypeService.Value;
         public EntityQueryService Query => _entityQueryService.Value;
         public EntitySpawnService Spawn => _entitySpawnService.Value;
         public EntitySerializationService Serialization => _entitySerializationService.Value;
 
-        IEntityTypeService IEntityService.Types => this.Types;
+        IEntityTypeProviderService IEntityService.TypeProviders => this.Types;
 
         IEntityQueryService IEntityService.Query => this.Query;
 
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IEntitySerializationService IEntityService.Serialization => this.Serialization;
 
         public EntityService(
-            Lazy<EntityTypeService> entityTypeService,
+            Lazy<EntityTypeProviderService> entityTypeService,
             Lazy<EntityQueryService> entityQueryService,
             Lazy<EntitySpawnService> entitySpawnService,
             Lazy<EntitySerializationService> entitySerialzationService)

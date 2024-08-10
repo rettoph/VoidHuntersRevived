@@ -1,7 +1,10 @@
 {
-  "Key": "Piece.Hull.Square",
-  "BaseType": "Piece.Base.Hull",
-  "InstanceComponents": {
+  "Key": {
+    "Name": "Piece.Hull.Square",
+    "Type": "HullEntityType"
+  },
+  "Include": [ "Piece.Base.Hull" ],
+  "InstanceEntityComponents": {
     "Rigid": {
       "Centeroid": {
         "X": 0.5,
@@ -66,7 +69,7 @@
       }
     }
   },
-  "Components": {
+  "TypeEntityComponents": {
     "Visible": {
       "Fill": [
         {

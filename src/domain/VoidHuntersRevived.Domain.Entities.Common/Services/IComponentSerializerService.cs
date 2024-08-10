@@ -1,10 +1,11 @@
-﻿using Svelto.DataStructures;
-using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+﻿using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IComponentSerializerService
     {
-        FasterList<ComponentSerializer> GetInstanceComponentSerializers(IEntityType type);
+        ComponentSerializer GetComponentSerializer(Type componentType);
+
+        IEnumerable<ComponentSerializer> GetComponentSerializers(IEnumerable<Type> componentTypes);
     }
 }

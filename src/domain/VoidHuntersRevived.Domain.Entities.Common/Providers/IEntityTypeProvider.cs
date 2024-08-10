@@ -1,8 +1,13 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Core.Common;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Providers
 {
@@ -12,6 +17,21 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Providers
     public interface IEntityTypeProvider : IDisposable
     {
         IEntityType Type { get; }
+        IEntityType[] ImplementedTypes { get; }
+
+        ComponentBuilderDictionary InstanceEntityComponentBuilders { get; }
+        EntityInitializerDelegate? InstanceEntityInitializer { get; set; }
+        DisposeEntityInitializerDelegate? InstanceEntityDisposer { get; set; }
+
+        ComponentBuilderDictionary TypeEntityComponentBuilders { get; }
+        EntityInitializerDelegate? TypeEntityInitializer { get; set; }
+        DisposeEntityInitializerDelegate? TypeEntityDisposer { get; set; }
+
+        void Initialize(
+            EntitiesDB entitiesDB,
+            IEngineService engineService,
+            IComponentSerializerService componentSerializerService,
+            IFiltered<IEntityTypeProviderInitializer> entityTypeProviderInitializers);
 
         #region Instance Entity Methods
         EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id);
@@ -23,5 +43,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Providers
         void SerializeInstanceEntity(EntityWriter writer, in GroupIndex groupIndex, in SerializationOptions options);
         void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
         #endregion
+
+        IEnumerable<Type> GetAllDistinctComponentTypes();
+
+        bool Implements(IKey<IEntityType> key);
     }
 }

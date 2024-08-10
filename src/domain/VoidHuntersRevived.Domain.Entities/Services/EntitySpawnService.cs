@@ -23,24 +23,24 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _logger = logger;
         }
 
-        EntityId IEntitySpawnService.Spawn(VhId sourceId, IEntityType type, VhId vhid)
+        EntityId IEntitySpawnService.Spawn(VhId sourceId, IKey<IEntityType> entityTypeKey, VhId vhid)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
                 IsPrivate = false,
-                Type = type,
+                TypeKey = entityTypeKey,
                 VhId = vhid
             });
 
             return _entityQueryService.GetId(vhid);
         }
 
-        EntityId IEntitySpawnService.Spawn(VhId sourceId, IEntityType type, VhId vhid, EntityInitializerDelegate initializer)
+        EntityId IEntitySpawnService.Spawn(VhId sourceId, IKey<IEntityType> entityTypeKey, VhId vhid, EntityInitializerDelegate initializer)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
                 IsPrivate = false,
-                Type = type,
+                TypeKey = entityTypeKey,
                 VhId = vhid,
                 Initializer = initializer
             });
@@ -57,24 +57,24 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             });
         }
 
-        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, IEntityType type, VhId vhid)
+        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, IKey<IEntityType> entityTypeKey, VhId vhid)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
                 IsPrivate = true,
-                Type = type,
+                TypeKey = entityTypeKey,
                 VhId = vhid
             });
 
             return _entityQueryService.GetId(vhid);
         }
 
-        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, IEntityType type, VhId vhid, EntityInitializerDelegate initializer)
+        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, IKey<IEntityType> entityTypeKey, VhId vhid, EntityInitializerDelegate initializer)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
                 IsPrivate = true,
-                Type = type,
+                TypeKey = entityTypeKey,
                 VhId = vhid,
                 Initializer = initializer
             });

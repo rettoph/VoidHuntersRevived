@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
         {
             get
             {
-                ref FilterContextID filterContextId = ref CollectionsMarshal.GetValueRefOrAddDefault(_filterContexts, Index, out bool exists);
+                ref FilterContextID filterContextId = ref CollectionsMarshal.GetValueRefOrAddDefault(_filterContexts, this.Index, out bool exists);
                 if (!exists)
                 {
                     filterContextId = FilterContextID.GetNewContextID();
@@ -27,14 +27,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
             }
         }
 
-        public SocketVhId VhId => new SocketVhId(NodeId.VhId, Index);
+        public SocketVhId VhId => new SocketVhId(this.NodeId.VhId, Index);
 
         public SocketId(EntityId nodeId, byte index)
         {
-            NodeId = nodeId;
-            Index = index;
-
-
+            this.NodeId = nodeId;
+            this.Index = index;
         }
 
         public override bool Equals(object? obj)
@@ -44,14 +42,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
 
         public bool Equals(SocketId other)
         {
-            return EqualityComparer<EntityId>.Default.Equals(NodeId, other.NodeId) &&
-                   Index == other.Index &&
-                   EqualityComparer<SocketVhId>.Default.Equals(VhId, other.VhId);
+            return EqualityComparer<EntityId>.Default.Equals(this.NodeId, other.NodeId) &&
+                   this.Index == other.Index &&
+                   EqualityComparer<SocketVhId>.Default.Equals(this.VhId, other.VhId);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(NodeId, Index, VhId);
+            return HashCode.Combine(this.NodeId, this.Index, this.VhId);
         }
 
         public static bool operator ==(SocketId id1, SocketId id2)

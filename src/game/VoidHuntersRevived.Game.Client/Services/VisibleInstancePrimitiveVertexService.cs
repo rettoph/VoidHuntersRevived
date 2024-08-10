@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -15,13 +16,13 @@ namespace VoidHuntersRevived.Game.Client.Services
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly GraphicsDevice _graphics;
-        private readonly Dictionary<Id<IEntityType>, InstanceVertexProvider<VertexInstanceVisible>> _providers;
+        private readonly Dictionary<IKey<IEntityType>, InstanceVertexProvider<VertexInstanceVisible>> _providers;
 
         public VisibleInstancePrimitiveVertexService(IEntityQueryService entityQueryService, GraphicsDevice grapphics)
         {
             _entityQueryService = entityQueryService;
             _graphics = grapphics;
-            _providers = new Dictionary<Id<IEntityType>, InstanceVertexProvider<VertexInstanceVisible>>();
+            _providers = new Dictionary<IKey<IEntityType>, InstanceVertexProvider<VertexInstanceVisible>>();
         }
 
         public void Initialize()
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Game.Client.Services
             {
                 for (int i = 0; i < count; i++)
                 {
-                    _providers.Add(typeEntities[i].TypeId, VisibleInstancePrimitiveVertexService.BuildVisibleInstanceVertexProvider(typeEntities[i].TypeId, visibles[i], _graphics));
+                    _providers.Add(typeEntities[i].Type.Key, VisibleInstancePrimitiveVertexService.BuildVisibleInstanceVertexProvider(typeEntities[i].Type.Key, visibles[i], _graphics));
                 }
             }
         }
@@ -43,9 +44,9 @@ namespace VoidHuntersRevived.Game.Client.Services
             }
         }
 
-        public InstanceVertexProvider<VertexInstanceVisible> GetInstanceVertexProviderById(Id<IEntityType> id)
+        public InstanceVertexProvider<VertexInstanceVisible> GetInstanceVertexProviderByKey(IKey<IEntityType> key)
         {
-            return _providers[id];
+            return _providers[key];
         }
 
         public IEnumerable<InstanceVertexProvider<VertexInstanceVisible>> GetAllInstanceVertexProviders()
@@ -54,7 +55,7 @@ namespace VoidHuntersRevived.Game.Client.Services
         }
 
         private static InstanceVertexProvider<VertexInstanceVisible> BuildVisibleInstanceVertexProvider(
-            Id<IEntityType> entityType,
+            IKey<IEntityType> entityTypeKey,
             Visible visible,
             GraphicsDevice graphics)
         {

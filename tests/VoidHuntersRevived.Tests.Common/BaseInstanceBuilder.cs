@@ -1,6 +1,5 @@
 ﻿
 using Guppy.Core.Common;
-using Guppy.Tests.Common.Extensions;
 
 namespace VoidHuntersRevived.Tests.Common
 {
@@ -29,7 +28,7 @@ namespace VoidHuntersRevived.Tests.Common
 
         public Lazy<TOut> GetLazy()
         {
-            return this.GetInstance().ToLazy();
+            return new Lazy<TOut>(() => this.GetInstance());
         }
 
         public Lazy<TLazy> GetLazy<TLazy>()
@@ -37,7 +36,7 @@ namespace VoidHuntersRevived.Tests.Common
         {
             ThrowIf.Type.IsNotAssignableFrom<TLazy>(typeof(TLazy));
 
-            return this.GetInstance().As<TLazy>().ToLazy();
+            return new Lazy<TLazy>(() => this.GetInstance().As<TLazy>());
         }
     }
 

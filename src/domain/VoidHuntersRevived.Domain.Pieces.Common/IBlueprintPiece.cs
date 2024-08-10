@@ -1,11 +1,11 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
+﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public interface IBlueprintPiece
     {
-        IEntityType<PieceDescriptor> PieceType { get; }
+        IKey<IEntityType> PieceTypeKey { get; }
 
         IBlueprintPiece[][] Children { get; }
     }

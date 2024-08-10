@@ -4,11 +4,11 @@ using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
@@ -16,13 +16,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal partial class SocketService : ISocketService
     {
-        public EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IKey<IEntityType> nodeTypeKey, EntityInitializerDelegate? initializerDelegate = null)
         {
             BelongsTo<Team, TeamMember> belongsToTeam = _entityQueryService.QueryById<BelongsTo<Team, TeamMember>>(socket.Node.TreeId);
             SocketVhId socketVhId = socket.Id.VhId;
             VhId treeId = socket.Node.TreeId.VhId;
 
-            return _entitySpawnService.Spawn(sourceId, node, nodeVhId, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, nodeTypeKey, nodeVhId, (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(belongsToTeam);
                 initializer.Init(new Node(id, entities.Query.GetId(treeId)));
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                         index: socketVhId.Index))
                 );
 
-                initializerDelegate?.Invoke(entities, type, id, ref initializer);
+                initializerDelegate?.Invoke(entities, provider, id, ref initializer);
             });
         }
 
@@ -49,11 +49,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     Owner = socket.Node.TreeId.VhId
                 },
                 data: nodes,
-                initializer: (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+                initializer: (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
                 {
                     initializer.Init(belongsToTeam);
                 },
-                rootInitializer: (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+                rootInitializer: (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
                 {
                     initializer.Init<Coupling>(new Coupling(
                         socketId: new SocketId(
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                             index: socketVhId.Index))
                         );
 
-                    initializerDelegate?.Invoke(entities, type, id, ref initializer);
+                    initializerDelegate?.Invoke(entities, provider, id, ref initializer);
                 });
 
             return nodeId;

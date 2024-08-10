@@ -1,22 +1,16 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Pieces.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
     internal sealed class BlueprintPieceConverter : JsonConverter<IBlueprintPiece>
     {
-        private readonly Lazy<IEntityTypeService> _entityTypes;
-
-        public BlueprintPieceConverter(Lazy<IEntityTypeService> entityTypes)
-        {
-            _entityTypes = entityTypes;
-        }
-
         public override IBlueprintPiece? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            string pieceTypeKey = string.Empty;
+            IKey<IEntityType>? pieceTypeKey = null;
             IBlueprintPiece[][] children = Array.Empty<IBlueprintPiece[]>();
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -26,8 +20,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(IBlueprintPiece.PieceType):
-                        pieceTypeKey = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
+                    case nameof(IBlueprintPiece.PieceTypeKey):
+                        pieceTypeKey = JsonSerializer.Deserialize<IKey<IEntityType>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
                     case nameof(IBlueprintPiece.Children):
@@ -39,12 +33,17 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
+            if (pieceTypeKey is null)
+            {
+                throw new ArgumentException();
+            }
+
             for (int i = 0; i < children.Length; i++)
             {
                 children[i] ??= Array.Empty<IBlueprintPiece>();
             }
 
-            return new BlueprintPiece(pieceTypeKey, children, _entityTypes);
+            return new BlueprintPiece(pieceTypeKey, children);
         }
 
         public override void Write(Utf8JsonWriter writer, IBlueprintPiece value, JsonSerializerOptions options)

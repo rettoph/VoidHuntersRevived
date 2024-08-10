@@ -4,6 +4,7 @@ using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
@@ -12,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
     {
         private static unsafe long EntityHeaderSize = sizeof(VhId) + sizeof(Id<IEntityType>);
 
-        private readonly IEntityTypeService _entityTypeService;
+        private readonly IEntityTypeProviderService _entityTypeProviderService;
         private readonly IEntityQueryService _entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService;
         private readonly ILogger _logger;
@@ -20,13 +21,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         private EntityData _loaded;
 
         public EntityReader(
-            IEntityTypeService types,
+            IEntityTypeProviderService entityTypeProviderService,
             IEntityQueryService entityQueryService,
             IEntitySpawnService entitySpawnService,
             ILogger logger) : base(new MemoryStream())
         {
             _loaded = EntityData.Default;
-            _entityTypeService = types;
+            _entityTypeProviderService = entityTypeProviderService;
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
             _logger = logger;
@@ -140,17 +141,16 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         {
             this.Load(data, position);
             VhId vhid = this.ReadVhId(options.Seed);
-            Id<IEntityType> typeId = this.ReadStruct<Id<IEntityType>>();
-            IEntityType type = _entityTypeService.GetById(typeId);
+            IKey<IEntityType> entityTypeKey = Key.GetById<IEntityType>(this.ReadStruct<VhId>());
 
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, entityTypeKey, options.Seed.Value);
 
-            _entitySpawnService.Spawn(sourceId, type, vhid, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+            _entitySpawnService.Spawn(sourceId, entityTypeKey, vhid, (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
-                entities.Types.GetProviderByType(type).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
+                entities.TypeProviders.GetByKey(entityTypeKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
 
-                initializerDelegate(entities, type, id, ref initializer);
+                initializerDelegate(entities, provider, id, ref initializer);
             });
 
             return vhid;
@@ -160,18 +160,17 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         {
             this.Load(data, position);
             VhId vhid = this.ReadVhId(options.Seed);
-            Id<IEntityType> typeId = this.ReadStruct<Id<IEntityType>>();
-            IEntityType type = _entityTypeService.GetById(typeId);
+            IKey<IEntityType> entityTypeKey = Key.GetById<IEntityType>(this.ReadStruct<VhId>());
 
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, typeId.Value, options.Seed.Value);
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, entityTypeKey, options.Seed.Value);
 
-            _entitySpawnService.Spawn(sourceId, type, vhid, (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+            _entitySpawnService.Spawn(sourceId, entityTypeKey, vhid, (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
-                entities.Types.GetProviderByType(type).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
+                entities.TypeProviders.GetByKey(entityTypeKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
 
-                rootInitializerDelegate(entities, type, id, ref initializer);
-                initializerDelegate(entities, type, id, ref initializer);
+                rootInitializerDelegate(entities, provider, id, ref initializer);
+                initializerDelegate(entities, provider, id, ref initializer);
             });
 
             return vhid;

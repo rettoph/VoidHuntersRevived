@@ -2,12 +2,13 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
+using VoidHuntersRevived.Domain.Pieces.Common.EntityTypes;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
+using VoidHuntersRevived.Domain.Ships.Common.Descriptors;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
@@ -19,18 +20,18 @@ namespace VoidHuntersRevived.Game.Core.Engines
     {
         private readonly ITreeService _treeService;
         private readonly ITeamService _teamService;
-        private readonly IEntityTypeService _entityTypeService;
+        private readonly IEntityTypeKeyService _entityTypeKeyService;
         private readonly IBlueprintService _blueprintService;
 
         public SimulationEngine(
             ITreeService treeService,
             ITeamService teamService,
-            IEntityTypeService entityTypeService,
+            IEntityTypeKeyService entityTypeKeyService,
             IBlueprintService blueprintService)
         {
             _treeService = treeService;
             _teamService = teamService;
-            _entityTypeService = entityTypeService;
+            _entityTypeKeyService = entityTypeKeyService;
             _blueprintService = blueprintService;
         }
 
@@ -47,12 +48,12 @@ namespace VoidHuntersRevived.Game.Core.Engines
             int radius = 2;
             int step = 2;
             FixVector2 offset = new FixVector2(0, 0);
-            var pieces = _entityTypeService.GetAll<PieceDescriptor>();
+            IKey<PieceEntityType>[] pieceTypeKeys = _entityTypeKeyService.GetAll<PieceEntityType>();
             for (int x = -radius; x < radius; x += step)
             {
                 for (int y = -radius; y < radius; y += step)
                 {
-                    _treeService.Spawn(eventId, eventId.Create(i++), _teamService.GetDefaultTeamComponent(), EntityTypes.Chain, pieces[i % pieces.Length], (IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
+                    _treeService.Spawn(eventId, eventId.Create(i++), _teamService.GetDefaultTeamComponent(), ChainEntityType.ChainEntityTypeKey, pieceTypeKeys[i % pieceTypeKeys.Length], (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
                     {
                         initializer.Init(new Location()
                         {

@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Events
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<TestSpawnInput, VhId, VhId, VhId, bool>.Instance.Calculate(source, this.EntityId, this.EntityType.Id.Value, this.DoDiscard);
+            return HashBuilder<TestSpawnInput, VhId, VhId, VhId, bool>.Instance.Calculate(source, this.EntityId, this.EntityType.Key.Id, this.DoDiscard);
         }
     }
 }

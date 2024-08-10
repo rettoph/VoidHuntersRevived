@@ -1,31 +1,39 @@
 ﻿using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Serialization.Common.Services;
 using Svelto.ECS;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
     internal sealed class EntityTypeResolverConverter : JsonConverter<ResourceResolver<IEntityType>>
     {
-        private Lazy<IResourceService> _resourceService;
+        private const string InstanceEntityComponents = nameof(InstanceEntityComponents);
+        private const string TypeEntityComponents = nameof(TypeEntityComponents);
 
-        public EntityTypeResolverConverter(Lazy<IResourceService> resourceService)
+        private readonly Lazy<IResourceService> _resourceService;
+        private readonly IPolymorphicJsonSerializerService<IEntityType> _entityTypeTypeService;
+
+
+        public EntityTypeResolverConverter(
+            Lazy<IResourceService> resourceService,
+            IPolymorphicJsonSerializerService<IEntityType> entityTypeTypeService)
         {
             _resourceService = resourceService;
+            _entityTypeTypeService = entityTypeTypeService;
         }
 
         public override ResourceResolver<IEntityType>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            string key = string.Empty;
+            IKey<IEntityType>? key = null;
             EntityTypeFlags flags = EntityTypeFlags.None;
-            Resource<IEntityType>? baseType = null;
-            VoidHuntersEntityDescriptor? descriptor = null;
-            Dictionary<Type, IEntityComponent> instanceComponents = new Dictionary<Type, IEntityComponent>();
-            Dictionary<Type, IEntityComponent> staticComponents = new Dictionary<Type, IEntityComponent>();
+            IKey<IEntityType>[] include = Array.Empty<IKey<IEntityType>>();
+            Dictionary<Type, IEntityComponent> instanceEntityComponents = new Dictionary<Type, IEntityComponent>();
+            Dictionary<Type, IEntityComponent> typeEntityComponents = new Dictionary<Type, IEntityComponent>();
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -35,28 +43,24 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                 switch (propertyName)
                 {
                     case nameof(IEntityType.Key):
-                        key = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
+                        key = JsonSerializer.Deserialize<IKey<IEntityType>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
                     case nameof(IEntityType.Flags):
                         flags = JsonSerializer.Deserialize<EntityTypeFlags>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(IEntityType.Descriptor):
-                        descriptor = JsonSerializer.Deserialize<VoidHuntersEntityDescriptor>(ref reader, options) ?? throw new NotImplementedException();
+                    case nameof(IEntityType.Include):
+                        string[] includeNames = JsonSerializer.Deserialize<string[]>(ref reader, options) ?? throw new NotImplementedException();
+                        include = includeNames.Select(x => Key.GetByName<IEntityType>(x)).ToArray();
                         reader.Read();
                         break;
-                    case nameof(IEntityType.BaseType):
-                        string baseKey = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
-                        baseType = Resource<IEntityType>.Get(baseKey);
+                    case nameof(EntityTypeResolverConverter.InstanceEntityComponents):
+                        instanceEntityComponents = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
-                    case nameof(IEntityType.InstanceComponents):
-                        instanceComponents = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
-                        reader.Read();
-                        break;
-                    case nameof(IEntityType.Components):
-                        staticComponents = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
+                    case nameof(EntityTypeResolverConverter.TypeEntityComponents):
+                        typeEntityComponents = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
                     default:
@@ -66,17 +70,21 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            if (baseType is not null)
+            if (key is null)
             {
-                return new ResourceResolver<IEntityType>(() => EntityType.Create(key, flags, _resourceService.Value.GetValue(baseType.Value).Value, instanceComponents.Values, staticComponents.Values));
+                throw new InvalidDataException();
             }
 
-            if (descriptor is not null)
+            return new ResourceResolver<IEntityType>(() =>
             {
-                return new ResourceResolver<IEntityType>(() => EntityType.Create(key, flags, descriptor, instanceComponents.Values, staticComponents.Values));
-            }
+                EntityType entityType = (EntityType)(Activator.CreateInstance(key.Type, [key, include]) ?? throw new NotImplementedException());
 
-            throw new InvalidOperationException(string.Format("{0}::{1} - Either {2} or {3} must be defined.", nameof(EntityTypeResolverConverter), nameof(Read), nameof(IEntityType.BaseType), nameof(IEntityType.Descriptor)));
+                entityType.WithFlags(flags)
+                    .WithInstanceEntityComponents(instanceEntityComponents.Values)
+                    .WithTypeEntityComponents(typeEntityComponents.Values);
+
+                return entityType;
+            });
         }
 
         public override void Write(Utf8JsonWriter writer, ResourceResolver<IEntityType> value, JsonSerializerOptions options)

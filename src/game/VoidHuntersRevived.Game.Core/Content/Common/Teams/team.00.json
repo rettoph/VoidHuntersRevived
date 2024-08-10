@@ -1,7 +1,9 @@
 {
-  "Key": "Team.Zero",
-  "Descriptor": "DefaultTeamDescriptor",
-  "Components": {
+  "Key": {
+    "Name": "Team.Zero",
+    "Type": "DefaultTeamEntityType"
+  },
+  "TypeEntityComponents": {
     "Team": {
       "Name": "String.TeamZeroName"
     },

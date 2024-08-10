@@ -1,25 +1,23 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Svelto.ECS;
-using VoidHuntersRevived.Domain.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Initializers;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Constants;
+using VoidHuntersRevived.Domain.Ships.Common.Descriptors;
 
 namespace VoidHuntersRevived.Game.Core.Initializers
 {
     [AutoLoad]
-    internal class ChainInitializer : BaseEntityInitializer
+    internal class ChainInitializer : BaseEntityTypeProviderInitializer
     {
         public ChainInitializer() : base()
         {
-            this.WithInstanceInitializer(EntityTypes.Chain, this.InitializeChain);
+            this.WithEntityTypeInitializer<ChainEntityType>(this.AddComponentBuilders);
         }
 
-        private void InitializeChain(IEntityService entities, IEntityType type, EntityId id, ref EntityInitializer initializer)
+        private void AddComponentBuilders(IEntityTypeProvider provider)
         {
-            initializer.Init(new Collision()
+            provider.InstanceEntityComponentBuilders.Set(new Collision()
             {
                 Categories = CollisionGroups.FreeFloatingCategories,
                 CollidesWith = CollisionGroups.FreeFloatingCollidesWith

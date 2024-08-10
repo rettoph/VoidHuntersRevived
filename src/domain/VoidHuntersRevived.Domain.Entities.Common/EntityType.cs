@@ -1,100 +1,167 @@
 ﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public abstract class EntityType : IEntityType
+    [Service<IEntityType>(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
+    public class EntityType : IEntityType
     {
-        private static List<EntityType> _list = new List<EntityType>();
+        public HashSet<Type> RequiredInstanceEntityComponents { get; }
+        public ComponentBuilderDictionary InstanceEntityComponentBuilders { get; }
 
-        public readonly Id<IEntityType> Id;
-        public readonly string Key;
-        public readonly EntityTypeFlags Flags;
-        public readonly VoidHuntersEntityDescriptor Descriptor;
-        public readonly IEntityType? BaseType;
-        public readonly IReadOnlyDictionary<Type, IEntityComponent> InstanceComponents;
-        public readonly IReadOnlyDictionary<Type, IEntityComponent> Components;
+        public HashSet<Type> RequiredTypeEntityComponents { get; }
+        public ComponentBuilderDictionary TypeEntityComponentBuilders { get; }
 
-        Id<IEntityType> IEntityType.Id => this.Id;
-        string IEntityType.Key => this.Key;
-        EntityTypeFlags IEntityType.Flags => this.Flags;
-        VoidHuntersEntityDescriptor IEntityType.Descriptor => this.Descriptor;
-        IEntityType? IEntityType.BaseType => this.BaseType;
-        IReadOnlyDictionary<Type, IEntityComponent> IEntityType.InstanceComponents => this.InstanceComponents;
-        IReadOnlyDictionary<Type, IEntityComponent> IEntityType.Components => this.Components;
+        public IKey<IEntityType> Key { get; }
+        public EntityTypeFlags Flags { get; set; }
+        public IKey<IEntityType>[] Include { get; }
+        public Type Type => this.GetType();
 
-        internal unsafe EntityType(string key, EntityTypeFlags flags, VoidHuntersEntityDescriptor descriptor, IEntityType? baseType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components)
+        public EntityType(IKey<IEntityType> key, IKey<IEntityType>[] include)
         {
+            this.RequiredInstanceEntityComponents = new HashSet<Type>();
+            this.RequiredTypeEntityComponents = new HashSet<Type>();
+
+            this.InstanceEntityComponentBuilders = new ComponentBuilderDictionary();
+            this.TypeEntityComponentBuilders = new ComponentBuilderDictionary();
+
             this.Key = key;
-            this.Id = Id<IEntityType>.FromString(key);
-            this.Flags = flags;
+            this.Include = include;
 
-            _list.Add(this);
-            this.Descriptor = descriptor;
-            this.BaseType = baseType;
+            foreach (IKey<IEntityType> includeTypeKey in include)
+            {
+                ThrowIf.Type.IsNotAssignableFrom(includeTypeKey.Type, this.Type);
+            }
 
-            this.InstanceComponents = instanceComponents.ToDictionary(x => x.GetType(), x => x);
-            this.Components = components.ToDictionary(x => x.GetType(), x => x);
+            // TODO: Some of these components should just be marked as required rather than
+            // Given default values.
+            this.WithInstanceEntityComponents([
+                new EntityId(),
+                new EntityStatus(),
+                new InstanceEntity(),
+                new BelongsTo<TypeEntity, InstanceEntity>()
+            ]);
+
+            this.WithTypeEntityComponents([
+                new EntityId(),
+                new TypeEntity(),
+                new HasMany<InstanceEntity, TypeEntity>()
+            ]);
         }
 
-        public override string ToString()
+        public EntityType WithFlags(EntityTypeFlags flags)
         {
-            return $"{this.Key}:{this.Descriptor.Name}";
+            this.Flags |= flags;
+
+            return this;
         }
 
-        public static IEnumerable<EntityType> All()
+        public EntityType WithInstanceEntityComponent(IEntityComponent component)
         {
-            return _list;
+            this.InstanceEntityComponentBuilders.Set(component);
+
+            return this;
         }
 
-        public static IEntityType Create(string key, EntityTypeFlags flags, Type descriptorType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components)
+        public EntityType WithInstanceEntityComponent<TComponent>(TComponent component)
+            where TComponent : unmanaged, IEntityComponent
         {
-            ThrowIf.Type.IsNotAssignableFrom<VoidHuntersEntityDescriptor>(descriptorType);
+            this.InstanceEntityComponentBuilders.Set(component);
 
-            Type entityTypeType = typeof(EntityType<>).MakeGenericType(descriptorType);
-
-            return (IEntityType<VoidHuntersEntityDescriptor>)Activator.CreateInstance(entityTypeType, key, flags, instanceComponents, components)!;
+            return this;
         }
 
-        public static IEntityType Create(string key, EntityTypeFlags flags, VoidHuntersEntityDescriptor descriptor, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components)
+        public EntityType WithInstanceEntityComponents(IEnumerable<IEntityComponent> components)
         {
-            Type entityTypeType = typeof(EntityType<>).MakeGenericType(descriptor.GetType());
+            foreach (IEntityComponent component in components)
+            {
+                this.WithInstanceEntityComponent(component);
+            }
 
-            return (IEntityType<VoidHuntersEntityDescriptor>)Activator.CreateInstance(entityTypeType, key, flags, descriptor, instanceComponents, components)!;
+            return this;
         }
 
-        public static IEntityType Create(string key, EntityTypeFlags flags, IEntityType baseType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components)
+        public EntityType RequireInstanceEntityComponent(Type component)
         {
-            Type entityTypeType = typeof(EntityType<>).MakeGenericType(baseType.Descriptor.GetType());
-
-            return (IEntityType<VoidHuntersEntityDescriptor>)Activator.CreateInstance(entityTypeType, key, flags, baseType, instanceComponents, components)!;
+            return this.RequireEntityComponent(this.RequiredInstanceEntityComponents, component);
         }
-    }
 
-    public sealed class EntityType<TDescriptor> : EntityType, IEntityType<TDescriptor>
-        where TDescriptor : VoidHuntersEntityDescriptor, new()
-    {
-        public readonly new TDescriptor Descriptor;
+        public EntityType RequireInstanceEntityComponent<TComponent>()
+            where TComponent : unmanaged, IEntityComponent
+        {
+            return this.RequireEntityComponent(this.RequiredInstanceEntityComponents, typeof(TComponent));
+        }
 
-        TDescriptor IEntityType<TDescriptor>.Descriptor => this.Descriptor;
+        public EntityType RequireInstanceEntityComponents(Type[] components)
+        {
+            foreach (Type component in components)
+            {
+                this.RequireEntityComponent(this.RequiredInstanceEntityComponents, component);
+            }
 
-        public EntityType(string key, EntityTypeFlags flags, IEntityType baseType, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components) : base(key, flags, baseType.Descriptor, baseType, baseType.InstanceComponents.Values.Concat(instanceComponents), baseType.Components.Values.Concat(components))
-        {
-            this.Descriptor = new TDescriptor();
+            return this;
         }
-        public EntityType(string key, EntityTypeFlags flags, TDescriptor descriptor, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components) : base(key, flags, descriptor, null, instanceComponents, components)
+
+        public EntityType RequireTypeEntityComponent(Type component)
         {
-            this.Descriptor = new TDescriptor();
+            return this.RequireEntityComponent(this.RequiredTypeEntityComponents, component);
         }
-        public EntityType(string key, EntityTypeFlags flags, IEnumerable<IEntityComponent> instanceComponents, IEnumerable<IEntityComponent> components) : this(key, flags, new TDescriptor(), instanceComponents, components)
+
+        public EntityType RequireTypeEntityComponent<TComponent>()
+            where TComponent : unmanaged, IEntityComponent
         {
-            this.Descriptor = new TDescriptor();
+            return this.RequireEntityComponent(this.RequiredTypeEntityComponents, typeof(TComponent));
         }
-        public EntityType(string key, EntityTypeFlags flags = EntityTypeFlags.None) : this(key, flags, Enumerable.Empty<IEntityComponent>(), Enumerable.Empty<IEntityComponent>())
+
+        public EntityType RequireTypeEntityComponents(Type[] components)
         {
-            this.Descriptor = new TDescriptor();
+            foreach (Type component in components)
+            {
+                return this.RequireEntityComponent(this.RequiredTypeEntityComponents, component);
+            }
+
+            return this;
+        }
+
+        public EntityType WithTypeEntityComponent(IEntityComponent component)
+        {
+            this.TypeEntityComponentBuilders.Set(component);
+
+            return this;
+        }
+
+        public EntityType WithTypeEntityComponent<TComponent>(TComponent component)
+            where TComponent : unmanaged, IEntityComponent
+        {
+            this.TypeEntityComponentBuilders.Set(component);
+
+            return this;
+        }
+
+        public EntityType WithTypeEntityComponents(IEnumerable<IEntityComponent> components)
+        {
+            foreach (IEntityComponent component in components)
+            {
+                this.WithTypeEntityComponent(component);
+            }
+
+            return this;
+        }
+
+        private EntityType RequireEntityComponent(HashSet<Type> components, Type type)
+        {
+            ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>(type);
+            ThrowIf.Type.IsNotUnmanagedStruct(type);
+
+            components.Add(type);
+
+            return this;
         }
     }
 }

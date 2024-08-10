@@ -3,6 +3,7 @@ using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Serilog;
 using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -25,7 +26,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal sealed class DrawVisibleEngine : StrategyEngine, IDrawVisibleEngine
     {
         private readonly IEntityQueryService _entityQueryService;
-        private readonly IEntityTypeService _entityTypeService;
         private readonly ILogger _logger;
         private readonly Camera2D _camera;
 
@@ -34,11 +34,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
         public DrawVisibleEngine(
             ILogger logger,
             IEntityQueryService entityQueryService,
-            IEntityTypeService entityTypeService,
             Camera2D camera)
         {
             _entityQueryService = entityQueryService;
-            _entityTypeService = entityTypeService;
             _logger = logger;
             _camera = camera;
         }
@@ -49,12 +47,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 for (int i = 0; i < typeCount; i++)
                 {
-                    Id<IEntityType> entityType = typeEntities[i].TypeId;
+                    IKey<IEntityType> entityTypeKey = typeEntities[i].Type.Key;
                     var type = typeEntities[i].Type;
 
                     ref HasMany<InstanceEntity, TypeEntity> hasManyIntances = ref hasManyInstances[i];
 
-                    InstanceVertexProvider<VertexInstanceVisible> vertexBufferManager = param.GetInstanceVertexProviderById(entityType);
+                    InstanceVertexProvider<VertexInstanceVisible> vertexBufferManager = param.GetInstanceVertexProviderByKey(entityTypeKey);
 
                     foreach (var (indices, group) in hasManyIntances.Items)
                     {

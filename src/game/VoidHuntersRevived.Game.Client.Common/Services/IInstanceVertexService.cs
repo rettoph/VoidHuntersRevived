@@ -8,11 +8,10 @@ namespace VoidHuntersRevived.Game.Client.Common.Services
         void Initialize();
     }
 
-    public interface IInstanceVertexService<TVertex, TId> : IInstanceVertexService
+    public interface IInstanceVertexService<TVertex, TKey> : IInstanceVertexService
         where TVertex : struct, IVertexType
-        where TId : struct
     {
-        InstanceVertexProvider<TVertex> GetInstanceVertexProviderById(TId id);
+        InstanceVertexProvider<TVertex> GetInstanceVertexProviderByKey(TKey key);
 
         IEnumerable<InstanceVertexProvider<TVertex>> GetAllInstanceVertexProviders();
     }

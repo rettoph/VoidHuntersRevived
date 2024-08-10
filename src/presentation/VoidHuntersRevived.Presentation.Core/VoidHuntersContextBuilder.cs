@@ -1,7 +1,7 @@
 ﻿using Guppy.Engine;
 using System.Reflection;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Teams.Common.Descriptors;
+using VoidHuntersRevived.Domain.Teams.Common.EntityTypes;
 using VoidHuntersRevived.Game.Core;
 
 namespace VoidHuntersRevived.Presentation.Core
@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Presentation.Core
     {
         private static readonly Assembly[] GameLibraries = [
             typeof(VhId).Assembly,
-            typeof(TeamDescriptor).Assembly
+            typeof(TeamEntityType).Assembly
         ];
 
         public static readonly GuppyContext ClientContext = new GuppyContext(VoidHuntersRevivedGame.Company, $"{VoidHuntersRevivedGame.Name}", GameLibraries);

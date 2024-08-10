@@ -8,6 +8,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Common\VoidHuntersRevived.Domain.Common.csproj" />
+    <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Physics.Common\VoidHuntersRevived.Domain.Physics.Common.csproj" />
+    <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Pieces.Common\VoidHuntersRevived.Domain.Pieces.Common.csproj" />
+    <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Ships.Common\VoidHuntersRevived.Domain.Ships.Common.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Teams.Common\VoidHuntersRevived.Domain.Teams.Common.csproj" />
   </ItemGroup>
 

@@ -5,7 +5,6 @@ using Guppy.Engine.Common.Loaders;
 using Svelto.ECS;
 using System.Reflection;
 using VoidHuntersRevived.Domain.Entities.Common.Attributes;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Engines;
 
@@ -36,13 +35,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
                             .InstancePerLifetimeScope();
                     }
                 }
-            }
-
-            // Register all Entity Descriptors
-            var descriptors = _assemblies.GetTypes<VoidHuntersEntityDescriptor>().WithAttribute<AutoLoadAttribute>(true).Where(x => x.IsClass && !x.IsAbstract && !x.IsGenericType).ToArray();
-            foreach (Type descriptorType in descriptors)
-            {
-                services.RegisterType(descriptorType).As<VoidHuntersEntityDescriptor>().SingleInstance();
             }
         }
     }

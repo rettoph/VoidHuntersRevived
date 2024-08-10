@@ -38,8 +38,8 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             StrategyTypeEnum.Lockstep
         ];
 
-        public const string TestEntityTypeName = nameof(TestEntityTypeName);
-        public static IEntityType[] TestEntityTypes = [new EntityType<TestEntityDescriptor>(TestEntityTypeName)];
+
+        public static IEntityType[] TestEntityTypes = [new TestEntityType()];
 
         private int _sourceIdGeneratorIndex;
         private TickBuffer _tickBuffer;
@@ -180,17 +180,10 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             EntitiesSubmissionScheduler entitiesSubmissionScheduler = new EntitiesSubmissionScheduler();
             EnginesRoot enginesRoot = new EnginesRoot(entitiesSubmissionScheduler);
 
-            EntityTypeServiceBuilder entityTypeService = new EntityTypeServiceBuilder();
-            entityTypeService.UniqueNumberProviderService.SetInstance(new UniqueNumberProvider());
-            entityTypeService.EnginesRoot.SetInstance(enginesRoot);
-            entityTypeService.ResourceService
-                .Setup(
-                    expression: x => x.GetValues<IEntityType>(),
-                    result: TestEntityTypes.Select(x => new ResourceValue<IEntityType>(default, x.Yield()))
-                );
-
             EntityServiceBuilder entityService = new EntityServiceBuilder();
-            entityService.EntityTypeService.SetInstance(entityTypeService.GetInstance());
+            entityService.EntityTypeService.Setup(x => x.GetAll(), TestEntityTypes);
+            entityService.EntityTypeProviderService.UniqueNumberProviderService.SetInstance(new UniqueNumberProvider());
+            entityService.EntityTypeProviderService.EnginesRoot.SetInstance(enginesRoot);
             entityService.EntityQueryService.SetInstance(new EntityQueryService());
             entityService.EntitySpawnService.SetInstance(new EntitySpawnService(entityService.EntityQueryService.GetInstance(), entityService.GetInstance(), builder.Logger.GetInstance()));
 
@@ -204,7 +197,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                 .Setup(settings => settings.GetValue<int>(Settings.StepsPerTick), () => StepsPerTick);
 
             builder.EngineServiceBuilder.Engines.AddRange([
-                entityTypeService.GetInstance(),
+                entityService.EntityTypeProviderService.GetInstance(),
                 entityService.GetInstance(),
                 entityService.EntityQueryService.GetInstance(),
                 entityService.EntitySpawnService.GetInstance(),
@@ -215,12 +208,12 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
 
         private TestSpawnInput GenerateTestSpawnInput(int id, bool doDiscard)
         {
-            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityDescriptor, int>.Instance.Calculate(id), EntityType = TestEntityTypes[0], DoDiscard = doDiscard };
+            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id), EntityType = TestEntityTypes[0], DoDiscard = doDiscard };
         }
 
         private TestDepawnInput GenerateTestDepawnInput(int id, bool doDiscard)
         {
-            return new TestDepawnInput() { EntityId = HashBuilder<TestEntityDescriptor, int>.Instance.Calculate(id), DoDiscard = doDiscard };
+            return new TestDepawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id), DoDiscard = doDiscard };
         }
 
         private VhId GenerateSourceId()

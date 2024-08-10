@@ -4,7 +4,6 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
-using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Services
 {
@@ -17,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Services
 
         bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out Socket socket);
 
-        EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IEntityType<PieceDescriptor> node, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IKey<IEntityType> nodeTypeKey, EntityInitializerDelegate? initializer = null);
         EntityId Spawn(VhId sourceId, Socket socket, EntityData nodes, EntityInitializerDelegate? initializer = null);
     }
 }

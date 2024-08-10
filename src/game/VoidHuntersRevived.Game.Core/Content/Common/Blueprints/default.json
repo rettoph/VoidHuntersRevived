@@ -1,26 +1,26 @@
 {
   "Name": "Default",
   "Head": {
-    "PieceType": "Piece.Hull.Square",
+    "PieceTypeKey": "Piece.Hull.Square",
     "Children": [
       null,
       null,
       [
         {
-          "PieceType": "Piece.Hull.Square",
+          "PieceTypeKey": "Piece.Hull.Square",
           "Children": [
             [
               {
-                "PieceType": "Piece.Hull.Triangle",
+                "PieceTypeKey": "Piece.Hull.Triangle",
                 "Children": [
                   [
                     {
-                      "PieceType": "Piece.Thruster"
+                      "PieceTypeKey": "Piece.Thruster"
                     }
                   ],
                   [
                     {
-                      "PieceType": "Piece.Thruster"
+                      "PieceTypeKey": "Piece.Thruster"
                     }
                   ]
                 ]
@@ -28,16 +28,16 @@
             ],
             [
               {
-                "PieceType": "Piece.Hull.Triangle",
+                "PieceTypeKey": "Piece.Hull.Triangle",
                 "Children": [
                   [
                     {
-                      "PieceType": "Piece.Thruster"
+                      "PieceTypeKey": "Piece.Thruster"
                     }
                   ],
                   [
                     {
-                      "PieceType": "Piece.Thruster"
+                      "PieceTypeKey": "Piece.Thruster"
                     }
                   ]
                 ]
@@ -45,16 +45,16 @@
             ],
             [
               {
-                "PieceType": "Piece.Hull.Triangle",
+                "PieceTypeKey": "Piece.Hull.Triangle",
                 "Children": [
                   [
                     {
-                      "PieceType": "Piece.Thruster"
+                      "PieceTypeKey": "Piece.Thruster"
                     }
                   ],
                   [
                     {
-                      "PieceType": "Piece.Thruster"
+                      "PieceTypeKey": "Piece.Thruster"
                     }
                   ]
                 ]

@@ -1,7 +1,10 @@
 {
-  "Key": "Piece.Hull.Triangle",
-  "BaseType": "Piece.Base.Hull",
-  "InstanceComponents": {
+  "Key": {
+    "Name": "Piece.Hull.Triangle",
+    "Type": "HullEntityType"
+  },
+  "Include": [ "Piece.Base.Hull" ],
+  "InstanceEntityComponents": {
     "Rigid": {
       "Centeroid": {
         "X": 0.5,
@@ -55,7 +58,7 @@
       }
     }
   },
-  "Components": {
+  "TypeEntityComponents": {
     "Visible": {
       "Fill": [
         {

@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions
     {
         public static VhId CalculateHash(this IBlueprintPiece blueprintPiece)
         {
-            VhId hash = blueprintPiece.PieceType.Id.Value;
+            VhId hash = blueprintPiece.PieceTypeKey.Id;
 
             for (int i = 0; i < blueprintPiece.Children.Length; i++)
             {

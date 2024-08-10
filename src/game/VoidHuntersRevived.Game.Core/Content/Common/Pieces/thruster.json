@@ -1,7 +1,10 @@
 {
-  "Key": "Piece.Thruster",
-  "BaseType": "Piece.Base.Thruster",
-  "InstanceComponents": {
+  "Key": {
+    "Name": "Piece.Thruster",
+    "Type": "ThrusterEntityType"
+  },
+  "Include": [ "Piece.Base.Thruster" ],
+  "InstanceEntityComponents": {
     "Rigid": {
       "Centeroid": {
         "X": 0,
@@ -51,7 +54,7 @@
       }
     }
   },
-  "Components": {
+  "TypeEntityComponents": {
     "Visible": {
       "Fill": [
         {

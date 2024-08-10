@@ -7,7 +7,6 @@ using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Pieces.Common.Descriptors;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
@@ -24,28 +23,20 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private HashSet<EGID> _removedNodes = new HashSet<EGID>();
         private readonly IEntityQueryService _entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService;
-        private readonly IEntityDescriptorService _entityDescriptorService;
         private readonly ILogger _logger;
 
         public TreeEngine(
             IEntityQueryService entityQueryService,
             IEntitySpawnService entitySpawnService,
-            IEntityDescriptorService entityDescriptorService,
             ILogger logger)
         {
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
-            _entityDescriptorService = entityDescriptorService;
             _logger = logger;
         }
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
-            if (_entityDescriptorService.GetByGroup(groupIndex.GroupID) is not TreeDescriptor)
-            {
-                throw new Exception();
-            }
-
             ref Location location = ref _entityQueryService.QueryByGroupIndex<Location>(groupIndex);
             ref var filter = ref _entityQueryService.GetFilter<Node>(id, Tree.NodeFilterContextId);
 

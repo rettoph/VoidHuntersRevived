@@ -4,7 +4,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 namespace VoidHuntersRevived.Domain.Pieces.Common.Initializers
 {
     [AutoLoad]
-    internal sealed class PieceInitializer : BaseEntityInitializer
+    internal sealed class PieceInitializer : BaseEntityTypeProviderInitializer
     {
         // private readonly IResourceProvider _resources;
         // private readonly IEntityQueryService _entities;

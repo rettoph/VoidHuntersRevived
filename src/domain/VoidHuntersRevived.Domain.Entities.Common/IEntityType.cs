@@ -1,24 +1,19 @@
-﻿using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
+﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public interface IEntityType
     {
-        Id<IEntityType> Id { get; }
-        string Key { get; }
-        public EntityTypeFlags Flags { get; }
-        VoidHuntersEntityDescriptor Descriptor { get; }
-        IEntityType? BaseType { get; }
+        IKey<IEntityType> Key { get; }
+        EntityTypeFlags Flags { get; }
+        IKey<IEntityType>[] Include { get; }
 
-        IReadOnlyDictionary<Type, IEntityComponent> InstanceComponents { get; }
-        IReadOnlyDictionary<Type, IEntityComponent> Components { get; }
-    }
+        HashSet<Type> RequiredInstanceEntityComponents { get; }
+        ComponentBuilderDictionary InstanceEntityComponentBuilders { get; }
 
-    public interface IEntityType<out T> : IEntityType
-        where T : VoidHuntersEntityDescriptor
-    {
-        new T Descriptor { get; }
+        HashSet<Type> RequiredTypeEntityComponents { get; }
+        ComponentBuilderDictionary TypeEntityComponentBuilders { get; }
     }
 }

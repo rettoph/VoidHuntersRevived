@@ -1,6 +1,5 @@
 ﻿using Guppy.Core.Common;
-using Svelto.DataStructures;
-using VoidHuntersRevived.Domain.Entities.Common;
+using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
@@ -15,21 +14,23 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _serializers = serializers.ToDictionary(x => x.Type, x => x);
         }
 
-        public FasterList<ComponentSerializer> GetInstanceComponentSerializers(IEntityType type)
+        public ComponentSerializer GetComponentSerializer(Type componentType)
         {
-            List<ComponentSerializer> items = new List<ComponentSerializer>();
+            ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>(componentType);
+            ThrowIf.Type.IsNotUnmanagedStruct(componentType);
 
-            foreach (Type component in type.Descriptor.Instance.componentsToBuild.Select(x => x.GetEntityComponentType()))
+            return _serializers[componentType];
+        }
+
+        public IEnumerable<ComponentSerializer> GetComponentSerializers(IEnumerable<Type> componentTypes)
+        {
+            foreach (Type componentType in componentTypes)
             {
-                if (_serializers.TryGetValue(component, out var serializer))
+                if (_serializers.TryGetValue(componentType, out ComponentSerializer? componentSerializer))
                 {
-                    items.Add(serializer);
+                    yield return componentSerializer;
                 }
             }
-
-            FasterList<ComponentSerializer> result = new FasterList<ComponentSerializer>(items);
-
-            return result;
         }
     }
 }

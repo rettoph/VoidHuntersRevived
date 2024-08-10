@@ -48,6 +48,7 @@ namespace VoidHuntersRevived.Domain.Loaders
             services.RegisterType<FixPolarConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<FixVector2Converter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<NativeDynamicArrayCastJsonConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<KeyConverter>().As<JsonConverter>().SingleInstance();
 
             services.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<Fix64, object>(nameof(Fix64))).SingleInstance();
         }

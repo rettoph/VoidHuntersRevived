@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         public void Process(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntitySpawnService), nameof(Process), nameof(SpawnEntity), data.VhId);
+            _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityId = {EntityId}", nameof(EntitySpawnService), nameof(Process), nameof(SpawnEntity), data.VhId);
 
             if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == true)
             {
@@ -57,14 +57,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 {
                     IsPrivate = data.IsPrivate,
                     VhId = data.VhId,
-                    Type = data.Type
+                    TypeKey = data.TypeKey
                 }
             });
         }
 
         public void Process(VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntitySpawnService), nameof(Process), nameof(SpawnEntity), data.VhId);
+            _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityId = {EntityId}", nameof(EntitySpawnService), nameof(Process), nameof(SpawnEntity), data.VhId);
 
             if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == true)
             {
@@ -96,7 +96,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 {
                     IsPrivate = data.IsPrivate,
                     VhId = data.VhId,
-                    Type = data.Type,
+                    TypeKey = data.TypeKey,
                     Initializer = data.Initializer
                 }
             });
@@ -106,15 +106,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             ref EntityId id = ref _entityQueryService.AddId(data.VhId);
 
-            EntityInitializer initializer = _entityService.Types.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
+            EntityInitializer initializer = _entityService.TypeProviders.GetByKey(data.TypeKey).HardSpawnInstanceEntity(eventId, data.VhId, out id);
         }
 
         public void Process(VhId eventId, HardSpawnEntity<EntityInitializerDelegate> data)
         {
             ref EntityId id = ref _entityQueryService.AddId(data.VhId);
 
-            EntityInitializer initializer = _entityService.Types.GetProviderByType(data.Type).HardSpawnInstanceEntity(eventId, data.VhId, out id);
-            data.Initializer.Invoke(_entityService, data.Type, id, ref initializer);
+            IEntityTypeProvider provider = _entityService.TypeProviders.GetByKey(data.TypeKey);
+            EntityInitializer initializer = provider.HardSpawnInstanceEntity(eventId, data.VhId, out id);
+            data.Initializer.Invoke(_entityService, provider, id, ref initializer);
         }
 
         public void Process(VhId eventId, SoftSpawnEntity data)
@@ -132,8 +133,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            Id<IEntityType> typeId = _entityQueryService.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
-            _entityService.Types.GetProviderByTypeId(typeId).SoftSpawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
+            IKey<IEntityType> typeKey = _entityQueryService.QueryByGroupIndex<InstanceEntity>(in groupIndex).Type.Key;
+            _entityService.TypeProviders.GetByKey(typeKey).SoftSpawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
             status.Value = EntityStatusEnum.SoftSpawned;
         }
 
@@ -256,8 +257,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            Id<IEntityType> typeId = _entityQueryService.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
-            _entityService.Types.GetProviderByTypeId(typeId).SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
+            IKey<IEntityType> typeKey = _entityQueryService.QueryByGroupIndex<InstanceEntity>(in groupIndex).Type.Key;
+            _entityService.TypeProviders.GetByKey(typeKey).SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
             status.Value = EntityStatusEnum.SoftDespawned;
         }
 
@@ -277,8 +278,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            Id<IEntityType> typeId = _entityQueryService.QueryByGroupIndex<InstanceEntity>(in groupIndex).TypeId;
-            IEntityTypeProvider descriptorEngine = _entityService.Types.GetProviderByTypeId(typeId);
+            IKey<IEntityType> typeKey = _entityQueryService.QueryByGroupIndex<InstanceEntity>(in groupIndex).Type.Key;
+            IEntityTypeProvider descriptorEngine = _entityService.TypeProviders.GetByKey(typeKey);
 
             if (status.Value < EntityStatusEnum.SoftDespawned)
             { // Ensure an entity gets soft despawned if it hasn't been already
