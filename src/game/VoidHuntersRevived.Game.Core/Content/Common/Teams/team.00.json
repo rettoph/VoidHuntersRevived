@@ -6,9 +6,6 @@
   "TypeEntityComponents": {
     "Team": {
       "Name": "String.TeamZeroName"
-    },
-    "zIndex": {
-      "Value": 0
     }
   }
 }

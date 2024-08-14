@@ -65,6 +65,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             return true;
         }
 
+        public bool Has<T>()
+            where T : unmanaged, IEntityComponent
+        {
+            return _builders.ContainsKey(typeof(T));
+        }
+
         public IComponentBuilder[] ToArray()
         {
             return _builders.Values.ToArray();

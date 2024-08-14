@@ -8,9 +8,6 @@
     "ColorScheme": {
       "Primary": "Color.HullPrimaryColor",
       "Secondary": "Color.HullSecondaryColor"
-    },
-    "zIndex": {
-      "Value": 0
     }
   }
 }

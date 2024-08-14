@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Game.Client.Common.Utilities;
 
 namespace VoidHuntersRevived.Game.Client.Common.Services

@@ -4,6 +4,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
+using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Teams.Common.EntityTypes;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
@@ -17,7 +18,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
                 Plug.Default,
                 new Coupling(),
                 new Node(),
-                new BelongsTo<Tree, Node>()
+                new BelongsTo<Tree, Node>(),
+                new VertexInstanceVisible()
             ]);
 
             this.RequireInstanceEntityComponent<Rigid>()

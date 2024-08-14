@@ -1,66 +1,52 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Svelto.ECS;
+﻿using Guppy.Core.Common.Attributes;
+using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Graphics.Common;
+using VoidHuntersRevived.Domain.Graphics.Common.Enums;
+using VoidHuntersRevived.Domain.Graphics.Common.Utilities;
+using VoidHuntersRevived.Domain.Graphics.Factories;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
 using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
-using VoidHuntersRevived.Game.Client.Common.Services;
-using VoidHuntersRevived.Game.Client.Common.Utilities;
 
-namespace VoidHuntersRevived.Game.Client.Services
+namespace VoidHuntersRevived.Game.Client.Graphics.Factories
 {
-    internal sealed class VisibleInstancePrimitiveVertexService : IVisibleInstanceVertexService, IDisposable
+    [AutoLoad]
+    internal sealed class VisiblePrimitiveFactory : IPrimitiveFactory
     {
-        private readonly IEntityQueryService _entityQueryService;
         private readonly GraphicsDevice _graphics;
-        private readonly Dictionary<IKey<IEntityType>, InstanceVertexProvider<VertexInstanceVisible>> _providers;
+        private readonly IEntityTypeProviderService _entityTypeProviderService;
 
-        public VisibleInstancePrimitiveVertexService(IEntityQueryService entityQueryService, GraphicsDevice grapphics)
+        public VisiblePrimitiveFactory(IEntityTypeProviderService entityTypeProviderService, GraphicsDevice graphics)
         {
-            _entityQueryService = entityQueryService;
-            _graphics = grapphics;
-            _providers = new Dictionary<IKey<IEntityType>, InstanceVertexProvider<VertexInstanceVisible>>();
+            _graphics = graphics;
+            _entityTypeProviderService = entityTypeProviderService;
         }
 
-        public void Initialize()
+        public IEnumerable<IPrimitive> BuildPrimitives()
         {
-            List<InstanceVertexProvider<VertexInstanceVisible>> providers = new List<InstanceVertexProvider<VertexInstanceVisible>>();
-            foreach (var ((typeEntities, visibles, zIndices, count), _) in _entityQueryService.QueryEntities<TypeEntity, Visible>())
+            List<IPrimitive> primitives = new List<IPrimitive>();
+
+            foreach (IEntityTypeProvider entityTypeProvider in _entityTypeProviderService.GetAllByType<IEntityType>())
             {
-                for (int i = 0; i < count; i++)
+                if (entityTypeProvider.TypeEntityComponentBuilders.TryGet<Visible>(out Visible visible) == false)
                 {
-                    providers.Add(VisibleInstancePrimitiveVertexService.BuildVisibleInstanceVertexProvider(typeEntities[i].Type.Key, visibles[i], _graphics));
+                    continue;
                 }
+
+                primitives.Add(VisiblePrimitiveFactory.BuildVisibleInstanceVertexProvider(
+                    entityTypeKey: entityTypeProvider.Type.Key,
+                    visible: visible,
+                    graphics: _graphics));
             }
 
-            foreach (InstanceVertexProvider<VertexInstanceVisible> provider in providers)
-            {
-                _providers.Add(provider.Key, provider);
-            }
+            return primitives;
         }
 
-        public void Dispose()
-        {
-            foreach (InstanceVertexProvider<VertexInstanceVisible> provider in _providers.Values)
-            {
-                provider.Dispose();
-            }
-        }
-
-        public InstanceVertexProvider<VertexInstanceVisible> GetInstanceVertexProviderByKey(IKey<IEntityType> key)
-        {
-            return _providers[key];
-        }
-
-        public IEnumerable<InstanceVertexProvider<VertexInstanceVisible>> GetAllInstanceVertexProviders()
-        {
-            return _providers.Values;
-        }
-
-        private static InstanceVertexProvider<VertexInstanceVisible> BuildVisibleInstanceVertexProvider(
+        private static IPrimitive BuildVisibleInstanceVertexProvider(
             IKey<IEntityType> entityTypeKey,
             Visible visible,
             GraphicsDevice graphics)
@@ -130,12 +116,14 @@ namespace VoidHuntersRevived.Game.Client.Services
             IndexBuffer traceIndexBuffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, traceIndices.Count, BufferUsage.WriteOnly);
             traceIndexBuffer.SetData(traceIndices.ToArray());
 
-            return new InstanceVertexProvider<VertexInstanceVisible>(
-                key: entityTypeKey,
+            return new Primitive<VertexInstanceVisible>(
                 graphics: graphics,
-                staticBuffers: [fillBuffer, traceBuffer],
-                indexBuffers: [fillIndexBuffer, traceIndexBuffer],
-                primitiveTypes: [PrimitiveType.TriangleList, PrimitiveType.LineList]);
+                entityTypeKey: entityTypeKey,
+                [PrimitiveGroupEnum.Middleground],
+                [
+                    new BufferContext<VertexStaticVisible>(PrimitiveType.TriangleList, fillVertices.ToArray(), fillIndices.ToArray()),
+                    new BufferContext<VertexStaticVisible>(PrimitiveType.LineList, traceVertices.ToArray(), traceIndices.ToArray()),
+                ]);
         }
     }
 }

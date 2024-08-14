@@ -10,9 +10,6 @@
     "ColorScheme": {
       "Primary": "Color.TeamOnePrimaryColor",
       "Secondary": "Color.TeamOneSecondaryColor"
-    },
-    "zIndex": {
-      "Value": 1000
     }
   }
 }

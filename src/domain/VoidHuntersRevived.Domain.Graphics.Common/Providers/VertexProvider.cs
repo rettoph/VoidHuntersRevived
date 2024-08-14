@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 
-namespace VoidHuntersRevived.Game.Client.Common.Utilities
+namespace VoidHuntersRevived.Domain.Graphics.Common.Providers
 {
-    public class InstanceVertexProvider<TVertexInstance> : IDisposable
-        where TVertexInstance : struct, IVertexType
+    public class VertexProvider<TVertex> : IVertexProvider<TVertex>
+        where TVertex : unmanaged, IVertexType
     {
         private const int DefaultBufferSize = 256;
 
@@ -15,11 +13,10 @@ namespace VoidHuntersRevived.Game.Client.Common.Utilities
         private readonly IndexBuffer[] _indexBuffers;
         private readonly PrimitiveType[] _primitiveTyes;
         private VertexBuffer _instanceBuffer;
-        private TVertexInstance[] _instanceVertices;
+        private TVertex[] _instanceVertices;
         private int _instanceCount = 0;
         private VertexBufferBinding[][] _bindings;
 
-        public readonly IKey<IEntityType> Key;
         public readonly int BufferCount;
         public VertexBufferBinding[][] VertexBufferBindings => _bindings;
         public IndexBuffer[] IndexBuffers => _indexBuffers;
@@ -28,19 +25,21 @@ namespace VoidHuntersRevived.Game.Client.Common.Utilities
         public int InstanceCount => _instanceCount;
         public Func<int, int> PrimitiveCount => (idx) => this.StaticPrimitiveCount[idx] * this.InstanceCount;
 
-        public InstanceVertexProvider(IKey<IEntityType> key, GraphicsDevice graphics, VertexBuffer[] staticBuffers, IndexBuffer[] indexBuffers, PrimitiveType[] primitiveTypes)
+        public VertexProvider(
+            GraphicsDevice graphics,
+            VertexBuffer[] staticBuffers,
+            IndexBuffer[] indexBuffers,
+            PrimitiveType[] primitiveTypes)
         {
             if (staticBuffers.Length != indexBuffers.Length || staticBuffers.Length != primitiveTypes.Length)
             {
                 throw new ArgumentException();
             }
 
-            this.Key = key;
-
             _graphics = graphics;
 
-            _instanceVertices = new TVertexInstance[DefaultBufferSize];
-            _instanceBuffer = new DynamicVertexBuffer(_graphics, typeof(TVertexInstance), _instanceVertices.Length, BufferUsage.WriteOnly);
+            _instanceVertices = new TVertex[DefaultBufferSize];
+            _instanceBuffer = new DynamicVertexBuffer(_graphics, typeof(TVertex), _instanceVertices.Length, BufferUsage.WriteOnly);
 
             _staticBuffers = staticBuffers;
             _indexBuffers = indexBuffers;
@@ -77,7 +76,7 @@ namespace VoidHuntersRevived.Game.Client.Common.Utilities
             Array.Resize(ref _instanceVertices, capacity);
 
             _instanceBuffer.Dispose();
-            _instanceBuffer = new DynamicVertexBuffer(_graphics, typeof(TVertexInstance), _instanceVertices.Length, BufferUsage.WriteOnly);
+            _instanceBuffer = new DynamicVertexBuffer(_graphics, typeof(TVertex), _instanceVertices.Length, BufferUsage.WriteOnly);
             _bindings = _staticBuffers.Select((x, idx) => new VertexBufferBinding[]
             {
                 new VertexBufferBinding(_staticBuffers[idx], 0, 0),
@@ -85,23 +84,23 @@ namespace VoidHuntersRevived.Game.Client.Common.Utilities
             }).ToArray();
         }
 
-        public void SetNextVertexUnsafe(TVertexInstance vertex)
+        public void SetNextVertexUnsafe(TVertex vertex)
         {
             _instanceVertices[_instanceCount++] = vertex;
         }
 
-        public ref TVertexInstance GetNextVertexUnsafe()
+        public ref TVertex GetNextVertexUnsafe()
         {
             return ref _instanceVertices[_instanceCount++];
         }
 
-        public void SetNextVertex(TVertexInstance vertex)
+        public void SetNextVertex(TVertex vertex)
         {
             this.EnsureFit(1);
             _instanceVertices[_instanceCount++] = vertex;
         }
 
-        public ref TVertexInstance GetNextVertex()
+        public ref TVertex GetNextVertex()
         {
             this.EnsureFit(1);
             return ref _instanceVertices[_instanceCount++];

@@ -1,5 +1,8 @@
-﻿using System.Diagnostics;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Utilities;
+using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace VoidHuntersRevived.Common
@@ -91,15 +94,25 @@ namespace VoidHuntersRevived.Common
     [DebuggerDisplay("Type = {Type.Name}, Name = {Name}")]
     internal class Key<T> : Key, IKey<T>
     {
+        private UnmanagedReference<IKey<T>> _ref;
+
         public override Type Type => typeof(T);
 
         public Key(VhId id, string name) : base(id, name)
         {
+            _ref = new UnmanagedReference<IKey<T>>(this);
         }
 
         public override string ToString()
         {
             return $"Key<{this.Type.Name}>('{this.Name}')";
+        }
+
+        public unsafe UnmanagedReference<IKey<TRef>> AsRef<TRef>()
+        {
+            ThrowIf.Type.IsNotAssignableFrom<T>(typeof(TRef));
+
+            return Unsafe.As<UnmanagedReference<IKey<T>>, UnmanagedReference<IKey<TRef>>>(ref _ref);
         }
     }
 }

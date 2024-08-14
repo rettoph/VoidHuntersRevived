@@ -11,8 +11,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.EntityTypes
         public TeamEntityType(IKey<TeamEntityType> key, IKey<IEntityType>[] include) : base(key, include)
         {
             this.WithTypeEntityComponents([
-                new ColorScheme(),
-                new zIndex()
+                new ColorScheme()
             ]);
         }
     }

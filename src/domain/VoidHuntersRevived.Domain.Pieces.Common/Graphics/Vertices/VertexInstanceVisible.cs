@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Svelto.ECS;
 using System.Runtime.InteropServices;
 
-namespace VoidHuntersRevived.Game.Client.Common.Graphics.Vertices
+namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
 {
     [StructLayout(LayoutKind.Explicit)]
-    public struct VertexInstanceVisible : IVertexType
+    public struct VertexInstanceVisible : IVertexType, IEntityComponent
     {
         VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
         private static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration

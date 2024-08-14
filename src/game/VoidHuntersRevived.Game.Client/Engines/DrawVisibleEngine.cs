@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
                     foreach (var (indices, group) in hasManyIntances.Items)
                     {
-                        var (statuses, nodes, colorSchemes, zIndices, instanceCount) = _entityQueryService.QueryEntities<EntityStatus, Node, ColorScheme, zIndex>(group);
+                        var (statuses, nodes, colorSchemes, instanceCount) = _entityQueryService.QueryEntities<EntityStatus, Node, ColorScheme>(group);
                         vertexBufferManager.EnsureFit(instanceCount);
 
                         for (int j = 0; j < indices.count; j++)
@@ -69,14 +69,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
                             ref Node node = ref nodes[index];
                             ref ColorScheme colorScheme = ref colorSchemes[index];
-                            ref zIndex zIndex = ref zIndices[index];
 
                             ref VertexInstanceVisible instanceVertex = ref vertexBufferManager.GetNextVertexUnsafe();
 
                             instanceVertex.LocalTransformation = node.XnaTransformation;
                             instanceVertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
                             instanceVertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
-                            instanceVertex.Z = zIndex.Value;
                         }
                     }
                 }

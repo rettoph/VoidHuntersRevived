@@ -8,9 +8,6 @@
     "ColorScheme": {
       "Primary": "Color.ThrusterPrimaryColor",
       "Secondary": "Color.ThrusterSecondaryColor"
-    },
-    "zIndex": {
-      "Value": -1
     }
   }
 }
