@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly ILogger _logger;
         private readonly Camera2D _camera;
 
-        public string name { get; } = nameof(DrawVisibleEngine);
+        public string name { get; } = nameof(DrawActiveThrustableEngine);
 
         public DrawActiveThrustableEngine(
             ILogger logger,

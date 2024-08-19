@@ -1,14 +1,19 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Svelto.ECS;
 
-namespace VoidHuntersRevived.Domain.Graphics.Common.Providers
+namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 {
-    public class VertexProvider<TVertex> : IVertexProvider<TVertex>
+    public class VertexBuffer<TVertex> : IVertexBuffer<TVertex>
         where TVertex : unmanaged, IVertexType
     {
+        private static int FilterId;
+        private static FilterContextID FilterContextId = FilterContextID.GetNewContextID();
+
         private const int DefaultBufferSize = 256;
 
         private readonly GraphicsDevice _graphics;
 
+        private readonly CombinedFilterID _combinedFilterId;
         private readonly VertexBuffer[] _staticBuffers;
         private readonly IndexBuffer[] _indexBuffers;
         private readonly PrimitiveType[] _primitiveTyes;
@@ -23,9 +28,11 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Providers
         public PrimitiveType[] PrimitiveTypes => _primitiveTyes;
         public readonly int[] StaticPrimitiveCount;
         public int InstanceCount => _instanceCount;
-        public Func<int, int> PrimitiveCount => (idx) => this.StaticPrimitiveCount[idx] * this.InstanceCount;
+        public Func<int, int> PrimitiveCount => (idx) => StaticPrimitiveCount[idx] * InstanceCount;
 
-        public VertexProvider(
+        public EntitiesDB EntitiesDb { get; set; } = null!;
+
+        public VertexBuffer(
             GraphicsDevice graphics,
             VertexBuffer[] staticBuffers,
             IndexBuffer[] indexBuffers,
@@ -37,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Providers
             }
 
             _graphics = graphics;
-
+            _combinedFilterId = new CombinedFilterID(FilterId++, FilterContextId);
             _instanceVertices = new TVertex[DefaultBufferSize];
             _instanceBuffer = new DynamicVertexBuffer(_graphics, typeof(TVertex), _instanceVertices.Length, BufferUsage.WriteOnly);
 
@@ -50,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Providers
                 new VertexBufferBinding(_instanceBuffer, 0, 1)
             }).ToArray();
 
-            this.StaticPrimitiveCount = _primitiveTyes.Select(x => x switch
+            StaticPrimitiveCount = _primitiveTyes.Select(x => x switch
             {
                 PrimitiveType.LineList => 2,
                 PrimitiveType.TriangleList => 3,
@@ -96,13 +103,13 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Providers
 
         public void SetNextVertex(TVertex vertex)
         {
-            this.EnsureFit(1);
+            EnsureFit(1);
             _instanceVertices[_instanceCount++] = vertex;
         }
 
         public ref TVertex GetNextVertex()
         {
-            this.EnsureFit(1);
+            EnsureFit(1);
             return ref _instanceVertices[_instanceCount++];
         }
 
@@ -114,6 +121,21 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Providers
         public void Clear()
         {
             _instanceCount = 0;
+        }
+
+        public void Draw(Effect effect)
+        {
+            for (int i = 0; i < this.BufferCount; i++)
+            {
+                _graphics.SetVertexBuffers(this.VertexBufferBindings[i]);
+                _graphics.Indices = this.IndexBuffers[i];
+
+                foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    _graphics.DrawInstancedPrimitives(this.PrimitiveTypes[i], 0, 0, this.StaticPrimitiveCount[i], this.InstanceCount);
+                }
+            }
         }
 
         public void Dispose()
@@ -129,6 +151,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Providers
             {
                 staticBuffer.Dispose();
             }
+        }
+
+        public ref EntityFilterCollection GetFilter<TComponent>()
+            where TComponent : unmanaged, IVertexType, IEntityComponent
+        {
+            return ref this.EntitiesDb.GetFilters().GetOrCreatePersistentFilter<TComponent>(_combinedFilterId);
         }
     }
 }

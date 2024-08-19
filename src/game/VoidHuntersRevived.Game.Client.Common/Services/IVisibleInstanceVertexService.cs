@@ -1,6 +1,6 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
+using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 
 namespace VoidHuntersRevived.Game.Client.Common.Services
 {

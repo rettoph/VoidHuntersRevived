@@ -11,6 +11,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Loaders
         public void ConfigureServices(ContainerBuilder builder)
         {
             builder.RegisterType<PrimitiveService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<VertexTypeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

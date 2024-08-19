@@ -5,14 +5,14 @@ using VoidHuntersRevived.Game.Client.Common;
 
 namespace VoidHuntersRevived.Game.Client.Graphics.Effects
 {
-    public class VisibleAccumEffect : Effect
+    public class VisibleEffect : Effect
     {
         public Matrix WorldViewProjection
         {
             set => this.Parameters[nameof(WorldViewProjection)].SetValue(value);
         }
 
-        public VisibleAccumEffect(GraphicsDevice graphicsDevice, IResourceService resourceService) : base(graphicsDevice, resourceService.GetValue(Resources.EffectCodes.VisibleAccum).Value)
+        public VisibleEffect(GraphicsDevice graphicsDevice, IResourceService resourceService) : base(graphicsDevice, resourceService.GetValue(Resources.EffectCodes.Visible).Value)
         {
         }
     }

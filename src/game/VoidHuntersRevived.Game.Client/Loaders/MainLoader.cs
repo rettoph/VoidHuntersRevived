@@ -27,6 +27,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             });
 
             services.RegisterType<ShaderAntiAliasingEffect>().InstancePerDependency();
+            services.RegisterType<VisibleEffect>().InstancePerDependency();
             services.RegisterType<VisibleAccumEffect>().InstancePerDependency();
             services.RegisterType<VisibleFinalEffect>().InstancePerDependency();
             services.RegisterType<VisibleInstancePrimitiveVertexService>().AsImplementedInterfaces().InstancePerLifetimeScope();

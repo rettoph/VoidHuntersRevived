@@ -3,20 +3,19 @@ using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Game.Client.Common.Engines;
-using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
 using VoidHuntersRevived.Game.Client.Common.Services;
 using VoidHuntersRevived.Game.Client.Common.Utilities;
 using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
-    internal sealed class DrawVisibleInstanceVertexEngine : BaseDrawInstanceVertexEngine<IVisibleInstanceVertexService>
+    internal sealed class DrawVisibleInstanceVertexEngineOld : BaseDrawInstanceVertexEngine<IVisibleInstanceVertexService>
     {
         private readonly GraphicsDevice _graphics;
         private readonly GameWindow _window;
@@ -30,7 +29,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private VisibleAccumEffect _effect_accum;
         private VisibleFinalEffect _effect_final;
 
-        public DrawVisibleInstanceVertexEngine(
+        public DrawVisibleInstanceVertexEngineOld(
             IVisibleInstanceVertexService instancePrimitiveVertexService,
             GraphicsDevice graphics,
             GameWindow window,

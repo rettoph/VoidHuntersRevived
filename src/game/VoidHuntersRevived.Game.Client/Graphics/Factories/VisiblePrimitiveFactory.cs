@@ -10,7 +10,7 @@ using VoidHuntersRevived.Domain.Graphics.Common.Utilities;
 using VoidHuntersRevived.Domain.Graphics.Factories;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
-using VoidHuntersRevived.Game.Client.Common.Graphics.Vertices;
+using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 
 namespace VoidHuntersRevived.Game.Client.Graphics.Factories
 {
@@ -119,8 +119,8 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
             return new Primitive<VertexInstanceVisible>(
                 graphics: graphics,
                 entityTypeKey: entityTypeKey,
-                [PrimitiveGroupEnum.Middleground],
-                [
+                primitiveGroups: [PrimitiveGroupEnum.Middleground],
+                bufferContexts: [
                     new BufferContext<VertexStaticVisible>(PrimitiveType.TriangleList, fillVertices.ToArray(), fillIndices.ToArray()),
                     new BufferContext<VertexStaticVisible>(PrimitiveType.LineList, traceVertices.ToArray(), traceIndices.ToArray()),
                 ]);

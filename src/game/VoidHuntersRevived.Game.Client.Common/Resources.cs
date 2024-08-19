@@ -16,6 +16,7 @@ namespace VoidHuntersRevived.Game.Client.Common
             public static readonly Resource<EffectCode> ShaderAntiAliasing = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(ShaderAntiAliasing)}");
             public static readonly Resource<EffectCode> VisibleAccum = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(VisibleAccum)}");
             public static readonly Resource<EffectCode> VisibleFinal = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(VisibleFinal)}");
+            public static readonly Resource<EffectCode> Visible = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(Visible)}");
         }
     }
 }
