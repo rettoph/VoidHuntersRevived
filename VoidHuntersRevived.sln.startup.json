@@ -48,6 +48,11 @@
         },
         "VoidHuntersRevived.Presentation.DummyClient": {}
       }
+    },
+    "Server": {
+      "Projects": {
+        "VoidHuntersRevived.Presentation.Server": {}
+      }
     }
   }
 }
