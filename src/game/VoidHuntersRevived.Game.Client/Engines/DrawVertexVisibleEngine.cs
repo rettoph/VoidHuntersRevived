@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
-    public class DrawVertexInstanceVisibleEngine : BaseDrawVertexTypeEngine<VertexInstanceVisible>, IStepEngine<Step>
+    public class DrawVertexVisibleEngine : BaseDrawVertexTypeEngine<VertexVisible>, IStepEngine<Step>
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly Camera2D _camera;
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         protected override VisibleEffect effect { get; }
 
-        public DrawVertexInstanceVisibleEngine(
+        public DrawVertexVisibleEngine(
             IEntityQueryService entityQueryService,
             IVertexTypeService vertexTypeService,
             Camera2D camera,
@@ -73,11 +73,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
         /// <param name="param"></param>
         public void Step(in Step param)
         {
-            foreach (var ((vertices, colorSchemes, nodes, statuses, count), _) in _entityQueryService.QueryEntities<VertexInstanceVisible, ColorScheme, Node>())
+            foreach (var ((vertices, colorSchemes, nodes, statuses, count), _) in _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Node>())
             {
                 for (int i = 0; i < count; i++)
                 {
-                    ref VertexInstanceVisible vertex = ref vertices[i];
+                    ref VertexVisible vertex = ref vertices[i];
                     ref ColorScheme colorScheme = ref colorSchemes[i];
                     ref Node node = ref nodes[i];
 

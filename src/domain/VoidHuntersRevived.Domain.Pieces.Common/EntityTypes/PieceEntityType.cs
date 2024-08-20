@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
                 new Node(),
                 new BelongsTo<Tree, Node>(),
                 new PrimitiveGroup(),
-                new VertexInstanceVisible()
+                new VertexVisible()
             ]);
 
             this.RequireInstanceEntityComponent<Rigid>()

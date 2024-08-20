@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
                     continue;
                 }
 
-                primitives.Add(VisiblePrimitiveFactory.BuildVisibleInstanceVertexProvider(
+                primitives.Add(VisiblePrimitiveFactory.BuildVisiblePrimitive(
                     entityTypeKey: entityTypeProvider.Type.Key,
                     sequence: entityTypeProvider.TypeEntityComponentBuilders.Get<PrimitiveSequence>().Value,
                     visible: visible,
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
             return primitives;
         }
 
-        private static IPrimitive BuildVisibleInstanceVertexProvider(
+        private static IPrimitive BuildVisiblePrimitive(
             IKey<IEntityType> entityTypeKey,
             int sequence,
             Visible visible,
@@ -119,7 +119,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
             IndexBuffer traceIndexBuffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, traceIndices.Count, BufferUsage.WriteOnly);
             traceIndexBuffer.SetData(traceIndices.ToArray());
 
-            return new Primitive<VertexInstanceVisible>(
+            return new Primitive<VertexVisible>(
                 graphics: graphics,
                 entityTypeKey: entityTypeKey,
                 primitiveGroupSequences: [
