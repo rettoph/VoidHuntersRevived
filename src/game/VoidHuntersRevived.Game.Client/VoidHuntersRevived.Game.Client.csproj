@@ -13,9 +13,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\Aether.Physics2D\Physics2D.Diagnostics\Diagnostics\Aether.Physics2D.Diagnostics.NETSTANDARD2_0.MG.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Network.Common\Guppy.Core.Network.Common.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game.MonoGame.Common\Guppy.Game.MonoGame.Common.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game\Guppy.Game.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Graphics.Common\VoidHuntersRevived.Domain.Graphics.Common.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Physics.Common\VoidHuntersRevived.Domain.Physics.Common.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Game.Client.Common\VoidHuntersRevived.Game.Client.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Core\VoidHuntersRevived.Game.Core.csproj" />
   </ItemGroup>
   

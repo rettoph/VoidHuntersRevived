@@ -3,8 +3,6 @@
     "type": "EffectCode",
     "values": {
       "EffectCode.ShaderAntiAliasing": "Shaders\\Compiled\\ShaderAntiAliasing.mgfx",
-      "EffectCode.VisibleAccum": "Shaders\\Compiled\\VisibleAccum.mgfx",
-      "EffectCode.VisibleFinal": "Shaders\\Compiled\\VisibleFinal.mgfx",
       "EffectCode.Visible": "Shaders\\Compiled\\Visible.mgfx"
     }
   }

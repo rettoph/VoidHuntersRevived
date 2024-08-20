@@ -9,7 +9,6 @@ using Guppy.Game;
 using Guppy.Game.MonoGame.Common.Extensions;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using VoidHuntersRevived.Game.Client.Graphics.Effects;
-using VoidHuntersRevived.Game.Client.Services;
 using VoidHuntersRevived.Game.Core;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
@@ -28,9 +27,6 @@ namespace VoidHuntersRevived.Game.Client.Loaders
 
             services.RegisterType<ShaderAntiAliasingEffect>().InstancePerDependency();
             services.RegisterType<VisibleEffect>().InstancePerDependency();
-            services.RegisterType<VisibleAccumEffect>().InstancePerDependency();
-            services.RegisterType<VisibleFinalEffect>().InstancePerDependency();
-            services.RegisterType<VisibleInstancePrimitiveVertexService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.Configure<ISceneConfiguration<VoidHuntersGameScene>>((scope, configuration) =>
             {

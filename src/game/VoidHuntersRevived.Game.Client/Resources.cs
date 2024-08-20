@@ -2,7 +2,7 @@
 using Guppy.Game.MonoGame.Common.Graphics.Effects;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace VoidHuntersRevived.Game.Client.Common
+namespace VoidHuntersRevived.Game.Client
 {
     public static class Resources
     {
@@ -14,8 +14,6 @@ namespace VoidHuntersRevived.Game.Client.Common
         public static class EffectCodes
         {
             public static readonly Resource<EffectCode> ShaderAntiAliasing = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(ShaderAntiAliasing)}");
-            public static readonly Resource<EffectCode> VisibleAccum = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(VisibleAccum)}");
-            public static readonly Resource<EffectCode> VisibleFinal = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(VisibleFinal)}");
             public static readonly Resource<EffectCode> Visible = Resource<EffectCode>.Get($"{nameof(EffectCode)}.{nameof(Visible)}");
         }
     }

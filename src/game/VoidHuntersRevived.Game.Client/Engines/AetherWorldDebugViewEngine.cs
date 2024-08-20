@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _world = world;
             _debug = new DebugView(world);
             _camera = camera;
-            _debug.LoadContent(graphics, resourceService.GetValue(Common.Resources.SpriteFonts.Default));
+            _debug.LoadContent(graphics, resourceService.GetValue(Resources.SpriteFonts.Default));
             _filter = string.Empty;
 
             _buttonRedStyle = resourceService.GetValue(Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed);
