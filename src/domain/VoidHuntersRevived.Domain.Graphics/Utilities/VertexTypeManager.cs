@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Utilities
             this.Group = group;
             this.FilterId = filterId;
             this.Primitives = primitives;
-            this.VertexBuffers = primitives.Select(x => x.GetVertexBuffer(this.Group)).ToArray();
+            this.VertexBuffers = primitives.Select(x => x.GetVertexBuffer(this.Group)).OrderBy(x => x.Sequence).ToArray();
         }
     }
 }

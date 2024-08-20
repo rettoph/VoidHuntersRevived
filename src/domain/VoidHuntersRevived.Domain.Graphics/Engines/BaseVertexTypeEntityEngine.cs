@@ -27,7 +27,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    vertexBuffer.SetNextVertexUnsafe(vertices[i]);
+                    uint index = indices[i];
+                    vertexBuffer.SetNextVertexUnsafe(vertices[index]);
                 }
             }
         }
@@ -44,12 +45,13 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    if (statuses[i].IsDespawned)
+                    uint index = indices[i];
+                    if (statuses[index].IsDespawned)
                     { // Dont render pieces that have been despawned
                         continue;
                     }
 
-                    vertexBuffer.SetNextVertexUnsafe(vertices[i]);
+                    vertexBuffer.SetNextVertexUnsafe(vertices[index]);
                 }
             }
         }

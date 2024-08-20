@@ -1,10 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Svelto.ECS;
-using VoidHuntersRevived.Common.Extensions;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
+using VoidHuntersRevived.Domain.Teams.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Teams.Engines
 {
@@ -19,43 +16,10 @@ namespace VoidHuntersRevived.Domain.Teams.Engines
     /// 
     /// </summary>
     [AutoLoad]
-    internal class ColorSchemeEngine : StrategyEngine, IReactOnAddEx<ColorScheme>
+    internal class ColorSchemeEngine : BaseTeamInstanceComponentEngine<ColorScheme>
     {
-        private readonly IEntityQueryService _entityQueryService;
-
-        public ColorSchemeEngine(IEntityQueryService entityQueryService)
+        public ColorSchemeEngine(IEntityQueryService entityQueryService) : base(entityQueryService)
         {
-            _entityQueryService = entityQueryService;
-        }
-
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<ColorScheme> entities, ExclusiveGroupStruct groupID)
-        {
-            if (_entityQueryService.HasAll<InstanceEntity, BelongsTo<Team, TeamMember>, BelongsTo<TypeEntity, InstanceEntity>>(groupID, out var components) == false)
-            {
-                return;
-            }
-
-            var (instanceColorSchemes, _) = entities;
-            var (instances, belongsToTeams, belongsToTypes, _) = components;
-
-            for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
-            {
-                ref ColorScheme instanceColorScheme = ref instanceColorSchemes[i];
-
-                ref BelongsTo<Team, TeamMember> belongsToTeam = ref belongsToTeams[i];
-                if (_entityQueryService.TryQueryByVhId<ColorScheme>(belongsToTeam.OwnerVhId, out ColorScheme teamColorScheme) && teamColorScheme.IsDefault() == false)
-                {
-                    instanceColorScheme = teamColorScheme;
-                    continue;
-                }
-
-                ref BelongsTo<TypeEntity, InstanceEntity> belongsToType = ref belongsToTypes[i];
-                if (_entityQueryService.TryQueryByVhId<ColorScheme>(belongsToTypes[i].OwnerVhId, out ColorScheme typeColorScheme))
-                {
-                    instanceColorScheme = typeColorScheme;
-                    continue;
-                }
-            }
         }
     }
 }

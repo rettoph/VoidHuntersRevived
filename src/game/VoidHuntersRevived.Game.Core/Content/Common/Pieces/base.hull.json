@@ -8,6 +8,9 @@
     "ColorScheme": {
       "Primary": "Color.HullPrimaryColor",
       "Secondary": "Color.HullSecondaryColor"
+    },
+    "PrimitiveSequence": {
+      "Value": 0
     }
   }
 }

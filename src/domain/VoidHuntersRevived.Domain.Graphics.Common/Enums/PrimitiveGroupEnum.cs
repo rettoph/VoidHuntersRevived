@@ -2,8 +2,9 @@
 {
     public enum PrimitiveGroupEnum
     {
-        Background = 0,
-        Middleground = 1,
-        Foreground = 2
+        None = 0,
+        Background = 1,
+        Middleground = 2,
+        Foreground = 3
     }
 }

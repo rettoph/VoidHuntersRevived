@@ -5,6 +5,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Graphics.Common;
+using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 using VoidHuntersRevived.Domain.Graphics.Common.Utilities;
 using VoidHuntersRevived.Domain.Graphics.Factories;
@@ -39,6 +40,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
 
                 primitives.Add(VisiblePrimitiveFactory.BuildVisibleInstanceVertexProvider(
                     entityTypeKey: entityTypeProvider.Type.Key,
+                    sequence: entityTypeProvider.TypeEntityComponentBuilders.Get<PrimitiveSequence>().Value,
                     visible: visible,
                     graphics: _graphics));
             }
@@ -48,6 +50,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
 
         private static IPrimitive BuildVisibleInstanceVertexProvider(
             IKey<IEntityType> entityTypeKey,
+            int sequence,
             Visible visible,
             GraphicsDevice graphics)
         {
@@ -119,7 +122,10 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
             return new Primitive<VertexInstanceVisible>(
                 graphics: graphics,
                 entityTypeKey: entityTypeKey,
-                primitiveGroups: [PrimitiveGroupEnum.Middleground],
+                primitiveGroupSequences: [
+                    new PrimitiveGroupSequence(PrimitiveGroupEnum.Background, sequence),
+                    new PrimitiveGroupSequence(PrimitiveGroupEnum.Foreground, sequence)
+                ],
                 bufferContexts: [
                     new BufferContext<VertexStaticVisible>(PrimitiveType.TriangleList, fillVertices.ToArray(), fillIndices.ToArray()),
                     new BufferContext<VertexStaticVisible>(PrimitiveType.LineList, traceVertices.ToArray(), traceIndices.ToArray()),

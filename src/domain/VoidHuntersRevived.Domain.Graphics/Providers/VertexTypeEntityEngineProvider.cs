@@ -37,9 +37,15 @@ namespace VoidHuntersRevived.Domain.Graphics.Providers
         private static IEngine BuildEngine(Type vertexType, IVertexTypeManagerProvider vertexTypeManagerProvider)
         {
             // Many Types - Single Group
-            if (vertexTypeManagerProvider.Groups.Length == 1 && vertexTypeManagerProvider.Primitives.Length > 1)
+            if (vertexTypeManagerProvider.Primitives.Length > 1 && vertexTypeManagerProvider.Groups.Length == 1)
             {
                 return VertexTypeEntityEngineProvider.BuildGenericPrimitiveEngine(typeof(PrimitiveEntity_ManyTypesSingleGroup_Engine<>), vertexType, vertexTypeManagerProvider);
+            }
+
+            // Many Types - Many Groups
+            if (vertexTypeManagerProvider.Primitives.Length > 1 && vertexTypeManagerProvider.Groups.Length > 1)
+            {
+                return VertexTypeEntityEngineProvider.BuildGenericPrimitiveEngine(typeof(PrimitiveEntity_ManyTypesManyGroups_Engine<>), vertexType, vertexTypeManagerProvider);
             }
 
             throw new NotImplementedException();

@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
                 new Coupling(),
                 new Node(),
                 new BelongsTo<Tree, Node>(),
-                new PrimitiveInstance(),
+                new PrimitiveGroup(),
                 new VertexInstanceVisible()
             ]);
 

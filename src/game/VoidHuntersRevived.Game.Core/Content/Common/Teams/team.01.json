@@ -10,6 +10,9 @@
     "ColorScheme": {
       "Primary": "Color.TeamOnePrimaryColor",
       "Secondary": "Color.TeamOneSecondaryColor"
+    },
+    "PrimitiveGroup": {
+      "Value": "Foreground"
     }
   }
 }

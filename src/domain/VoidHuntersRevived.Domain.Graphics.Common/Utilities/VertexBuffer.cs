@@ -1,8 +1,13 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
+using System.Diagnostics;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 {
+    [DebuggerDisplay("EntityTypeKey = {EntityTypeKey?.Name}, VertexType = {VertexType.Name}, Group = {Group}")]
     public class VertexBuffer<TVertex> : IVertexBuffer<TVertex>
         where TVertex : unmanaged, IVertexType
     {
@@ -32,7 +37,16 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 
         public EntitiesDB EntitiesDb { get; set; } = null!;
 
+        public IKey<IEntityType>? EntityTypeKey { get; }
+        public PrimitiveGroupEnum Group { get; }
+        public Type VertexType => typeof(TVertex);
+
+        public int Sequence { get; }
+
         public VertexBuffer(
+            IKey<IEntityType>? entityTypeKey,
+            PrimitiveGroupEnum group,
+            int sequence,
             GraphicsDevice graphics,
             VertexBuffer[] staticBuffers,
             IndexBuffer[] indexBuffers,
@@ -65,6 +79,9 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
             }).Select((x, idx) => _indexBuffers[idx].IndexCount / x).ToArray();
 
             this.BufferCount = staticBuffers.Length;
+            this.EntityTypeKey = entityTypeKey;
+            this.Group = group;
+            this.Sequence = sequence;
         }
 
         public void EnsureFit(int size)

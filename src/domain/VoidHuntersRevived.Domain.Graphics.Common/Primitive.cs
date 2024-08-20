@@ -32,16 +32,19 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
         public Primitive(
             GraphicsDevice graphics,
             IKey<IEntityType>? entityTypeKey,
-            PrimitiveGroupEnum[] primitiveGroups,
+            PrimitiveGroupSequence[] primitiveGroupSequences,
             BufferContext[] bufferContexts)
         {
             this.EntityTypeKey = entityTypeKey;
             this.VertexType = typeof(TVertex);
-            this.Groups = primitiveGroups;
+            this.Groups = primitiveGroupSequences.Select(x => x.Group).ToArray();
 
-            _vertexBuffers = primitiveGroups.ToDictionary(
-                keySelector: x => x,
+            _vertexBuffers = primitiveGroupSequences.ToDictionary(
+                keySelector: x => x.Group,
                 elementSelector: x => (IVertexBuffer<TVertex>)new VertexBuffer<TVertex>(
+                    entityTypeKey: this.EntityTypeKey,
+                    group: x.Group,
+                    sequence: x.Sequence,
                     graphics: graphics,
                     staticBuffers: bufferContexts.Select(x => x.BuildVertexBuffer(graphics)).ToArray(),
                     indexBuffers: bufferContexts.Select(x => x.BuildIndexBuffer(graphics)).ToArray(),

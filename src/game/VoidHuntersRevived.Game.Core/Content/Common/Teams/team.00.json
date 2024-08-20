@@ -6,6 +6,9 @@
   "TypeEntityComponents": {
     "Team": {
       "Name": "String.TeamZeroName"
+    },
+    "PrimitiveGroup": {
+      "Value": "Background"
     }
   }
 }

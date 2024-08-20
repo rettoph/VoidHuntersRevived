@@ -77,13 +77,13 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 for (int i = 0; i < count; i++)
                 {
-                    ref VertexInstanceVisible instanceVertex = ref vertices[i];
+                    ref VertexInstanceVisible vertex = ref vertices[i];
                     ref ColorScheme colorScheme = ref colorSchemes[i];
                     ref Node node = ref nodes[i];
 
-                    instanceVertex.LocalTransformation = node.XnaTransformation;
-                    instanceVertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
-                    instanceVertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
+                    vertex.LocalTransformation = node.XnaTransformation;
+                    vertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
+                    vertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
                 }
             }
         }
