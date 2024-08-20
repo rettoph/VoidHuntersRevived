@@ -11,8 +11,8 @@
       "Primary": "Color.TeamOnePrimaryColor",
       "Secondary": "Color.TeamOneSecondaryColor"
     },
-    "zIndex": {
-      "Value": 1000
+    "PrimitiveGroup": {
+      "Value": "Foreground"
     }
   }
 }

@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Common
+﻿using Guppy.Core.Common.Utilities;
+
+namespace VoidHuntersRevived.Common
 {
     public interface IKey : IEquatable<IKey>
     {
@@ -10,5 +12,6 @@
 
     public interface IKey<out T> : IKey
     {
+        UnmanagedReference<IKey<TRef>> AsRef<TRef>();
     }
 }

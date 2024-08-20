@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private RenderTarget2D BuildRenderTarget()
         {
             _effect_aa.Pixel = new Vector2(1f / _graphics.Viewport.Width, 1f / _graphics.Viewport.Height);
-            return new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, _graphics.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
+            return new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Color, DepthFormat.None, _graphics.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
         }
 
 

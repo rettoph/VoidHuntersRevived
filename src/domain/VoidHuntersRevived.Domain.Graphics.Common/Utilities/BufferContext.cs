@@ -1,0 +1,51 @@
+﻿using Microsoft.Xna.Framework.Graphics;
+
+namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
+{
+    public abstract class BufferContext
+    {
+        public abstract PrimitiveType PrimitiveType { get; }
+
+        internal BufferContext()
+        {
+
+        }
+
+        public abstract VertexBuffer BuildVertexBuffer(GraphicsDevice graphics);
+
+        public abstract IndexBuffer BuildIndexBuffer(GraphicsDevice graphics);
+    }
+
+    public class BufferContext<TVertex> : BufferContext
+        where TVertex : unmanaged, IVertexType
+    {
+        private readonly TVertex[] _vertices;
+        private readonly short[] _indices;
+
+        public override PrimitiveType PrimitiveType { get; }
+
+        public BufferContext(PrimitiveType primitiveType, TVertex[] vertices, short[] indices)
+        {
+            _vertices = vertices;
+            _indices = indices;
+
+            this.PrimitiveType = primitiveType;
+        }
+
+        public override VertexBuffer BuildVertexBuffer(GraphicsDevice graphics)
+        {
+            VertexBuffer buffer = new VertexBuffer(graphics, typeof(TVertex), _vertices.Length, BufferUsage.WriteOnly);
+            buffer.SetData(_vertices);
+
+            return buffer;
+        }
+
+        public override IndexBuffer BuildIndexBuffer(GraphicsDevice graphics)
+        {
+            IndexBuffer buffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, _indices.Length, BufferUsage.WriteOnly);
+            buffer.SetData(_indices);
+
+            return buffer;
+        }
+    }
+}

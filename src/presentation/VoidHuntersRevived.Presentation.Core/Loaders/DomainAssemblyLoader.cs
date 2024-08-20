@@ -2,6 +2,7 @@
 using Guppy.Core.Common.Services;
 using Guppy.Engine.Common.Loaders;
 using VoidHuntersRevived.Domain.Entities.Loaders;
+using VoidHuntersRevived.Domain.Graphics.Loaders;
 using VoidHuntersRevived.Domain.Loaders;
 using VoidHuntersRevived.Domain.Physics.Loaders;
 using VoidHuntersRevived.Domain.Pieces.Loaders;
@@ -23,6 +24,7 @@ namespace VoidHuntersRevived.Presentation.Core.Loaders
             assemblies.Load(typeof(PieceLoader).Assembly);
             assemblies.Load(typeof(ShipLoader).Assembly);
             assemblies.Load(typeof(TeamLoader).Assembly);
+            assemblies.Load(typeof(GraphicsLoader).Assembly);
         }
     }
 }

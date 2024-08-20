@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Common\VoidHuntersRevived.Domain.Common.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities.Common\VoidHuntersRevived.Domain.Entities.Common.csproj" />
+  </ItemGroup>
+	
+</Project>

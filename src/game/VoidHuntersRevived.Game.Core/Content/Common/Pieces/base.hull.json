@@ -9,7 +9,7 @@
       "Primary": "Color.HullPrimaryColor",
       "Secondary": "Color.HullSecondaryColor"
     },
-    "zIndex": {
+    "PrimitiveSequence": {
       "Value": 0
     }
   }

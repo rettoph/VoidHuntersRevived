@@ -9,8 +9,8 @@
       "Primary": "Color.ThrusterPrimaryColor",
       "Secondary": "Color.ThrusterSecondaryColor"
     },
-    "zIndex": {
-      "Value": -1
+    "PrimitiveSequence": {
+      "Value":  -10
     }
   }
 }

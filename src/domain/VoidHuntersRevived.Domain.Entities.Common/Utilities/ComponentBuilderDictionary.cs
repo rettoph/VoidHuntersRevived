@@ -65,6 +65,27 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             return true;
         }
 
+        public T Get<T>()
+        {
+            if (_values.TryGetValue(typeof(T), out IEntityComponent? uncasted) == false)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            if (uncasted is not T casted)
+            {
+                throw new InvalidCastException();
+            }
+
+            return casted;
+        }
+
+        public bool Has<T>()
+            where T : unmanaged, IEntityComponent
+        {
+            return _builders.ContainsKey(typeof(T));
+        }
+
         public IComponentBuilder[] ToArray()
         {
             return _builders.Values.ToArray();
