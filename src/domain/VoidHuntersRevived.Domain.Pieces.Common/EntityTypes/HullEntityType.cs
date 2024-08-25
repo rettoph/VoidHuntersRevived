@@ -11,11 +11,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
     {
         public HullEntityType(IKey<HullEntityType> key, IKey<IEntityType>[] include) : base(key, include)
         {
-            this.WithInstanceEntityComponents([
+            this.WithComponents([
                 default(Sockets<SocketId>)
             ]);
 
-            this.RequireInstanceEntityComponents([
+            this.RequireComponents([
                 typeof(Sockets<Location>),
             ]);
         }

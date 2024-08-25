@@ -40,14 +40,14 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
         public override void Add((uint start, uint end) rangeOfEntities, in EntityCollection<TVertex> entities, ExclusiveGroupStruct groupID)
         {
             var (_, nativeIds, _) = entities;
-            var (instances, groups, _) = this.entitiesDB.QueryEntities<InstanceEntity, PrimitiveGroup>(groupID);
+            var (instances, groups, _) = this.entitiesDB.QueryEntities<Entities.Common.Components.EntityType, PrimitiveGroup>(groupID);
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
-                InstanceEntity instance = instances[i];
+                Entities.Common.Components.EntityType instance = instances[i];
                 PrimitiveGroup group = groups[i];
 
-                _primitivesByType[instance.Type.Key].GetVertexBuffer(group.Value).GetFilter<TVertex>().Add(nativeIds[i], groupID, i);
+                _primitivesByType[instance.Value.Key].GetVertexBuffer(group.Value).GetFilter<TVertex>().Add(nativeIds[i], groupID, i);
             }
         }
     }

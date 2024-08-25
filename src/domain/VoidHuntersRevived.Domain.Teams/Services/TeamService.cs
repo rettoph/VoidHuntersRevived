@@ -1,10 +1,12 @@
-﻿using Svelto.ECS;
+﻿using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
+using VoidHuntersRevived.Domain.Teams.Common.EntityTypes;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Services
@@ -19,37 +21,28 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         }
 
         private BelongsTo<Team, TeamMember> _defaultTeamComponent;
-        private Dictionary<Id<Team>, TeamData> _teams;
+        private Dictionary<Id<Team>, BelongsTo<Team, TeamMember>> _teamComponents;
 
-
+        private readonly IEntityTypeProviderService _entityTypeProviderService;
         private readonly IEntityQueryService _entityQueryService;
+        private readonly IPrivateEntitySpawnService _privateEntitySpawnService;
 
-        public TeamService(IEntityQueryService entityQueryService)
+        public TeamService(
+            IEntityTypeProviderService entityTypeProviderService,
+            IEntityQueryService entityQueryService,
+            IPrivateEntitySpawnService privateEntitySpawnService)
         {
+            _entityTypeProviderService = entityTypeProviderService;
             _entityQueryService = entityQueryService;
-            _teams = new Dictionary<Id<Team>, TeamData>();
+            _privateEntitySpawnService = privateEntitySpawnService;
+            _teamComponents = new Dictionary<Id<Team>, BelongsTo<Team, TeamMember>>();
         }
 
         public unsafe override void Initialize(IStrategy strategy)
         {
             base.Initialize(strategy);
 
-
-            _defaultTeamComponent = this.BuildDeaultTeamComponent();
-
-            this.BuildTeams(_teams);
-        }
-
-        public bool TryGetGroupIndex(Id<Team> teamId, out GroupIndex groupIndex)
-        {
-            if (_teams.TryGetValue(teamId, out TeamData data) == false)
-            {
-                groupIndex = default;
-                return false;
-            }
-
-            groupIndex = data.GroupIndex;
-            return true;
+            this.BuildTeams(out _defaultTeamComponent, out _teamComponents);
         }
 
         public BelongsTo<Team, TeamMember> GetDefaultTeamComponent()
@@ -59,44 +52,33 @@ namespace VoidHuntersRevived.Domain.Teams.Services
 
         public BelongsTo<Team, TeamMember> GetOpenTeamComponent()
         {
-            return _teams.First().Value.Component;
+            return _teamComponents.First().Value;
         }
 
-        private BelongsTo<Team, TeamMember> BuildDeaultTeamComponent()
+        private void BuildTeams(out BelongsTo<Team, TeamMember> defaultTeamComponent, out Dictionary<Id<Team>, BelongsTo<Team, TeamMember>> teamComponents)
         {
-            foreach (var ((teams, entityIds, _, count), group) in _entityQueryService.QueryEntities<Team, EntityId, DefaultTeam>())
+            // Spawn default team entity...
+            int teamIndex = 0;
+            IEntityTypeProvider defaultTeamType = _entityTypeProviderService.GetAllByType<DefaultTeamEntityType>().Single();
+            EntityId defaultTeamId = _privateEntitySpawnService.Spawn(
+                sourceId: HashBuilder<DefaultTeamEntityType, int>.Instance.Calculate(teamIndex),
+                entityTypeKey: defaultTeamType.Type.Key,
+                vhid: HashBuilder<TeamEntityType, int>.Instance.Calculate(teamIndex));
+            defaultTeamComponent = new BelongsTo<Team, TeamMember>(defaultTeamId.VhId);
+
+            // Spawn additional team entities...
+            teamComponents = new Dictionary<Id<Team>, BelongsTo<Team, TeamMember>>();
+            IEnumerable<IEntityTypeProvider> teamEntityTypes = _entityTypeProviderService.GetAllByType<TeamEntityType>();
+
+            foreach (IEntityTypeProvider teamEntityType in teamEntityTypes)
             {
-                if (count == 0)
-                {
-                    throw new NotImplementedException();
-                }
+                teamIndex++;
+                EntityId teamId = _privateEntitySpawnService.Spawn(
+                    sourceId: HashBuilder<DefaultTeamEntityType, int>.Instance.Calculate(teamIndex),
+                    entityTypeKey: teamEntityType.Type.Key,
+                    vhid: HashBuilder<TeamEntityType, int>.Instance.Calculate(teamIndex));
 
-                if (count >= 2)
-                {
-                    throw new NotImplementedException();
-                }
-
-                var team = teams[0];
-                return new BelongsTo<Team, TeamMember>(entityIds[0].VhId);
-            }
-
-            throw new NotImplementedException();
-        }
-
-        private void BuildTeams(Dictionary<Id<Team>, TeamData> dictionary)
-        {
-            foreach (var ((teams, entityIds, _, count), group) in _entityQueryService.QueryEntities<Team, EntityId, ColorScheme>())
-            {
-                for (uint i = 0; i < count; i++)
-                {
-                    var team = teams[i];
-                    dictionary.Add(team.Id, new TeamData()
-                    {
-                        Id = team.Id,
-                        GroupIndex = new GroupIndex(group, i),
-                        Component = new BelongsTo<Team, TeamMember>(entityIds[i].VhId)
-                    });
-                }
+                teamComponents.Add(teamEntityType.Components.Get<Team>().Id, new BelongsTo<Team, TeamMember>(teamId.VhId));
             }
         }
     }

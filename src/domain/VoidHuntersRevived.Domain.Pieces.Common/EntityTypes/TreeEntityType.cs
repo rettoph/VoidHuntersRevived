@@ -4,7 +4,6 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Physics.Common.EntityTypes;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
 {
@@ -13,13 +12,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
     {
         public TreeEntityType(IKey<IEntityType> key, IKey<IEntityType>[] include) : base(key, include)
         {
-            this.WithInstanceEntityComponents([
+            this.WithComponents([
                 new Tree(),
                 new HasMany<Node, Tree>()
-            ]);
-
-            this.WithTypeEntityComponents([
-                default(ColorScheme)
             ]);
         }
     }

@@ -4,7 +4,7 @@
     "Type": "HullEntityType"
   },
   "Flags": "Partial",
-  "TypeEntityComponents": {
+  "Components": {
     "ColorScheme": {
       "Primary": "Color.HullPrimaryColor",
       "Secondary": "Color.HullSecondaryColor"

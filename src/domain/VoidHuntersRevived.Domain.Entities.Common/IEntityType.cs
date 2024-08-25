@@ -10,10 +10,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         EntityTypeFlags Flags { get; }
         IKey<IEntityType>[] Include { get; }
 
-        HashSet<Type> RequiredInstanceEntityComponents { get; }
-        ComponentBuilderDictionary InstanceEntityComponentBuilders { get; }
-
-        HashSet<Type> RequiredTypeEntityComponents { get; }
-        ComponentBuilderDictionary TypeEntityComponentBuilders { get; }
+        HashSet<Type> RequiredComponents { get; }
+        ComponentBuilderDictionary Components { get; }
     }
 }

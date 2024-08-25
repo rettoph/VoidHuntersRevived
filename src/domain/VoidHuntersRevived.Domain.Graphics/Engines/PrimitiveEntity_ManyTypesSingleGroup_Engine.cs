@@ -37,12 +37,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
         public override void Add((uint start, uint end) rangeOfEntities, in EntityCollection<TVertex> entities, ExclusiveGroupStruct groupID)
         {
             var (_, nativeIds, _) = entities;
-            var (instances, _) = this.entitiesDB.QueryEntities<InstanceEntity>(groupID);
+            var (instances, _) = this.entitiesDB.QueryEntities<Entities.Common.Components.EntityType>(groupID);
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
-                InstanceEntity instance = instances[i];
-                _vertexBuffersByType[instance.Type.Key].GetFilter<TVertex>().Add(nativeIds[i], groupID, i);
+                Entities.Common.Components.EntityType instance = instances[i];
+                _vertexBuffersByType[instance.Value.Key].GetFilter<TVertex>().Add(nativeIds[i], groupID, i);
             }
         }
     }

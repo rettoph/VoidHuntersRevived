@@ -3,13 +3,13 @@ using Svelto.ECS;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Components
 {
-    public struct TypeEntity : IEntityComponent
+    public struct EntityType : IEntityComponent
     {
         private readonly UnmanagedReference<IEntityType> _typeRef;
 
-        public IEntityType Type => _typeRef.Value;
+        public IEntityType Value => _typeRef.Value;
 
-        public TypeEntity(UnmanagedReference<IEntityType> typeRef)
+        public EntityType(UnmanagedReference<IEntityType> typeRef)
         {
             _typeRef = typeRef;
         }

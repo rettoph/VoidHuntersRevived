@@ -12,9 +12,6 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
     internal sealed class EntityTypeResolverConverter : JsonConverter<ResourceResolver<IEntityType>>
     {
-        private const string InstanceEntityComponents = nameof(InstanceEntityComponents);
-        private const string TypeEntityComponents = nameof(TypeEntityComponents);
-
         private readonly Lazy<IResourceService> _resourceService;
         private readonly IPolymorphicJsonSerializerService<IEntityType> _entityTypeTypeService;
 
@@ -32,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             IKey<IEntityType>? key = null;
             EntityTypeFlags flags = EntityTypeFlags.None;
             IKey<IEntityType>[] include = Array.Empty<IKey<IEntityType>>();
-            Dictionary<Type, IEntityComponent> instanceEntityComponents = new Dictionary<Type, IEntityComponent>();
+            Dictionary<Type, IEntityComponent> components = new Dictionary<Type, IEntityComponent>();
             Dictionary<Type, IEntityComponent> typeEntityComponents = new Dictionary<Type, IEntityComponent>();
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -55,12 +52,8 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                         include = includeNames.Select(x => Key.GetByName<IEntityType>(x)).ToArray();
                         reader.Read();
                         break;
-                    case nameof(EntityTypeResolverConverter.InstanceEntityComponents):
-                        instanceEntityComponents = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
-                        reader.Read();
-                        break;
-                    case nameof(EntityTypeResolverConverter.TypeEntityComponents):
-                        typeEntityComponents = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
+                    case nameof(IEntityType.Components):
+                        components = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
                     default:
@@ -80,8 +73,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                 EntityType entityType = (EntityType)(Activator.CreateInstance(key.Type, [key, include]) ?? throw new NotImplementedException());
 
                 entityType.WithFlags(flags)
-                    .WithInstanceEntityComponents(instanceEntityComponents.Values)
-                    .WithTypeEntityComponents(typeEntityComponents.Values);
+                    .WithComponents(components.Values);
 
                 return entityType;
             });

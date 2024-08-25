@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
 
         public UserShipEntityType() : base(UserShipEntityType.UserShipEntityTypeKey, Array.Empty<IKey<IEntityType>>())
         {
-            this.WithInstanceEntityComponents([
+            this.WithComponents([
                 new UserId(),
             ]);
         }

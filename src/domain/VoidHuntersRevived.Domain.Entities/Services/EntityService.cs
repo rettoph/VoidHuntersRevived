@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Utilities;
 using Svelto.ECS;
+using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -19,11 +20,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly Lazy<EntityQueryService> _entityQueryService;
         private readonly Lazy<EntitySpawnService> _entitySpawnService;
         private readonly Lazy<EntitySerializationService> _entitySerializationService;
+        private readonly Lazy<EntitiesSubmissionScheduler> _entitiesSubmissionScheduler;
 
         public EntityTypeProviderService Types => _entityTypeService.Value;
         public EntityQueryService Query => _entityQueryService.Value;
         public EntitySpawnService Spawn => _entitySpawnService.Value;
         public EntitySerializationService Serialization => _entitySerializationService.Value;
+        public EntitiesSubmissionScheduler SubmissionScheduler => _entitiesSubmissionScheduler.Value;
 
         IEntityTypeProviderService IEntityService.TypeProviders => this.Types;
 
@@ -33,16 +36,20 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         IEntitySerializationService IEntityService.Serialization => this.Serialization;
 
+        EntitiesSubmissionScheduler IEntityService.SubmissionScheduler => this.SubmissionScheduler;
+
         public EntityService(
             Lazy<EntityTypeProviderService> entityTypeService,
             Lazy<EntityQueryService> entityQueryService,
             Lazy<EntitySpawnService> entitySpawnService,
-            Lazy<EntitySerializationService> entitySerialzationService)
+            Lazy<EntitySerializationService> entitySerialzationService,
+            Lazy<EntitiesSubmissionScheduler> entitiesSubmissionScheduler)
         {
             _entityTypeService = entityTypeService;
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
             _entitySerializationService = entitySerialzationService;
+            _entitiesSubmissionScheduler = entitiesSubmissionScheduler;
 
             _ref = new UnmanagedReference<IEntityService>(this);
         }

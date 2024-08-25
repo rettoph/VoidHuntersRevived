@@ -4,13 +4,13 @@
     "Type": "ThrusterEntityType"
   },
   "Flags": "Partial",
-  "TypeEntityComponents": {
+  "Components": {
     "ColorScheme": {
       "Primary": "Color.ThrusterPrimaryColor",
       "Secondary": "Color.ThrusterSecondaryColor"
     },
     "PrimitiveSequence": {
-      "Value":  -10
+      "Value": -10
     }
   }
 }

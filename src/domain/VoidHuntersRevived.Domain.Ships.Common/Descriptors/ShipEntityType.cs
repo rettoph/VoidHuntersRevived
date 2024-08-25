@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
     {
         public ShipEntityType(IKey<IEntityType> id, IKey<IEntityType>[] include) : base(id, include)
         {
-            this.WithInstanceEntityComponents([
+            this.WithComponents([
                 new PhysicsBubble() {
                     Enabled = false,
                     Radius = default

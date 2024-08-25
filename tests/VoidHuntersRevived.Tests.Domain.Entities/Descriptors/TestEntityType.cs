@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Descriptors
 
         public TestEntityType() : base(TestEntityTypeKey, Array.Empty<IKey<IEntityType>>())
         {
-            this.WithInstanceEntityComponents([
+            this.WithComponents([
                 new TestComponent()
             ]);
         }

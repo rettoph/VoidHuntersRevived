@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
     {
         public ThrusterEntityType(IKey<ThrusterEntityType> key, IKey<IEntityType>[] include) : base(key, include)
         {
-            this.WithInstanceEntityComponents([
+            this.WithComponents([
                 new Thrustable()
             ]);
         }

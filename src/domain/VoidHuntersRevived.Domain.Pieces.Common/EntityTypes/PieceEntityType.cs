@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
     {
         public PieceEntityType(IKey<IEntityType> key, IKey<IEntityType>[] include) : base(key, include)
         {
-            this.WithInstanceEntityComponents([
+            this.WithComponents([
                 Plug.Default,
                 new Coupling(),
                 new Node(),
@@ -24,8 +24,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
                 new VertexVisible()
             ]);
 
-            this.RequireInstanceEntityComponent<Rigid>()
-                .RequireTypeEntityComponent<Visible>();
+            this.RequireComponents([
+                typeof(Rigid),
+                typeof(Visible)
+            ]);
         }
     }
 }

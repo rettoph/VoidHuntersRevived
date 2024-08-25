@@ -4,7 +4,7 @@
     "Type": "HullEntityType"
   },
   "Include": [ "Piece.Base.Hull" ],
-  "InstanceEntityComponents": {
+  "Components": {
     "Rigid": {
       "Centeroid": {
         "X": 0.5,
@@ -56,9 +56,7 @@
         },
         "Rotation": 1.5707963267
       }
-    }
-  },
-  "TypeEntityComponents": {
+    },
     "Visible": {
       "Fill": [
         {

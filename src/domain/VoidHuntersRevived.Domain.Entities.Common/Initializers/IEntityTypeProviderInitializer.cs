@@ -26,9 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Initializers
         /// <param name="entityTypeProvider"></param>
         void InitializeEntityTypeProvider(IEntityTypeProvider entityTypeProvider);
 
-        EntityInitializerDelegate? GetInstanceEntityInitializer(IEntityTypeProvider entityTypeProvider);
-        DisposeEntityInitializerDelegate? GetInstanceEntityDisposer(IEntityTypeProvider entityTypeProvider);
-        EntityInitializerDelegate? GetTypeEntityInitializer(IEntityTypeProvider entityTypeProvider);
-        DisposeEntityInitializerDelegate? GetTypeEntityDisposer(IEntityTypeProvider entityTypeProvider);
+        EntityInitializerDelegate? GetEntityInitializer(IEntityTypeProvider entityTypeProvider);
+        DisposeEntityInitializerDelegate? GetEntityDisposer(IEntityTypeProvider entityTypeProvider);
     }
 }

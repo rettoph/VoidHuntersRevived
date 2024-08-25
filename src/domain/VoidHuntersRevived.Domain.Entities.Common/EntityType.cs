@@ -12,11 +12,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common
     [Service<IEntityType>(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public class EntityType : IEntityType
     {
-        public HashSet<Type> RequiredInstanceEntityComponents { get; }
-        public ComponentBuilderDictionary InstanceEntityComponentBuilders { get; }
-
-        public HashSet<Type> RequiredTypeEntityComponents { get; }
-        public ComponentBuilderDictionary TypeEntityComponentBuilders { get; }
+        public HashSet<Type> RequiredComponents { get; }
+        public ComponentBuilderDictionary Components { get; }
 
         public IKey<IEntityType> Key { get; }
         public EntityTypeFlags Flags { get; set; }
@@ -25,11 +22,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 
         public EntityType(IKey<IEntityType> key, IKey<IEntityType>[] include)
         {
-            this.RequiredInstanceEntityComponents = new HashSet<Type>();
-            this.RequiredTypeEntityComponents = new HashSet<Type>();
-
-            this.InstanceEntityComponentBuilders = new ComponentBuilderDictionary();
-            this.TypeEntityComponentBuilders = new ComponentBuilderDictionary();
+            this.RequiredComponents = new HashSet<Type>();
+            this.Components = new ComponentBuilderDictionary();
 
             this.Key = key;
             this.Include = include;
@@ -41,17 +35,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 
             // TODO: Some of these components should just be marked as required rather than
             // Given default values.
-            this.WithInstanceEntityComponents([
+            this.WithComponents([
                 new EntityId(),
                 new EntityStatus(),
-                new InstanceEntity(),
-                new BelongsTo<TypeEntity, InstanceEntity>()
-            ]);
-
-            this.WithTypeEntityComponents([
-                new EntityId(),
-                new TypeEntity(),
-                new HasMany<InstanceEntity, TypeEntity>()
             ]);
         }
 
@@ -62,104 +48,55 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return this;
         }
 
-        public EntityType WithInstanceEntityComponent(IEntityComponent component)
+        public EntityType WithComponent(IEntityComponent component)
         {
-            this.InstanceEntityComponentBuilders.Set(component);
+            this.Components.Set(component);
 
             return this;
         }
 
-        public EntityType WithInstanceEntityComponent<TComponent>(TComponent component)
+        public EntityType WithComponent<TComponent>(TComponent component)
             where TComponent : unmanaged, IEntityComponent
         {
-            this.InstanceEntityComponentBuilders.Set(component);
+            this.Components.Set(component);
 
             return this;
         }
 
-        public EntityType WithInstanceEntityComponents(IEnumerable<IEntityComponent> components)
+        public EntityType WithComponents(IEnumerable<IEntityComponent> components)
         {
             foreach (IEntityComponent component in components)
             {
-                this.WithInstanceEntityComponent(component);
+                this.WithComponent(component);
             }
 
             return this;
         }
 
-        public EntityType RequireInstanceEntityComponent(Type component)
+        public EntityType RequireComponent(Type component)
         {
-            return this.RequireEntityComponent(this.RequiredInstanceEntityComponents, component);
+            ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>(component);
+            ThrowIf.Type.IsNotUnmanagedStruct(component);
+
+            this.RequiredComponents.Add(component);
+
+            return this;
         }
 
-        public EntityType RequireInstanceEntityComponent<TComponent>()
+        public EntityType RequireComponent<TComponent>()
             where TComponent : unmanaged, IEntityComponent
         {
-            return this.RequireEntityComponent(this.RequiredInstanceEntityComponents, typeof(TComponent));
+            this.RequiredComponents.Add(typeof(TComponent));
+
+            return this;
         }
 
-        public EntityType RequireInstanceEntityComponents(Type[] components)
+        public EntityType RequireComponents(Type[] components)
         {
             foreach (Type component in components)
             {
-                this.RequireEntityComponent(this.RequiredInstanceEntityComponents, component);
+                this.RequireComponent(component);
             }
-
-            return this;
-        }
-
-        public EntityType RequireTypeEntityComponent(Type component)
-        {
-            return this.RequireEntityComponent(this.RequiredTypeEntityComponents, component);
-        }
-
-        public EntityType RequireTypeEntityComponent<TComponent>()
-            where TComponent : unmanaged, IEntityComponent
-        {
-            return this.RequireEntityComponent(this.RequiredTypeEntityComponents, typeof(TComponent));
-        }
-
-        public EntityType RequireTypeEntityComponents(Type[] components)
-        {
-            foreach (Type component in components)
-            {
-                return this.RequireEntityComponent(this.RequiredTypeEntityComponents, component);
-            }
-
-            return this;
-        }
-
-        public EntityType WithTypeEntityComponent(IEntityComponent component)
-        {
-            this.TypeEntityComponentBuilders.Set(component);
-
-            return this;
-        }
-
-        public EntityType WithTypeEntityComponent<TComponent>(TComponent component)
-            where TComponent : unmanaged, IEntityComponent
-        {
-            this.TypeEntityComponentBuilders.Set(component);
-
-            return this;
-        }
-
-        public EntityType WithTypeEntityComponents(IEnumerable<IEntityComponent> components)
-        {
-            foreach (IEntityComponent component in components)
-            {
-                this.WithTypeEntityComponent(component);
-            }
-
-            return this;
-        }
-
-        private EntityType RequireEntityComponent(HashSet<Type> components, Type type)
-        {
-            ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>(type);
-            ThrowIf.Type.IsNotUnmanagedStruct(type);
-
-            components.Add(type);
 
             return this;
         }

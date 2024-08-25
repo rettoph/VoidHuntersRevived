@@ -133,7 +133,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            IKey<IEntityType> typeKey = _entityQueryService.QueryByGroupIndex<InstanceEntity>(in groupIndex).Type.Key;
+            IKey<IEntityType> typeKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityType>(in groupIndex).Value.Key;
             _entityService.TypeProviders.GetByKey(typeKey).SoftSpawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
             status.Value = EntityStatusEnum.SoftSpawned;
         }
@@ -257,7 +257,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            IKey<IEntityType> typeKey = _entityQueryService.QueryByGroupIndex<InstanceEntity>(in groupIndex).Type.Key;
+            IKey<IEntityType> typeKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityType>(in groupIndex).Value.Key;
             _entityService.TypeProviders.GetByKey(typeKey).SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
             status.Value = EntityStatusEnum.SoftDespawned;
         }
@@ -278,7 +278,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            IKey<IEntityType> typeKey = _entityQueryService.QueryByGroupIndex<InstanceEntity>(in groupIndex).Type.Key;
+            IKey<IEntityType> typeKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityType>(in groupIndex).Value.Key;
             IEntityTypeProvider descriptorEngine = _entityService.TypeProviders.GetByKey(typeKey);
 
             if (status.Value < EntityStatusEnum.SoftDespawned)

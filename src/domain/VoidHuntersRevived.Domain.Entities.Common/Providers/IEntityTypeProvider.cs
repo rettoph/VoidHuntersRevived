@@ -19,13 +19,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Providers
         IEntityType Type { get; }
         IEntityType[] ImplementedTypes { get; }
 
-        ComponentBuilderDictionary InstanceEntityComponentBuilders { get; }
-        EntityInitializerDelegate? InstanceEntityInitializer { get; set; }
-        DisposeEntityInitializerDelegate? InstanceEntityDisposer { get; set; }
-
-        ComponentBuilderDictionary TypeEntityComponentBuilders { get; }
-        EntityInitializerDelegate? TypeEntityInitializer { get; set; }
-        DisposeEntityInitializerDelegate? TypeEntityDisposer { get; set; }
+        ComponentBuilderDictionary Components { get; }
+        EntityInitializerDelegate? Initializer { get; set; }
+        DisposeEntityInitializerDelegate? Disposer { get; set; }
 
         void Initialize(
             EntitiesDB entitiesDB,

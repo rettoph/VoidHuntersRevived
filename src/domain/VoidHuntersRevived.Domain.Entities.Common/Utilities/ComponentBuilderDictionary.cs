@@ -20,8 +20,16 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         {
             foreach (ComponentBuilderDictionary dictionary in dictionaries)
             {
-                this._values.Merge(dictionary._values);
-                this._builders.Merge(dictionary._builders);
+                foreach (Type key in dictionary.Keys)
+                {
+                    if (dictionary._values[key] == default)
+                    {
+                        continue;
+                    }
+
+                    this._values[key] = dictionary._values[key];
+                    this._builders[key] = dictionary._builders[key];
+                }
             }
         }
 

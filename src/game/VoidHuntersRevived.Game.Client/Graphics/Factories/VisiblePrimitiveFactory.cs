@@ -33,14 +33,14 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
 
             foreach (IEntityTypeProvider entityTypeProvider in _entityTypeProviderService.GetAllByType<IEntityType>())
             {
-                if (entityTypeProvider.TypeEntityComponentBuilders.TryGet<Visible>(out Visible visible) == false)
+                if (entityTypeProvider.Components.TryGet<Visible>(out Visible visible) == false)
                 {
                     continue;
                 }
 
                 primitives.Add(VisiblePrimitiveFactory.BuildVisiblePrimitive(
                     entityTypeKey: entityTypeProvider.Type.Key,
-                    sequence: entityTypeProvider.TypeEntityComponentBuilders.Get<PrimitiveSequence>().Value,
+                    sequence: entityTypeProvider.Components.Get<PrimitiveSequence>().Value,
                     visible: visible,
                     graphics: _graphics));
             }

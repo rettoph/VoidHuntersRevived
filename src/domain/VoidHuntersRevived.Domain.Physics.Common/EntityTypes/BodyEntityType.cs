@@ -11,13 +11,13 @@ namespace VoidHuntersRevived.Domain.Physics.Common.EntityTypes
     {
         public BodyEntityType(IKey<IEntityType> key, IKey<IEntityType>[] include) : base(key, include)
         {
-            this.WithInstanceEntityComponents([
+            this.WithComponents([
                 new Location(),
                 new Enabled(),
                 new Awake(true)
             ]);
 
-            this.RequireInstanceEntityComponents([
+            this.RequireComponents([
                 typeof(Collision)
             ]);
         }

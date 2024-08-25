@@ -11,11 +11,8 @@ namespace VoidHuntersRevived.Domain.Teams.Common.EntityTypes
     {
         public VisibleTeamMemberEntityType(IKey<IEntityType> key, IKey<IEntityType>[] include) : base(key, include)
         {
-            this.WithInstanceEntityComponents([
-                new ColorScheme()
-            ]);
+            this.RequireComponents([
 
-            this.RequireTypeEntityComponents([
                 typeof(ColorScheme),
                 typeof(PrimitiveSequence)
             ]);

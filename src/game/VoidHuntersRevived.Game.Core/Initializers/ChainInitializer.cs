@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Game.Core.Initializers
 
         private void AddComponentBuilders(IEntityTypeProvider provider)
         {
-            provider.InstanceEntityComponentBuilders.Set(new Collision()
+            provider.Components.Set(new Collision()
             {
                 Categories = CollisionGroups.FreeFloatingCategories,
                 CollidesWith = CollisionGroups.FreeFloatingCollidesWith

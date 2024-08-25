@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
             _instanceInitializers = new Dictionary<IEntityTypeProvider, EntityInitializerDelegate>();
             _typeInitializers = new Dictionary<IEntityTypeProvider, EntityInitializerDelegate>();
 
-            this.WithInstanceEntityInitializer(provider => provider.InstanceEntityComponentBuilders.Keys.Any(componentType =>
+            this.WithEntityInitializer(provider => provider.Components.Keys.Any(componentType =>
             {
                 if (componentType.IsConstructedGenericType == false)
                 {
@@ -35,34 +35,12 @@ namespace VoidHuntersRevived.Domain.Entities.Initializers
                 // Build initializer now
                 if (_instanceInitializers.ContainsKey(provider) == false)
                 {
-                    _instanceInitializers.Add(provider, HasManyEntityInitializersBuilder(provider.InstanceEntityComponentBuilders.Keys));
+                    _instanceInitializers.Add(provider, HasManyEntityInitializersBuilder(provider.Components.Keys));
                 }
 
                 return true;
 
             }), this.InitializeInstanceParentComponents);
-
-            this.WithTypeEntityInitializer(provider => provider.TypeEntityComponentBuilders.Keys.Any(componentType =>
-            {
-                if (componentType.IsConstructedGenericType == false)
-                {
-                    return false;
-                }
-
-                if (componentType.GetGenericTypeDefinition() != typeof(HasMany<,>))
-                {
-                    return false;
-                }
-
-                // Build initializer now
-                if (_typeInitializers.ContainsKey(provider) == false)
-                {
-                    _typeInitializers.Add(provider, HasManyEntityInitializersBuilder(provider.TypeEntityComponentBuilders.Keys));
-                }
-
-                return true;
-
-            }), this.InitializeTypeParentComponents);
         }
 
         private void InitializeInstanceParentComponents(IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer)

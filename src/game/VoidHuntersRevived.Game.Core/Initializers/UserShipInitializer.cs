@@ -18,20 +18,20 @@ namespace VoidHuntersRevived.Game.Core.Initializers
         public UserShipInitializer() : base()
         {
             this.WithEntityTypeInitializer<UserShipEntityType>(this.AddRequiredComponentBuilders);
-            this.WithInstanceEntityInitializer(UserShipEntityType.UserShipEntityTypeKey, this.InitializeUserShip);
+            this.WithEntityInitializer(UserShipEntityType.UserShipEntityTypeKey, this.InitializeUserShip);
         }
 
         private void AddRequiredComponentBuilders(IEntityTypeProvider provider)
         {
-            provider.InstanceEntityComponentBuilders.Set(new Awake(sleepingAllowed: false));
+            provider.Components.Set(new Awake(sleepingAllowed: false));
 
-            provider.InstanceEntityComponentBuilders.Set(new Collision()
+            provider.Components.Set(new Collision()
             {
                 Categories = CollisionGroups.ShipCategories,
                 CollidesWith = CollisionGroups.ShipCollidesWith
             });
 
-            provider.InstanceEntityComponentBuilders.Set(new PhysicsBubble()
+            provider.Components.Set(new PhysicsBubble()
             {
                 Enabled = true,
                 Radius = (Fix64)25

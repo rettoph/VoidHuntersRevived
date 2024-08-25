@@ -3,7 +3,7 @@
     "Name": "Team.One",
     "Type": "TeamEntityType"
   },
-  "TypeEntityComponents": {
+  "Components": {
     "Team": {
       "Name": "String.TeamOneName"
     },

@@ -8,7 +8,6 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
-using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
@@ -56,8 +55,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
 
             _stepEngines = _engines.CreateSequencedStepEnginesGroup<Step, StepSequence>(StepSequence.Step);
-
-            this.InitializeStrategyEngines(strategy, _scheduler);
         }
 
         public void Dispose()
