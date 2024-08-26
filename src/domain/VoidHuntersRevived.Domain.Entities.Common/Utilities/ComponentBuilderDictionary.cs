@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Svelto.ECS;
+using VoidHuntersRevived.Domain.Entities.Common.Interfaces;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
@@ -33,13 +34,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             }
         }
 
-        public void Set<T>(T component)
-            where T : unmanaged, IEntityComponent
-        {
-            _values[typeof(T)] = component;
-            _builders[typeof(T)] = new ComponentBuilder<T>(component);
-        }
-
         public void Set(IEntityComponent component)
         {
             Type componentType = component.GetType();
@@ -48,6 +42,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             ThrowIf.Type.IsNotUnmanagedStruct(componentType);
 
             Type componentBuilderType = typeof(ComponentBuilder<>).MakeGenericType(componentType);
+            if (componentType.ImplementsGenericTypeDefinition(typeof(ICloneableComponent<>)))
+            {
+                componentBuilderType = typeof(CloneableComponentBuilder<>).MakeGenericType(componentType);
+            }
+
             IComponentBuilder builder = (IComponentBuilder)(Activator.CreateInstance(componentBuilderType, component) ?? throw new NotImplementedException());
 
             _values[componentType] = component;

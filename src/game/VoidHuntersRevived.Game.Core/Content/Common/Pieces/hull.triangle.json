@@ -30,21 +30,25 @@
         }
       ]
     },
-    "Sockets.Location": {
+    "Sockets": {
       "Items": [
         {
-          "Position": {
-            "X": 0.75,
-            "Y": 0.4330127018
-          },
-          "Rotation": 0.5235987757
+          "Location": {
+            "Position": {
+              "X": 0.75,
+              "Y": 0.4330127018
+            },
+            "Rotation": 0.5235987757
+          }
         },
         {
-          "Position": {
-            "X": 0.25,
-            "Y": 0.4330127018
-          },
-          "Rotation": 2.6179938782
+          "Location": {
+            "Position": {
+              "X": 0.25,
+              "Y": 0.4330127018
+            },
+            "Rotation": 2.6179938782
+          }
         }
       ]
     },

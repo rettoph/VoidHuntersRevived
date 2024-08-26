@@ -3,14 +3,16 @@ using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
+using VoidHuntersRevived.Common.Extensions.Svelto;
 using VoidHuntersRevived.Common.Extensions.System;
 using VoidHuntersRevived.Common.Helpers;
+using VoidHuntersRevived.Domain.Entities.Common.Interfaces;
 using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
 {
     [PolymorphicJsonType<IEntityComponent>(nameof(Visible))]
-    public struct Visible : IDisposable, IPieceComponent
+    public struct Visible : IDisposable, IPieceComponent, ICloneableComponent<Visible>
     {
         private static float TraceThickness = 1f;
         private static readonly Matrix OuterScaleMatrix = Matrix.CreateScale(0.1f);
@@ -33,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
                     traceVertices.Set(i, BuildTraceVertices(ref value[i]));
                 }
 
-                TraceVertices = traceVertices;
+                this.TraceVertices = traceVertices;
             }
         }
 
@@ -43,22 +45,22 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
         {
             for (int i = 0; i < Fill.count; i++)
             {
-                Fill[i].Dispose();
+                this.Fill[i].Dispose();
             }
 
             for (int i = 0; i < Trace.count; i++)
             {
-                Trace[i].Dispose();
+                this.Trace[i].Dispose();
             }
 
             for (int i = 0; i < TraceVertices.count; i++)
             {
-                TraceVertices[i].Dispose();
+                this.TraceVertices[i].Dispose();
             }
 
-            Fill.Dispose();
-            Trace.Dispose();
-            TraceVertices.Dispose();
+            this.Fill.Dispose();
+            this.Trace.Dispose();
+            this.TraceVertices.Dispose();
         }
 
         private Shape BuildTraceVertices(ref Shape shape)
@@ -169,6 +171,15 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
             float gridAngle = vertex.Angle(p1);
 
             return vertex + Vector2Helper.FromPolar(gridAngle + angle / 2, MathF.Abs(AAS(angle / 2)));
+        }
+
+        public Visible Clone()
+        {
+            return new Visible()
+            {
+                Fill = this.Fill.Clone(Allocator.Persistent, x => x.Clone()),
+                Trace = this.Trace.Clone(Allocator.Persistent, x => x.Clone())
+            };
         }
     }
 }

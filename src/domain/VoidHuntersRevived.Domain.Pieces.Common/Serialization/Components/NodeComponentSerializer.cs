@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
             return new Node(id, _entityQueryService.GetId(options.Owner));
         }
 
-        protected override void Write(EntityWriter writer, in Node instance, in SerializationOptions options)
+        protected override void Write(EntityWriter writer, in EntityId id, in Node instance, in SerializationOptions options)
         {
         }
     }

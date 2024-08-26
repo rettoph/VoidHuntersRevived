@@ -1,4 +1,5 @@
-﻿using Svelto.DataStructures;
+﻿using Svelto.Common;
+using Svelto.DataStructures;
 
 namespace VoidHuntersRevived.Common.Extensions.Svelto
 {
@@ -11,6 +12,30 @@ namespace VoidHuntersRevived.Common.Extensions.Svelto
             {
                 yield return selector(native[i]);
             }
+        }
+
+        public static NativeDynamicArrayCast<T> Clone<T>(this NativeDynamicArrayCast<T> source, Allocator allocator)
+            where T : struct
+        {
+            NativeDynamicArrayCast<T> clone = new NativeDynamicArrayCast<T>((uint)source.count, allocator);
+            for (int i = 0; i < source.count; i++)
+            {
+                clone.Set(i, source[i]);
+            }
+
+            return clone;
+        }
+
+        public static NativeDynamicArrayCast<T> Clone<T>(this NativeDynamicArrayCast<T> source, Allocator allocator, Func<T, T> cloner)
+            where T : struct
+        {
+            NativeDynamicArrayCast<T> clone = new NativeDynamicArrayCast<T>((uint)source.count, allocator);
+            for (int i = 0; i < source.count; i++)
+            {
+                clone.Set(i, cloner(source[i]));
+            }
+
+            return clone;
         }
     }
 }

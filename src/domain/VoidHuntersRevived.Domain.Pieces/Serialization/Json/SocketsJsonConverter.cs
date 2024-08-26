@@ -1,49 +1,42 @@
-﻿using Guppy.Core.Serialization.Common.Converters;
-using Svelto.DataStructures;
+﻿using Svelto.DataStructures;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
-    internal class SocketsJsonConverter : GenericTypeDefinitionJsonConverter
+    internal class SocketsJsonConverter : JsonConverter<Sockets>
     {
-        public SocketsJsonConverter() : base(typeof(Sockets<>), typeof(GenericSocketsJsonConverter<>))
+        public override Sockets Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            NativeDynamicArrayCast<Socket> items = default;
+
+            reader.CheckToken(JsonTokenType.StartObject, true);
+            reader.Read();
+
+            while (reader.ReadPropertyName(out string? propertyName))
+            {
+                switch (propertyName)
+                {
+                    case nameof(Sockets.Items):
+                        items = JsonSerializer.Deserialize<NativeDynamicArrayCast<Socket>>(ref reader, options);
+                        reader.Read();
+                        break;
+                }
+            }
+
+            reader.CheckToken(JsonTokenType.EndObject, true);
+
+            return new Sockets()
+            {
+                Items = items
+            };
         }
 
-        private class GenericSocketsJsonConverter<T> : GenericTypeDefinitionJsonConverter.GenericTypeJsonConverter<Sockets<T>>
-            where T : unmanaged
+        public override void Write(Utf8JsonWriter writer, Sockets value, JsonSerializerOptions options)
         {
-            protected override Sockets<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
-                NativeDynamicArrayCast<T> items = default;
-
-                reader.CheckToken(JsonTokenType.StartObject, true);
-                reader.Read();
-
-                while (reader.ReadPropertyName(out string? propertyName))
-                {
-                    switch (propertyName)
-                    {
-                        case nameof(Sockets<T>.Items):
-                            items = JsonSerializer.Deserialize<NativeDynamicArrayCast<T>>(ref reader, options);
-                            reader.Read();
-                            break;
-                    }
-                }
-
-                reader.CheckToken(JsonTokenType.EndObject, true);
-
-                return new Sockets<T>()
-                {
-                    Items = items
-                };
-            }
-
-            protected override void Write(Utf8JsonWriter writer, Sockets<T> value, JsonSerializerOptions options)
-            {
-                throw new NotImplementedException();
-            }
+            throw new NotImplementedException();
         }
     }
 }

@@ -5,7 +5,6 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -14,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     internal sealed class SocketIdsEngine : StrategyEngine,
-        IOnDespawnEngine<Sockets<SocketId>>
+        IOnDespawnEngine<Sockets>
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService;
@@ -33,11 +32,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger = logger;
         }
 
-        public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Sockets<SocketId> sockets, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Sockets sockets, in GroupIndex groupIndex)
         {
             for (int i = 0; i < sockets.Items.count; i++)
             {
-                var filter = _socketService.GetCouplingFilter(sockets.Items[i]);
+                var filter = _socketService.GetCouplingFilter(nodeId: id, socketIndex: (byte)i);
                 foreach (var (indices, groupId) in filter)
                 {
                     var (entityIds, _) = _entityQueryService.QueryEntities<EntityId>(groupId);

@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
                 if (socketVhId != default)
                 {
                     initializer.Init<Coupling>(new Coupling(
-                        socketId: new SocketId(
+                        socketId: new NodeSocketId(
                             nodeId: entities.Query.GetId(socketVhId.NodeVhId),
                             index: socketVhId.Index))
                     );

@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             node.WorldTransform(treeLocation.Transformation);
 
-            if (!_entityQueryService.TryQueryByGroupIndex<Coupling>(groupIndex, out Coupling coupling) || coupling.SocketId == SocketId.Empty)
+            if (!_entityQueryService.TryQueryByGroupIndex<Coupling>(groupIndex, out Coupling coupling) || coupling.SocketId == NodeSocketId.Empty)
             {
                 node.SetLocationTransformation(FixMatrix.Identity);
                 return;
@@ -104,9 +104,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             try
             {
                 ref Plug plug = ref _entityQueryService.QueryByGroupIndex<Plug>(groupIndex);
-                Socket socketNode = _socketService.GetSocket(coupling.SocketId);
+                NodeSocket nodeSocket = _socketService.GetSocket(coupling.SocketId);
 
-                node.SetLocationTransformation(plug.Location.Transformation.Invert() * socketNode.LocalTransformation);
+                node.SetLocationTransformation(plug.Location.Transformation.Invert() * nodeSocket.LocalTransformation);
             }
             catch (Exception ex)
             {

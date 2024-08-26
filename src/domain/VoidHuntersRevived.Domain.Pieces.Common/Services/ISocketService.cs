@@ -9,14 +9,15 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Services
 {
     public interface ISocketService
     {
-        Socket GetSocket(SocketId socketId);
-        bool TryGetSocket(SocketVhId socketVhId, out Socket socketNode);
+        NodeSocket GetSocket(NodeSocketId socketId);
+        bool TryGetSocket(SocketVhId socketVhId, out NodeSocket nodeSocketNode);
 
-        ref EntityFilterCollection GetCouplingFilter(SocketId socketId);
+        ref EntityFilterCollection GetCouplingFilter(NodeSocketId socketId);
+        ref EntityFilterCollection GetCouplingFilter(EntityId nodeId, byte socketIndex);
 
-        bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out Socket socket);
+        bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket);
 
-        EntityId Spawn(VhId sourceId, Socket socket, VhId nodeVhId, IKey<IEntityType> nodeTypeKey, EntityInitializerDelegate? initializer = null);
-        EntityId Spawn(VhId sourceId, Socket socket, EntityData nodes, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, VhId nodeVhId, IKey<IEntityType> nodeTypeKey, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, EntityData nodes, EntityInitializerDelegate? initializer = null);
     }
 }

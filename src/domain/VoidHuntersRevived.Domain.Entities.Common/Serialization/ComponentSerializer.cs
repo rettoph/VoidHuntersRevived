@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             Type = type;
         }
 
-        public abstract void Serialize(EntityWriter writer, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options);
+        public abstract void Serialize(EntityWriter writer, in EntityId id, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options);
         public abstract void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 
@@ -27,19 +27,19 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         {
         }
 
-        public override void Serialize(EntityWriter writer, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options)
+        public override void Serialize(EntityWriter writer, in EntityId id, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options)
         {
             var (components, _) = entitiesDB.QueryEntities<TComponent>(groupIndex.GroupID);
             ref var component = ref components[groupIndex.Index];
 
-            this.Write(writer, component, in options);
+            this.Write(writer, id, component, in options);
         }
         public override void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
             initializer.Init<TComponent>(this.Read(in options, reader, in id));
         }
 
-        protected abstract void Write(EntityWriter writer, in TComponent instance, in SerializationOptions options);
+        protected abstract void Write(EntityWriter writer, in EntityId entityId, in TComponent instance, in SerializationOptions options);
         protected abstract TComponent Read(in DeserializationOptions options, EntityReader reader, in EntityId id);
     }
 
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             throw new NotImplementedException();
         }
 
-        protected override void Write(EntityWriter writer, in TComponent instance, in SerializationOptions options)
+        protected override void Write(EntityWriter writer, in EntityId id, in TComponent instance, in SerializationOptions options)
         {
             throw new NotImplementedException();
         }
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             }
         }
 
-        protected unsafe override void Write(EntityWriter writer, in TComponent instance, in SerializationOptions options)
+        protected unsafe override void Write(EntityWriter writer, in EntityId id, in TComponent instance, in SerializationOptions options)
         {
             TComponent bytes = instance;
             byte* pBytes = (byte*)&bytes;

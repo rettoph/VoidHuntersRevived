@@ -3,9 +3,6 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Services;
 using Guppy.Engine.Common.Loaders;
 using Svelto.ECS;
-using System.Reflection;
-using VoidHuntersRevived.Domain.Entities.Common.Attributes;
-using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Loaders
@@ -25,15 +22,11 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             // Auto register an engine to dispose of instances as needed
             foreach (Type disposableComponent in _assemblies.GetTypes<IEntityComponent>())
             {
-                foreach (AutoDisposeComponentAttribute autoDisposeAttr in disposableComponent.GetCustomAttributes<AutoDisposeComponentAttribute>(true))
+                if (disposableComponent.IsAssignableTo<IDisposable>())
                 {
-                    if (autoDisposeAttr.Scope == AutoDisposeScope.Instance)
-                    {
-                        services.RegisterType(typeof(DisposableEngine<>)
-                            .MakeGenericType(autoDisposeAttr.GetDisposableComponentType(disposableComponent)))
-                            .As<IEngine>()
-                            .InstancePerLifetimeScope();
-                    }
+                    services.RegisterType(typeof(DisposableEngine<>).MakeGenericType(disposableComponent))
+                        .As<IEngine>()
+                        .InstancePerLifetimeScope();
                 }
             }
         }

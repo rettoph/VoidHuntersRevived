@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
                 if (_entityQueryService.TryGetId(nodeVhId, out EntityId nodeId))
                 {
                     return new Coupling(
-                        socketId: new SocketId(
+                        socketId: new NodeSocketId(
                             nodeId: nodeId,
                             index: index)
                         );
@@ -42,9 +42,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
             return default;
         }
 
-        protected override void Write(EntityWriter writer, in Coupling instance, in SerializationOptions options)
+        protected override void Write(EntityWriter writer, in EntityId id, in Coupling instance, in SerializationOptions options)
         {
-            if (writer.WriteIf(instance.SocketId != SocketId.Empty))
+            if (writer.WriteIf(instance.SocketId != NodeSocketId.Empty))
             {
                 writer.Write(instance.SocketId.NodeId.VhId);
                 writer.Write(instance.SocketId.Index);

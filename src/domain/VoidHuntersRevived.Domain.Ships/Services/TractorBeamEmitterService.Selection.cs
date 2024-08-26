@@ -68,8 +68,8 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         public void Deselect(VhId sourceId, EntityId tractorBeamEmitterId)
         {
             ref Tactical tactical = ref _entityQueryService.QueryById<Tactical>(tractorBeamEmitterId);
-            SocketVhId? attachToSocketVhId = _socketService.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Target, out Socket socket)
-                ? socket.Id.VhId : default;
+            SocketVhId? attachToSocketVhId = _socketService.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Target, out NodeSocket nodeSocket)
+                ? nodeSocket.Id.VhId : default;
 
             this.Deselect(sourceId, tractorBeamEmitterId, attachToSocketVhId);
         }
@@ -153,7 +153,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         {
             try
             {
-                if (data.AttachToSocketVhId.HasValue && _socketService.TryGetSocket(data.AttachToSocketVhId.Value, out Socket attachToSocket))
+                if (data.AttachToSocketVhId.HasValue && _socketService.TryGetSocket(data.AttachToSocketVhId.Value, out NodeSocket attachToSocket))
                 { // Spawn a new piece attached to the input node
                     _socketService.Spawn(eventId, attachToSocket, data.TargetData);
                 }

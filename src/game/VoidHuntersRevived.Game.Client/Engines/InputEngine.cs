@@ -128,8 +128,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             else
             {
                 ref Tactical tactical = ref _readEntityQueryService.QueryById<Tactical>(shipId);
-                SocketVhId? attachToSocket = _readSocketService.TryGetClosestOpenSocket(shipId, tactical.Target, out Socket socket)
-                            ? socket.Id.VhId : null;
+                SocketVhId? attachToSocket = _readSocketService.TryGetClosestOpenSocket(shipId, tactical.Target, out NodeSocket nodeSocket)
+                            ? nodeSocket.Id.VhId : null;
 
                 _simulation.Input(
                     sourceId: eventId,

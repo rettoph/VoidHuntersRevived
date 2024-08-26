@@ -99,7 +99,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             this.Disposer ??= EntityTypeProvider.DefaultDisposer;
 
             // Begin Svelto initiailzation
-            this.Components.Set<Common.Components.EntityType>(new Common.Components.EntityType(_typeRef));
+            this.Components.Set(new Common.Components.EntityType(_typeRef));
 
             if (EntityTypeProvider.ValidateRequiredComponents(this.Components, this.ImplementedTypes, x => x.RequiredComponents, out Type[] missingTypes) == false)
             {
@@ -186,11 +186,11 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             _functions.RemoveEntity<VoidHuntersEntityDescriptor>(id.EGID);
         }
 
-        public void SerializeInstanceEntity(EntityWriter writer, in GroupIndex groupIndex, in SerializationOptions options)
+        public void SerializeInstanceEntity(EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options)
         {
             foreach (ComponentSerializer serializer in _instanceEntityComponentSerializers)
             {
-                serializer.Serialize(writer, in groupIndex, _entitiesDB, in options);
+                serializer.Serialize(writer, in id, in groupIndex, _entitiesDB, in options);
             }
         }
 

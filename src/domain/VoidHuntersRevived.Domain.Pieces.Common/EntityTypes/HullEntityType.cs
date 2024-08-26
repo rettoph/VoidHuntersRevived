@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Serialization.Common.Attributes;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
@@ -11,12 +10,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
     {
         public HullEntityType(IKey<HullEntityType> key, IKey<IEntityType>[] include) : base(key, include)
         {
-            this.WithComponents([
-                default(Sockets<SocketId>)
-            ]);
-
             this.RequireComponents([
-                typeof(Sockets<Location>),
+                typeof(Sockets),
             ]);
         }
     }

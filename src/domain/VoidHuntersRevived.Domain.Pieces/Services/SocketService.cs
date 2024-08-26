@@ -5,7 +5,6 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
@@ -37,62 +36,67 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             _treeService = treeService;
         }
 
-        public Socket GetSocket(SocketId socketId)
+        public NodeSocket GetSocket(NodeSocketId socketId)
         {
             _logger.Verbose("{ClassName}::{MethodName} - Locating {NodeId}:{SocketIndex} - Node EGID {EntityId}:{GroupId}", nameof(SocketService), nameof(GetSocket), socketId.NodeId.VhId.Value, socketId.Index, socketId.NodeId.EGID.entityID, socketId.NodeId.EGID.groupID);
 
             ref Node node = ref _entityQueryService.QueryById<Node>(socketId.NodeId, out GroupIndex groupIndex);
-            var (socketIds, socketLocations, _) = _entityQueryService.QueryEntities<Sockets<SocketId>, Sockets<Location>>(groupIndex.GroupID);
+            var (sockets, _) = _entityQueryService.QueryEntities<Sockets>(groupIndex.GroupID);
 
-            Socket socket = new Socket(node, socketIds[groupIndex.Index].Items[socketId.Index], socketLocations[groupIndex.Index].Items[socketId.Index]);
+            NodeSocket nodeSocket = new NodeSocket(node, socketId, sockets[groupIndex.Index].Items[socketId.Index]);
 
-            return socket;
+            return nodeSocket;
         }
 
-        public bool TryGetSocket(SocketVhId socketVhId, out Socket socket)
+        public bool TryGetSocket(SocketVhId socketVhId, out NodeSocket nodeSocket)
         {
             if (_entityQueryService.TryGetId(socketVhId.NodeVhId, out EntityId nodeId))
             {
-                socket = this.GetSocket(new SocketId(nodeId, socketVhId.Index));
+                nodeSocket = this.GetSocket(new NodeSocketId(nodeId, socketVhId.Index));
                 return true;
             }
 
-            socket = default;
+            nodeSocket = default;
             return false;
         }
 
-        public ref EntityFilterCollection GetCouplingFilter(SocketId socketId)
+        public ref EntityFilterCollection GetCouplingFilter(NodeSocketId socketId)
         {
             return ref _entityQueryService.GetFilter<Coupling>(socketId.NodeId, socketId.FilterContextId);
         }
 
-        public bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out Socket socket)
+        public ref EntityFilterCollection GetCouplingFilter(EntityId nodeId, byte socketIndex)
+        {
+            return ref this.GetCouplingFilter(new NodeSocketId(nodeId, socketIndex));
+        }
+
+        public bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket)
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
             ref var filter = ref _entityQueryService.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
             Fix64 closestOpenSocketDistance = OpenNodemaximumDistance;
-            socket = default!;
+            nodeSocket = default!;
             bool result = false;
 
             foreach (var (indeces, group) in filter)
             {
-                if (!_entityQueryService.HasAny<Sockets<Location>>(group))
+                if (!_entityQueryService.HasAny<Sockets>(group))
                 {
                     continue;
                 }
 
-                var (statuses, nodes, socketIds, socketLocations, _) = _entityQueryService.QueryEntities<EntityStatus, Node, Sockets<SocketId>, Sockets<Location>>(group);
+                var (statuses, nodes, sockets, _) = _entityQueryService.QueryEntities<EntityStatus, Node, Sockets>(group);
 
                 for (int i = 0; i < indeces.count; i++)
                 {
                     uint index = indeces[i];
-                    Sockets sockets = new Sockets(index, nodes, socketIds, socketLocations);
+                    NodeSockets nodeSockets = new NodeSockets(index, nodes, sockets);
                     if (statuses[index].IsSpawned
-                        && this.TryGetClosestOpenSocketOnNode(worldPosition, ref sockets, out Fix64 closestOpenSocketOnNodeDistance, out Socket closestOpenSocketOnNode)
+                        && this.TryGetClosestOpenSocketOnNode(worldPosition, ref nodeSockets, out Fix64 closestOpenSocketOnNodeDistance, out NodeSocket closestOpenSocketOnNode)
                         && closestOpenSocketOnNodeDistance < closestOpenSocketDistance)
                     {
                         closestOpenSocketDistance = closestOpenSocketOnNodeDistance;
-                        socket = closestOpenSocketOnNode;
+                        nodeSocket = closestOpenSocketOnNode;
                         result = true;
                     }
                 }
@@ -103,19 +107,19 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         private bool TryGetClosestOpenSocketOnNode(
             FixVector2 worldPosition,
-            ref Sockets sockets,
+            ref NodeSockets nodeSockets,
             out Fix64 closestOpenSocketDistance,
-            out Socket closestOpenSocketOnNode)
+            out NodeSocket closestOpenSocketOnNode)
         {
             closestOpenSocketDistance = OpenNodemaximumDistance;
             closestOpenSocketOnNode = default!;
             bool result = false;
 
-            for (byte j = 0; j < sockets.Count; j++)
+            for (byte j = 0; j < nodeSockets.Count; j++)
             {
-                Socket socket = sockets[j];
+                NodeSocket nodeSocket = nodeSockets[j];
 
-                var filter = this.GetCouplingFilter(socket.Id);
+                var filter = this.GetCouplingFilter(nodeSockets.Node.Id, (byte)j);
                 int count = 0;
                 foreach (var (indices, groupId) in filter)
                 {
@@ -135,7 +139,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     continue;
                 }
 
-                FixVector2 socketWorldPosition = FixVector2.Transform(FixVector2.Zero, socket.Transformation);
+                FixVector2 socketWorldPosition = FixVector2.Transform(FixVector2.Zero, nodeSocket.Transformation);
                 FixVector2.Distance(ref socketWorldPosition, ref worldPosition, out Fix64 jointDistanceFromTarget);
                 if (jointDistanceFromTarget > closestOpenSocketDistance)
                 { // Socket is further away than previously checked closest
@@ -143,7 +147,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 }
 
                 closestOpenSocketDistance = jointDistanceFromTarget;
-                closestOpenSocketOnNode = socket;
+                closestOpenSocketOnNode = nodeSocket;
                 result = true;
             }
 

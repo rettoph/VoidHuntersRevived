@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
             this.Write(id.VhId);
             this.Write(typeKey.Id);
-            _entityTypeService.GetByKey(typeKey).SerializeInstanceEntity(this, in groupIndex, in options);
+            _entityTypeService.GetByKey(typeKey).SerializeInstanceEntity(this, in id, in groupIndex, in options);
         }
     }
 }

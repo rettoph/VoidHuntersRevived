@@ -9,8 +9,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 
         public GroupIndex(ExclusiveGroupStruct groupID, uint index)
         {
-            GroupID = groupID;
-            Index = index;
+            this.GroupID = groupID;
+            this.Index = index;
         }
     }
 }
