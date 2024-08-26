@@ -20,6 +20,9 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
                 new Helm(),
                 new Tactical(),
                 new TractorBeamEmitter()
+                {
+                    Active = false
+                }
             ]);
         }
     }

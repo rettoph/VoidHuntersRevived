@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Utilities;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Components
@@ -8,17 +7,19 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Components
         where TItems : unmanaged, IEntityComponent
         where TAs : unmanaged, IEntityComponent
     {
+        private static int _filterId;
         private static readonly FilterContextID _context = FilterContextID.GetNewContextID();
 
-        private readonly UnmanagedReference<IEntityService> _entities;
-        private readonly CombinedFilterID _filterId;
+        private readonly CombinedFilterID _combinedFilterId;
 
-        public EntityFilterCollection Items => _entities.Value.Query.GetFilter<TItems>(_filterId);
-
-        public HasMany(EntityId id, UnmanagedReference<IEntityService> entities)
+        public HasMany()
         {
-            _filterId = new CombinedFilterID(unchecked((int)id.EGID.entityID), _context);
-            _entities = entities;
+            _combinedFilterId = new CombinedFilterID(_filterId++, _context);
+        }
+
+        public ref EntityFilterCollection GetItems(IEntityQueryService entityQueryService)
+        {
+            return ref entityQueryService.GetFilter<TItems>(_combinedFilterId);
         }
     }
 }

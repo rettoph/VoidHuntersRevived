@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _serializers = serializers.ToDictionary(x => x.Type, x => x);
         }
 
-        public ComponentSerializer GetComponentSerializer(Type componentType)
+        public ComponentSerializer GetComponentSerializerByType(Type componentType)
         {
             ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>(componentType);
             ThrowIf.Type.IsNotUnmanagedStruct(componentType);
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _serializers[componentType];
         }
 
-        public IEnumerable<ComponentSerializer> GetComponentSerializers(IEnumerable<Type> componentTypes)
+        public IEnumerable<ComponentSerializer> GetComponentSerializersByTypes(IEnumerable<Type> componentTypes)
         {
             foreach (Type componentType in componentTypes)
             {

@@ -1,12 +1,10 @@
-﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
-using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Providers;
@@ -21,7 +19,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityTypeService _entityTypeService;
         private readonly Lazy<IComponentSerializerService> _componentSerializerService;
-        private readonly IFiltered<IEntityTypeProviderInitializer> _entityTypeProviderInitializers;
 
         private Dictionary<IKey<IEntityType>, IEntityTypeProvider> _providers;
         private HashSet<Type> _distinctComponentTypes;
@@ -33,7 +30,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityTypeProviderService(
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityTypeService entityTypeService,
-            IFiltered<IEntityTypeProviderInitializer> entityTypeProviderInitializers,
             Lazy<IComponentSerializerService> componentSerializerService,
             EnginesRoot enginesRoot,
             EntityService entityService)
@@ -41,7 +37,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _uniqueNumberProvider = uniqueNumberProvider;
             _entityTypeService = entityTypeService;
             _componentSerializerService = componentSerializerService;
-            _entityTypeProviderInitializers = entityTypeProviderInitializers;
             _distinctComponentTypes = new HashSet<Type>();
             _implementationsById = new Dictionary<IKey<IEntityType>, IEntityTypeProvider[]>();
             _implementationsByType = new Dictionary<Type, IEntityTypeProvider[]>();
@@ -61,7 +56,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                             _uniqueNumberProvider,
                             factory,
                             functions,
-                            entityTypeProviderInitializers,
                             entityService
                         );
                     });
@@ -76,8 +70,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 entityTypeProvider.Initialize(
                     entitiesDB: this.entitiesDB,
                     engineService: this.Strategy.Engines,
-                    componentSerializerService: _componentSerializerService.Value,
-                    entityTypeProviderInitializers: _entityTypeProviderInitializers);
+                    componentSerializerService: _componentSerializerService.Value);
             }
         }
 

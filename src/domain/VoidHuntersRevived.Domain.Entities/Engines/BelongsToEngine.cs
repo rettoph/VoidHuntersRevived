@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
             EntityId ownerId = _entityQueryService.GetId(belongsTo.OwnerVhId);
             HasMany<TItems, TOwner> hasMany = _entityQueryService.QueryById<HasMany<TItems, TOwner>>(ownerId);
-            hasMany.Items.Add(id, groupIndex);
+            hasMany.GetItems(_entityQueryService).Add(id, groupIndex);
         }
     }
 }

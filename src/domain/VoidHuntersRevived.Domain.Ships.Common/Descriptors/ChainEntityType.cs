@@ -2,6 +2,8 @@
 using Guppy.Core.Serialization.Common.Attributes;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common.Constants;
 using VoidHuntersRevived.Domain.Pieces.Common.EntityTypes;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 
@@ -16,7 +18,12 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
         public ChainEntityType() : base(ChainEntityType.ChainEntityTypeKey, Array.Empty<IKey<IEntityType>>())
         {
             this.WithComponents([
-                new Tractorable()
+                new Tractorable(),
+                new Collision()
+                {
+                    Categories = CollisionGroups.FreeFloatingCategories,
+                    CollidesWith = CollisionGroups.FreeFloatingCollidesWith
+                }
             ]);
         }
     }

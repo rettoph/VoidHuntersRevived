@@ -7,13 +7,11 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Components
     {
         public static FilterContextID TractorableFilterContext = FilterContextID.GetNewContextID();
 
-        public readonly EntityId Id;
         public bool Active;
         public EntityId TargetId;
 
-        public TractorBeamEmitter(EntityId id) : this()
+        public TractorBeamEmitter()
         {
-            this.Id = id;
             this.Active = false;
         }
     }

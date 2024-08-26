@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Utilities;
+﻿using Guppy.Core.Common.Utilities;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -10,7 +9,6 @@ using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
-using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
@@ -51,7 +49,6 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityFactory factory,
             IEntityFunctions functions,
-            IFiltered<IEntityTypeProviderInitializer> entityTypeProviderInitializers,
             EntityService entityService
         )
         {
@@ -77,27 +74,6 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             this.Initializer = null!;
             this.Disposer = null!;
 
-            // Invoke custom provider initialization
-            foreach (IEntityTypeProviderInitializer entityTypeProviderInitializer in entityTypeProviderInitializers)
-            {
-                entityTypeProviderInitializer.InitializeEntityTypeProvider(this);
-            }
-
-            // Add custom front-to-back delegates
-            foreach (IEntityTypeProviderInitializer entityTypeProviderInitializer in entityTypeProviderInitializers.OrderBy(x => x.Order))
-            {
-                this.Initializer += entityTypeProviderInitializer.GetEntityInitializer(this);
-            }
-
-            // Add custom back-to-front delegates
-            foreach (IEntityTypeProviderInitializer entityTypeProviderInitializer in entityTypeProviderInitializers.OrderByDescending(x => x.Order))
-            {
-                this.Disposer += entityTypeProviderInitializer.GetEntityDisposer(this);
-            }
-
-            this.Initializer ??= EntityTypeProvider.DefaultInitializer;
-            this.Disposer ??= EntityTypeProvider.DefaultDisposer;
-
             // Begin Svelto initiailzation
             this.Components.Set(new Common.Components.EntityType(_typeRef));
 
@@ -112,15 +88,16 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         public void Initialize(
             EntitiesDB entitiesDB,
             IEngineService engineService,
-            IComponentSerializerService componentSerializerService,
-            IFiltered<IEntityTypeProviderInitializer> entityTypeProviderInitializers)
+            IComponentSerializerService componentSerializerService)
         {
             _entitiesDB = entitiesDB;
 
+            // Give some defaults if needed
+            this.Initializer ??= EntityTypeProvider.DefaultInitializer;
+            this.Disposer ??= EntityTypeProvider.DefaultDisposer;
+
             // Load serializers
-            IEnumerable<Type> instanceEntityComponentTypes = _descriptor.componentsToBuild.Select(x => x.GetEntityComponentType());
-            ComponentSerializer[] instanceEntityComponentSerializers = componentSerializerService.GetComponentSerializers(instanceEntityComponentTypes).ToArray();
-            _instanceEntityComponentSerializers = new FasterList<ComponentSerializer>(instanceEntityComponentSerializers);
+            _instanceEntityComponentSerializers = componentSerializerService.GetComponentSerializersByDescriptor(_descriptor);
 
             // Generate despawn engine invokers
             // Responsible for calling IOnSpawnEngine & IOnDespawnEngine engines

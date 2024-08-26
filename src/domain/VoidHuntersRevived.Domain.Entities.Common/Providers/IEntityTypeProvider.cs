@@ -1,8 +1,6 @@
-﻿using Guppy.Core.Common;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Initializers;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -26,8 +24,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Providers
         void Initialize(
             EntitiesDB entitiesDB,
             IEngineService engineService,
-            IComponentSerializerService componentSerializerService,
-            IFiltered<IEntityTypeProviderInitializer> entityTypeProviderInitializers);
+            IComponentSerializerService componentSerializerService);
 
         #region Instance Entity Methods
         EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id);
