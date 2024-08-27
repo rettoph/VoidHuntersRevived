@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Descriptors
     {
         public static readonly IKey<TestEntityType> TestEntityTypeKey = VoidHuntersRevived.Common.Key.GetByName<TestEntityType>(nameof(TestEntityType));
 
-        public TestEntityType() : base(TestEntityTypeKey, Array.Empty<IKey<IEntityType>>())
+        public TestEntityType() : base(TestEntityTypeKey)
         {
             this.WithComponents([
                 new TestComponent()

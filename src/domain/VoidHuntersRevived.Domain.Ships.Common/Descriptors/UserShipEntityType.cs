@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
     {
         public static readonly IKey<UserShipEntityType> UserShipEntityTypeKey = VoidHuntersRevived.Common.Key.GetByName<UserShipEntityType>(nameof(UserShipEntityType));
 
-        public UserShipEntityType() : base(UserShipEntityType.UserShipEntityTypeKey, Array.Empty<IKey<IEntityType>>())
+        public UserShipEntityType() : base(UserShipEntityType.UserShipEntityTypeKey)
         {
             this.WithComponents([
                 new UserId(),

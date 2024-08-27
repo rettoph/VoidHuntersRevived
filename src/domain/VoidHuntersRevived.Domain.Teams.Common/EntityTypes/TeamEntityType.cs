@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.EntityTypes
     [PolymorphicJsonType<IEntityType>(nameof(TeamEntityType))]
     public class TeamEntityType : BaseTeamEntityType
     {
-        public TeamEntityType(IKey<TeamEntityType> key, IKey<IEntityType>[] include) : base(key, include)
+        public TeamEntityType(IKey<TeamEntityType> key) : base(key)
         {
             this.WithComponents([
                 new ColorScheme(),

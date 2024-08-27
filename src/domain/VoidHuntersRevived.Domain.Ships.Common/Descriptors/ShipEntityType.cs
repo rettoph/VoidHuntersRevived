@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
     [PolymorphicJsonType<IEntityType>(nameof(ShipEntityType))]
     public abstract class ShipEntityType : TreeEntityType
     {
-        public ShipEntityType(IKey<IEntityType> id, IKey<IEntityType>[] include) : base(id, include)
+        public ShipEntityType(IKey<IEntityType> id) : base(id)
         {
             this.WithComponents([
                 new PhysicsBubble() {

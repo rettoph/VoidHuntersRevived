@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
     [PolymorphicJsonType<IEntityType>(nameof(PieceEntityType))]
     public abstract class PieceEntityType : VisibleTeamMemberEntityType
     {
-        public PieceEntityType(IKey<IEntityType> key, IKey<IEntityType>[] include) : base(key, include)
+        public PieceEntityType(IKey<IEntityType> key) : base(key)
         {
             this.WithComponents([
                 Plug.Default,

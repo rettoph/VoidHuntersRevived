@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
     [PolymorphicJsonType<IEntityType>(nameof(TreeEntityType))]
     public abstract class TreeEntityType : BodyEntityType
     {
-        public TreeEntityType(IKey<IEntityType> key, IKey<IEntityType>[] include) : base(key, include)
+        public TreeEntityType(IKey<IEntityType> key) : base(key)
         {
             this.WithComponents([
                 new Tree(),

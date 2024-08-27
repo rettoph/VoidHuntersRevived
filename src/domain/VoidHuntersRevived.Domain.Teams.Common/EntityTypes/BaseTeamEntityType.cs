@@ -7,7 +7,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.EntityTypes
 {
     public abstract class BaseTeamEntityType : Entities.Common.EntityType
     {
-        public BaseTeamEntityType(IKey<IEntityType> key, IKey<IEntityType>[] include) : base(key, include)
+        public BaseTeamEntityType(IKey<IEntityType> key) : base(key)
         {
             this.WithComponents([
                 new Team(),

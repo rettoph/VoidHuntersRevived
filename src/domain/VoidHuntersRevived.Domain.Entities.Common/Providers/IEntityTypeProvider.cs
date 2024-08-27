@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Providers
 
         ComponentBuilderDictionary Components { get; }
         EntityInitializerDelegate? Initializer { get; set; }
-        DisposeEntityInitializerDelegate? Disposer { get; set; }
+        EntityDisposerDelegate? Disposer { get; set; }
 
         void Initialize(
             EntitiesDB entitiesDB,

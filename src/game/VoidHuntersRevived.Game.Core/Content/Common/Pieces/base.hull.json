@@ -1,8 +1,6 @@
 {
-  "Key": {
-    "Name": "Piece.Base.Hull",
-    "Type": "HullEntityType"
-  },
+  "Name": "Piece.Base.Hull",
+  "Type": "HullEntityType",
   "Flags": "Partial",
   "Components": {
     "ColorScheme": {

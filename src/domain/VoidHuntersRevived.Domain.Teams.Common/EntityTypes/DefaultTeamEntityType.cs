@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.EntityTypes
     [PolymorphicJsonType<IEntityType>(nameof(DefaultTeamEntityType))]
     public class DefaultTeamEntityType : BaseTeamEntityType
     {
-        public DefaultTeamEntityType(IKey<DefaultTeamEntityType> key, IKey<IEntityType>[] include) : base(key, include)
+        public DefaultTeamEntityType(IKey<DefaultTeamEntityType> key) : base(key)
         {
             this.WithComponents([
                 new DefaultTeam(),

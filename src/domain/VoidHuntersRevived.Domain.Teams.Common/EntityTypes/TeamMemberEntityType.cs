@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.EntityTypes
     [PolymorphicJsonType<IEntityType>(nameof(TeamMemberEntityType))]
     public abstract class TeamMemberEntityType : Entities.Common.EntityType
     {
-        public TeamMemberEntityType(IKey<IEntityType> key, IKey<IEntityType>[] include) : base(key, include)
+        public TeamMemberEntityType(IKey<IEntityType> key) : base(key)
         {
             this.WithComponents([
                 new TeamMember(),

@@ -4,10 +4,8 @@ using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
@@ -44,21 +42,21 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             // Create EntityTypeProviders for all registered IEntityType instances
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
             IEntityFunctions functions = enginesRoot.GenerateEntityFunctions();
-            _providers = _entityTypeService.GetAll()
-                .Where(x => x.Flags.HasFlag(EntityTypeFlags.Partial) == false)
-                .ToDictionary(
-                    keySelector: type => type.Key,
-                    elementSelector: type =>
-                    {
-                        return (IEntityTypeProvider)new EntityTypeProvider(
-                            type,
-                            _entityTypeService,
-                            _uniqueNumberProvider,
-                            factory,
-                            functions,
-                            entityService
-                        );
-                    });
+            // _providers = _entityTypeService.GetAll()
+            //     .Where(x => x.Flags.HasFlag(EntityTypeFlags.Partial) == false)
+            //     .ToDictionary(
+            //         keySelector: type => type.Key,
+            //         elementSelector: type =>
+            //         {
+            //             return (IEntityTypeProvider)new EntityTypeProvider(
+            //                 type,
+            //                 _entityTypeService,
+            //                 _uniqueNumberProvider,
+            //                 factory,
+            //                 functions,
+            //                 entityService
+            //             );
+            //         });
         }
 
         public override void Initialize(IStrategy strategy)

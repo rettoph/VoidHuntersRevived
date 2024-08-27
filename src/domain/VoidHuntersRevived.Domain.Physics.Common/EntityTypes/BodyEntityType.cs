@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common.EntityTypes
     [PolymorphicJsonType<IEntityType>(nameof(BodyEntityType))]
     public abstract class BodyEntityType : TeamMemberEntityType
     {
-        public BodyEntityType(IKey<IEntityType> key, IKey<IEntityType>[] include) : base(key, include)
+        public BodyEntityType(IKey<IEntityType> key) : base(key)
         {
             this.WithComponents([
                 new Location(),

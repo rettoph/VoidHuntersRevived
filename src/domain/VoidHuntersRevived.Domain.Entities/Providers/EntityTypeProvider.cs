@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 
         public ComponentBuilderDictionary Components { get; }
         public EntityInitializerDelegate? Initializer { get; set; }
-        public DisposeEntityInitializerDelegate? Disposer { get; set; }
+        public EntityDisposerDelegate? Disposer { get; set; }
 
         public EntityTypeProvider(
             IEntityType type,
@@ -218,12 +218,12 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
                 return result;
             }
 
-            foreach (IKey<IEntityType> includedKey in entityType.Include)
-            {
-                IEntityType includedType = entityTypeService.GetByKey(includedKey);
-
-                EntityTypeProvider.GetImplementedTypes(includedType, entityTypeService, result);
-            }
+            // foreach (IKey<IEntityType> includedKey in entityType.Include)
+            // {
+            //     IEntityType includedType = entityTypeService.GetByKey(includedKey);
+            // 
+            //     EntityTypeProvider.GetImplementedTypes(includedType, entityTypeService, result);
+            // }
 
             if (result.Add(entityType) == false)
             {

@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
     {
         public static readonly IKey<ChainEntityType> ChainEntityTypeKey = VoidHuntersRevived.Common.Key.GetByName<ChainEntityType>(nameof(ChainEntityType));
 
-        public ChainEntityType() : base(ChainEntityType.ChainEntityTypeKey, Array.Empty<IKey<IEntityType>>())
+        public ChainEntityType() : base(ChainEntityType.ChainEntityTypeKey)
         {
             this.WithComponents([
                 new Tractorable(),

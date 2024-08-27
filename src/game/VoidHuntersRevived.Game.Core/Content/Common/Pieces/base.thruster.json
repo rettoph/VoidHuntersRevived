@@ -1,8 +1,6 @@
 {
-  "Key": {
-    "Name": "Piece.Base.Thruster",
-    "Type": "ThrusterEntityType"
-  },
+  "Name": "Piece.Base.Thruster",
+  "Type": "ThrusterEntityType",
   "Flags": "Partial",
   "Components": {
     "ColorScheme": {

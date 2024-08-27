@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
             builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            builder.RegisterType<EntityTypeResolverConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<EntityTypeConfigurationResolverConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<DictionaryPolymorphicConverter<IEntityComponent>>().As<JsonConverter>().SingleInstance();
 
             builder.Configure<LoggerConfiguration>((scope, config) =>

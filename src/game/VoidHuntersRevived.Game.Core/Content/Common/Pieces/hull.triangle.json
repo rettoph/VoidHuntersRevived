@@ -1,8 +1,6 @@
 {
-  "Key": {
-    "Name": "Piece.Hull.Triangle",
-    "Type": "HullEntityType"
-  },
+  "Name": "Piece.Hull.Triangle",
+  "Type": "HullEntityType",
   "Include": [ "Piece.Base.Hull" ],
   "Components": {
     "Rigid": {

@@ -84,6 +84,20 @@ namespace VoidHuntersRevived.Common
             return casted;
         }
 
+        public static IKey<T> GetByName<T>(string name, Type type)
+        {
+            ThrowIf.Type.IsNotAssignableFrom<T>(type);
+
+            object? key = _getByNameMethodInfo.MakeGenericMethod(type).Invoke(null, [name]);
+
+            if (key is not IKey casted)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return (IKey<T>)casted;
+        }
+
         public bool Equals(IKey? other)
         {
             return object.ReferenceEquals(this, other);

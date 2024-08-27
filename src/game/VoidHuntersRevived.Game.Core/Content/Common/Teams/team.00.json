@@ -1,8 +1,6 @@
 {
-  "Key": {
-    "Name": "Team.Zero",
-    "Type": "DefaultTeamEntityType"
-  },
+  "Name": "Team.Zero",
+  "Type": "DefaultTeamEntityType",
   "Components": {
     "Team": {
       "Name": "String.TeamZeroName"

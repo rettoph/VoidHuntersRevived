@@ -4,19 +4,18 @@ using Guppy.Core.Serialization.Common.Services;
 using Svelto.ECS;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
-    internal sealed class EntityTypeResolverConverter : JsonConverter<ResourceResolver<IEntityType>>
+    internal sealed class EntityTypeConfigurationResolverConverter : JsonConverter<ResourceResolver<EntityTypeConfiguration>>
     {
         private readonly Lazy<IResourceService> _resourceService;
         private readonly IPolymorphicJsonSerializerService<IEntityType> _entityTypeTypeService;
 
 
-        public EntityTypeResolverConverter(
+        public EntityTypeConfigurationResolverConverter(
             Lazy<IResourceService> resourceService,
             IPolymorphicJsonSerializerService<IEntityType> entityTypeTypeService)
         {
@@ -24,11 +23,12 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             _entityTypeTypeService = entityTypeTypeService;
         }
 
-        public override ResourceResolver<IEntityType>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ResourceResolver<EntityTypeConfiguration>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            IKey<IEntityType>? key = null;
+            string? name = null;
+            Type? type = null;
             EntityTypeFlags flags = EntityTypeFlags.None;
-            IKey<IEntityType>[] include = Array.Empty<IKey<IEntityType>>();
+            string[] include = Array.Empty<string>();
             Dictionary<Type, IEntityComponent> components = new Dictionary<Type, IEntityComponent>();
             Dictionary<Type, IEntityComponent> typeEntityComponents = new Dictionary<Type, IEntityComponent>();
 
@@ -39,20 +39,21 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(IEntityType.Key):
-                        key = JsonSerializer.Deserialize<IKey<IEntityType>>(ref reader, options) ?? throw new NotImplementedException();
-                        reader.Read();
+                    case nameof(EntityTypeConfiguration.Name):
+                        name = reader.ReadString();
                         break;
-                    case nameof(IEntityType.Flags):
+                    case nameof(EntityTypeConfiguration.Type):
+                        type = _entityTypeTypeService.GetType(reader.ReadString());
+                        break;
+                    case nameof(EntityTypeConfiguration.Flags):
                         flags = JsonSerializer.Deserialize<EntityTypeFlags>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(IEntityType.Include):
-                        string[] includeNames = JsonSerializer.Deserialize<string[]>(ref reader, options) ?? throw new NotImplementedException();
-                        include = includeNames.Select(x => Key.GetByName<IEntityType>(x)).ToArray();
+                    case nameof(EntityTypeConfiguration.Include):
+                        include = JsonSerializer.Deserialize<string[]>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
-                    case nameof(IEntityType.Components):
+                    case nameof(EntityTypeConfiguration.Components):
                         components = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
@@ -63,23 +64,27 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            if (key is null)
+            if (name is null)
             {
                 throw new InvalidDataException();
             }
 
-            return new ResourceResolver<IEntityType>(() =>
+            return new ResourceResolver<EntityTypeConfiguration>(() =>
             {
-                EntityType entityType = (EntityType)(Activator.CreateInstance(key.Type, [key, include]) ?? throw new NotImplementedException());
+                EntityTypeConfiguration entityTypeConfiguration = new EntityTypeConfiguration()
+                {
+                    Name = name,
+                    Type = type,
+                    Flags = flags,
+                    Components = components,
+                    Include = include,
+                };
 
-                entityType.WithFlags(flags)
-                    .WithComponents(components.Values);
-
-                return entityType;
+                return entityTypeConfiguration;
             });
         }
 
-        public override void Write(Utf8JsonWriter writer, ResourceResolver<IEntityType> value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ResourceResolver<EntityTypeConfiguration> value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

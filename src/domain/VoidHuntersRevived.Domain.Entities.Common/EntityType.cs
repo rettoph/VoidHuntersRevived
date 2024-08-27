@@ -4,7 +4,6 @@ using Guppy.Core.Common.Enums;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
@@ -16,22 +15,15 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public ComponentBuilderDictionary Components { get; }
 
         public IKey<IEntityType> Key { get; }
-        public EntityTypeFlags Flags { get; set; }
-        public IKey<IEntityType>[] Include { get; }
         public Type Type => this.GetType();
 
-        public EntityType(IKey<IEntityType> key, IKey<IEntityType>[] include)
+        public EntityType(IKey<IEntityType> key)
         {
-            this.RequiredComponents = new HashSet<Type>();
-            this.Components = new ComponentBuilderDictionary();
+            ThrowIf.Type.IsNotAssignableFrom(key.Type, this.Type);
 
             this.Key = key;
-            this.Include = include;
-
-            foreach (IKey<IEntityType> includeTypeKey in include)
-            {
-                ThrowIf.Type.IsNotAssignableFrom(includeTypeKey.Type, this.Type);
-            }
+            this.RequiredComponents = new HashSet<Type>();
+            this.Components = new ComponentBuilderDictionary();
 
             // TODO: Some of these components should just be marked as required rather than
             // Given default values.
@@ -41,21 +33,14 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             ]);
         }
 
-        public EntityType WithFlags(EntityTypeFlags flags)
-        {
-            this.Flags |= flags;
-
-            return this;
-        }
-
-        public EntityType WithComponent(IEntityComponent component)
+        public IEntityType WithComponent(IEntityComponent component)
         {
             this.Components.Set(component);
 
             return this;
         }
 
-        public EntityType WithComponent<TComponent>(TComponent component)
+        public IEntityType WithComponent<TComponent>(TComponent component)
             where TComponent : unmanaged, IEntityComponent
         {
             this.Components.Set(component);
@@ -63,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return this;
         }
 
-        public EntityType WithComponents(IEnumerable<IEntityComponent> components)
+        public IEntityType WithComponents(IEnumerable<IEntityComponent> components)
         {
             foreach (IEntityComponent component in components)
             {
@@ -73,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return this;
         }
 
-        public EntityType RequireComponent(Type component)
+        public IEntityType RequireComponent(Type component)
         {
             ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>(component);
             ThrowIf.Type.IsNotUnmanagedStruct(component);
@@ -83,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return this;
         }
 
-        public EntityType RequireComponent<TComponent>()
+        public IEntityType RequireComponent<TComponent>()
             where TComponent : unmanaged, IEntityComponent
         {
             this.RequiredComponents.Add(typeof(TComponent));
@@ -91,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return this;
         }
 
-        public EntityType RequireComponents(Type[] components)
+        public IEntityType RequireComponents(IEnumerable<Type> components)
         {
             foreach (Type component in components)
             {

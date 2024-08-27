@@ -1,8 +1,6 @@
 {
-  "Key": {
-    "Name": "Piece.Thruster",
-    "Type": "ThrusterEntityType"
-  },
+  "Name": "Piece.Thruster",
+  "Type": "ThrusterEntityType",
   "Include": [ "Piece.Base.Thruster" ],
   "Components": {
     "Rigid": {
