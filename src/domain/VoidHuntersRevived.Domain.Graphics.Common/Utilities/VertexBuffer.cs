@@ -37,14 +37,14 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 
         public EntitiesDB EntitiesDb { get; set; } = null!;
 
-        public IKey<IEntityType>? EntityTypeKey { get; }
+        public Key<IEntityType>? EntityTypeKey { get; }
         public PrimitiveGroupEnum Group { get; }
         public Type VertexType => typeof(TVertex);
 
         public int Sequence { get; }
 
         public VertexBuffer(
-            IKey<IEntityType>? entityTypeKey,
+            Key<IEntityType>? entityTypeKey,
             PrimitiveGroupEnum group,
             int sequence,
             GraphicsDevice graphics,

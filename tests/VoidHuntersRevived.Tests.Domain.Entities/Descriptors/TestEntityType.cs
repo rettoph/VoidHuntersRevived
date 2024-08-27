@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Descriptors
 {
     public class TestEntityType : EntityType
     {
-        public static readonly IKey<TestEntityType> TestEntityTypeKey = VoidHuntersRevived.Common.Key.GetByName<TestEntityType>(nameof(TestEntityType));
+        public static readonly Key<IEntityType> TestEntityTypeKey = Key<IEntityType>.GetByName(nameof(TestEntityType));
 
         public TestEntityType() : base(TestEntityTypeKey)
         {

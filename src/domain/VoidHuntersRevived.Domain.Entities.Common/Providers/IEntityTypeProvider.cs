@@ -39,6 +39,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Providers
 
         IEnumerable<Type> GetAllDistinctComponentTypes();
 
-        bool Implements(IKey<IEntityType> key);
+        bool Implements(Key<IEntityType> key);
     }
 }

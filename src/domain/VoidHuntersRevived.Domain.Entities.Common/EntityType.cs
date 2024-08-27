@@ -14,10 +14,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public HashSet<Type> RequiredComponents { get; }
         public ComponentBuilderDictionary Components { get; }
 
-        public IKey<IEntityType> Key { get; }
+        public Key<IEntityType> Key { get; }
         public Type Type => this.GetType();
 
-        public EntityType(IKey<IEntityType> key)
+        public EntityType(Key<IEntityType> key)
         {
             ThrowIf.Type.IsNotAssignableFrom(key.Type, this.Type);
 

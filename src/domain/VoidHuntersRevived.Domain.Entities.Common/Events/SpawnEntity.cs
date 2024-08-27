@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Events
         public bool IsPredictable => true;
 
         public required VhId VhId { get; init; }
-        public required IKey<IEntityType> TypeKey { get; init; }
+        public required Key<IEntityType> TypeKey { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {

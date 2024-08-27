@@ -141,7 +141,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         {
             this.Load(data, position);
             VhId vhid = this.ReadVhId(options.Seed);
-            IKey<IEntityType> entityTypeKey = Key.GetById<IEntityType>(this.ReadStruct<VhId>());
+            Key<IEntityType> entityTypeKey = Key<IEntityType>.GetById(this.ReadStruct<VhId>());
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, entityTypeKey, options.Seed.Value);
 
@@ -160,7 +160,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         {
             this.Load(data, position);
             VhId vhid = this.ReadVhId(options.Seed);
-            IKey<IEntityType> entityTypeKey = Key.GetById<IEntityType>(this.ReadStruct<VhId>());
+            Key<IEntityType> entityTypeKey = Key<IEntityType>.GetById(this.ReadStruct<VhId>());
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, entityTypeKey, options.Seed.Value);
 

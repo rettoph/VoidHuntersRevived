@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
     public sealed class PrimitiveEntity_ManyTypesManyGroups_Engine<TVertex> : BaseVertexTypeEntityEngine<TVertex>
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {
-        private readonly Dictionary<IKey<IEntityType>, IPrimitive<TVertex>> _primitivesByType;
+        private readonly Dictionary<Key<IEntityType>, IPrimitive<TVertex>> _primitivesByType;
         private readonly IVertexBuffer<TVertex>[] _vertexBuffers;
 
         public PrimitiveEntity_ManyTypesManyGroups_Engine(IVertexTypeManagerProvider<TVertex> vertexTypeManagerProvider)

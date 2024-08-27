@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
     [PolymorphicJsonType<IEntityType>(nameof(HullEntityType))]
     public class HullEntityType : PieceEntityType
     {
-        public HullEntityType(IKey<HullEntityType> key) : base(key)
+        public HullEntityType(Key<IEntityType> key) : base(key)
         {
             this.RequireComponents([
                 typeof(Sockets),

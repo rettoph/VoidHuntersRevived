@@ -1,11 +1,12 @@
 ﻿using Guppy.Core.Serialization.Common.Services;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Serialization.Json
 {
-    public class KeyConverter : JsonConverter<IKey>
+    public class KeyConverter : JsonConverter<object>
     {
         private readonly IPolymorphicJsonSerializerService<object> _polymorphicJsonSerializerService;
 
@@ -16,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
 
         public override bool CanConvert(Type typeToConvert)
         {
-            if (typeToConvert.IsAssignableTo(typeof(IKey)))
+            if (typeToConvert.ImplementsGenericTypeDefinition(typeof(Key<>)))
             {
                 return true;
             }
@@ -24,74 +25,18 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
             return base.CanConvert(typeToConvert);
         }
 
-        public override IKey? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            string? name = null;
-            Type? type = null;
+            reader.CheckToken(JsonTokenType.String, true);
+            string name = reader.ReadString();
+            object key = typeToConvert.GetMethod(nameof(Key<object>.GetByName), BindingFlags.Static | BindingFlags.Public)!.Invoke(null, [name])!;
 
-            if (typeToConvert.IsGenericType)
-            {
-                type ??= typeToConvert.GenericTypeArguments[0];
-            }
-
-            switch (reader.TokenType)
-            {
-                case JsonTokenType.String:
-                    this.ReadString(ref reader, ref type, ref name, options);
-                    break;
-                case JsonTokenType.StartObject:
-                    this.ReadObject(ref reader, ref type, ref name, options);
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-
-            if (name is null)
-            {
-                throw new ArgumentException(nameof(IKey.Name));
-            }
-
-            if (type is null)
-            {
-                throw new ArgumentException(nameof(IKey.Type));
-            }
-
-            return Key.GetByName(name, type);
+            return key;
         }
 
-        public override void Write(Utf8JsonWriter writer, IKey value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
-        }
-
-        private void ReadObject(ref Utf8JsonReader reader, ref Type? type, ref string? name, JsonSerializerOptions options)
-        {
-            reader.CheckToken(JsonTokenType.StartObject, true);
-            reader.Read();
-
-            while (reader.ReadPropertyName(out string? propertyName))
-            {
-                switch (propertyName)
-                {
-                    case nameof(IKey.Name):
-                        name = JsonSerializer.Deserialize<string>(ref reader, options);
-                        reader.Read();
-                        break;
-                    case nameof(IKey.Type):
-                        string typeKey = JsonSerializer.Deserialize<string>(ref reader, options) ?? string.Empty;
-                        type = _polymorphicJsonSerializerService.GetType(typeKey);
-                        reader.Read();
-                        break;
-                }
-            }
-
-            reader.CheckToken(JsonTokenType.EndObject, true);
-        }
-
-        private void ReadString(ref Utf8JsonReader reader, ref Type? type, ref string? name, JsonSerializerOptions options)
-        {
-            name = JsonSerializer.Deserialize<string>(ref reader, options);
-            reader.Read();
         }
     }
 }

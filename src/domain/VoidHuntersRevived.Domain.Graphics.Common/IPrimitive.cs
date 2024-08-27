@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
 {
     public interface IPrimitive
     {
-        IKey<IEntityType>? EntityTypeKey { get; }
+        Key<IEntityType>? EntityTypeKey { get; }
         Type VertexType { get; }
         PrimitiveGroupEnum[] Groups { get; }
         EntitiesDB EntitiesDb { set; }

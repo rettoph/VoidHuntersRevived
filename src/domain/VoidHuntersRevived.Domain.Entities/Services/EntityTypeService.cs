@@ -9,7 +9,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public class EntityTypeService : IEntityTypeService
     {
-        private readonly Dictionary<IKey<IEntityType>, IEntityType> _entityTypes;
+        private readonly Dictionary<Key<IEntityType>, IEntityType> _entityTypes;
+        private readonly Dictionary<Type, object> _entityTypesByType;
 
         public EntityTypeService(
             IFiltered<EntityTypeConfiguration> entityTypeConfigurations,
@@ -28,6 +29,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             _entityTypes = entityTypesDictionary.Values.ToDictionary(x => x.Key, x => x);
+            _entityTypesByType = new Dictionary<Type, object>();
         }
 
         public IEnumerable<IEntityType> GetAll()
@@ -35,7 +37,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _entityTypes.Values;
         }
 
-        public IEntityType GetByKey(IKey<IEntityType> key)
+        public T[] GetAll<T>()
+            where T : IEntityType
+        {
+            ref object? entityTypes = ref CollectionsMarshal.GetValueRefOrAddDefault(_entityTypesByType, typeof(T), out bool exists);
+            if (exists == false)
+            {
+                entityTypes = _entityTypes.Values.OfType<T>().ToArray();
+            }
+
+            return (T[])entityTypes!;
+        }
+
+        public IEntityType GetByKey(Key<IEntityType> key)
         {
             return _entityTypes[key];
         }
@@ -55,7 +69,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 // Attempt to create a new entity type...
                 Type typeType = configuration.Type ?? typeof(EntityType);
-                IKey<IEntityType> typeKey = Key.GetByName<IEntityType>(configuration.Name, typeType);
+                Key<IEntityType> typeKey = Key<IEntityType>.GetByName(configuration.Name);
                 type = (IEntityType)(Activator.CreateInstance(typeType, [typeKey]) ?? throw new NotImplementedException());
             }
 

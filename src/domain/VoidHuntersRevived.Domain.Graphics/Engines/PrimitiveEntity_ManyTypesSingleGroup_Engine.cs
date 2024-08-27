@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {
         private readonly IVertexTypeManager<TVertex> _vertexTypeManager;
-        private readonly Dictionary<IKey<IEntityType>, IVertexBuffer<TVertex>> _vertexBuffersByType;
+        private readonly Dictionary<Key<IEntityType>, IVertexBuffer<TVertex>> _vertexBuffersByType;
         private readonly IVertexBuffer<TVertex>[] _vertexBuffers;
 
         public PrimitiveEntity_ManyTypesSingleGroup_Engine(IVertexTypeManagerProvider<TVertex> vertexTypeManagerProvider)

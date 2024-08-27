@@ -6,10 +6,10 @@ namespace VoidHuntersRevived.Domain.Pieces
 {
     public class BlueprintPiece : IBlueprintPiece
     {
-        public IKey<IEntityType> PieceTypeKey { get; }
+        public Key<IEntityType> PieceTypeKey { get; }
         public IBlueprintPiece[][] Children { get; }
 
-        public BlueprintPiece(IKey<IEntityType> pieceTypeKey, IBlueprintPiece[][] children)
+        public BlueprintPiece(Key<IEntityType> pieceTypeKey, IBlueprintPiece[][] children)
         {
             this.PieceTypeKey = pieceTypeKey;
             this.Children = children;

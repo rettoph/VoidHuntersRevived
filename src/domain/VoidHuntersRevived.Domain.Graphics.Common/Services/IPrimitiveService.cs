@@ -6,8 +6,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Services
 {
     public interface IPrimitiveService
     {
-        IPrimitive GetByEntityTypeKey(IKey<IEntityType> entityTypeKey);
-        IPrimitive<TVertex> GetByEntityTypeKey<TVertex>(IKey<IEntityType> entityTypeKey)
+        IPrimitive GetByEntityTypeKey(Key<IEntityType> entityTypeKey);
+        IPrimitive<TVertex> GetByEntityTypeKey<TVertex>(Key<IEntityType> entityTypeKey)
             where TVertex : unmanaged, IVertexType;
 
         IPrimitive GetByVertexType(Type vertexType);

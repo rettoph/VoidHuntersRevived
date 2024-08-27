@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
     [PolymorphicJsonType<IEntityType>(nameof(ChainEntityType))]
     public class ChainEntityType : TreeEntityType
     {
-        public static readonly IKey<ChainEntityType> ChainEntityTypeKey = VoidHuntersRevived.Common.Key.GetByName<ChainEntityType>(nameof(ChainEntityType));
+        public static readonly Key<IEntityType> ChainEntityTypeKey = Key<IEntityType>.GetByName(nameof(ChainEntityType));
 
         public ChainEntityType() : base(ChainEntityType.ChainEntityTypeKey)
         {

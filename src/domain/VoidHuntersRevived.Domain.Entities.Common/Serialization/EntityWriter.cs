@@ -104,7 +104,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
         private void InternalSerialize(EntityId id, SerializationOptions options)
         {
-            IKey<IEntityType> typeKey = _entityQueryService.QueryById<Components.EntityType>(id, out GroupIndex groupIndex).Value.Key;
+            Key<IEntityType> typeKey = _entityQueryService.QueryById<Components.EntityType>(id, out GroupIndex groupIndex).Value.Key;
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to serialize {EntityId} of type {EntityType}", nameof(EntityWriter), nameof(InternalSerialize), id.VhId, typeKey);
 

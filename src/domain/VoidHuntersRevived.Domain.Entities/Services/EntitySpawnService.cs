@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _logger = logger;
         }
 
-        EntityId IEntitySpawnService.Spawn(VhId sourceId, IKey<IEntityType> entityTypeKey, VhId vhid)
+        EntityId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityType> entityTypeKey, VhId vhid)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _entityQueryService.GetId(vhid);
         }
 
-        EntityId IEntitySpawnService.Spawn(VhId sourceId, IKey<IEntityType> entityTypeKey, VhId vhid, EntityInitializerDelegate initializer)
+        EntityId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityType> entityTypeKey, VhId vhid, EntityInitializerDelegate initializer)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             });
         }
 
-        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, IKey<IEntityType> entityTypeKey, VhId vhid)
+        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityType> entityTypeKey, VhId vhid)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _entityQueryService.GetId(vhid);
         }
 
-        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, IKey<IEntityType> entityTypeKey, VhId vhid, EntityInitializerDelegate initializer)
+        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityType> entityTypeKey, VhId vhid, EntityInitializerDelegate initializer)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {

@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal partial class SocketService : ISocketService
     {
-        public EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, VhId nodeVhId, IKey<IEntityType> nodeTypeKey, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, VhId nodeVhId, Key<IEntityType> nodeTypeKey, EntityInitializerDelegate? initializerDelegate = null)
         {
             BelongsTo<Team, TeamMember> belongsToTeam = _entityQueryService.QueryById<BelongsTo<Team, TeamMember>>(nodeSocket.Node.TreeId);
             SocketVhId socketVhId = nodeSocket.Id.VhId;

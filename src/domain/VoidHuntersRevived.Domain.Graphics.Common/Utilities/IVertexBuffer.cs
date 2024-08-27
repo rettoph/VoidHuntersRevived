@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 {
     public interface IVertexBuffer
     {
-        IKey<IEntityType>? EntityTypeKey { get; }
+        Key<IEntityType>? EntityTypeKey { get; }
 
         PrimitiveGroupEnum Group { get; }
 

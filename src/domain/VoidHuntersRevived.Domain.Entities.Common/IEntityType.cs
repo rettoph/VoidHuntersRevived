@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public interface IEntityType
     {
-        IKey<IEntityType> Key { get; }
+        Key<IEntityType> Key { get; }
 
         ComponentBuilderDictionary Components { get; }
         HashSet<Type> RequiredComponents { get; }

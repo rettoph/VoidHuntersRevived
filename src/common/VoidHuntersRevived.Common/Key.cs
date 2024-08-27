@@ -1,120 +1,57 @@
-﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Utilities;
+﻿using Guppy.Core.Common.Collections;
 using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace VoidHuntersRevived.Common
 {
-    public abstract class Key : IKey
+    [DebuggerDisplay("Type = {Type.Name}, Name = {Name}")]
+    public struct Key<T>
     {
-        public string Name { get; }
+        private static readonly Map<VhId, string> _map = new Map<VhId, string>();
 
-        public VhId Id { get; }
+        public readonly VhId Id;
+        public string Name => _map[this.Id];
+        public Type Type => typeof(T);
 
-        public abstract Type Type { get; }
-
-        internal Key(VhId id, string name)
+        public Key(VhId id)
         {
             this.Id = id;
-            this.Name = name;
         }
 
-        private static Dictionary<VhId, IKey> _keys = new Dictionary<VhId, IKey>();
-
-        public static IKey<T> GetById<T>(VhId id)
+        public static Key<T> GetByName(string name)
         {
-            if (_keys.TryGetValue(id, out IKey? key) == false)
+            if (_map.TryGet(name, out VhId id) == true)
             {
-                throw new KeyNotFoundException();
+                return new Key<T>(id);
             }
 
-            if (key is not IKey<T> casted)
+            id = NameSpace<T>.Instance.Create(name);
+            if (_map.TryGet(id, out _) == true)
             {
-                throw new ArgumentException();
+                _map[id] = name;
+                return new Key<T>(id);
             }
 
-            return casted;
-        }
-
-        public static IKey<T> GetByName<T>(string name)
-        {
-            VhId id = NameSpace<Key>.Instance.Create(name);
-            ref IKey? key = ref CollectionsMarshal.GetValueRefOrAddDefault(_keys, id, out bool exists);
-
-            if (exists == false)
+            if (_map.TryAdd(id, name) == true)
             {
-                IKey<T> newKey = new Key<T>(id, name);
-                key = newKey;
-
-                return newKey;
-            }
-
-            if (key is IKey<T> casted)
-            {
-                return casted;
-            }
-
-            throw new NotImplementedException();
-
-            // Do we want to change the key ref at runtime?
-            // i dont think so...
-            if (typeof(T).IsAssignableTo(key!.Type))
-            {
-                IKey<T> reKey = new Key<T>(id, name);
-                key = reKey;
-
-                return reKey;
+                return new Key<T>(id);
             }
 
             throw new NotImplementedException();
         }
 
-        private static MethodInfo _getByNameMethodInfo = typeof(Key).GetMethod(nameof(GetByName), BindingFlags.Public | BindingFlags.Static, [typeof(string)]) ?? throw new NotImplementedException();
-        public static IKey GetByName(string name, Type type)
+        public static Key<T> GetById(VhId id)
         {
-            object? key = _getByNameMethodInfo.MakeGenericMethod(type).Invoke(null, [name]);
-
-            if (key is not IKey casted)
+            if (_map.TryGet(id, out _) == true)
             {
-                throw new InvalidOperationException();
+                return new Key<T>(id);
             }
 
-            return casted;
-        }
-
-        public static IKey<T> GetByName<T>(string name, Type type)
-        {
-            ThrowIf.Type.IsNotAssignableFrom<T>(type);
-
-            object? key = _getByNameMethodInfo.MakeGenericMethod(type).Invoke(null, [name]);
-
-            if (key is not IKey casted)
+            if (_map.TryAdd(id, id.ToString()) == true)
             {
-                throw new InvalidOperationException();
+                return new Key<T>(id);
             }
 
-            return (IKey<T>)casted;
-        }
-
-        public bool Equals(IKey? other)
-        {
-            return object.ReferenceEquals(this, other);
-
-        }
-    }
-
-    [DebuggerDisplay("Type = {Type.Name}, Name = {Name}")]
-    internal class Key<T> : Key, IKey<T>
-    {
-        private UnmanagedReference<IKey<T>> _ref;
-
-        public override Type Type => typeof(T);
-
-        public Key(VhId id, string name) : base(id, name)
-        {
-            _ref = new UnmanagedReference<IKey<T>>(this);
+            throw new NotImplementedException();
         }
 
         public override string ToString()
@@ -122,11 +59,25 @@ namespace VoidHuntersRevived.Common
             return $"Key<{this.Type.Name}>('{this.Name}')";
         }
 
-        public unsafe UnmanagedReference<IKey<TRef>> AsRef<TRef>()
+        public static bool operator ==(Key<T> a, Key<T> b)
         {
-            ThrowIf.Type.IsNotAssignableFrom<T>(typeof(TRef));
+            return a.Id == b.Id;
+        }
 
-            return Unsafe.As<UnmanagedReference<IKey<T>>, UnmanagedReference<IKey<TRef>>>(ref _ref);
+        public static bool operator !=(Key<T> a, Key<T> b)
+        {
+            return a.Id != b.Id;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Key<T> key &&
+                   Id.Equals(key.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
         }
     }
 }

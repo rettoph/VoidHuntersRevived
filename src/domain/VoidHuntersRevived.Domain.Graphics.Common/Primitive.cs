@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
     {
         private readonly Dictionary<PrimitiveGroupEnum, IVertexBuffer<TVertex>> _vertexBuffers;
 
-        public IKey<IEntityType>? EntityTypeKey { get; }
+        public Key<IEntityType>? EntityTypeKey { get; }
 
         public Type VertexType { get; }
 
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
 
         public Primitive(
             GraphicsDevice graphics,
-            IKey<IEntityType>? entityTypeKey,
+            Key<IEntityType>? entityTypeKey,
             PrimitiveGroupSequence[] primitiveGroupSequences,
             BufferContext[] bufferContexts)
         {

@@ -18,9 +18,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IEntityTypeService _entityTypeService;
         private readonly Lazy<IComponentSerializerService> _componentSerializerService;
 
-        private Dictionary<IKey<IEntityType>, IEntityTypeProvider> _providers;
+        private Dictionary<Key<IEntityType>, IEntityTypeProvider> _providers;
         private HashSet<Type> _distinctComponentTypes;
-        private Dictionary<IKey<IEntityType>, IEntityTypeProvider[]> _implementationsById;
+        private Dictionary<Key<IEntityType>, IEntityTypeProvider[]> _implementationsById;
         private Dictionary<Type, IEntityTypeProvider[]> _implementationsByType;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _entityTypeService = entityTypeService;
             _componentSerializerService = componentSerializerService;
             _distinctComponentTypes = new HashSet<Type>();
-            _implementationsById = new Dictionary<IKey<IEntityType>, IEntityTypeProvider[]>();
+            _implementationsById = new Dictionary<Key<IEntityType>, IEntityTypeProvider[]>();
             _implementationsByType = new Dictionary<Type, IEntityTypeProvider[]>();
 
             // Create EntityTypeProviders for all registered IEntityType instances
@@ -72,7 +72,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public IEntityTypeProvider GetByKey(IKey<IEntityType> key)
+        public IEntityTypeProvider GetByKey(Key<IEntityType> key)
         {
             return _providers[key];
         }
@@ -89,7 +89,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _distinctComponentTypes;
         }
 
-        public IEntityTypeProvider[] GetAllByKey(IKey<IEntityType> key)
+        public IEntityTypeProvider[] GetAllByKey(Key<IEntityType> key)
         {
             ref IEntityTypeProvider[]? providers = ref CollectionsMarshal.GetValueRefOrAddDefault(_implementationsById, key, out bool exists);
 
@@ -112,7 +112,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return providers!;
             }
 
-            providers = _providers.Values.Where(x => x.Type.Key is IKey<T>).ToArray();
+            providers = _providers.Values.Where(x => x.Type.Key is Key<T>).ToArray();
             return providers;
         }
     }

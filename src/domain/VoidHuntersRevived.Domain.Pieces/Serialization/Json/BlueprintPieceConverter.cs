@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
     {
         public override IBlueprintPiece? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            IKey<IEntityType>? pieceTypeKey = null;
+            Key<IEntityType>? pieceTypeKey = null;
             IBlueprintPiece[][] children = Array.Empty<IBlueprintPiece[]>();
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 switch (propertyName)
                 {
                     case nameof(IBlueprintPiece.PieceTypeKey):
-                        pieceTypeKey = JsonSerializer.Deserialize<IKey<IEntityType>>(ref reader, options) ?? throw new NotImplementedException();
+                        pieceTypeKey = JsonSerializer.Deserialize<Key<IEntityType>>(ref reader, options);
                         reader.Read();
                         break;
                     case nameof(IBlueprintPiece.Children):
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 children[i] ??= Array.Empty<IBlueprintPiece>();
             }
 
-            return new BlueprintPiece(pieceTypeKey, children);
+            return new BlueprintPiece(pieceTypeKey.Value, children);
         }
 
         public override void Write(Utf8JsonWriter writer, IBlueprintPiece value, JsonSerializerOptions options)

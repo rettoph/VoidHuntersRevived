@@ -186,7 +186,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
                 .Distinct();
         }
 
-        public bool Implements(IKey<IEntityType> key)
+        public bool Implements(Key<IEntityType> key)
         {
             foreach (IEntityType implementedType in this.ImplementedTypes)
             {
@@ -218,7 +218,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
                 return result;
             }
 
-            // foreach (IKey<IEntityType> includedKey in entityType.Include)
+            // foreach (Key<IEntityType> includedKey in entityType.Include)
             // {
             //     IEntityType includedType = entityTypeService.GetByKey(includedKey);
             // 

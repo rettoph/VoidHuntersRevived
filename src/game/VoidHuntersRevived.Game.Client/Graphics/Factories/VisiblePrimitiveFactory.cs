@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
         }
 
         private static IPrimitive BuildVisiblePrimitive(
-            IKey<IEntityType> entityTypeKey,
+            Key<IEntityType> entityTypeKey,
             int sequence,
             Visible visible,
             GraphicsDevice graphics)

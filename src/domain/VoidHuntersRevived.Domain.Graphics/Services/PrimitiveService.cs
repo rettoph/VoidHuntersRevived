@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
     public class PrimitiveService : StrategyEngine, IPrimitiveService, IQueryingEntitiesEngine
     {
         private readonly IPrimitive[] _primitives;
-        private readonly Dictionary<IKey<IEntityType>, IPrimitive> _primitivesByEntityTypeKey;
+        private readonly Dictionary<Key<IEntityType>, IPrimitive> _primitivesByEntityTypeKey;
         private readonly Dictionary<Type, IPrimitive[]> _primitivesByVertexType;
 
         public EntitiesDB entitiesDB
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
         public PrimitiveService(IFiltered<IPrimitiveFactory> primitiveFactories)
         {
             _primitives = primitiveFactories.SelectMany(x => x.BuildPrimitives()).ToArray();
-            _primitivesByEntityTypeKey = _primitives.Where(x => x.EntityTypeKey is not null).ToDictionary(x => x.EntityTypeKey!, x => x);
+            _primitivesByEntityTypeKey = _primitives.Where(x => x.EntityTypeKey is not null).ToDictionary(x => x.EntityTypeKey!.Value, x => x);
             _primitivesByVertexType = _primitives.GroupBy(x => x.VertexType).ToDictionary(x => x.Key, x => x.ToArray());
 
             // Validate primitives
@@ -47,12 +47,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
             }
         }
 
-        public IPrimitive GetByEntityTypeKey(IKey<IEntityType> entityTypeKey)
+        public IPrimitive GetByEntityTypeKey(Key<IEntityType> entityTypeKey)
         {
             return _primitivesByEntityTypeKey[entityTypeKey];
         }
 
-        public IPrimitive<TVertex> GetByEntityTypeKey<TVertex>(IKey<IEntityType> entityTypeKey)
+        public IPrimitive<TVertex> GetByEntityTypeKey<TVertex>(Key<IEntityType> entityTypeKey)
             where TVertex : unmanaged, IVertexType
         {
             return (IPrimitive<TVertex>)_primitivesByEntityTypeKey[entityTypeKey];

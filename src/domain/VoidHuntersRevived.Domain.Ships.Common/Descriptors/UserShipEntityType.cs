@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Descriptors
     [PolymorphicJsonType<IEntityType>(nameof(UserShipEntityType))]
     public class UserShipEntityType : ShipEntityType
     {
-        public static readonly IKey<UserShipEntityType> UserShipEntityTypeKey = VoidHuntersRevived.Common.Key.GetByName<UserShipEntityType>(nameof(UserShipEntityType));
+        public static readonly Key<IEntityType> UserShipEntityTypeKey = Key<IEntityType>.GetByName(nameof(UserShipEntityType));
 
         public UserShipEntityType() : base(UserShipEntityType.UserShipEntityTypeKey)
         {

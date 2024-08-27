@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
     [PolymorphicJsonType<IEntityType>(nameof(ThrusterEntityType))]
     public class ThrusterEntityType : PieceEntityType
     {
-        public ThrusterEntityType(IKey<ThrusterEntityType> key) : base(key)
+        public ThrusterEntityType(Key<IEntityType> key) : base(key)
         {
             this.WithComponents([
                 new Thrustable()

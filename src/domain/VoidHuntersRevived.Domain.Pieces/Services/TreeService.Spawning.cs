@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal partial class TreeService
     {
-        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, IKey<IEntityType> treeTypeKey, IKey<IEntityType> headNodeTypeKey, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityType> treeTypeKey, Key<IEntityType> headNodeTypeKey, EntityInitializerDelegate? initializerDelegate = null)
         {
             return _entitySpawnService.Spawn(sourceId, treeTypeKey, vhid, (IEntityService entities, IEntityTypeProvider treeTypeProvider, EntityId id, ref EntityInitializer initializer) =>
             {
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             });
         }
 
-        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, IKey<IEntityType> treeTypeKey, EntityData nodes, EntityInitializerDelegate initializerDelegate)
+        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityType> treeTypeKey, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
             return _entitySpawnService.Spawn(sourceId, treeTypeKey, vhid, (IEntityService entities, IEntityTypeProvider treeTypeProvider, EntityId id, ref EntityInitializer initializer) =>
             {
@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             });
         }
 
-        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, IKey<IEntityType> treeTypeKey, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityType> treeTypeKey, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
         {
             return _entitySpawnService.Spawn(sourceId, treeTypeKey, vhid, (IEntityService entities, IEntityTypeProvider treeTypeProvider, EntityId id, ref EntityInitializer initializer) =>
             {
