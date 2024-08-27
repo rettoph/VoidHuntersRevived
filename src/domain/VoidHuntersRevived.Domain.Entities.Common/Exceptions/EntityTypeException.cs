@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Exceptions
     {
         public readonly Key<IEntityType> Key;
 
-        public EntityTypeException(Key<IEntityType> key, string? message) : base(message)
+        public EntityTypeException(Key<IEntityType> key, string? message, Exception? innerException = null) : base(message, innerException)
         {
             this.Key = key;
         }

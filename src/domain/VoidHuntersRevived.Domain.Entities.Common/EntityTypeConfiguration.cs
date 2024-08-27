@@ -1,25 +1,26 @@
 ﻿using Guppy.Core.Common;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public class EntityTypeConfiguration
     {
-        public required string Name { get; init; }
+        public required Key<IEntityType> Key { get; init; }
         public required Type? Type { get; init; }
         public EntityTypeFlags Flags { get; init; }
-        public string[] Include { get; init; } = Array.Empty<string>();
+        public Key<IEntityType>[] Include { get; init; } = Array.Empty<Key<IEntityType>>();
 
         public HashSet<Type> RequiredComponents { get; init; } = new HashSet<Type>();
         public required Dictionary<Type, IEntityComponent> Components { get; init; } = new Dictionary<Type, IEntityComponent>();
 
         public EntityInitializerDelegate? Initializer { get; init; }
 
-        public static bool CombineConfigurations(string name, Dictionary<string, EntityTypeConfiguration[]> dict, [MaybeNullWhen(false)] out EntityTypeConfiguration result)
+        public static bool CombineConfigurations(Key<IEntityType> key, Dictionary<Key<IEntityType>, EntityTypeConfiguration[]> dict, [MaybeNullWhen(false)] out EntityTypeConfiguration result)
         {
-            if (dict.TryGetValue(name, out EntityTypeConfiguration[]? configurations) == false)
+            if (dict.TryGetValue(key, out EntityTypeConfiguration[]? configurations) == false)
             {
                 result = null;
                 return false;
@@ -39,18 +40,18 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             }
 
             Type? type = null;
-            HashSet<string> included = new HashSet<string>();
+            HashSet<Key<IEntityType>> included = new HashSet<Key<IEntityType>>();
             HashSet<Type> requiredComponents = new HashSet<Type>();
             Dictionary<Type, IEntityComponent> components = new Dictionary<Type, IEntityComponent>();
             EntityInitializerDelegate? initializer = null;
 
             EntityTypeConfiguration.PopulateCombineConfigurationValues(
-                name, dict,
+                key, dict,
                 ref type, ref included, ref requiredComponents, ref components, ref initializer);
 
             result = new EntityTypeConfiguration()
             {
-                Name = name,
+                Key = key,
                 Type = type,
                 Flags = flags,
                 RequiredComponents = requiredComponents,
@@ -62,20 +63,20 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         }
 
         private static void PopulateCombineConfigurationValues(
-            string name,
-            Dictionary<string, EntityTypeConfiguration[]> dict,
+            Key<IEntityType> key,
+            Dictionary<Key<IEntityType>, EntityTypeConfiguration[]> dict,
             ref Type? type,
-            ref HashSet<string> included,
+            ref HashSet<Key<IEntityType>> included,
             ref HashSet<Type> requiredComponents,
             ref Dictionary<Type, IEntityComponent> components,
             ref EntityInitializerDelegate? initializer)
         {
-            if (included.Add(name) == false)
+            if (included.Add(key) == false)
             {
                 return;
             }
 
-            if (dict.TryGetValue(name, out EntityTypeConfiguration[]? configurations) == false)
+            if (dict.TryGetValue(key, out EntityTypeConfiguration[]? configurations) == false)
             {
                 return;
             }
@@ -83,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             foreach (EntityTypeConfiguration configuration in configurations)
             {
                 // Recersively load included values first...
-                foreach (string includeKey in configuration.Include)
+                foreach (Key<IEntityType> includeKey in configuration.Include)
                 {
                     EntityTypeConfiguration.PopulateCombineConfigurationValues(includeKey, dict,
                         ref type, ref included, ref requiredComponents, ref components, ref initializer);

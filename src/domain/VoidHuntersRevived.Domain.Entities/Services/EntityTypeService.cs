@@ -3,6 +3,7 @@ using Guppy.Core.Resources.Common.Services;
 using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -18,13 +19,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             IFiltered<IEntityType> entityTypes,
             IResourceService resources)
         {
-            Dictionary<string, EntityTypeConfiguration[]> entityTypeConfigurationDictionary = entityTypeConfigurations
+            Dictionary<Key<IEntityType>, EntityTypeConfiguration[]> entityTypeConfigurationDictionary = entityTypeConfigurations
                 .Concat(resources.GetValues<EntityTypeConfiguration>().Select(x => x.Value))
-                .GroupBy(x => x.Name)
+                .GroupBy(x => x.Key)
                 .ToDictionary(x => x.Key, x => x.ToArray());
 
-            Dictionary<string, IEntityType> entityTypesDictionary = entityTypes.ToDictionary(x => x.Key.Name, x => x);
-            foreach (string key in entityTypeConfigurationDictionary.Keys)
+            Dictionary<Key<IEntityType>, IEntityType> entityTypesDictionary = entityTypes.ToDictionary(x => x.Key, x => x);
+            foreach (Key<IEntityType> key in entityTypeConfigurationDictionary.Keys)
             {
                 EntityTypeService.TryCreateOrConfigureEntityType(key, entityTypeConfigurationDictionary, entityTypesDictionary);
             }
@@ -62,29 +63,40 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
 
         private static void TryCreateOrConfigureEntityType(
-            string name,
-            Dictionary<string, EntityTypeConfiguration[]> configurations,
-            Dictionary<string, IEntityType> types)
+            Key<IEntityType> key,
+            Dictionary<Key<IEntityType>, EntityTypeConfiguration[]> configurations,
+            Dictionary<Key<IEntityType>, IEntityType> types)
         {
-            if (EntityTypeConfiguration.CombineConfigurations(name, configurations, out EntityTypeConfiguration? configuration) == false)
+            if (EntityTypeConfiguration.CombineConfigurations(key, configurations, out EntityTypeConfiguration? configuration) == false)
             {
                 return;
             }
 
-            ref IEntityType? type = ref CollectionsMarshal.GetValueRefOrAddDefault(types, name, out bool exists);
-            if (exists == false)
+            ref IEntityType? type = ref CollectionsMarshal.GetValueRefOrAddDefault(types, key, out bool exists);
+
+            try
             {
-                // Attempt to create a new entity type...
-                Type typeType = configuration.Type ?? typeof(BaseEntityType);
-                Key<IEntityType> typeKey = Key<IEntityType>.GetByName(configuration.Name);
-                type = (IEntityType)(Activator.CreateInstance(typeType, [typeKey]) ?? throw new NotImplementedException());
+                if (exists == false)
+                {
+                    // Attempt to create a new entity type...
+                    Type typeType = configuration.Type ?? typeof(BaseEntityType);
+
+                    type = (IEntityType)(Activator.CreateInstance(typeType, [key]) ?? throw new NotImplementedException());
+                }
+
+                // Configure type...
+                ThrowIf.Type.IsNotAssignableFrom(configuration.Type ?? typeof(IEntityType), type!.GetType());
+
+                type.WithComponents(configuration.Components.Values)
+                    .RequireComponents(configuration.RequiredComponents);
+
+                type.Verify();
             }
-
-            // Configure type...
-            ThrowIf.Type.IsNotAssignableFrom(configuration.Type ?? typeof(IEntityType), type!.GetType());
-
-            type.WithComponents(configuration.Components.Values)
-                .RequireComponents(configuration.RequiredComponents);
+            catch (Exception ex)
+            {
+                types.Remove(key);
+                throw new EntityTypeException(key, $"Exception configuring entity type", ex);
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 {
-  "Name": "Piece.Hull.Square",
+  "Key": "Piece.Hull.Square",
   "Type": "HullEntityType",
   "Include": [ "Piece.Base.Hull" ],
   "Components": {

@@ -1,5 +1,5 @@
 {
-  "Name": "Piece.Thruster",
+  "Key": "Piece.Thruster",
   "Type": "ThrusterEntityType",
   "Include": [ "Piece.Base.Thruster" ],
   "Components": {

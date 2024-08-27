@@ -4,6 +4,7 @@ using Guppy.Core.Serialization.Common.Services;
 using Svelto.ECS;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
@@ -25,10 +26,10 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 
         public override ResourceResolver<EntityTypeConfiguration>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            string? name = null;
+            Key<IEntityType>? key = null;
             Type? type = null;
             EntityTypeFlags flags = EntityTypeFlags.None;
-            string[] include = Array.Empty<string>();
+            Key<IEntityType>[] include = Array.Empty<Key<IEntityType>>();
             Dictionary<Type, IEntityComponent> components = new Dictionary<Type, IEntityComponent>();
             Dictionary<Type, IEntityComponent> typeEntityComponents = new Dictionary<Type, IEntityComponent>();
 
@@ -39,8 +40,9 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(EntityTypeConfiguration.Name):
-                        name = reader.ReadString();
+                    case nameof(EntityTypeConfiguration.Key):
+                        key = JsonSerializer.Deserialize<Key<IEntityType>>(ref reader, options);
+                        reader.Read();
                         break;
                     case nameof(EntityTypeConfiguration.Type):
                         type = _entityTypeTypeService.GetType(reader.ReadString());
@@ -50,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                         reader.Read();
                         break;
                     case nameof(EntityTypeConfiguration.Include):
-                        include = JsonSerializer.Deserialize<string[]>(ref reader, options) ?? throw new NotImplementedException();
+                        include = JsonSerializer.Deserialize<Key<IEntityType>[]>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
                     case nameof(EntityTypeConfiguration.Components):
@@ -64,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            if (name is null)
+            if (key is null)
             {
                 throw new InvalidDataException();
             }
@@ -73,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             {
                 EntityTypeConfiguration entityTypeConfiguration = new EntityTypeConfiguration()
                 {
-                    Name = name,
+                    Key = key.Value,
                     Type = type,
                     Flags = flags,
                     Components = components,

@@ -22,13 +22,13 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
                 return true;
             }
 
-            return base.CanConvert(typeToConvert);
+            return false;
         }
 
         public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             reader.CheckToken(JsonTokenType.String, true);
-            string name = reader.ReadString();
+            string name = reader.GetString() ?? throw new NotImplementedException();
             object key = typeToConvert.GetMethod(nameof(Key<object>.GetByName), BindingFlags.Static | BindingFlags.Public)!.Invoke(null, [name])!;
 
             return key;

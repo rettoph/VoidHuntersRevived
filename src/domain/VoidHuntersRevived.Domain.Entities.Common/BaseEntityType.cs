@@ -5,6 +5,7 @@ using Guppy.Core.Common.Utilities;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
@@ -92,6 +93,24 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             }
 
             return this;
+        }
+
+        public void Verify()
+        {
+            List<string> missingRequiredComponents = new List<string>();
+
+            foreach (Type requiredType in this.RequiredComponents)
+            {
+                if (this.Components.Keys.Contains(requiredType) == false)
+                {
+                    missingRequiredComponents.Add(requiredType.Name);
+                }
+            }
+
+            if (missingRequiredComponents.Count > 0)
+            {
+                throw new EntityTypeException(this.Key, $"EntityType '{this.Key.Name}' => Missing required components: '{string.Join(',', missingRequiredComponents)}'");
+            }
         }
     }
 }

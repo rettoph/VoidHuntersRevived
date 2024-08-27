@@ -1,5 +1,5 @@
 {
-  "Name": "Piece.Base.Hull",
+  "Key": "Piece.Base.Hull",
   "Type": "HullEntityType",
   "Flags": "Partial",
   "Components": {

@@ -1,5 +1,5 @@
 {
-  "Name": "Team.One",
+  "Key": "Team.One",
   "Type": "TeamEntityType",
   "Components": {
     "Team": {

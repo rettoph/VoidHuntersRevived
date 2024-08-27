@@ -25,5 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             where TComponent : unmanaged, IEntityComponent;
 
         IEntityType RequireComponents(IEnumerable<Type> components);
+
+        void Verify();
     }
 }

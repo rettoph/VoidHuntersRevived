@@ -1,5 +1,5 @@
 {
-  "Name": "Piece.Base.Thruster",
+  "Key": "Piece.Base.Thruster",
   "Type": "ThrusterEntityType",
   "Flags": "Partial",
   "Components": {
