@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 namespace VoidHuntersRevived.Domain.Teams.Common.EntityTypes
 {
     [PolymorphicJsonType<IEntityType>(nameof(TeamMemberEntityType))]
-    public abstract class TeamMemberEntityType : Entities.Common.EntityType
+    public abstract class TeamMemberEntityType : Entities.Common.BaseEntityType
     {
         public TeamMemberEntityType(Key<IEntityType> key) : base(key)
         {

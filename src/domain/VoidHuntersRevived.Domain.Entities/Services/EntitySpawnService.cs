@@ -10,15 +10,18 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     public partial class EntitySpawnService : StrategyEngine, IEntitySpawnService, IPrivateEntitySpawnService
     {
         private readonly EntityQueryService _entityQueryService;
+        private readonly IEntityTypeProviderService _entityTypeProviderService;
         private readonly IEntityService _entityService;
         private readonly ILogger _logger;
 
         public EntitySpawnService(
             EntityQueryService entityQueryingService,
+            IEntityTypeProviderService entityTypeProviderService,
             IEntityService entityService,
             ILogger logger)
         {
             _entityQueryService = entityQueryingService;
+            _entityTypeProviderService = entityTypeProviderService;
             _entityService = entityService;
             _logger = logger;
         }

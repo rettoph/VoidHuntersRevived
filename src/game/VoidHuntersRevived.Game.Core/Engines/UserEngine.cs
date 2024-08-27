@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Game.Core.Engines
             // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
 
             Blueprint blueprint = _blueprintService.GetAll().First();
-            _treeService.Spawn(eventId, eventId.Create(1), _teamService.GetOpenTeamComponent(), UserShipEntityType.UserShipEntityTypeKey, blueprint, (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
+            _treeService.Spawn(eventId, eventId.Create(1), _teamService.GetOpenTeamComponent(), UserShipEntityType.UserShipEntityTypeKey, blueprint, (IEntityService entities, IEntityType entityType, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(new Location()
                 {

@@ -128,7 +128,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     belongsToTeam: _teamService.GetDefaultTeamComponent(),
                     treeTypeKey: ChainEntityType.ChainEntityTypeKey,
                     nodes: data.TargetData,
-                    initializer: (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
+                    initializer: (IEntityService entities, IEntityType entityType, EntityId id, ref EntityInitializer initializer) =>
                     {
                         if (!entities.Query.TryGetId(data.TractorBeamEmitterVhId, out EntityId tractorBeamEmitterId))
                         {
@@ -165,7 +165,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         belongsToTeam: _teamService.GetDefaultTeamComponent(),
                         treeTypeKey: ChainEntityType.ChainEntityTypeKey,
                         nodes: data.TargetData,
-                        initializer: (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
+                        initializer: (IEntityService entities, IEntityType entityType, EntityId id, ref EntityInitializer initializer) =>
                         {
                             initializer.Init<Location>(data.Location);
                             initializer.Init<Tractorable>(new Tractorable()

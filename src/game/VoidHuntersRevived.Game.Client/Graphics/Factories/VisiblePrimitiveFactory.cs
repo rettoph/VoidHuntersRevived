@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
@@ -19,19 +18,19 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
     internal sealed class VisiblePrimitiveFactory : IPrimitiveFactory
     {
         private readonly GraphicsDevice _graphics;
-        private readonly IEntityTypeProviderService _entityTypeProviderService;
+        private readonly IEntityTypeService _entityTypeService;
 
-        public VisiblePrimitiveFactory(IEntityTypeProviderService entityTypeProviderService, GraphicsDevice graphics)
+        public VisiblePrimitiveFactory(IEntityTypeService entityTypeService, GraphicsDevice graphics)
         {
             _graphics = graphics;
-            _entityTypeProviderService = entityTypeProviderService;
+            _entityTypeService = entityTypeService;
         }
 
         public IEnumerable<IPrimitive> BuildPrimitives()
         {
             List<IPrimitive> primitives = new List<IPrimitive>();
 
-            foreach (IEntityTypeProvider entityTypeProvider in _entityTypeProviderService.GetAllByType<IEntityType>())
+            foreach (IEntityType entityTypeProvider in _entityTypeService.GetAll())
             {
                 if (entityTypeProvider.Components.TryGet<Visible>(out Visible visible) == false)
                 {
@@ -39,7 +38,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
                 }
 
                 primitives.Add(VisiblePrimitiveFactory.BuildVisiblePrimitive(
-                    entityTypeKey: entityTypeProvider.Type.Key,
+                    entityTypeKey: entityTypeProvider.Key,
                     sequence: entityTypeProvider.Components.Get<PrimitiveSequence>().Value,
                     visible: visible,
                     graphics: _graphics));

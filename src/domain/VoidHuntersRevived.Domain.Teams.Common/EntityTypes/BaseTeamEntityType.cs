@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Teams.Common.EntityTypes
 {
-    public abstract class BaseTeamEntityType : Entities.Common.EntityType
+    public abstract class BaseTeamEntityType : BaseEntityType
     {
         public BaseTeamEntityType(Key<IEntityType> key) : base(key)
         {

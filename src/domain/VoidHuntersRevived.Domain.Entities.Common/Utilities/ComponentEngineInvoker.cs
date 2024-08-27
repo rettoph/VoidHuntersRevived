@@ -2,10 +2,9 @@
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 
-namespace VoidHuntersRevived.Domain.Entities.Utilities
+namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
     internal abstract class ComponentEngineInvoker
     {

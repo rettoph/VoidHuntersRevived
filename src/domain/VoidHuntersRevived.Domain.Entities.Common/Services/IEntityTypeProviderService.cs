@@ -7,10 +7,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
     {
         IEntityTypeProvider GetByKey(Key<IEntityType> key);
 
-        IEntityTypeProvider[] GetAllByKey(Key<IEntityType> key);
-        IEntityTypeProvider[] GetAllByType<T>()
-            where T : IEntityType;
-
-        IEnumerable<Type> GetAllDistinctComponentTypes();
+        IEntityTypeProvider GetByType(IEntityType entityType);
     }
 }

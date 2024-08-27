@@ -10,6 +10,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 
         ComponentBuilderDictionary Components { get; }
         HashSet<Type> RequiredComponents { get; }
+        EntityInitializerDelegate? Initializer { get; }
 
         IEntityType WithComponent(IEntityComponent component);
 

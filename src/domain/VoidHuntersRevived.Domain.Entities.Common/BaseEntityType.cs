@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Utilities;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
@@ -9,17 +10,23 @@ using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
     [Service<IEntityType>(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
-    public class EntityType : IEntityType
+    public class BaseEntityType : IEntityType
     {
+        private readonly UnmanagedReference<IEntityType> _ref;
+
         public HashSet<Type> RequiredComponents { get; }
         public ComponentBuilderDictionary Components { get; }
 
         public Key<IEntityType> Key { get; }
         public Type Type => this.GetType();
 
-        public EntityType(Key<IEntityType> key)
+        public EntityInitializerDelegate? Initializer { get; set; }
+
+        public BaseEntityType(Key<IEntityType> key)
         {
             ThrowIf.Type.IsNotAssignableFrom(key.Type, this.Type);
+
+            _ref = new UnmanagedReference<IEntityType>(this);
 
             this.Key = key;
             this.RequiredComponents = new HashSet<Type>();
@@ -30,6 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             this.WithComponents([
                 new EntityId(),
                 new EntityStatus(),
+                new EntityType(_ref)
             ]);
         }
 

@@ -16,7 +16,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public required Dictionary<Type, IEntityComponent> Components { get; init; } = new Dictionary<Type, IEntityComponent>();
 
         public EntityInitializerDelegate? Initializer { get; init; }
-        public EntityDisposerDelegate? Disposer { get; init; }
 
         public static bool CombineConfigurations(string name, Dictionary<string, EntityTypeConfiguration[]> dict, [MaybeNullWhen(false)] out EntityTypeConfiguration result)
         {
@@ -44,11 +43,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             HashSet<Type> requiredComponents = new HashSet<Type>();
             Dictionary<Type, IEntityComponent> components = new Dictionary<Type, IEntityComponent>();
             EntityInitializerDelegate? initializer = null;
-            EntityDisposerDelegate? disposer = null;
 
             EntityTypeConfiguration.PopulateCombineConfigurationValues(
                 name, dict,
-                ref type, ref included, ref requiredComponents, ref components, ref initializer, ref disposer);
+                ref type, ref included, ref requiredComponents, ref components, ref initializer);
 
             result = new EntityTypeConfiguration()
             {
@@ -57,8 +55,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
                 Flags = flags,
                 RequiredComponents = requiredComponents,
                 Components = components,
-                Initializer = initializer,
-                Disposer = disposer
+                Initializer = initializer
             };
 
             return true;
@@ -71,8 +68,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             ref HashSet<string> included,
             ref HashSet<Type> requiredComponents,
             ref Dictionary<Type, IEntityComponent> components,
-            ref EntityInitializerDelegate? initializer,
-            ref EntityDisposerDelegate? disposer)
+            ref EntityInitializerDelegate? initializer)
         {
             if (included.Add(name) == false)
             {
@@ -90,7 +86,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
                 foreach (string includeKey in configuration.Include)
                 {
                     EntityTypeConfiguration.PopulateCombineConfigurationValues(includeKey, dict,
-                        ref type, ref included, ref requiredComponents, ref components, ref initializer, ref disposer);
+                        ref type, ref included, ref requiredComponents, ref components, ref initializer);
                 }
 
                 foreach (Type requiredType in configuration.RequiredComponents)
@@ -118,7 +114,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common
                 ThrowIf.Type.IsNotAssignableFrom(configuration.Type, type);
 
                 initializer += configuration.Initializer;
-                disposer += configuration.Disposer;
             }
         }
     }

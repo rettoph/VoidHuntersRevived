@@ -24,10 +24,11 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Services
         protected override EntityService build()
         {
             return new EntityService(
-                this.EntityTypeProviderService.GetLazy(),
-                this.EntityQueryService.GetLazy(),
-                this.EntitySpawnService.GetLazy(),
-                this.EntitySerializationService.GetLazy());
+                this.EntityTypeService.GetLazy(),
+                this.EntityTypeProviderService.GetLazy<IEntityTypeProviderService>(),
+                this.EntityQueryService.GetLazy<IEntityQueryService>(),
+                this.EntitySpawnService.GetLazy<IEntitySpawnService>(),
+                this.EntitySerializationService.GetLazy<IEntitySerializationService>());
         }
     }
 }

@@ -8,14 +8,12 @@ using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
-using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Services;
-using VoidHuntersRevived.Domain.Entities.Utilities;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Providers
@@ -27,21 +25,16 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly EntityService _entities;
+        private readonly FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
+        private readonly FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
+        private readonly EntityInitializerDelegate _initializer;
         private EntitiesDB _entitiesDB;
-        private FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
-        private FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
-
-        private FasterList<ComponentSerializer> _instanceEntityComponentSerializers;
+        private FasterList<ComponentSerializer> _serializers;
 
         private DynamicEntityDescriptor<VoidHuntersEntityDescriptor> _descriptor;
         private readonly ExclusiveGroupStruct _group;
 
         public IEntityType Type { get; }
-        public IEntityType[] ImplementedTypes { get; }
-
-        public ComponentBuilderDictionary Components { get; }
-        public EntityInitializerDelegate? Initializer { get; set; }
-        public EntityDisposerDelegate? Disposer { get; set; }
 
         public EntityTypeProvider(
             IEntityType type,
@@ -61,27 +54,13 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             _entities = entityService;
             _entitiesDB = null!;
 
-            _onDespawnEngineInvokers = null!;
-            _onSpawnEngineInvokers = null!;
-            _instanceEntityComponentSerializers = null!;
+            _onDespawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
+            _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
+            _serializers = null!;
 
-            this.ImplementedTypes = EntityTypeProvider.GetImplementedTypes(type, entityTypeService).ToArray();
+            _initializer = this.Type.Initializer ?? EntityTypeProvider.DefaultInitializer;
 
-            // Import a dictionary of default component values based on all implemented types
-            this.Components = new ComponentBuilderDictionary(this.ImplementedTypes.Select(x => x.Components));
-
-            // Values are defined within initialization method
-            this.Initializer = null!;
-            this.Disposer = null!;
-
-            // Begin Svelto initiailzation
-            this.Components.Set(new Common.Components.EntityType(_typeRef));
-
-            if (EntityTypeProvider.ValidateRequiredComponents(this.Components, this.ImplementedTypes, x => x.RequiredComponents, out Type[] missingTypes) == false)
-            {
-                throw new EntityProviderTypeException(type.Key, $"Exception building {type.Key} provider - missing the following required {nameof(this.Components)}: {string.Join(',', missingTypes.Select(x => x.GetFormattedName()))}");
-            }
-            _descriptor = new DynamicEntityDescriptor<VoidHuntersEntityDescriptor>(this.Components);
+            _descriptor = new DynamicEntityDescriptor<VoidHuntersEntityDescriptor>(this.Type.Components);
             _group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{this.Type.Key}_{nameof(_group)}");
         }
 
@@ -92,17 +71,11 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         {
             _entitiesDB = entitiesDB;
 
-            // Give some defaults if needed
-            this.Initializer ??= EntityTypeProvider.DefaultInitializer;
-            this.Disposer ??= EntityTypeProvider.DefaultDisposer;
-
             // Load serializers
-            _instanceEntityComponentSerializers = componentSerializerService.GetComponentSerializersByDescriptor(_descriptor);
+            _serializers = componentSerializerService.GetComponentSerializersByDescriptor(_descriptor);
 
             // Generate despawn engine invokers
             // Responsible for calling IOnSpawnEngine & IOnDespawnEngine engines
-            _onDespawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
-            _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
             foreach (Type componentType in this.Type.Components.Keys)
             {
                 if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engineService.All(), out var invoker))
@@ -135,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
 
             // Run custom instance initializer
-            this.Initializer!(_entities, this, id, ref initializer);
+            _initializer!(_entities, this.Type, id, ref initializer);
 
             return initializer;
         }
@@ -165,7 +138,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 
         public void SerializeInstanceEntity(EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options)
         {
-            foreach (ComponentSerializer serializer in _instanceEntityComponentSerializers)
+            foreach (ComponentSerializer serializer in _serializers)
             {
                 serializer.Serialize(writer, in id, in groupIndex, _entitiesDB, in options);
             }
@@ -173,7 +146,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 
         public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
-            foreach (ComponentSerializer serializer in _instanceEntityComponentSerializers)
+            foreach (ComponentSerializer serializer in _serializers)
             {
                 serializer.Deserialize(in sourceId, in options, reader, ref initializer, in id);
             }
@@ -186,25 +159,12 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
                 .Distinct();
         }
 
-        public bool Implements(Key<IEntityType> key)
-        {
-            foreach (IEntityType implementedType in this.ImplementedTypes)
-            {
-                if (key == implementedType.Key)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static void DefaultInitializer(IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer)
+        private static void DefaultInitializer(IEntityService entities, IEntityType entityType, EntityId id, ref EntityInitializer initializer)
         {
             // throw new NotImplementedException();
         }
 
-        private static void DefaultDisposer(IEntityTypeProvider provider)
+        private static void DefaultDisposer(IEntityType entityType)
         {
             // throw new NotImplementedException();
         }
@@ -231,19 +191,6 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             }
 
             return result;
-        }
-
-        private static bool ValidateRequiredComponents<T>(
-            ComponentBuilderDictionary componentBuilders,
-            IEnumerable<IEntityType> importedTypes,
-            Func<IEntityType, T> memberExpression,
-            out Type[] missingTypes)
-                where T : HashSet<Type>
-        {
-            Type[] requiredTypes = importedTypes.SelectMany(x => memberExpression(x)).Distinct().ToArray();
-            missingTypes = requiredTypes.Except(componentBuilders.Keys).ToArray();
-
-            return missingTypes.Length == 0;
         }
     }
 }

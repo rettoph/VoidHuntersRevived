@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
 
         private static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, VhId treeId, BelongsTo<Team, TeamMember> belongsToTeam, VhId vhid, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
         {
-            return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTypeKey, vhid, (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
+            return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTypeKey, vhid, (IEntityService entities, IEntityType entityType, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(belongsToTeam);
                 initializer.Init(new Node(id, entities.Query.GetId(treeId)));

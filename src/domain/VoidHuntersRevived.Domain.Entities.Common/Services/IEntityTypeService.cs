@@ -10,5 +10,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 
         T[] GetAll<T>()
             where T : IEntityType;
+
+        Type[] GetAllDistinctComponentTypes();
     }
 }

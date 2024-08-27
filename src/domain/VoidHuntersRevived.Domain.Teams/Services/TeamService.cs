@@ -1,7 +1,6 @@
 ﻿using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -23,16 +22,16 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         private BelongsTo<Team, TeamMember> _defaultTeamComponent;
         private Dictionary<Id<Team>, BelongsTo<Team, TeamMember>> _teamComponents;
 
-        private readonly IEntityTypeProviderService _entityTypeProviderService;
+        private readonly IEntityTypeService _entityTypeService;
         private readonly IEntityQueryService _entityQueryService;
         private readonly IPrivateEntitySpawnService _privateEntitySpawnService;
 
         public TeamService(
-            IEntityTypeProviderService entityTypeProviderService,
+            IEntityTypeService entityTypeService,
             IEntityQueryService entityQueryService,
             IPrivateEntitySpawnService privateEntitySpawnService)
         {
-            _entityTypeProviderService = entityTypeProviderService;
+            _entityTypeService = entityTypeService;
             _entityQueryService = entityQueryService;
             _privateEntitySpawnService = privateEntitySpawnService;
             _teamComponents = new Dictionary<Id<Team>, BelongsTo<Team, TeamMember>>();
@@ -59,23 +58,23 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         {
             // Spawn default team entity...
             int teamIndex = 0;
-            IEntityTypeProvider defaultTeamType = _entityTypeProviderService.GetAllByType<DefaultTeamEntityType>().Single();
+            DefaultTeamEntityType defaultTeamType = _entityTypeService.GetAll<DefaultTeamEntityType>().Single();
             EntityId defaultTeamId = _privateEntitySpawnService.Spawn(
                 sourceId: HashBuilder<DefaultTeamEntityType, int>.Instance.Calculate(teamIndex),
-                entityTypeKey: defaultTeamType.Type.Key,
+                entityTypeKey: defaultTeamType.Key,
                 vhid: HashBuilder<TeamEntityType, int>.Instance.Calculate(teamIndex));
             defaultTeamComponent = new BelongsTo<Team, TeamMember>(defaultTeamId.VhId);
 
             // Spawn additional team entities...
             teamComponents = new Dictionary<Id<Team>, BelongsTo<Team, TeamMember>>();
-            IEnumerable<IEntityTypeProvider> teamEntityTypes = _entityTypeProviderService.GetAllByType<TeamEntityType>();
+            TeamEntityType[] teamEntityTypes = _entityTypeService.GetAll<TeamEntityType>();
 
-            foreach (IEntityTypeProvider teamEntityType in teamEntityTypes)
+            foreach (IEntityType teamEntityType in teamEntityTypes)
             {
                 teamIndex++;
                 EntityId teamId = _privateEntitySpawnService.Spawn(
                     sourceId: HashBuilder<DefaultTeamEntityType, int>.Instance.Calculate(teamIndex),
-                    entityTypeKey: teamEntityType.Type.Key,
+                    entityTypeKey: teamEntityType.Key,
                     vhid: HashBuilder<TeamEntityType, int>.Instance.Calculate(teamIndex));
 
                 teamComponents.Add(teamEntityType.Components.Get<Team>().Id, new BelongsTo<Team, TeamMember>(teamId.VhId));

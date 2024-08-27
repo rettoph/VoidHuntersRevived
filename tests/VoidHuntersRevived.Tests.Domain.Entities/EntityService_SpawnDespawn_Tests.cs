@@ -185,7 +185,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             entityService.EntityTypeProviderService.UniqueNumberProviderService.SetInstance(new UniqueNumberProvider());
             entityService.EntityTypeProviderService.EnginesRoot.SetInstance(enginesRoot);
             entityService.EntityQueryService.SetInstance(new EntityQueryService());
-            entityService.EntitySpawnService.SetInstance(new EntitySpawnService(entityService.EntityQueryService.GetInstance(), entityService.GetInstance(), builder.Logger.GetInstance()));
+            entityService.EntitySpawnService.SetInstance(new EntitySpawnService(entityService.EntityQueryService.GetInstance(), entityService.EntityTypeProviderService.GetInstance(), entityService.GetInstance(), builder.Logger.GetInstance()));
 
             // Configure strategy
             builder.TickBuffer.SetInstance(this._tickBuffer);

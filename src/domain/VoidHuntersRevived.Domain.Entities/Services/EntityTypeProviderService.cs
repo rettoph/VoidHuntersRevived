@@ -1,11 +1,12 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Collections;
 using Svelto.ECS;
-using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
@@ -18,10 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IEntityTypeService _entityTypeService;
         private readonly Lazy<IComponentSerializerService> _componentSerializerService;
 
-        private Dictionary<Key<IEntityType>, IEntityTypeProvider> _providers;
-        private HashSet<Type> _distinctComponentTypes;
-        private Dictionary<Key<IEntityType>, IEntityTypeProvider[]> _implementationsById;
-        private Dictionary<Type, IEntityTypeProvider[]> _implementationsByType;
+        private DoubleDictionary<IEntityType, Key<IEntityType>, IEntityTypeProvider> _providers;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
@@ -35,28 +33,25 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _uniqueNumberProvider = uniqueNumberProvider;
             _entityTypeService = entityTypeService;
             _componentSerializerService = componentSerializerService;
-            _distinctComponentTypes = new HashSet<Type>();
-            _implementationsById = new Dictionary<Key<IEntityType>, IEntityTypeProvider[]>();
-            _implementationsByType = new Dictionary<Type, IEntityTypeProvider[]>();
 
             // Create EntityTypeProviders for all registered IEntityType instances
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
             IEntityFunctions functions = enginesRoot.GenerateEntityFunctions();
-            // _providers = _entityTypeService.GetAll()
-            //     .Where(x => x.Flags.HasFlag(EntityTypeFlags.Partial) == false)
-            //     .ToDictionary(
-            //         keySelector: type => type.Key,
-            //         elementSelector: type =>
-            //         {
-            //             return (IEntityTypeProvider)new EntityTypeProvider(
-            //                 type,
-            //                 _entityTypeService,
-            //                 _uniqueNumberProvider,
-            //                 factory,
-            //                 functions,
-            //                 entityService
-            //             );
-            //         });
+            _providers = _entityTypeService.GetAll()
+                .ToDoubleDictionary(
+                    keySelector1: type => type,
+                    keySelector2: type => type.Key,
+                    elementSelector: type =>
+                    {
+                        return (IEntityTypeProvider)new EntityTypeProvider(
+                            type,
+                            _entityTypeService,
+                            _uniqueNumberProvider,
+                            factory,
+                            functions,
+                            entityService
+                        );
+                    });
         }
 
         public override void Initialize(IStrategy strategy)
@@ -77,43 +72,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _providers[key];
         }
 
-        public IEnumerable<Type> GetAllDistinctComponentTypes()
+        public IEntityTypeProvider GetByType(IEntityType entityType)
         {
-            if (_distinctComponentTypes.Count != 0)
-            {
-                return _distinctComponentTypes;
-            }
-
-            _distinctComponentTypes = _providers.Values.SelectMany(x => x.GetAllDistinctComponentTypes()).Distinct().ToHashSet();
-
-            return _distinctComponentTypes;
-        }
-
-        public IEntityTypeProvider[] GetAllByKey(Key<IEntityType> key)
-        {
-            ref IEntityTypeProvider[]? providers = ref CollectionsMarshal.GetValueRefOrAddDefault(_implementationsById, key, out bool exists);
-
-            if (exists)
-            {
-                return providers!;
-            }
-
-            providers = _providers.Values.Where(x => x.Implements(key)).ToArray();
-            return providers;
-        }
-
-        public IEntityTypeProvider[] GetAllByType<T>()
-            where T : IEntityType
-        {
-            ref IEntityTypeProvider[]? providers = ref CollectionsMarshal.GetValueRefOrAddDefault(_implementationsByType, typeof(T), out bool exists);
-
-            if (exists)
-            {
-                return providers!;
-            }
-
-            providers = _providers.Values.Where(x => x.Type.Key is Key<T>).ToArray();
-            return providers;
+            return _providers[entityType];
         }
     }
 }

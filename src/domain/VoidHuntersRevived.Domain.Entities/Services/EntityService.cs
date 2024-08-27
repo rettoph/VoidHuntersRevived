@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Utilities;
 using Svelto.ECS;
-using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -15,20 +14,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
+        private readonly Lazy<IEntityTypeService> _entityTypeService;
+        private readonly Lazy<IEntityTypeProviderService> _entityTypeProviderService;
+        private readonly Lazy<IEntityQueryService> _entityQueryService;
+        private readonly Lazy<IEntitySpawnService> _entitySpawnService;
+        private readonly Lazy<IEntitySerializationService> _entitySerializationService;
 
-        private readonly Lazy<EntityTypeProviderService> _entityTypeService;
-        private readonly Lazy<EntityQueryService> _entityQueryService;
-        private readonly Lazy<EntitySpawnService> _entitySpawnService;
-        private readonly Lazy<EntitySerializationService> _entitySerializationService;
-        private readonly Lazy<EntitiesSubmissionScheduler> _entitiesSubmissionScheduler;
+        public IEntityTypeService Types => _entityTypeService.Value;
+        public IEntityTypeProviderService TypeProviders => _entityTypeProviderService.Value;
+        public IEntityQueryService Query => _entityQueryService.Value;
+        public IEntitySpawnService Spawn => _entitySpawnService.Value;
+        public IEntitySerializationService Serialization => _entitySerializationService.Value;
 
-        public EntityTypeProviderService Types => _entityTypeService.Value;
-        public EntityQueryService Query => _entityQueryService.Value;
-        public EntitySpawnService Spawn => _entitySpawnService.Value;
-        public EntitySerializationService Serialization => _entitySerializationService.Value;
-        public EntitiesSubmissionScheduler SubmissionScheduler => _entitiesSubmissionScheduler.Value;
-
-        IEntityTypeProviderService IEntityService.TypeProviders => this.Types;
+        IEntityTypeService IEntityService.Types => this.Types;
 
         IEntityQueryService IEntityService.Query => this.Query;
 
@@ -36,20 +34,18 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         IEntitySerializationService IEntityService.Serialization => this.Serialization;
 
-        EntitiesSubmissionScheduler IEntityService.SubmissionScheduler => this.SubmissionScheduler;
-
         public EntityService(
-            Lazy<EntityTypeProviderService> entityTypeService,
-            Lazy<EntityQueryService> entityQueryService,
-            Lazy<EntitySpawnService> entitySpawnService,
-            Lazy<EntitySerializationService> entitySerialzationService,
-            Lazy<EntitiesSubmissionScheduler> entitiesSubmissionScheduler)
+            Lazy<IEntityTypeService> entityTypeService,
+            Lazy<IEntityTypeProviderService> entityTypeProviderService,
+            Lazy<IEntityQueryService> entityQueryService,
+            Lazy<IEntitySpawnService> entitySpawnService,
+            Lazy<IEntitySerializationService> entitySerialzationService)
         {
             _entityTypeService = entityTypeService;
+            _entityTypeProviderService = entityTypeProviderService;
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
             _entitySerializationService = entitySerialzationService;
-            _entitiesSubmissionScheduler = entitiesSubmissionScheduler;
 
             _ref = new UnmanagedReference<IEntityService>(this);
         }

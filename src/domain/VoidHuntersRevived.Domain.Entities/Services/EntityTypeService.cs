@@ -11,6 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         private readonly Dictionary<Key<IEntityType>, IEntityType> _entityTypes;
         private readonly Dictionary<Type, object> _entityTypesByType;
+        private readonly Type[] _distinctComponentTypes;
 
         public EntityTypeService(
             IFiltered<EntityTypeConfiguration> entityTypeConfigurations,
@@ -30,14 +31,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             _entityTypes = entityTypesDictionary.Values.ToDictionary(x => x.Key, x => x);
             _entityTypesByType = new Dictionary<Type, object>();
+            _distinctComponentTypes = _entityTypes.SelectMany(x => x.Value.Components.Keys).Distinct().ToArray();
         }
 
-        public IEnumerable<IEntityType> GetAll()
+        public virtual IEnumerable<IEntityType> GetAll()
         {
             return _entityTypes.Values;
         }
 
-        public T[] GetAll<T>()
+        public virtual T[] GetAll<T>()
             where T : IEntityType
         {
             ref object? entityTypes = ref CollectionsMarshal.GetValueRefOrAddDefault(_entityTypesByType, typeof(T), out bool exists);
@@ -49,9 +51,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return (T[])entityTypes!;
         }
 
-        public IEntityType GetByKey(Key<IEntityType> key)
+        public virtual IEntityType GetByKey(Key<IEntityType> key)
         {
             return _entityTypes[key];
+        }
+
+        public virtual Type[] GetAllDistinctComponentTypes()
+        {
+            return _distinctComponentTypes;
         }
 
         private static void TryCreateOrConfigureEntityType(
@@ -68,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             if (exists == false)
             {
                 // Attempt to create a new entity type...
-                Type typeType = configuration.Type ?? typeof(EntityType);
+                Type typeType = configuration.Type ?? typeof(BaseEntityType);
                 Key<IEntityType> typeKey = Key<IEntityType>.GetByName(configuration.Name);
                 type = (IEntityType)(Activator.CreateInstance(typeType, [typeKey]) ?? throw new NotImplementedException());
             }

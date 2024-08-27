@@ -4,7 +4,6 @@ using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
@@ -145,12 +144,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, entityTypeKey, options.Seed.Value);
 
-            _entitySpawnService.Spawn(sourceId, entityTypeKey, vhid, (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
+            _entitySpawnService.Spawn(sourceId, entityTypeKey, vhid, (IEntityService entities, IEntityType entityType, EntityId id, ref EntityInitializer initializer) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
-                entities.TypeProviders.GetByKey(entityTypeKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
+                _entityTypeProviderService.GetByKey(entityTypeKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
 
-                initializerDelegate(entities, provider, id, ref initializer);
+                initializerDelegate(entities, entityType, id, ref initializer);
             });
 
             return vhid;
@@ -164,13 +163,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
             _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityType} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, entityTypeKey, options.Seed.Value);
 
-            _entitySpawnService.Spawn(sourceId, entityTypeKey, vhid, (IEntityService entities, IEntityTypeProvider provider, EntityId id, ref EntityInitializer initializer) =>
+            _entitySpawnService.Spawn(sourceId, entityTypeKey, vhid, (IEntityService entities, IEntityType entityType, EntityId id, ref EntityInitializer initializer) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
-                entities.TypeProviders.GetByKey(entityTypeKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
+                _entityTypeProviderService.GetByKey(entityTypeKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
 
-                rootInitializerDelegate(entities, provider, id, ref initializer);
-                initializerDelegate(entities, provider, id, ref initializer);
+                rootInitializerDelegate(entities, entityType, id, ref initializer);
+                initializerDelegate(entities, entityType, id, ref initializer);
             });
 
             return vhid;

@@ -4,7 +4,7 @@ using VoidHuntersRevived.Tests.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities.Descriptors
 {
-    public class TestEntityType : EntityType
+    public class TestEntityType : BaseEntityType
     {
         public static readonly Key<IEntityType> TestEntityTypeKey = Key<IEntityType>.GetByName(nameof(TestEntityType));
 
