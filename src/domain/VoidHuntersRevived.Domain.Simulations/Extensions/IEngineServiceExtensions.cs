@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
         public static void InitializeStrategyEngines(this IEngineService enginesService, IStrategy strategy)
         {
             Type simulationEngineType = typeof(IStrategyEngine<>).MakeGenericType(strategy.GetType());
-            IEngine[] engines = enginesService.All().Where(x => x.GetType().IsAssignableTo(simulationEngineType)).Sequence<IEngine, EngineSequence>(true).ToArray();
+            IEngine[] engines = enginesService.All().Where(x => x.GetType().IsAssignableTo(simulationEngineType)).Sequence<IEngine, EngineSequence>().ToArray();
             MethodInfo initializeMethod = simulationEngineType.GetMethod(nameof(IStrategyEngine<IStrategy>.Initialize), BindingFlags.Public | BindingFlags.Instance, new[] { strategy.GetType() }) ?? throw new NotImplementedException();
             object[] args = new[] { strategy };
 

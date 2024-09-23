@@ -12,7 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Graphics.Services
 {
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     public class PrimitiveService : StrategyEngine, IPrimitiveService, IQueryingEntitiesEngine
     {
         private readonly IPrimitive[] _primitives;

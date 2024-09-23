@@ -1,12 +1,10 @@
-﻿using Autofac;
-using Guppy.Core.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
-using Guppy.Game.Components;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Common;
@@ -18,8 +16,8 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<IVoidHuntersGameScene>]
-    [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
-    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
+    [SequenceGroup<InitializeSequence>(InitializeSequence.PostInitialize)]
+    [SequenceGroup<DrawSequence>(DrawSequence.PostDraw)]
     internal class DebugEngineComponent : SceneComponent, IDebugComponent
     {
         private class DebugEngineGroupRenderer
@@ -89,14 +87,13 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
             foreach (var (simulation, renderers) in _data)
             {
                 var simpleEngines = simulation.Engines.All()
-                    .Sequence<ISimpleDebugEngine, DrawSequence>(true)
+                    .Sequence<ISimpleDebugEngine, DrawSequence>()
                     .SelectMany(x => x.Lines)
                     .GroupBy(x => x.Group)
                     .ToDictionary(x => x.Key, x => x.ToArray());
 
                 var engines = simulation.Engines.OfType<IDebugEngine>()
-                    .Where(x => x.Group is not null)
-                    .Sequence<IDebugEngine, DrawSequence>(true)
+                    .Sequence<IDebugEngine, DrawSequence>()
                     .GroupBy(x => x.Group!)
                     .ToDictionary(x => x.Key, x => x.ToArray());
 
@@ -119,6 +116,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
             }
         }
 
+        [SequenceGroup<DrawDebugComponentSequenceGroup>(DrawDebugComponentSequenceGroup.Draw)]
         public void RenderDebugInfo(GameTime gameTime)
         {
             _imgui.PushID($"#Debugger#{_scene.ToString()}");

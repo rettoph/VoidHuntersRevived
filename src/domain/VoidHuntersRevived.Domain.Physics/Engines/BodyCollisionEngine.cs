@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal sealed class BodyCollisionEngine : StrategyEngine
     {
         private readonly IEntityQueryService _entityQueryService;

@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
@@ -11,9 +10,8 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<MultiplayerGameScene>]
-    [Sequence<InitializeSequence>(InitializeSequence.Setup)]
-    [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
-    internal class ClientPeerComponent : SceneComponent, IGuppyUpdateable
+    [SequenceGroup<InitializeSequence>(InitializeSequence.Setup)]
+    internal class ClientPeerComponent : SceneComponent, IUpdatableComponent
     {
         private readonly IClientPeer _client;
 
@@ -29,6 +27,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
             _client.Start();
         }
 
+        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PostUpdate)]
         public void Update(GameTime gameTime)
         {
             _client.Flush();

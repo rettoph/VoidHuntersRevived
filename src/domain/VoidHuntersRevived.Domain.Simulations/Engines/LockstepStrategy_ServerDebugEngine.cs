@@ -11,8 +11,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
     [StrategyFilter<LockstepStrategy_Server>]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
-    [Sequence<DrawSequence>(DrawSequence.Draw)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<DrawSequence>(DrawSequence.Draw)]
     internal class LockstepStrategy_ServerDebugEngine : StrategyEngine<LockstepStrategy_Server>, ISimpleDebugEngine
     {
         public const string Time = nameof(Time);

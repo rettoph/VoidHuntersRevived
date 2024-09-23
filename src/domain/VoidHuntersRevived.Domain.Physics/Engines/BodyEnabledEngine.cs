@@ -5,8 +5,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
-    [Sequence<StepSequence>(StepSequence.Cleanup)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<StepSequence>(StepSequence.Cleanup)]
     internal class BodyEnabledEngine : StrategyEngine
     {
     }

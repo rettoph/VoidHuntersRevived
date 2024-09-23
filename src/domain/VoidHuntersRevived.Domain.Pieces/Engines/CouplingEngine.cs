@@ -11,7 +11,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal sealed class CouplingEngine : StrategyEngine,
         IOnSpawnEngine<Coupling>,
         IOnDespawnEngine<Coupling>

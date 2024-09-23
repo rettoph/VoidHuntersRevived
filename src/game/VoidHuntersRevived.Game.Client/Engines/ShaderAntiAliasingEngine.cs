@@ -15,8 +15,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
-    [Sequence<DrawSequence>(DrawSequence.Draw)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<DrawSequence>(DrawSequence.Draw)]
     internal class ShaderAntiAliasingEngine : StrategyEngine, IStepEngine<FrameStart>, IStepEngine<FrameEnd>, IDisposable
     {
         private readonly GraphicsDevice _graphics;

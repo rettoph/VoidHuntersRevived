@@ -2,8 +2,8 @@
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
-using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
+using Guppy.Game.ImGui.Common.Enums;
 using Guppy.Game.ImGui.Common.Services;
 using Guppy.Game.ImGui.Common.Styling;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
@@ -20,8 +20,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
-    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal class AetherWorldDebugViewEngine : StrategyEngine, IDebugEngine, IStepEngine<GameTime>, IImGuiComponent
     {
         public string? Group => typeof(World).Name;
@@ -75,6 +74,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _debug.RenderDebugData(_camera.Projection, _camera.View, _camera.World);
         }
 
+        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.PostDraw)]
         public void DrawImGui(GameTime gameTime)
         {
             if (_aetherExplorerEnabled == false)

@@ -10,8 +10,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
-    [Sequence<DrawSequence>(DrawSequence.Draw)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<DrawSequence>(DrawSequence.Draw)]
     internal class DrawGameTimeEnginesEngine : StrategyEngine, IStepEngine<Frame>
     {
         private IStepGroupEngine<GameTime> _drawEnginesGroup = null!;

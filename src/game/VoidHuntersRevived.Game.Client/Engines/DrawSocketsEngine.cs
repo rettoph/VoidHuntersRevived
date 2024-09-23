@@ -14,8 +14,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<DrawSequence>(DrawSequence.PostDraw)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     internal class DrawSocketsEngine : StrategyEngine
     {

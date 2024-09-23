@@ -20,9 +20,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
-    [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
-    [Sequence<StepSequence>(StepSequence.Step)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<UpdateSequence>(UpdateSequence.PostUpdate)]
+    [SequenceGroup<StepSequence>(StepSequence.Step)]
     public class DrawVertexVisibleEngine : BaseDrawVertexTypeEngine<VertexVisible>, IStepEngine<Step>
     {
         private readonly IEntityQueryService _entityQueryService;

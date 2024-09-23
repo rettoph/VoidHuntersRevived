@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     public class EntitySerializationService : StrategyEngine, IEntitySerializationService
     {
         private readonly EntityReader _reader;

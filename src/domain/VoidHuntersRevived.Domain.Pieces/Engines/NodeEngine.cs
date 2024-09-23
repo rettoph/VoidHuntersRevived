@@ -19,8 +19,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
-    [Sequence<StepSequence>(StepSequence.Step)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<StepSequence>(StepSequence.Step)]
     internal sealed class NodeEngine : StrategyEngine,
         IOnSpawnEngine<Node>,
         IOnDespawnEngine<Node>,

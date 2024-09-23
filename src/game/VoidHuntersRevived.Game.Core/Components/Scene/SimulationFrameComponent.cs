@@ -1,6 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
@@ -11,10 +10,9 @@ namespace VoidHuntersRevived.Game.Core.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<VoidHuntersGameScene>]
-    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
-    [Sequence<DrawSequence>(DrawSequence.Draw)]
-    [Sequence<UpdateSequence>(UpdateSequence.Update)]
-    internal class SimulationFrameComponent : SceneComponent, IGuppyDrawable, IGuppyUpdateable
+    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
+    [SequenceGroup<DrawSequence>(DrawSequence.Draw)]
+    internal class SimulationFrameComponent : SceneComponent, IDrawableComponent, IUpdatableComponent
     {
         private readonly ISimulationService _simulationService;
 
@@ -23,11 +21,13 @@ namespace VoidHuntersRevived.Game.Core.Components.Scene
             _simulationService = simulationService;
         }
 
+        [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.PostDraw)]
         public void Draw(GameTime gameTime)
         {
             _simulationService.Draw(gameTime);
         }
 
+        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.Update)]
         public void Update(GameTime gameTime)
         {
             _simulationService.Update(gameTime);

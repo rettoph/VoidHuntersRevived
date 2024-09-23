@@ -8,8 +8,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
-    [Sequence<StepSequence>(StepSequence.ResourceManagerUpdate)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<StepSequence>(StepSequence.ResourceManagerUpdate)]
     internal sealed class SpaceEngine : StrategyEngine,
         IStepEngine<Step>
     {

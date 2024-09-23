@@ -10,7 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Engines
 {
-    [Sequence<DrawSequence>(DrawSequence.Draw)]
+    [SequenceGroup<DrawSequence>(DrawSequence.Draw)]
     public abstract class BaseDrawVertexTypeEngine<TVertex> : StrategyEngine, IStepEngine<GameTime>
         where TVertex : unmanaged, IVertexType
     {

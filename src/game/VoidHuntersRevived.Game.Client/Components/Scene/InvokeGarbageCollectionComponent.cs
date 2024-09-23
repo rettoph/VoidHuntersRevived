@@ -8,7 +8,7 @@ using VoidHuntersRevived.Game.Client.Messages;
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
-    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
+    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
     internal class InvokeGarbageCollectionComponent : SceneComponent,
         ISubscriber<Input_Invoke_Garbage_Collection>
     {

@@ -12,7 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    [Sequence<EngineSequence>(EngineSequence.Group00)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group00)]
     public class EntityTypeProviderService : StrategyEngine, IEntityTypeProviderService, IQueryingEntitiesEngine
     {
         private readonly IUniqueNumberProvider _uniqueNumberProvider;

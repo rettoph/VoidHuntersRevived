@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Extensions
             bool reverse = false)
             where TSequence : unmanaged, Enum
         {
-            IStepEngine<T>[] instances = engines.Sequence<IStepEngine<T>, TSequence>(true);
+            IStepEngine<T>[] instances = engines.Sequence<IStepEngine<T>, TSequence>();
             if (reverse)
             {
                 instances = instances.Reverse().ToArray();

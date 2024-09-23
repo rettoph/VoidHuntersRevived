@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Game.Server.Guppy
 {
     [AutoLoad]
     [SceneFilter<ServerGameScene>]
-    [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
+    [SequenceGroup<InitializeSequence>(InitializeSequence.PreInitialize)]
     internal class ConfigureSimulationsComponent : SceneComponent
     {
         private readonly ISimulationService _simulationService;

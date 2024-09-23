@@ -10,7 +10,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     public class EntityQueryService : IEntityQueryService, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; } = null!;

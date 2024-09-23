@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal partial class TreeService : StrategyEngine, ITreeService
     {
         private readonly IEntityQueryService _entityQueryService;

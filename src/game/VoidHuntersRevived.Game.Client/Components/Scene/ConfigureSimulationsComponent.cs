@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<LocalGameScene>]
-    [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
+    [SequenceGroup<InitializeSequence>(InitializeSequence.PreInitialize)]
     internal class ConfigureSimulationsComponent : SceneComponent
     {
         private readonly ISimulationService _simulationService;

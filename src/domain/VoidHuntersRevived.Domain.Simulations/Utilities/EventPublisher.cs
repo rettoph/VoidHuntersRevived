@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Guppy.Core.Common.Extensions.System;
+using Serilog;
 using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;

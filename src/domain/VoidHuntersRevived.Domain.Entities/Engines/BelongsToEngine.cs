@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Extensions.System;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -18,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     /// </summary>
     /// <typeparam name="TOwner"></typeparam>
     /// <typeparam name="TItems"></typeparam>
-    [Sequence<EngineSequence>(EngineSequence.Group01)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group01)]
     internal sealed class BelongsToEngine<TOwner, TItems> : StrategyEngine, IOnSpawnEngine<BelongsTo<TOwner, TItems>>
         where TOwner : unmanaged, IEntityComponent
         where TItems : unmanaged, IEntityComponent

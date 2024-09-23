@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    [Sequence<EngineSequence>(EngineSequence.Group01)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group01)]
     public class EntityService : StrategyEngine, IEntityService, IDisposable
     {
         private readonly UnmanagedReference<IEntityService> _ref;

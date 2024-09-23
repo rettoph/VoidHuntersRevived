@@ -4,8 +4,8 @@ using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
-using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
+using Guppy.Game.ImGui.Common.Enums;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -15,8 +15,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<IVoidHuntersGameScene>]
-    [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
-    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
+    [SequenceGroup<InitializeSequence>(InitializeSequence.PostInitialize)]
     internal class ImGuiEngineComponent : SceneComponent, IImGuiComponent
     {
         private readonly IScene _scene;
@@ -41,10 +40,11 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 
             _data = _simulationService.Instances.SelectMany(x => x.Strategies).Select(x => (
                 (x as IStrategy)!,
-                x.Engines.All().Sequence<IImGuiComponent, DrawSequence>(true).ToArray()
+                x.Engines.All().Sequence<IImGuiComponent, DrawImGuiSequenceGroup>().ToArray()
             )).ToArray();
         }
 
+        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.PostDraw)]
         public void DrawImGui(GameTime gameTime)
         {
             foreach (var (simulation, engines) in _data)

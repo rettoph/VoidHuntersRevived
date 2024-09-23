@@ -4,7 +4,6 @@ using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
@@ -15,9 +14,8 @@ namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<ServerGameScene>]
-    [Sequence<InitializeSequence>(InitializeSequence.Setup)]
-    [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
-    internal class ServerPeerComponent : SceneComponent, IGuppyUpdateable
+    [SequenceGroup<InitializeSequence>(InitializeSequence.Setup)]
+    internal class ServerPeerComponent : SceneComponent, IUpdatableComponent
     {
         private readonly IServerPeer _server;
         private readonly INetScope<IStrategy> _scope;
@@ -36,6 +34,7 @@ namespace VoidHuntersRevived.Game.Server.Components.Scene
             _server.Users.OnUserConnected += HandleUserConnected;
         }
 
+        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PostUpdate)]
         public void Update(GameTime gameTime)
         {
             _server.Flush();

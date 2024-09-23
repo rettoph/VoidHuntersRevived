@@ -11,7 +11,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics
 {
     [AutoLoad]
-    [Sequence<EngineSequence>(EngineSequence.Group01)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group01)]
     public class Space : StrategyEngine, ISpace
     {
         private readonly Dictionary<VhId, Body> _bodies;

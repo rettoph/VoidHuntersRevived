@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         public void Initialize(IStrategy strategy)
         {
             _engines.AddRange(_engineProviders.Value.SelectMany(x => x.GetEngines()));
-            _engines = _engines.Sequence<IEngine, EngineSequence>(true).ToList();
+            _engines = _engines.Sequence<IEngine, EngineSequence>().ToList();
 
             foreach (IEngine engine in _engines)
             {

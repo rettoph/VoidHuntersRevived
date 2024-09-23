@@ -8,8 +8,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Entities.Engines.Debug
 {
     [AutoLoad]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
-    [Sequence<DrawSequence>(DrawSequence.PreDraw)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
     internal class EntitiesDebugEngine : StrategyEngine, ISimpleDebugEngine
     {
         public const string Entities = nameof(Entities);

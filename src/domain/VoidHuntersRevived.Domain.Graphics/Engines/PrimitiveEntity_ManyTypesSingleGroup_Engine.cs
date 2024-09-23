@@ -11,8 +11,8 @@ using VoidHuntersRevived.Domain.Graphics.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
-    [Sequence<DrawSequence>(DrawSequence.PreDraw)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
     public sealed class PrimitiveEntity_ManyTypesSingleGroup_Engine<TVertex> : BaseVertexTypeEntityEngine<TVertex>
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {

@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [PeerFilter(PeerType.Client)]
-    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal class InputEngine : StrategyEngine,
         IInputSubscriber<Input_Helm_SetDirection>,
