@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common.Utilities;
+﻿using Guppy.Core.Common.Attributes;
+using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -10,6 +11,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Services
 {
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     internal class TeamService : StrategyEngine, ITeamService
     {
         private struct TeamData

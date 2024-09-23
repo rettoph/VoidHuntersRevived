@@ -88,15 +88,15 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 
             foreach (var (simulation, renderers) in _data)
             {
-                var simpleEngines = simulation.Engines.OfType<ISimpleDebugEngine>()
-                    .Sequence(DrawSequence.Draw)
+                var simpleEngines = simulation.Engines.All()
+                    .Sequence<ISimpleDebugEngine, DrawSequence>(true)
                     .SelectMany(x => x.Lines)
                     .GroupBy(x => x.Group)
                     .ToDictionary(x => x.Key, x => x.ToArray());
 
                 var engines = simulation.Engines.OfType<IDebugEngine>()
                     .Where(x => x.Group is not null)
-                    .Sequence(DrawSequence.Draw)
+                    .Sequence<IDebugEngine, DrawSequence>(true)
                     .GroupBy(x => x.Group!)
                     .ToDictionary(x => x.Key, x => x.ToArray());
 

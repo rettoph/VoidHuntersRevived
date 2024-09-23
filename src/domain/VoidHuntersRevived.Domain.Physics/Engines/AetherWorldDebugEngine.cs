@@ -1,12 +1,16 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines.Debug
 {
     [AutoLoad]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal class AetherWorldDebugEngine : StrategyEngine, ISimpleDebugEngine
     {
         private const string Bodies = nameof(Bodies);

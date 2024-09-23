@@ -1,8 +1,10 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Services;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
@@ -13,6 +15,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter<ILockstepStrategy>]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal class LockstepStrategyTickExplorerDebugEngine : StrategyEngine<ILockstepStrategy>, IDebugEngine, IImGuiComponent
     {
         public string? Group => nameof(IStrategy);

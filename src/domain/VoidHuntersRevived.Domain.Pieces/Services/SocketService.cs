@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Guppy.Core.Common.Attributes;
+using Serilog;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -12,6 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     internal sealed partial class SocketService : StrategyEngine, ISocketService
     {
         private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;

@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -11,6 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Graphics.Services
 {
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     public class PrimitiveService : StrategyEngine, IPrimitiveService, IQueryingEntitiesEngine
     {
         private readonly IPrimitive[] _primitives;

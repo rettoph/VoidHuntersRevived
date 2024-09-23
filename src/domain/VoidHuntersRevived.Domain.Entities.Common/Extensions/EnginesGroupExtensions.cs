@@ -12,7 +12,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Extensions
             bool reverse = false)
             where TSequence : unmanaged, Enum
         {
-            return new SimpleEnginesGroup<IStepEngine<T>, T>(engines.OfType<IStepEngine<T>>().Sequence(defaultSequence, reverse));
+            IStepEngine<T>[] instances = engines.Sequence<IStepEngine<T>, TSequence>(true);
+            if (reverse)
+            {
+                instances = instances.Reverse().ToArray();
+            }
+
+            return new SimpleEnginesGroup<IStepEngine<T>, T>(instances);
         }
 
         public static IStepGroupEngine<T> CreateStepEnginesGroup<T>(this IEnumerable<IEngine> engines)

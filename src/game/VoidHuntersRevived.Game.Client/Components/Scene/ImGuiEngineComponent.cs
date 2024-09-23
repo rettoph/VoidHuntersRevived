@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 
             _data = _simulationService.Instances.SelectMany(x => x.Strategies).Select(x => (
                 (x as IStrategy)!,
-                x.Engines.OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray()
+                x.Engines.All().Sequence<IImGuiComponent, DrawSequence>(true).ToArray()
             )).ToArray();
         }
 

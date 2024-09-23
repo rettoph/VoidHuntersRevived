@@ -16,6 +16,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
     [StrategyFilter(StrategyTypeEnum.Predictive)]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     public sealed class PrimitiveEntity_ManyTypesManyGroups_Engine<TVertex> : BaseVertexTypeEntityEngine<TVertex>
         where TVertex : unmanaged, IVertexType, IEntityComponent

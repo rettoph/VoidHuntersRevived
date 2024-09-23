@@ -18,6 +18,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     [Sequence<StepSequence>(StepSequence.Step)]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     internal class ThrustableEngine : StrategyEngine,
         IOnSpawnEngine<Thrustable>,
         IOnDespawnEngine<Thrustable>,

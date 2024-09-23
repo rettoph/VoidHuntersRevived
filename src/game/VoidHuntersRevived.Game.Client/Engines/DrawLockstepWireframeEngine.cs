@@ -2,6 +2,7 @@
 using Guppy.Core.Messaging.Common;
 using Guppy.Game.Common.Enums;
 using Serilog;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
@@ -13,6 +14,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     internal sealed class DrawLockstepWireframeEngine : StrategyEngine,
         ISubscriber<Input_Toggle_LockstepWireframe>

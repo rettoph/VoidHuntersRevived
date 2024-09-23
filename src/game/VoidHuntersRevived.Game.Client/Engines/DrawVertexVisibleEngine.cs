@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Graphics.Common.Engines;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
@@ -19,7 +20,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
+    [Sequence<StepSequence>(StepSequence.Step)]
     public class DrawVertexVisibleEngine : BaseDrawVertexTypeEngine<VertexVisible>, IStepEngine<Step>
     {
         private readonly IEntityQueryService _entityQueryService;

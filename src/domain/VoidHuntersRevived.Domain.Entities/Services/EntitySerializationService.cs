@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common;
+﻿using Guppy.Core.Common.Attributes;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
@@ -7,6 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     public class EntitySerializationService : StrategyEngine, IEntitySerializationService
     {
         private readonly EntityReader _reader;

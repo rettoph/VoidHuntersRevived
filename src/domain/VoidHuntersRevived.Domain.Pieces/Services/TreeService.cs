@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common;
+﻿using Guppy.Core.Common.Attributes;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
@@ -6,6 +7,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     internal partial class TreeService : StrategyEngine, ITreeService
     {
         private readonly IEntityQueryService _entityQueryService;

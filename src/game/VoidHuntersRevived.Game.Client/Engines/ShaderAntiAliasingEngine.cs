@@ -1,8 +1,10 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -13,6 +15,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal class ShaderAntiAliasingEngine : StrategyEngine, IStepEngine<FrameStart>, IStepEngine<FrameEnd>, IDisposable
     {
         private readonly GraphicsDevice _graphics;

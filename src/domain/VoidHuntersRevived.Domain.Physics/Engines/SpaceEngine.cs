@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -9,6 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     [Sequence<StepSequence>(StepSequence.ResourceManagerUpdate)]
     internal sealed class SpaceEngine : StrategyEngine,
         IStepEngine<Step>

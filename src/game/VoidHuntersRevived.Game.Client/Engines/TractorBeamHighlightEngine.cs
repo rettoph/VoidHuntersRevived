@@ -16,8 +16,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     internal class TractorBeamHighlightEngine : StrategyEngine, IStepEngine<GameTime>
     {
         private readonly ILogger _logger;

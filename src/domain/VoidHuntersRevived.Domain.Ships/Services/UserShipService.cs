@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Collections;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Collections;
 using Guppy.Core.Network.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -12,6 +13,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     internal class UserShipService : StrategyEngine, IUserShipService,
         IOnSpawnEngine<UserId>,
         IOnDespawnEngine<UserId>,

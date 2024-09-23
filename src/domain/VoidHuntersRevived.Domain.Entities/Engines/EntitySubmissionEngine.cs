@@ -6,6 +6,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     [Sequence<StepSequence>(StepSequence.EntitySubmission)]
     public sealed class EntitySubmissionEngine : IEngine, IStepEngine<Step>
     {

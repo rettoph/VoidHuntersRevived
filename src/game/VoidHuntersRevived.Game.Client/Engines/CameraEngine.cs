@@ -21,6 +21,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     [PeerFilter(PeerType.Client)]
     internal sealed class CameraEngine : StrategyEngine, IStepEngine<GameTime>,

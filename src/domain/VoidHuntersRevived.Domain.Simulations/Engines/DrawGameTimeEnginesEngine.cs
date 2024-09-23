@@ -2,6 +2,7 @@
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -9,6 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal class DrawGameTimeEnginesEngine : StrategyEngine, IStepEngine<Frame>
     {

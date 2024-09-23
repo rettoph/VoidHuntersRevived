@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Guppy.Core.Common.Attributes;
+using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Events;
@@ -7,6 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     public partial class EntitySpawnService : StrategyEngine, IEntitySpawnService, IPrivateEntitySpawnService
     {
         private readonly EntityQueryService _entityQueryService;

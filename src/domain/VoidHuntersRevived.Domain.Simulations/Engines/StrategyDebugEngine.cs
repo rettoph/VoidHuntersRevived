@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
@@ -10,6 +11,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
     [AutoLoad]
     [StrategyFilter<Strategy>]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     internal class StrategyDebugEngine : StrategyEngine<Strategy>, ISimpleDebugEngine
     {
         public const string Time = nameof(Time);

@@ -6,6 +6,7 @@ using Guppy.Core.Network.Common.Extensions;
 using Guppy.Core.Network.Common.Identity.Enums;
 using Guppy.Core.Network.Common.Services;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -17,6 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     [AutoLoad]
     [PeerFilter(PeerType.Server)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     internal class LockstepServer_UserEngine : StrategyEngine
     {
         private readonly INetScope _scope;

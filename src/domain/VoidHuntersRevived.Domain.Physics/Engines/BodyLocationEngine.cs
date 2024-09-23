@@ -10,6 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     [Sequence<StepSequence>(StepSequence.PostResourceManagerUpdate)]
     internal sealed class BodyLocationEngine : StrategyEngine, IStepEngine<Step>
     {

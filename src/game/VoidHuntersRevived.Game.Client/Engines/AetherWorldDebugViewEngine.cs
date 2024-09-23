@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -19,6 +20,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
     internal class AetherWorldDebugViewEngine : StrategyEngine, IDebugEngine, IStepEngine<GameTime>, IImGuiComponent
     {

@@ -1,4 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
@@ -9,6 +11,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
 {
     [AutoLoad]
     [StrategyFilter<LockstepStrategy_Server>]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
+    [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal class LockstepStrategy_ServerDebugEngine : StrategyEngine<LockstepStrategy_Server>, ISimpleDebugEngine
     {
         public const string Time = nameof(Time);

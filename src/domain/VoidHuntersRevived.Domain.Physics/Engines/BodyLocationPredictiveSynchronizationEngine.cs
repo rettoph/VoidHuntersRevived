@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
@@ -8,6 +9,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     internal class BodyLocationPredictiveSynchronizationEngine : StrategyEngine, IPredictiveSynchronizationEngine
     {
         private readonly ISpace _predictiveSpace;

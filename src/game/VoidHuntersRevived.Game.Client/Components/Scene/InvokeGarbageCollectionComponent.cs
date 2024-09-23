@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging.Common;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Components;
 using Serilog;
 using VoidHuntersRevived.Game.Client.Messages;
@@ -7,6 +8,7 @@ using VoidHuntersRevived.Game.Client.Messages;
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
     internal class InvokeGarbageCollectionComponent : SceneComponent,
         ISubscriber<Input_Invoke_Garbage_Collection>
     {

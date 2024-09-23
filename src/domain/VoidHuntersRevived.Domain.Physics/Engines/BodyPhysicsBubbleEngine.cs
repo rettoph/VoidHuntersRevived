@@ -14,6 +14,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
+    [Sequence<EngineSequence>(EngineSequence.Group03)]
     [Sequence<StepSequence>(StepSequence.PostResourceManagerUpdate)]
     internal class BodyPhysicsBubbleEngine : StrategyEngine, IStepEngine<Step>, IOnDespawnEngine<Enabled>
     {
