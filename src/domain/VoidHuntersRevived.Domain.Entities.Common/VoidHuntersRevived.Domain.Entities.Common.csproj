@@ -15,7 +15,4 @@
 	  <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations.Common\VoidHuntersRevived.Domain.Simulations.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" PrivateAssets="compile" />
-  </ItemGroup>
 </Project>
