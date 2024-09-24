@@ -4,9 +4,8 @@ using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Services;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
-using VoidHuntersRevived.Common;
+using System.Collections;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
@@ -20,7 +19,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         private readonly EntitiesSubmissionScheduler _scheduler;
         private readonly Lazy<IFiltered<IEngineProvider>> _engineProviders;
         private List<IEngine> _engines;
-        private IStepGroupEngine<Step> _stepEngines;
 
         public EnginesRoot Root => _enginesRoot;
 
@@ -35,7 +33,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             _enginesRoot = enginesRoot;
             _engineProviders = engineProviders;
             _scheduler = scheduler;
-            _stepEngines = null!;
             _engines = engines.ToList();
         }
 
@@ -53,8 +50,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
                 _enginesRoot.AddEngine(engine);
             }
-
-            _stepEngines = _engines.CreateSequencedStepEnginesGroup<Step, StepSequence>(StepSequence.Step);
         }
 
         public void Dispose()
@@ -63,24 +58,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             _enginesRoot.Dispose();
         }
 
-        public IEnumerable<T> OfType<T>()
-        {
-            return _engines.OfType<T>();
-        }
-
         public T Get<T>()
         {
             return (T)_engines.Single(x => x is T);
         }
 
-        public IEnumerable<IEngine> All()
+        public IEnumerator<IEngine> GetEnumerator()
         {
-            return _engines;
+            return _engines.GetEnumerator();
         }
 
-        public void Step(Step step)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            _stepEngines.Step(step);
+            return _engines.GetEnumerator();
         }
     }
 }

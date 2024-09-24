@@ -1,8 +1,5 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common.Enums;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Svelto.ECS;
 using VoidHuntersRevived.Domain.Graphics.Common.Providers;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
 using VoidHuntersRevived.Domain.Graphics.Common.Utilities;
@@ -10,12 +7,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Engines
 {
-    [SequenceGroup<DrawSequence>(DrawSequence.Draw)]
-    public abstract class BaseDrawVertexTypeEngine<TVertex> : StrategyEngine, IStepEngine<GameTime>
+    public abstract class BaseDrawVertexTypeEngine<TVertex> : StrategyEngine, IOnDrawEngine
         where TVertex : unmanaged, IVertexType
     {
-        public string name => nameof(BaseDrawVertexTypeEngine<TVertex>);
-
         private readonly IVertexTypeManagerProvider<TVertex> _vertexTypeManagerProvider;
 
         protected abstract Effect effect { get; }
@@ -25,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Engines
             _vertexTypeManagerProvider = vertexTypeService.GetByVertexType<TVertex>();
         }
 
-        public virtual void Step(in GameTime param)
+        public virtual void OnDraw(GameTime gameTime)
         {
             this.DrawAllVertexTypeManagers();
         }

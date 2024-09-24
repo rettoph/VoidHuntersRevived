@@ -15,23 +15,21 @@ using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<StepSequence>(StepSequence.Step)]
     internal sealed class TractorBeamEmitterUpdateEngine : StrategyEngine,
-        IStepEngine<Step>
+        IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
         private readonly ILogger _logger;
         private readonly ITractorBeamEmitterService _tractorBeamEmitterService;
         private readonly ISocketService _socketService;
-
-        public string name { get; } = nameof(TractorBeamEmitterUpdateEngine);
 
         public TractorBeamEmitterUpdateEngine(
             IEntityQueryService entityQueryService,
@@ -47,7 +45,8 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
             _socketService = socketService;
         }
 
-        public void Step(in Step _param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.ProcessInput)]
+        public void OnStep(Step step)
         {
             foreach (var ((vhids, tacticals, tractorBeamEmitters, count), _) in _entityQueryService.QueryEntities<EntityId, Tactical, TractorBeamEmitter>())
             {
@@ -70,43 +69,42 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                     uint index = indices[i];
                     ref EntityId tractorableId = ref entityIds[index];
 
-                    if (statuses[index].IsDespawned == false)
-                    {
-                        if (enableds[index] == true)
-                        {
-                            IBody targetBody = _space.GetBody(in tractorableId);
-
-                            EntityId targetId = _entityQueryService.GetId(tractorableId.VhId);
-                            ref Tree target = ref _entityQueryService.QueryById<Tree>(targetId);
-
-                            Location targetHeadChildLocation = _entityQueryService.QueryById<Plug>(target.HeadId).Location;
-
-                            if (_socketService.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
-                            {
-                                FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.Transformation;
-                                FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
-
-                                targetBody.SetTransform(potentialPosition, potentialTransformation.Radians());
-
-                                return;
-                            }
-
-                            FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, targetHeadChildLocation.Transformation * FixMatrix.CreateRotationZ(targetBody.Rotation));
-                            targetBody.SetTransform(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
-                        }
-                        else
-                        {
-                            _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = {Enabled}.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId, enableds[index]);
-                            _tractorBeamEmitterService.Deselect(
-                                sourceId: HashBuilder<TractorBeamEmitterUpdateEngine, VhId>.Instance.Calculate(tractorableId.VhId),
-                                tractorBeamEmitterId: tractorBeamEmitterId,
-                                attachToSocketVhId: null);
-                        }
-                    }
-                    else
+                    if (statuses[index].IsDespawned == true)
                     {
                         _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsDespawned = {IsDespawned}.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId, statuses[index].IsDespawned);
+                        continue;
                     }
+
+                    if (enableds[index] == false)
+                    {
+                        _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = {Enabled}.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId, enableds[index].Value);
+                        _tractorBeamEmitterService.Deselect(
+                            sourceId: HashBuilder<TractorBeamEmitterUpdateEngine, VhId>.Instance.Calculate(tractorableId.VhId),
+                            tractorBeamEmitterId: tractorBeamEmitterId,
+                            attachToSocketVhId: null);
+
+                        continue;
+                    }
+
+                    IBody targetBody = _space.GetBody(in tractorableId);
+
+                    EntityId targetId = _entityQueryService.GetId(tractorableId.VhId);
+                    ref Tree target = ref _entityQueryService.QueryById<Tree>(targetId);
+
+                    Location targetHeadChildLocation = _entityQueryService.QueryById<Plug>(target.HeadId).Location;
+
+                    if (_socketService.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
+                    {
+                        FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.Transformation;
+                        FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
+
+                        targetBody.SetTransform(potentialPosition, potentialTransformation.Radians());
+
+                        return;
+                    }
+
+                    FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, targetHeadChildLocation.Transformation * FixMatrix.CreateRotationZ(targetBody.Rotation));
+                    targetBody.SetTransform(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
                 }
             }
         }

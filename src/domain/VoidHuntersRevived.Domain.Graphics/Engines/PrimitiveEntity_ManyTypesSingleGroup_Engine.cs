@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
@@ -8,11 +7,11 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Graphics.Common.Providers;
 using VoidHuntersRevived.Domain.Graphics.Common.Utilities;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
     public sealed class PrimitiveEntity_ManyTypesSingleGroup_Engine<TVertex> : BaseVertexTypeEntityEngine<TVertex>
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {
@@ -27,7 +26,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
             _vertexBuffers = _vertexBuffersByType.Values.ToArray();
         }
 
-        public override void Step(in GameTime param)
+        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PreDraw)]
+        public override void OnDraw(GameTime gameTime)
         {
             foreach (IVertexBuffer<TVertex> vertexBuffer in _vertexBuffers)
             {

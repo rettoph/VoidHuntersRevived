@@ -1,11 +1,10 @@
-﻿using Guppy.Game.Common;
-using Guppy.Game.Common.Enums;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
 using Serilog;
-using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -21,14 +20,8 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly Lazy<IEngineService> _engineService;
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
-
-        private IStepGroupEngine<FrameStart> _frameStartEnginesGroup;
-        private IStepGroupEngine<Frame> _frameEnginesGroup;
-        private IStepGroupEngine<FrameEnd> _frameEndEnginesGroup;
-
-        private readonly FrameStart _frameStart;
-        private readonly Frame _frame;
-        private readonly FrameEnd _frameEnd;
+        private readonly ActionSequenceGroup<DrawEngineSequenceGroup, GameTime> _drawActions;
+        private readonly ActionSequenceGroup<StepEngineSequenceGroup, Step> _stepActions;
 
         protected ILogger logger => _logger.Value;
 
@@ -51,18 +44,12 @@ namespace VoidHuntersRevived.Domain.Simulations
             _logger = logger;
             _enqueued = new Queue<EventDto>();
             _publishers = new Dictionary<Type, EventPublisher>();
+            _stepActions = new ActionSequenceGroup<StepEngineSequenceGroup, Step>();
+            _drawActions = new ActionSequenceGroup<DrawEngineSequenceGroup, GameTime>();
 
             this.Type = type;
 
-            _frameStartEnginesGroup = null!;
-            _frameEnginesGroup = null!;
-            _frameEndEnginesGroup = null!;
-
             this.CurrentStep = new Step();
-
-            _frameStart = new FrameStart();
-            _frame = new Frame(_frameStart);
-            _frameEnd = new FrameEnd(_frame);
 
             this.Enabled = false;
             this.Visible = false;
@@ -74,9 +61,10 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             EventPublisher.PopulatePublishers(this.Engines, this.logger, _publishers);
 
-            _frameStartEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<FrameStart, DrawSequence>(DrawSequence.Draw);
-            _frameEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<Frame, DrawSequence>(DrawSequence.Draw);
-            _frameEndEnginesGroup = this.Engines.All().CreateSequencedStepEnginesGroup<FrameEnd, DrawSequence>(DrawSequence.Draw, true);
+            _drawActions.Add(this.Engines);
+
+            _stepActions.Add([this.Step_PublishEvents]); // Special case - add the internal queue submission method
+            _stepActions.Add(this.Engines);
 
             //
             this.Engines.InitializeStrategyEngines(this);
@@ -87,25 +75,18 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Engines.Dispose();
         }
 
-        public override void Draw(GameTime realTime)
+        public override void Draw(GameTime gameTime)
         {
-            base.Draw(realTime);
+            base.Draw(gameTime);
 
-            _frameStart.GameTime = realTime;
-            _frameStartEnginesGroup.Step(_frameStart);
-
-            _frame.GameTime = realTime;
-            _frameEnginesGroup.Step(_frame);
-
-            _frameEnd.GameTime = realTime;
-            _frameEndEnginesGroup.Step(_frameEnd);
+            _drawActions.Invoke(gameTime);
         }
 
-        public override void Update(GameTime realTime)
+        public override void Update(GameTime gameTime)
         {
-            base.Update(realTime);
+            base.Update(gameTime);
 
-            while (this.TryGetNextStep(realTime, out Step? step))
+            while (this.TryGetNextStep(gameTime, out Step? step))
             {
                 this.DoStep(step);
             }
@@ -114,13 +95,18 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
         protected virtual void DoStep(Step step)
         {
-            this.Engines.Step(step);
+            _stepActions.Invoke(step);
+
+            this.CurrentStep = step;
+        }
+
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.PublishEvents)]
+        private void Step_PublishEvents(Step step)
+        {
             while (_enqueued.TryDequeue(out EventDto? enqueued))
             {
                 this.Publish(enqueued);
             }
-
-            this.CurrentStep = step;
         }
 
         protected virtual void Revert(EventDto @event)

@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    [AutoLoad]
+    //[AutoLoad]
     [SceneFilter<IVoidHuntersGameScene>]
     [SequenceGroup<InitializeSequence>(InitializeSequence.PostInitialize)]
     internal class ImGuiEngineComponent : SceneComponent, IImGuiComponent
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 
             _data = _simulationService.Instances.SelectMany(x => x.Strategies).Select(x => (
                 (x as IStrategy)!,
-                x.Engines.All().Sequence<IImGuiComponent, DrawImGuiSequenceGroup>().ToArray()
+                x.Engines.Sequence<IImGuiComponent, DrawImGuiSequenceGroup>().ToArray()
             )).ToArray();
         }
 

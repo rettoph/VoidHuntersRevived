@@ -12,26 +12,24 @@ using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 using VoidHuntersRevived.Domain.Pieces.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    [SequenceGroup<StepSequence>(StepSequence.Step)]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal class ThrustableEngine : StrategyEngine,
         IOnSpawnEngine<Thrustable>,
         IOnDespawnEngine<Thrustable>,
         IEventEngine<Tree_Clean>,
-        IStepEngine<Step>
+        IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
 
         private static readonly Fix64 Buffer = (Fix64)0.01m;
         private static readonly Fix64 BufferPi = Fix64.Pi - Buffer;
-
-        public string name { get; } = nameof(ThrustableEngine);
 
         public ThrustableEngine(IEntityQueryService entityQueryService, ISpace space)
         {
@@ -95,7 +93,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        public void Step(in Step param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.ProcessInput)]
+        public void OnStep(Step step)
         {
             foreach (var ((ids, enableds, helms, count), groupId) in _entityQueryService.QueryEntities<EntityId, Enabled, Helm>())
             {
@@ -113,7 +112,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     IBody body = _space.GetBody(helmId);
                     ref var filter = ref _entityQueryService.GetFilter<Thrustable>(helmId, Helm.ThrustableFilterContextId);
 
-                    this.TryApplyImpulse(param, body, helm.Direction, ref filter);
+                    this.TryApplyImpulse(step, body, helm.Direction, ref filter);
                 }
             }
         }

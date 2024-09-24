@@ -8,11 +8,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
     public abstract class BaseVertexTypeEntityEngine<TVertex> : StrategyEngine,
-        IReactOnAddEx<TVertex>, IStepEngine<GameTime>, IQueryingEntitiesEngine
+        IReactOnAddEx<TVertex>, IOnDrawEngine, IQueryingEntitiesEngine
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {
-        public string name => nameof(BaseVertexTypeEntityEngine<TVertex>);
-
         public EntitiesDB entitiesDB { get; set; } = null!;
 
         protected void CopyEntityVertexData(IVertexBuffer<TVertex> vertexBuffer)
@@ -56,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
             }
         }
 
-        public abstract void Step(in GameTime param);
+        public abstract void OnDraw(GameTime gameTime);
 
         public abstract void Add((uint start, uint end) rangeOfEntities, in EntityCollection<TVertex> entities, ExclusiveGroupStruct groupID);
     }

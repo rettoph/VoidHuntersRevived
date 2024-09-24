@@ -14,7 +14,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    [AutoLoad]
+    //[AutoLoad]
     [SceneFilter<IVoidHuntersGameScene>]
     [SequenceGroup<InitializeSequence>(InitializeSequence.PostInitialize)]
     [SequenceGroup<DrawSequence>(DrawSequence.PostDraw)]
@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 
             foreach (var (simulation, renderers) in _data)
             {
-                var simpleEngines = simulation.Engines.All()
+                var simpleEngines = simulation.Engines
                     .Sequence<ISimpleDebugEngine, DrawSequence>()
                     .SelectMany(x => x.Lines)
                     .GroupBy(x => x.Group)

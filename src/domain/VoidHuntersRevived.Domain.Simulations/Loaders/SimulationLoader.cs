@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
         {
             builder.RegisterType<StrategiesFactory>().As<IStrategiesFactory>().InstancePerLifetimeScope();
             builder.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
-            builder.RegisterType<EngineService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<EngineService>().As<IEngineService>().InstancePerLifetimeScope();
 
             this.ConfigureLockstep(builder);
             this.ConfigurePredictive(builder);

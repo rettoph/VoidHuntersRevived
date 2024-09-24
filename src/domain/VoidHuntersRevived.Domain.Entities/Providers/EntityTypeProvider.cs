@@ -78,12 +78,12 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // Responsible for calling IOnSpawnEngine & IOnDespawnEngine engines
             foreach (Type componentType in this.Type.Components.Keys)
             {
-                if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engineService.All(), out var invoker))
+                if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engineService, out var invoker))
                 {
                     _onDespawnEngineInvokers.Add(invoker);
                 }
 
-                if (ComponentEngineInvoker.Create(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), componentType, engineService.All(), out invoker))
+                if (ComponentEngineInvoker.Create(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), componentType, engineService, out invoker))
                 {
                     _onSpawnEngineInvokers.Add(invoker);
                 }

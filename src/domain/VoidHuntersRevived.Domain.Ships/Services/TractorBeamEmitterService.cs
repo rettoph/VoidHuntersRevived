@@ -15,7 +15,6 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<StepSequence>(StepSequence.Step)]
     public sealed partial class TractorBeamEmitterService : StrategyEngine, ITractorBeamEmitterService
     {
         private static Fix64 QueryRadius = (Fix64)3;

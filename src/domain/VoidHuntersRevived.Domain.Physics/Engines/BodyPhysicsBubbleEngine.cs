@@ -9,14 +9,14 @@ using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<StepSequence>(StepSequence.PostResourceManagerUpdate)]
-    internal class BodyPhysicsBubbleEngine : StrategyEngine, IStepEngine<Step>, IOnDespawnEngine<Enabled>
+    internal class BodyPhysicsBubbleEngine : StrategyEngine, IOnStepEngine, IOnDespawnEngine<Enabled>
     {
         private static readonly Fix64 Two = (Fix64)2;
 
@@ -24,8 +24,6 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         private readonly ISpace _space;
         private FixRectangle[] _bubbleBuffer;
         private int _bubbleBufferCount;
-
-        public string name { get; } = nameof(BodyPhysicsBubbleEngine);
 
         public BodyPhysicsBubbleEngine(IEntityQueryService entityQueryService, ISpace space)
         {
@@ -35,7 +33,8 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             _bubbleBufferCount = 0;
         }
 
-        public void Step(in Step param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        public void OnStep(Step step)
         {
             _bubbleBufferCount = 0;
             foreach (var ((bubbles, locations, count), _) in _entityQueryService.QueryEntities<PhysicsBubble, Location>())

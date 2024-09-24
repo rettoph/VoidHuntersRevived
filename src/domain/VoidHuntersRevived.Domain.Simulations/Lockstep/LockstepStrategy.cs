@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             base.Initialize(simulation);
 
-            _tickStepEnginesGroup = this.Engines.All().CreateStepEnginesGroup<Tick>();
+            _tickStepEnginesGroup = this.Engines.CreateStepEnginesGroup<Tick>();
         }
 
         public override void Update(GameTime realTime)

@@ -11,7 +11,9 @@ using VoidHuntersRevived.Domain.Graphics.Common.Engines;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Game.Client.Graphics.Effects;
@@ -22,8 +24,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [SequenceGroup<UpdateSequence>(UpdateSequence.PostUpdate)]
-    [SequenceGroup<StepSequence>(StepSequence.Step)]
-    public class DrawVertexVisibleEngine : BaseDrawVertexTypeEngine<VertexVisible>, IStepEngine<Step>
+    public class DrawVertexVisibleEngine : BaseDrawVertexTypeEngine<VertexVisible>, IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly Camera2D _camera;
@@ -47,7 +48,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             this.effect = effect;
         }
 
-        public override void Step(in GameTime param)
+        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.Draw)]
+        public override void OnDraw(GameTime gameTime)
         {
             // RenderTargetBinding[] original_targets = _graphics.GetRenderTargets();
 
@@ -61,7 +63,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             this.effect.WorldViewProjection = _camera.World * _camera.View * _camera.Projection;
 
-            base.Step(param);
+            base.OnDraw(gameTime);
 
             // _graphics.SetRenderTargets(original_targets);
 
@@ -74,7 +76,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
         /// Copy Svelto entity data to vertex
         /// </summary>
         /// <param name="param"></param>
-        public void Step(in Step param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        public void OnStep(Step step)
         {
             foreach (var ((vertices, colorSchemes, nodes, statuses, count), _) in _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Node>())
             {

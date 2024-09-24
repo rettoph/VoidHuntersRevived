@@ -9,23 +9,21 @@ using Guppy.Game.ImGui.Common.Styling;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Svelto.ECS;
 using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    internal class AetherWorldDebugViewEngine : StrategyEngine, IDebugEngine, IStepEngine<GameTime>, IImGuiComponent
+    internal class AetherWorldDebugViewEngine : StrategyEngine, IDebugEngine, IOnDrawEngine, IImGuiComponent
     {
         public string? Group => typeof(World).Name;
-
-        public string name { get; } = nameof(AetherWorldDebugViewEngine);
 
         private readonly IStrategy _strategy;
         private readonly IScene _scene;
@@ -64,7 +62,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _buttonGreenStyle = resourceService.GetValue(Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen);
         }
 
-        public void Step(in GameTime param)
+        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.Draw)]
+        public void OnDraw(GameTime gameTime)
         {
             if (_debugViewEnabled == false)
             {

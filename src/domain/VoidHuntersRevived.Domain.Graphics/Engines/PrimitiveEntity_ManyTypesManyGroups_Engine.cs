@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
@@ -17,7 +16,6 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
     public sealed class PrimitiveEntity_ManyTypesManyGroups_Engine<TVertex> : BaseVertexTypeEntityEngine<TVertex>
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {
@@ -30,7 +28,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
             _vertexBuffers = vertexTypeManagerProvider.Primitives.SelectMany(x => x.GetAllVertexBuffers()).Select(x => x.Value).ToArray();
         }
 
-        public override void Step(in GameTime param)
+        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PreDraw)]
+        public override void OnDraw(GameTime gameTime)
         {
             foreach (IVertexBuffer<TVertex> vertexBuffer in _vertexBuffers)
             {

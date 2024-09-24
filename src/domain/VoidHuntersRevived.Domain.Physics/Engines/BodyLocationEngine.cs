@@ -5,14 +5,14 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<StepSequence>(StepSequence.PostResourceManagerUpdate)]
-    internal sealed class BodyLocationEngine : StrategyEngine, IStepEngine<Step>
+    internal sealed class BodyLocationEngine : StrategyEngine, IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
@@ -27,9 +27,9 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             _space.OnBodyEnabled += this.HandleBodyEnabled;
         }
 
-        public string name { get; } = nameof(BodyLocationEngine);
 
-        public void Step(in Step _param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        public void OnStep(Step step)
         {
             foreach (var ((ids, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityId, Location, Enabled, Awake>())
             {

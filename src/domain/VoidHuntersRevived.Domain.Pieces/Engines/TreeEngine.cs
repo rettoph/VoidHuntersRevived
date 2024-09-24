@@ -7,19 +7,18 @@ using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    [SequenceGroup<StepSequence>(StepSequence.PreStep)]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal sealed class TreeEngine : StrategyEngine,
         IOnSpawnEngine<Tree>,
         IOnDespawnEngine<Tree>,
-        IStepEngine<Step>
+        IOnStepEngine
     {
-        public string name { get; } = nameof(TreeEngine);
 
         private HashSet<EGID> _removedNodes = new HashSet<EGID>();
         private readonly IEntityQueryService _entityQueryService;
@@ -50,8 +49,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _entitySpawnService.Despawn(sourceEventId, component.HeadId);
         }
 
-
-        public void Step(in Step _param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        public void OnStep(Step step)
         {
             var groups = _entityQueryService.FindGroups<Tree, Location, Enabled, Awake>();
             foreach (var ((ids, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityId, Location, Enabled, Awake>(groups))

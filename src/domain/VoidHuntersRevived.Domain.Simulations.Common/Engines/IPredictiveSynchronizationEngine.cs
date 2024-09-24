@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Core.Common.Attributes;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -11,6 +12,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
     {
         void Initialize(ILockstepStrategy lockstep);
 
+        [RequireSequenceGroup<StepEngineSequenceGroup>]
         void Synchronize(Step step);
     }
 }

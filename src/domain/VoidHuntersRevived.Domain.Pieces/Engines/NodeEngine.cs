@@ -14,17 +14,17 @@ using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 using VoidHuntersRevived.Domain.Pieces.Common.Events;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<StepSequence>(StepSequence.Step)]
     internal sealed class NodeEngine : StrategyEngine,
         IOnSpawnEngine<Node>,
         IOnDespawnEngine<Node>,
-        IStepEngine<Step>
+        IOnStepEngine
     {
         private readonly ISocketService _socketService;
         private readonly IEntityQueryService _entityQueryService;
@@ -44,8 +44,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger = logger;
             _dirtyTrees = new DictionaryQueue<EntityId, VhId>();
         }
-
-        public string name { get; } = nameof(NodeEngine);
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Node node, in GroupIndex groupIndex)
         {
@@ -76,7 +74,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 : HashBuilder<IReactOnRemoveEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
         }
 
-        public void Step(in Step param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        public void OnStep(Step step)
         {
             while (_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId dirtyTreeEventId))
             {

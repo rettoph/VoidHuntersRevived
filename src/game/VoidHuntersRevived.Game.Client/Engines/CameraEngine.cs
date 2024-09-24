@@ -1,14 +1,12 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
-using Guppy.Game.Common.Enums;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Messages;
 using Guppy.Game.MonoGame.Common;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -22,9 +20,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
     [PeerFilter(PeerType.Client)]
-    internal sealed class CameraEngine : StrategyEngine, IStepEngine<GameTime>,
+    internal sealed class CameraEngine : StrategyEngine, IOnDrawEngine,
         IInputSubscriber<CursorScroll>
     {
         private readonly Camera2D _camera;
@@ -47,31 +44,31 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _entitieQueryService = entityQueryService;
         }
 
-        public string name { get; } = nameof(CameraEngine);
 
-        public void Step(in GameTime _param)
+        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PreDraw)]
+        public void OnDraw(GameTime gameTime)
         {
-            _screen.Camera.Update(_param);
-            _camera.Update(_param);
+            _screen.Camera.Update(gameTime);
+            _camera.Update(gameTime);
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
-                _offset -= Vector2.UnitY * (float)_param.ElapsedGameTime.TotalSeconds;
+                _offset -= Vector2.UnitY * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                _offset += Vector2.UnitY * (float)_param.ElapsedGameTime.TotalSeconds;
+                _offset += Vector2.UnitY * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                _offset -= Vector2.UnitX * (float)_param.ElapsedGameTime.TotalSeconds;
+                _offset -= Vector2.UnitX * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                _offset += Vector2.UnitX * (float)_param.ElapsedGameTime.TotalSeconds;
+                _offset += Vector2.UnitX * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             Vector2 location = Vector2.Zero;

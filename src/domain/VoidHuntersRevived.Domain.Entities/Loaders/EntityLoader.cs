@@ -30,7 +30,6 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.RegisterType<EntityTypeProviderService>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<EntitiesSubmissionScheduler>().AsSelf().InstancePerLifetimeScope();
-
             builder.RegisterType<EnginesRoot>().InstancePerLifetimeScope();
 
             builder.RegisterType<EntityService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();

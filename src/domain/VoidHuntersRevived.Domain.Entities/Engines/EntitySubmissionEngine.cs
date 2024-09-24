@@ -3,12 +3,13 @@ using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<StepSequence>(StepSequence.EntitySubmission)]
-    public sealed class EntitySubmissionEngine : IEngine, IStepEngine<Step>
+    public sealed class EntitySubmissionEngine : IEngine, IOnStepEngine
     {
         private readonly EntitiesSubmissionScheduler _scheduler;
 
@@ -17,9 +18,8 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
             _scheduler = scheduler;
         }
 
-        public string name { get; } = nameof(EntitySubmissionEngine);
-
-        public void Step(in Step _param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SubmitChanges)]
+        public void OnStep(Step step)
         {
             _scheduler.SubmitEntities();
         }

@@ -1,17 +1,15 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Physics.Common;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<StepSequence>(StepSequence.ResourceManagerUpdate)]
-    internal sealed class SpaceEngine : StrategyEngine,
-        IStepEngine<Step>
+    internal sealed class SpaceEngine : StrategyEngine, IOnStepEngine
     {
         private readonly ISpace _space;
 
@@ -20,11 +18,10 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             _space = space;
         }
 
-        public string name { get; } = nameof(SpaceEngine);
-
-        public void Step(in Step _param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.StepSpace)]
+        public void OnStep(Step step)
         {
-            _space.Step(_param);
+            _space.Step(step);
         }
     }
 }

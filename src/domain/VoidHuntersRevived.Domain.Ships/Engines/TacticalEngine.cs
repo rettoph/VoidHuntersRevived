@@ -6,16 +6,16 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<StepSequence>(StepSequence.PreStep)]
     internal sealed class TacticalEngine : StrategyEngine,
         IEventEngine<Tactical_SetTarget>,
-        IStepEngine<Step>
+        IOnStepEngine
     {
         private static readonly Fix64 AimDamping = Fix64.One / (Fix64)32;
 
@@ -26,8 +26,6 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         {
             _entityQueryService = entityQueryService;
         }
-
-        public string name { get; } = nameof(TacticalEngine);
 
         public void Process(VhId eventId, Tactical_SetTarget data)
         {
@@ -42,7 +40,8 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
             }
         }
 
-        public void Step(in Step _param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        public void OnStep(Step step)
         {
             foreach (var ((tacticals, count), groupId) in _entityQueryService.QueryEntities<Tactical>())
             {
@@ -50,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                 {
                     ref Tactical tactical = ref tacticals[i];
 
-                    Fix64 amount = Fix64.Min(_param.ElapsedTime / AimDamping, Fix64.One);
+                    Fix64 amount = Fix64.Min(step.ElapsedTime / AimDamping, Fix64.One);
                     tactical.Value = FixVector2.Lerp(
                         v1: tactical.Value,
                         v2: tactical.Target,

@@ -1,19 +1,18 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Serilog;
-using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<StepSequence>(StepSequence.PostResourceManagerUpdate)]
-    internal sealed class BodyAwakeEngine : StrategyEngine, IStepEngine<Step>
+    internal sealed class BodyAwakeEngine : StrategyEngine, IOnStepEngine
     {
         public string name { get; } = nameof(BodyAwakeEngine);
 
@@ -36,7 +35,8 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             _space.OnBodyAwakeChanged += this.HandleBodyAwakeChanged;
         }
 
-        public void Step(in Step _param)
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        public void OnStep(Step step)
         {
             //foreach (var ((ids, awakes, count), _) in _entities.QueryEntities<EntityId, Awake>())
             //{

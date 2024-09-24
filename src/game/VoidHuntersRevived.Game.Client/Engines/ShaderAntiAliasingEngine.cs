@@ -3,9 +3,7 @@ using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -17,7 +15,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [SequenceGroup<DrawSequence>(DrawSequence.Draw)]
-    internal class ShaderAntiAliasingEngine : StrategyEngine, IStepEngine<FrameStart>, IStepEngine<FrameEnd>, IDisposable
+    internal class ShaderAntiAliasingEngine : StrategyEngine, IDisposable
     {
         private readonly GraphicsDevice _graphics;
         private readonly SpriteBatch _spriteBatch;
@@ -52,8 +50,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             return new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Color, DepthFormat.None, _graphics.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
         }
 
-
-        public void Step(in FrameStart param)
+        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PreDraw)]
+        public void PreDraw(GameTime gameTime)
         {
             _target_bindings = _graphics.GetRenderTargets();
 
@@ -61,7 +59,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _graphics.Clear(Color.Transparent);
         }
 
-        public void Step(in FrameEnd param)
+        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PostDraw)]
+        public void PostDraw(GameTime gameTime)
         {
             _graphics.SetRenderTargets(_target_bindings);
 

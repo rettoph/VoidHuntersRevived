@@ -1,10 +1,8 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Serilog;
-using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
@@ -18,8 +16,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    [SequenceGroup<DrawSequence>(DrawSequence.PostDraw)]
-    internal class TractorBeamHighlightEngine : StrategyEngine, IStepEngine<GameTime>
+    internal class TractorBeamHighlightEngine : StrategyEngine, IOnDrawEngine
     {
         private readonly ILogger _logger;
         private readonly IEntityQueryService _entityQueryService;
@@ -27,8 +24,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly Camera2D _camera;
         private readonly ITractorBeamEmitterService _tractorBeamEmitterService;
         private readonly IUserShipService _userShipService;
-
-        public string name { get; } = nameof(TractorBeamHighlightEngine);
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
@@ -53,7 +48,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             base.Ready();
         }
 
-        public void Step(in GameTime _param)
+        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PostDraw)]
+        public void OnDraw(GameTime gameTime)
         {
             // if (_userShips.TryGetCurrentUserShipId(out EntityId shipId) == false)
             // {

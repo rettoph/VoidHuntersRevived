@@ -3,6 +3,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Physics.Common;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
@@ -26,6 +27,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             _lockstepSpace = lockstep.Engines.Get<ISpace>();
         }
 
+        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SubmitChanges)]
         public void Synchronize(Step step)
         {
             Fix64 damping = step.ElapsedTime;
