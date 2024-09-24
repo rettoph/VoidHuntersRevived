@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Enums;
+using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using VoidHuntersRevived.Common;
@@ -10,8 +11,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<LocalGameScene>]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.PreInitialize)]
-    internal class ConfigureSimulationsComponent : SceneComponent
+    internal class ConfigureSimulationsComponent : ISceneComponent
     {
         private readonly ISimulationService _simulationService;
 
@@ -20,10 +20,9 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
             _simulationService = simulationService;
         }
 
-        protected override void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PreInitialize)]
+        public void Initialize(IScene scene)
         {
-            base.Initialize();
-
             _simulationService.Create(VhId.Empty, StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep);
         }
     }

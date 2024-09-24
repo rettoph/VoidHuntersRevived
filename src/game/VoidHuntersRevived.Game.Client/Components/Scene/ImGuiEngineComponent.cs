@@ -15,8 +15,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     //[AutoLoad]
     [SceneFilter<IVoidHuntersGameScene>]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.PostInitialize)]
-    internal class ImGuiEngineComponent : SceneComponent, IImGuiComponent
+    internal class ImGuiEngineComponent : ISceneComponent, IImGuiComponent
     {
         private readonly IScene _scene;
         private readonly IImGui _imgui;
@@ -34,10 +33,9 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
             _data = Array.Empty<(IStrategy, IImGuiComponent[])>();
         }
 
-        protected override void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PostInitialize)]
+        public void Initialize(IScene scene)
         {
-            base.Initialize();
-
             _data = _simulationService.Instances.SelectMany(x => x.Strategies).Select(x => (
                 (x as IStrategy)!,
                 x.Engines.Sequence<IImGuiComponent, DrawImGuiSequenceGroup>().ToArray()

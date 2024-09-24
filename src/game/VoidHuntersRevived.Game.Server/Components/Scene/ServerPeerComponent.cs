@@ -4,6 +4,7 @@ using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
 using Guppy.Engine.Common.Enums;
+using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
@@ -14,8 +15,7 @@ namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<ServerGameScene>]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.Setup)]
-    internal class ServerPeerComponent : SceneComponent, IUpdatableComponent
+    internal class ServerPeerComponent : ISceneComponent, IUpdatableComponent
     {
         private readonly IServerPeer _server;
         private readonly INetScope<IStrategy> _scope;
@@ -26,10 +26,9 @@ namespace VoidHuntersRevived.Game.Server.Components.Scene
             _scope = scope;
         }
 
-        protected override void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Setup)]
+        public void Initialize(IScene scene)
         {
-            base.Initialize();
-
             _server.Start(1337, Claim.Public("username", "System"));
             _server.Users.OnUserConnected += HandleUserConnected;
         }

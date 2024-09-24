@@ -16,9 +16,8 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     //[AutoLoad]
     [SceneFilter<IVoidHuntersGameScene>]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.PostInitialize)]
     [SequenceGroup<DrawSequence>(DrawSequence.PostDraw)]
-    internal class DebugEngineComponent : SceneComponent, IDebugComponent
+    internal class DebugEngineComponent : ISceneComponent, IDebugComponent
     {
         private class DebugEngineGroupRenderer
         {
@@ -76,10 +75,9 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
             _data = Array.Empty<(IStrategy, Dictionary<string, DebugEngineGroupRenderer>)>();
         }
 
-        protected override void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PostInitialize)]
+        public void Initialize(IScene scene)
         {
-            base.Initialize();
-
             _data = _simulationService.Instances.SelectMany(x => x.Strategies).Select(x => (
                 (x as IStrategy)!,
                 new Dictionary<string, DebugEngineGroupRenderer>())).ToArray();
