@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
             _socketService = socketService;
         }
 
-        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.ProcessInput)]
+        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.ProcessInput)]
         public void OnStep(Step step)
         {
             foreach (var ((vhids, tacticals, tractorBeamEmitters, count), _) in _entityQueryService.QueryEntities<EntityId, Tactical, TractorBeamEmitter>())

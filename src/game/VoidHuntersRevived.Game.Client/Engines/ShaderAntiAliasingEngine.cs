@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             return new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Color, DepthFormat.None, _graphics.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
         }
 
-        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PreDraw)]
+        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
         public void PreDraw(GameTime gameTime)
         {
             _target_bindings = _graphics.GetRenderTargets();
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _graphics.Clear(Color.Transparent);
         }
 
-        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PostDraw)]
+        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PostDraw)]
         public void PostDraw(GameTime gameTime)
         {
             _graphics.SetRenderTargets(_target_bindings);

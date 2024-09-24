@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         }
 
 
-        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             foreach (var ((ids, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityId, Location, Enabled, Awake>())

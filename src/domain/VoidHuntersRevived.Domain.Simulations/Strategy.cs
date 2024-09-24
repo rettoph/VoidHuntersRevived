@@ -20,8 +20,8 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly Lazy<IEngineService> _engineService;
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
-        private readonly ActionSequenceGroup<DrawEngineSequenceGroup, GameTime> _drawActions;
-        private readonly ActionSequenceGroup<StepEngineSequenceGroup, Step> _stepActions;
+        private readonly ActionSequenceGroup<OnDrawSequenceGroup, GameTime> _drawActions;
+        private readonly ActionSequenceGroup<OnStepSequenceGroup, Step> _stepActions;
 
         protected ILogger logger => _logger.Value;
 
@@ -44,8 +44,8 @@ namespace VoidHuntersRevived.Domain.Simulations
             _logger = logger;
             _enqueued = new Queue<EventDto>();
             _publishers = new Dictionary<Type, EventPublisher>();
-            _stepActions = new ActionSequenceGroup<StepEngineSequenceGroup, Step>();
-            _drawActions = new ActionSequenceGroup<DrawEngineSequenceGroup, GameTime>();
+            _stepActions = new ActionSequenceGroup<OnStepSequenceGroup, Step>();
+            _drawActions = new ActionSequenceGroup<OnDrawSequenceGroup, GameTime>();
 
             this.Type = type;
 
@@ -100,7 +100,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             _stepActions.Invoke(step);
         }
 
-        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.PublishEvents)]
+        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.PublishEvents)]
         private void Step_PublishEvents(Step step)
         {
             while (_enqueued.TryDequeue(out EventDto? enqueued))

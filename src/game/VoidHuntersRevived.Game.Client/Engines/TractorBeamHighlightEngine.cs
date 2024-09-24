@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             base.Ready();
         }
 
-        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PostDraw)]
+        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PostDraw)]
         public void OnDraw(GameTime gameTime)
         {
             // if (_userShips.TryGetCurrentUserShipId(out EntityId shipId) == false)

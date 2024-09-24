@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             _space.OnBodyAwakeChanged += this.HandleBodyAwakeChanged;
         }
 
-        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             //foreach (var ((ids, awakes, count), _) in _entities.QueryEntities<EntityId, Awake>())

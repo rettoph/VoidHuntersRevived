@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             _bubbleBufferCount = 0;
         }
 
-        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             _bubbleBufferCount = 0;

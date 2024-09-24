@@ -141,7 +141,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
         }
 
-        [SequenceGroup<TickEngineSequenceGroup>(TickEngineSequenceGroup.InputEvents)]
+        [SequenceGroup<OnTickSequenceGroup>(OnTickSequenceGroup.InputEvents)]
         public void OnTick(Tick tick)
         {
             if (_readUserShipService.TryGetCurrentUserShipId(out EntityId shipId) == false)

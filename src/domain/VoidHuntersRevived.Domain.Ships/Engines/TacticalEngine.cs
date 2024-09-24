@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
             }
         }
 
-        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             foreach (var ((tacticals, count), groupId) in _entityQueryService.QueryEntities<Tactical>())

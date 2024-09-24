@@ -93,7 +93,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.ProcessInput)]
+        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.ProcessInput)]
         public void OnStep(Step step)
         {
             foreach (var ((ids, enableds, helms, count), groupId) in _entityQueryService.QueryEntities<EntityId, Enabled, Helm>())

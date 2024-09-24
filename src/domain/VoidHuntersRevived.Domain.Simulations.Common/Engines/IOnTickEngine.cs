@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     public interface IOnTickEngine
     {
-        [RequireSequenceGroup<TickEngineSequenceGroup>]
+        [RequireSequenceGroup<OnTickSequenceGroup>]
         void OnTick(Tick tick);
     }
 }

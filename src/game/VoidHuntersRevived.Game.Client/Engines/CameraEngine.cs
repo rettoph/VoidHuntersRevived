@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         }
 
 
-        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PreDraw)]
+        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
         public void OnDraw(GameTime gameTime)
         {
             _screen.Camera.Update(gameTime);

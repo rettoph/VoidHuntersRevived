@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     public interface IOnDrawEngine
     {
-        [RequireSequenceGroup<DrawEngineSequenceGroup>]
+        [RequireSequenceGroup<OnDrawSequenceGroup>]
         void OnDraw(GameTime gameTime);
     }
 }

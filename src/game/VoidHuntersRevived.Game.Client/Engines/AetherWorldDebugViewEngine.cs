@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _buttonGreenStyle = resourceService.GetValue(Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen);
         }
 
-        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.Draw)]
+        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.Draw)]
         public void OnDraw(GameTime gameTime)
         {
             if (_debugViewEnabled == false)

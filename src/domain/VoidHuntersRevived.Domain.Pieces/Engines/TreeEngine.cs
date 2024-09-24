@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _entitySpawnService.Despawn(sourceEventId, component.HeadId);
         }
 
-        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             var groups = _entityQueryService.FindGroups<Tree, Location, Enabled, Awake>();

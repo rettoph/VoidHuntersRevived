@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
             _vertexBuffers = _vertexBuffersByType.Values.ToArray();
         }
 
-        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.PreDraw)]
+        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
         public override void OnDraw(GameTime gameTime)
         {
             foreach (IVertexBuffer<TVertex> vertexBuffer in _vertexBuffers)

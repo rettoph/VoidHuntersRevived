@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     [SceneFilter<IVoidHuntersGameScene>()]
     public abstract class LockstepStrategy : Strategy, ILockstepStrategy
     {
-        private ActionSequenceGroup<TickEngineSequenceGroup, Tick> _tickActions;
+        private ActionSequenceGroup<OnTickSequenceGroup, Tick> _tickActions;
         private readonly List<Tick> _history;
 
         private TimeSpan _timeSinceStep;
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             Lazy<IEngineService> engineService,
             Lazy<ILogger> logger) : base(StrategyTypeEnum.Lockstep, simulation, engineService, logger)
         {
-            _tickActions = new ActionSequenceGroup<TickEngineSequenceGroup, Tick>();
+            _tickActions = new ActionSequenceGroup<OnTickSequenceGroup, Tick>();
             _history = new List<Tick>();
             _stepsSinceTick = 0;
             _timeSinceStep = TimeSpan.Zero;
@@ -129,7 +129,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             _history.Add(tick);
         }
 
-        [SequenceGroup<TickEngineSequenceGroup>(TickEngineSequenceGroup.PublishEvents)]
+        [SequenceGroup<OnTickSequenceGroup>(OnTickSequenceGroup.PublishEvents)]
         private void Tick_PublishEvents(Tick tick)
         {
             if (tick.Events.Length == 0)

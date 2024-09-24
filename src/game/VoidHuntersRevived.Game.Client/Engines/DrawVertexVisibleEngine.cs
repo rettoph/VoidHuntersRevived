@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             this.effect = effect;
         }
 
-        [SequenceGroup<DrawEngineSequenceGroup>(DrawEngineSequenceGroup.Draw)]
+        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.Draw)]
         public override void OnDraw(GameTime gameTime)
         {
             // RenderTargetBinding[] original_targets = _graphics.GetRenderTargets();
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         /// Copy Svelto entity data to vertex
         /// </summary>
         /// <param name="param"></param>
-        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             foreach (var ((vertices, colorSchemes, nodes, statuses, count), _) in _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Node>())

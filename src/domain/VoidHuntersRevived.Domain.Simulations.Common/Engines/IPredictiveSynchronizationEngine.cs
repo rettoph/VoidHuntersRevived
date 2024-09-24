@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
     {
         void Initialize(ILockstepStrategy lockstep);
 
-        [RequireSequenceGroup<StepEngineSequenceGroup>]
+        [RequireSequenceGroup<OnStepSequenceGroup>]
         void Synchronize(Step step);
     }
 }

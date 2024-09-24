@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 : HashBuilder<IReactOnRemoveEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
         }
 
-        [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             while (_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId dirtyTreeEventId))

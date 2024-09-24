@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
             }).AddRecipient(user.NetPeer);
         }
 
-        [SequenceGroup<TickEngineSequenceGroup>(TickEngineSequenceGroup.PublishEvents)]
+        [SequenceGroup<OnTickSequenceGroup>(OnTickSequenceGroup.PublishEvents)]
         public void OnTick(Tick tick)
         {
             // Broadcast the current tick to all connected peers
