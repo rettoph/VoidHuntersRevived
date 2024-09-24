@@ -95,9 +95,9 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
         protected virtual void DoStep(Step step)
         {
-            _stepActions.Invoke(step);
-
             this.CurrentStep = step;
+
+            _stepActions.Invoke(step);
         }
 
         [SequenceGroup<StepEngineSequenceGroup>(StepEngineSequenceGroup.PublishEvents)]

@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal class LockstepServer_TickEngine : StrategyEngine<ILockstepStrategy>,
-        ITickEngine,
+        IOnTickEngine,
         IEventEngine<UserJoined>
     {
         private readonly INetScope<IStrategy> _scope;
@@ -71,7 +71,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
             }).AddRecipient(user.NetPeer);
         }
 
-        public void Step(in Tick tick)
+        [SequenceGroup<TickEngineSequenceGroup>(TickEngineSequenceGroup.PublishEvents)]
+        public void OnTick(Tick tick)
         {
             // Broadcast the current tick to all connected peers
             _scope.CreateMessage(in tick)

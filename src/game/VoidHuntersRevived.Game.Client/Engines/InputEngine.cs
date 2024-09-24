@@ -5,7 +5,6 @@ using Guppy.Game.Input.Common;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -34,7 +33,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
         IInputSubscriber<Input_Spam_Click>,
-        IStepEngine<Tick>
+        IOnTickEngine
     {
         private bool _spamClick;
 
@@ -142,7 +141,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
         }
 
-        public void Step(in Tick _param)
+        [SequenceGroup<TickEngineSequenceGroup>(TickEngineSequenceGroup.InputEvents)]
+        public void OnTick(Tick tick)
         {
             if (_readUserShipService.TryGetCurrentUserShipId(out EntityId shipId) == false)
             {
@@ -168,7 +168,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
 
             _simulation.Input(
-                sourceId: _param.Hash,
+                sourceId: tick.Hash,
                 data: new Tactical_SetTarget()
                 {
                     ShipVhId = shipId.VhId,

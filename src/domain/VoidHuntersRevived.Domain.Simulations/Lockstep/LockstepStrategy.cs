@@ -1,14 +1,14 @@
-﻿using Guppy.Core.Resources.Common.Services;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common.Attributes;
 using Microsoft.Xna.Framework;
 using Serilog;
-using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Common.Constants;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     [SceneFilter<IVoidHuntersGameScene>()]
     public abstract class LockstepStrategy : Strategy, ILockstepStrategy
     {
-        private IStepGroupEngine<Tick> _tickStepEnginesGroup;
+        private ActionSequenceGroup<TickEngineSequenceGroup, Tick> _tickActions;
         private readonly List<Tick> _history;
 
         private TimeSpan _timeSinceStep;
@@ -54,8 +54,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             Lazy<IEngineService> engineService,
             Lazy<ILogger> logger) : base(StrategyTypeEnum.Lockstep, simulation, engineService, logger)
         {
+            _tickActions = new ActionSequenceGroup<TickEngineSequenceGroup, Tick>();
             _history = new List<Tick>();
-            _tickStepEnginesGroup = null!;
             _stepsSinceTick = 0;
             _timeSinceStep = TimeSpan.Zero;
             _step = new Step()
@@ -75,7 +75,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             base.Initialize(simulation);
 
-            _tickStepEnginesGroup = this.Engines.CreateStepEnginesGroup<Tick>();
+            _tickActions.Add([this.Tick_PublishEvents]);
+            _tickActions.Add(this.Engines);
         }
 
         public override void Update(GameTime realTime)
@@ -122,9 +123,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             this.CurrentTick = tick;
 
-            _tickStepEnginesGroup.Step(tick);
-            _stepsSinceTick = 0;
+            _tickActions.Invoke(tick);
 
+            _stepsSinceTick = 0;
+            _history.Add(tick);
+        }
+
+        [SequenceGroup<TickEngineSequenceGroup>(TickEngineSequenceGroup.PublishEvents)]
+        private void Tick_PublishEvents(Tick tick)
+        {
             if (tick.Events.Length == 0)
             {
                 return;
@@ -143,8 +150,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                     TickId = tick.Id
                 }
             });
-
-            _history.Add(tick);
         }
 
         public override void Publish(EventDto @event)
