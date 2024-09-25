@@ -8,7 +8,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     public sealed class EntitySubmissionEngine : IEngine, IOnStepEngine
     {
         private readonly EntitiesSubmissionScheduler _scheduler;

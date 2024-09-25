@@ -15,7 +15,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [SequenceGroup<DrawSequence>(DrawSequence.PostDraw)]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     internal class DrawSocketsEngine : StrategyEngine
     {

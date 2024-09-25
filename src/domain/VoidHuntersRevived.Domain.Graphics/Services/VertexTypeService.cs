@@ -1,7 +1,5 @@
-﻿using Guppy.Core.Common.Attributes;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Domain.Common.Providers;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Providers;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
@@ -10,7 +8,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Graphics.Services
 {
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     public class VertexTypeService : StrategyEngine, IVertexTypeService
     {
         private readonly IPrimitiveService _primitiveService;

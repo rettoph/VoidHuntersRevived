@@ -18,7 +18,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal class ThrustableEngine : StrategyEngine,
         IOnSpawnEngine<Thrustable>,
         IOnDespawnEngine<Thrustable>,

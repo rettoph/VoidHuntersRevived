@@ -12,7 +12,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
     internal sealed class DrawActiveThrustableEngine : StrategyEngine
     {

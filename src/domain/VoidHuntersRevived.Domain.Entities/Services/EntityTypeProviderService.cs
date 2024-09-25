@@ -13,7 +13,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    [SequenceGroup<EngineSequence>(EngineSequence.Group00)]
     public class EntityTypeProviderService : StrategyEngine, IEntityTypeProviderService, IQueryingEntitiesEngine, IOnInitializeEngine
     {
         private readonly IUniqueNumberProvider _uniqueNumberProvider;

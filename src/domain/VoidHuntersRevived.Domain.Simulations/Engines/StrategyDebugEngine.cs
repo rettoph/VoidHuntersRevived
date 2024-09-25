@@ -11,7 +11,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines
     [AutoLoad]
     [StrategyFilter<Strategy>]
     [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal class StrategyDebugEngine : StrategyEngine<Strategy>, ISimpleDebugEngine
     {
         public const string Time = nameof(Time);

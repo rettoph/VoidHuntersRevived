@@ -8,7 +8,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Entities.Engines.Debug
 {
     [AutoLoad]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
     internal class EntitiesDebugEngine : StrategyEngine, ISimpleDebugEngine
     {

@@ -15,7 +15,6 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 namespace VoidHuntersRevived.Game.Core.Engines
 {
     [AutoLoad]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal sealed class SimulationEngine : StrategyEngine, IEventEngine<Simulation_Begin>
     {
         private readonly ITreeService _treeService;

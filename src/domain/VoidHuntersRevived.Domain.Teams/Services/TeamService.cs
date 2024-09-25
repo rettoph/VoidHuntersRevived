@@ -12,7 +12,6 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Services
 {
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal class TeamService : StrategyEngine, ITeamService, IOnInitializeEngine
     {
         private struct TeamData

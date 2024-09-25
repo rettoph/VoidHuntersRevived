@@ -18,7 +18,6 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 namespace VoidHuntersRevived.Game.Core.Engines
 {
     [AutoLoad]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal sealed class UserEngine : StrategyEngine, IGetReadyEngine,
         IEventEngine<UserJoined>
     {

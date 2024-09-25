@@ -9,7 +9,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines.Debug
 {
     [AutoLoad]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [SequenceGroup<DrawSequence>(DrawSequence.Draw)]
     internal class AetherWorldDebugEngine : StrategyEngine, ISimpleDebugEngine
     {

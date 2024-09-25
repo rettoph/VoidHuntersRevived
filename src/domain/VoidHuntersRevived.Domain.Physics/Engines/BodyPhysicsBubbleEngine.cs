@@ -15,7 +15,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal class BodyPhysicsBubbleEngine : StrategyEngine, IOnStepEngine, IOnDespawnEngine<Enabled>
     {
         private static readonly Fix64 Two = (Fix64)2;

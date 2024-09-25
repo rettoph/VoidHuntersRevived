@@ -6,7 +6,6 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal sealed class DisposableEngine<T> : IEngine, IReactOnRemoveEx<T>, IQueryingEntitiesEngine
         where T : unmanaged, IEntityComponent, IDisposable
     {

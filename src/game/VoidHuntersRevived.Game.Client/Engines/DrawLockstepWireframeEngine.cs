@@ -13,7 +13,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [SequenceGroup<DrawSequence>(DrawSequence.PostDraw)]
     internal sealed class DrawLockstepWireframeEngine : StrategyEngine,
         ISubscriber<Input_Toggle_LockstepWireframe>

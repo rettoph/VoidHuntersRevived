@@ -22,7 +22,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [SequenceGroup<UpdateSequence>(UpdateSequence.PostUpdate)]
     public class DrawVertexVisibleEngine : BaseDrawVertexTypeEngine<VertexVisible>, IOnStepEngine
     {

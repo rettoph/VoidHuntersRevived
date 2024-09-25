@@ -8,7 +8,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     public partial class EntitySpawnService : StrategyEngine, IEntitySpawnService, IPrivateEntitySpawnService
     {
         private readonly EntityQueryService _entityQueryService;

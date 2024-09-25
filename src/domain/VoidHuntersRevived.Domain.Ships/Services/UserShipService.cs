@@ -13,7 +13,6 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal class UserShipService : StrategyEngine, IUserShipService,
         IOnSpawnEngine<UserId>,
         IOnDespawnEngine<UserId>,

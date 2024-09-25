@@ -15,7 +15,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter<ILockstepStrategy>]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal class LockstepStrategyTickExplorerDebugEngine : StrategyEngine<ILockstepStrategy>, IDebugEngine, IImGuiComponent
     {
         public string? Group => nameof(IStrategy);

@@ -11,7 +11,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     public sealed class PrimitiveEntity_ManyTypesSingleGroup_Engine<TVertex> : BaseVertexTypeEntityEngine<TVertex>
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {

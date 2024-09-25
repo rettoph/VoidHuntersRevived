@@ -19,7 +19,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     [PeerFilter(PeerType.Client)]
     internal sealed class CameraEngine : StrategyEngine, IOnDrawEngine,
         IInputSubscriber<CursorScroll>

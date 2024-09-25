@@ -19,7 +19,6 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     /// </summary>
     /// <typeparam name="TOwner"></typeparam>
     /// <typeparam name="TItems"></typeparam>
-    [SequenceGroup<EngineSequence>(EngineSequence.Group01)]
     internal sealed class BelongsToEngine<TOwner, TItems> : StrategyEngine, IOnSpawnEngine<BelongsTo<TOwner, TItems>>
         where TOwner : unmanaged, IEntityComponent
         where TItems : unmanaged, IEntityComponent

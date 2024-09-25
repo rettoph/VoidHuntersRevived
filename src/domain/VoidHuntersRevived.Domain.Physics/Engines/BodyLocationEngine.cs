@@ -11,7 +11,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal sealed class BodyLocationEngine : StrategyEngine, IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService;

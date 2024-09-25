@@ -15,7 +15,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
     internal class TractorBeamHighlightEngine : StrategyEngine, IOnDrawEngine
     {
         private readonly ILogger _logger;
