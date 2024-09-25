@@ -4,7 +4,6 @@ using Guppy.Game.Common.Enums;
 using Serilog;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -33,11 +32,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _entityQueryService = entityQueryService;
             _indexBuffer = new short[3];
             _logger = logger;
-        }
-
-        public override void Initialize(IStrategy strategy)
-        {
-            base.Initialize(strategy);
         }
 
         // public void Step(in GameTimeTeam _param)

@@ -1,11 +1,9 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Services;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using System.Collections;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
@@ -39,7 +37,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         public void Initialize(IStrategy strategy)
         {
             _engines.AddRange(_engineProviders.Value.SelectMany(x => x.GetEngines()));
-            _engines = _engines.Sequence<IEngine, EngineSequence>().ToList();
 
             foreach (IEngine engine in _engines)
             {

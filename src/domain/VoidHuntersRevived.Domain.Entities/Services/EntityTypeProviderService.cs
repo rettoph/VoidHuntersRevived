@@ -9,11 +9,12 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     [SequenceGroup<EngineSequence>(EngineSequence.Group00)]
-    public class EntityTypeProviderService : StrategyEngine, IEntityTypeProviderService, IQueryingEntitiesEngine
+    public class EntityTypeProviderService : StrategyEngine, IEntityTypeProviderService, IQueryingEntitiesEngine, IOnInitializeEngine
     {
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityTypeService _entityTypeService;
@@ -54,10 +55,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     });
         }
 
-        public override void Initialize(IStrategy strategy)
+        [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.PreInitialize)]
+        public void OnInitialize(IStrategy strategy)
         {
-            base.Initialize(strategy);
-
             foreach (IEntityTypeProvider entityTypeProvider in _providers.Values)
             {
                 entityTypeProvider.Initialize(

@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
@@ -66,8 +65,9 @@ namespace VoidHuntersRevived.Domain.Simulations
             _stepActions.Add([this.Step_PublishEvents]); // Special case - add the internal queue submission method
             _stepActions.Add(this.Engines);
 
-            //
-            this.Engines.InitializeStrategyEngines(this);
+            // Call all engine initializers
+            Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
+            DelegateSequenceGroup<OnInitializeSequenceGroup>.Invoke(this.Engines, initializeDelegate, [this]);
         }
 
         public virtual void Dispose()

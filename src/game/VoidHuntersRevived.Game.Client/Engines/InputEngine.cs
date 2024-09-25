@@ -63,10 +63,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _readUserShipService = null!;
         }
 
-        public override void Initialize(IStrategy strategy)
+        [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
+        public void Initialize(IStrategy strategy)
         {
-            base.Initialize(strategy);
-
             IStrategy readStrategy = _simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
 
             _readEntityQueryService = readStrategy.Engines.Get<IEntityService>().Query;

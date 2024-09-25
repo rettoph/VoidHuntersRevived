@@ -5,6 +5,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.EntityTypes;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
@@ -12,7 +13,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 namespace VoidHuntersRevived.Domain.Teams.Services
 {
     [SequenceGroup<EngineSequence>(EngineSequence.Group03)]
-    internal class TeamService : StrategyEngine, ITeamService
+    internal class TeamService : StrategyEngine, ITeamService, IOnInitializeEngine
     {
         private struct TeamData
         {
@@ -39,10 +40,9 @@ namespace VoidHuntersRevived.Domain.Teams.Services
             _teamComponents = new Dictionary<Id<Team>, BelongsTo<Team, TeamMember>>();
         }
 
-        public unsafe override void Initialize(IStrategy strategy)
+        [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
+        public void OnInitialize(IStrategy strategy)
         {
-            base.Initialize(strategy);
-
             this.BuildTeams(out _defaultTeamComponent, out _teamComponents);
         }
 
