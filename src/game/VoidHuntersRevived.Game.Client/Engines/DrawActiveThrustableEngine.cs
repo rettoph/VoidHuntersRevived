@@ -1,8 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Serilog;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -12,7 +10,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
     internal sealed class DrawActiveThrustableEngine : StrategyEngine
     {
         private readonly short[] _indexBuffer;

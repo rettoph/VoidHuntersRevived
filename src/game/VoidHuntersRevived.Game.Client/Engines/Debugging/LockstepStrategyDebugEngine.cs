@@ -1,21 +1,20 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
 using Guppy.Game.ImGui.Common.Services;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
-namespace VoidHuntersRevived.Game.Client.Engines
+namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
     [AutoLoad]
     [StrategyFilter<ILockstepStrategy>]
-    internal class LockstepStrategyTickExplorerDebugEngine : StrategyEngine<ILockstepStrategy>, IDebugEngine, IImGuiComponent
+    internal class LockstepStrategyDebugEngine : StrategyEngine<ILockstepStrategy>, IImGuiComponent, IOnDebugEngine
     {
         public string? Group => nameof(IStrategy);
 
@@ -25,7 +24,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private bool _historyViewerEnabled;
         private string _filter;
 
-        public LockstepStrategyTickExplorerDebugEngine(
+        public LockstepStrategyDebugEngine(
             IImGui imgui,
             IImGuiObjectExplorerService objectExplorer,
             IScene guppy)
@@ -36,28 +35,10 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _filter = string.Empty;
         }
 
-        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.Draw)]
-        public void DrawImGui(GameTime gameTime)
+        [SequenceGroup<DebugSequenceGroup>("Strategy")]
+        public void OnDebug(GameTime gameTime)
         {
-            if (_historyViewerEnabled == false)
-            {
-                return;
-            }
-
-            _imgui.Begin($"Tick History Explorer - {this.Strategy.Type}, {_scene.Name} {_scene.Id}", ref _historyViewerEnabled);
-            _imgui.InputText("Filter", ref _filter, 255);
-
-            using (_imgui.ApplyID(nameof(ILockstepStrategy.History)))
-            {
-                _objectExplorer.DrawObjectExplorer(this.Strategy.History, _filter, 8);
-            }
-
-            _imgui.End();
-        }
-
-        public void RenderDebugInfo(GameTime gameTime)
-        {
-            var buttonStyle = _historyViewerEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen;
+            var buttonStyle = _historyViewerEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed;
 
             using (_imgui.Apply(buttonStyle))
             {
@@ -66,6 +47,25 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     _historyViewerEnabled = !_historyViewerEnabled;
                 }
             }
+        }
+
+        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
+        public void DrawImGui(GameTime gameTime)
+        {
+            if (_historyViewerEnabled == false)
+            {
+                return;
+            }
+
+            _imgui.Begin($"Tick History Explorer - {Strategy.Type}, {_scene.Name} {_scene.Id}", ref _historyViewerEnabled);
+            _imgui.InputText("Filter", ref _filter, 255);
+
+            using (_imgui.ApplyID(nameof(ILockstepStrategy.History)))
+            {
+                _objectExplorer.DrawObjectExplorer(Strategy.History, _filter, 8);
+            }
+
+            _imgui.End();
         }
     }
 }

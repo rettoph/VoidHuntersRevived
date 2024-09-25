@@ -2,8 +2,10 @@
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
+using Guppy.Game.ImGui.Common.Extensions;
 using Guppy.Game.ImGui.Common.Services;
 using Guppy.Game.ImGui.Common.Styling;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
@@ -11,16 +13,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
-namespace VoidHuntersRevived.Game.Client.Engines
+namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
     [AutoLoad]
-    internal class AetherWorldDebugViewEngine : StrategyEngine, IDebugEngine, IOnDrawEngine, IImGuiComponent
+    internal class AetherDebugEngine : StrategyEngine, IOnDrawEngine, IImGuiComponent, IOnDebugEngine
     {
         public string? Group => typeof(World).Name;
 
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private ResourceValue<ImStyle> _buttonRedStyle;
         private ResourceValue<ImStyle> _buttonGreenStyle;
 
-        public AetherWorldDebugViewEngine(
+        public AetherDebugEngine(
             IStrategy strategy,
             IScene scene,
             IImGui imgui,
@@ -72,7 +72,35 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _debug.RenderDebugData(_camera.Projection, _camera.View, _camera.World);
         }
 
-        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.PostDraw)]
+        [SequenceGroup<DebugSequenceGroup>("Aether")]
+        public void OnDebug(GameTime gameTime)
+        {
+            _imgui.KeyValue("Bodies", _world.BodyList.Count.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
+            _imgui.KeyValue("Contacts", _world.ContactCount.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
+
+
+            ResourceValue<ImStyle> buttonStyle = _debugViewEnabled ? _buttonRedStyle : _buttonRedStyle;
+
+            using (_imgui.Apply(buttonStyle))
+            {
+                if (_imgui.Button($"{(_debugViewEnabled ? "Disable" : "Enable")} DebugView"))
+                {
+                    _debugViewEnabled = !_debugViewEnabled;
+                }
+            }
+
+            buttonStyle = _aetherExplorerEnabled ? _buttonRedStyle : _buttonRedStyle;
+
+            using (_imgui.Apply(buttonStyle))
+            {
+                if (_imgui.Button($"{(_aetherExplorerEnabled ? "Disable" : "Enable")} Aether Explorer"))
+                {
+                    _aetherExplorerEnabled = !_aetherExplorerEnabled;
+                }
+            }
+        }
+
+        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.PostDraw)]
         public void DrawImGui(GameTime gameTime)
         {
             if (_aetherExplorerEnabled == false)
@@ -95,29 +123,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
             }
 
             _imgui.End();
-        }
-
-        public void RenderDebugInfo(GameTime gameTime)
-        {
-            ResourceValue<ImStyle> buttonStyle = _debugViewEnabled ? _buttonRedStyle : _buttonRedStyle;
-
-            using (_imgui.Apply(buttonStyle))
-            {
-                if (_imgui.Button($"{(_debugViewEnabled ? "Disable" : "Enable")} DebugView"))
-                {
-                    _debugViewEnabled = !_debugViewEnabled;
-                }
-            }
-
-            buttonStyle = _aetherExplorerEnabled ? _buttonRedStyle : _buttonRedStyle;
-
-            using (_imgui.Apply(buttonStyle))
-            {
-                if (_imgui.Button($"{(_aetherExplorerEnabled ? "Disable" : "Enable")} Aether Explorer"))
-                {
-                    _aetherExplorerEnabled = !_aetherExplorerEnabled;
-                }
-            }
         }
     }
 }

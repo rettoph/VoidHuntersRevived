@@ -1,139 +1,49 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Extensions;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Domain.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    //[AutoLoad]
-    [SceneFilter<IVoidHuntersGameScene>]
-    [SequenceGroup<DrawSequence>(DrawSequence.PostDraw)]
-    internal class DebugEngineComponent : ISceneComponent, IDebugComponent
+    [AutoLoad]
+    [SceneFilter<IStrategy>]
+    internal sealed class DebugEngineComponent : ISceneComponent<IStrategy>, IDebugComponent
     {
-        private class DebugEngineGroupRenderer
-        {
-            private readonly string _group;
-            private int _titleLength;
-            private ISimpleDebugEngine.SimpleDebugLine[] _lines;
-            private IDebugEngine[] _engines;
-
-            public DebugEngineGroupRenderer(string group, ISimpleDebugEngine.SimpleDebugLine[] lines, IDebugEngine[] engines)
-            {
-                _group = group;
-                _titleLength = lines.Length == 0 ? 0 : lines.Max(x => x.Title.Length);
-                _lines = lines;
-                _engines = engines;
-            }
-
-            public void DrawImGui(IImGui imgui, GameTime gameTime)
-            {
-                if (imgui.CollapsingHeader(_group))
-                {
-                    imgui.Indent();
-
-                    foreach (ISimpleDebugEngine.SimpleDebugLine line in _lines)
-                    {
-                        string title = line.Title.PadLeft(_titleLength, ' ') + ":";
-                        string value = line.Value();
-
-                        imgui.Text(title);
-                        imgui.SameLine();
-                        imgui.TextColored(Color.Cyan.ToVector4(), value);
-                    }
-
-                    foreach (var engine in _engines)
-                    {
-                        engine.RenderDebugInfo(gameTime);
-                    }
-
-                    imgui.Unindent();
-                }
-            }
-        }
-        private readonly ISimulationService _simulationService;
-        private (IStrategy, Dictionary<string, DebugEngineGroupRenderer>)[] _data;
         private readonly IImGui _imgui;
-        private readonly IScene _scene;
+        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions;
 
-        public DebugEngineComponent(
-            IScene scene,
-            IImGui imgui,
-            ISimulationService simulationService)
+        public DebugEngineComponent(IImGui imgui)
         {
-            _scene = scene;
             _imgui = imgui;
-            _simulationService = simulationService;
-            _data = Array.Empty<(IStrategy, Dictionary<string, DebugEngineGroupRenderer>)>();
+            _debugActions = new ActionSequenceGroup<DebugSequenceGroup, GameTime>();
         }
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PostInitialize)]
-        public void Initialize(IScene scene)
+
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IStrategy strategy)
         {
-            _data = _simulationService.Instances.SelectMany(x => x.Strategies).Select(x => (
-                (x as IStrategy)!,
-                new Dictionary<string, DebugEngineGroupRenderer>())).ToArray();
-
-            foreach (var (simulation, renderers) in _data)
-            {
-                var simpleEngines = simulation.Engines
-                    .Sequence<ISimpleDebugEngine, DrawSequence>()
-                    .SelectMany(x => x.Lines)
-                    .GroupBy(x => x.Group)
-                    .ToDictionary(x => x.Key, x => x.ToArray());
-
-                var engines = simulation.Engines.OfType<IDebugEngine>()
-                    .Sequence<IDebugEngine, DrawSequence>()
-                    .GroupBy(x => x.Group!)
-                    .ToDictionary(x => x.Key, x => x.ToArray());
-
-                var groups = simpleEngines.Select(x => x.Key).Concat(engines.Select(x => x.Key)).Distinct().ToArray();
-
-                foreach (var group in groups)
-                {
-                    if (simpleEngines.TryGetValue(group, out var groupedSimpleEngines) == false)
-                    {
-                        groupedSimpleEngines = Array.Empty<ISimpleDebugEngine.SimpleDebugLine>();
-                    }
-
-                    if (engines.TryGetValue(group, out var groupedEngines) == false)
-                    {
-                        groupedEngines = Array.Empty<IDebugEngine>();
-                    }
-
-                    renderers.Add(group, new DebugEngineGroupRenderer(group, groupedSimpleEngines, groupedEngines));
-                }
-            }
+            _debugActions.Add(strategy.Engines);
         }
 
-        [SequenceGroup<DrawDebugComponentSequenceGroup>(DrawDebugComponentSequenceGroup.Draw)]
-        public void RenderDebugInfo(GameTime gameTime)
+        [SequenceGroup<DebugSequenceGroup>(DebugSequenceGroup.Debug)]
+        public void DrawDebug(GameTime gameTime)
         {
-            _imgui.PushID($"#Debugger#{_scene.ToString()}");
-            foreach (var (simulation, renderers) in _data)
+            foreach ((var group, var groupedDebugActions) in _debugActions.Grouped)
             {
-                _imgui.BeginChild($"{simulation.Type}", Vector2.Zero, ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AutoResizeY);
-
-                _imgui.Text($"Simulation: {simulation.Type}");
-
-                foreach (var (group, renderer) in renderers)
+                if (_imgui.CollapsingHeader(group.Name))
                 {
-                    renderer.DrawImGui(_imgui, gameTime);
+                    _imgui.Indent();
+
+                    groupedDebugActions?.Invoke(gameTime);
+
+                    _imgui.Unindent();
                 }
-
-                _imgui.NewLine();
-
-                _imgui.EndChild();
             }
-            _imgui.PopID();
         }
     }
 }

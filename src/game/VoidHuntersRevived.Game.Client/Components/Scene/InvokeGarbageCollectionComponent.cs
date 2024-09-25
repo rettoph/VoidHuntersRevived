@@ -1,7 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging.Common;
-using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
 using Serilog;
 using VoidHuntersRevived.Game.Client.Messages;
@@ -19,12 +17,6 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         public InvokeGarbageCollectionComponent(ILogger logger)
         {
             _logger = logger;
-        }
-
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
-        public void Initialize(IScene scene)
-        {
-            //
         }
 
         public void Process(in Guid messageId, Input_Invoke_Garbage_Collection message)

@@ -1,11 +1,9 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Graphics.Common.Engines;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
@@ -22,7 +20,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    [SequenceGroup<UpdateSequence>(UpdateSequence.PostUpdate)]
     public class DrawVertexVisibleEngine : BaseDrawVertexTypeEngine<VertexVisible>, IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService;

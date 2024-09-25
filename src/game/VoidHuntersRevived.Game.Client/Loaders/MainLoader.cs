@@ -8,8 +8,8 @@ using Guppy.Engine.Common.Loaders;
 using Guppy.Game;
 using Guppy.Game.MonoGame.Common.Extensions;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Game.Client.Graphics.Effects;
-using VoidHuntersRevived.Game.Core;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             services.RegisterType<ShaderAntiAliasingEffect>().InstancePerDependency();
             services.RegisterType<VisibleEffect>().InstancePerDependency();
 
-            services.Configure<ISceneConfiguration<VoidHuntersGameScene>>((scope, configuration) =>
+            services.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
             {
                 configuration.SetSceneHasDebugWindow(true).SetSceneHasTerminalWindow(true);
             });

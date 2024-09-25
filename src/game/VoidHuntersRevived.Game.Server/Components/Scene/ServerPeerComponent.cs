@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<ServerGameScene>]
-    internal class ServerPeerComponent : ISceneComponent, IUpdatableComponent
+    internal class ServerPeerComponent : ISceneComponent<IScene>, IUpdatableComponent
     {
         private readonly IServerPeer _server;
         private readonly INetScope<IStrategy> _scope;

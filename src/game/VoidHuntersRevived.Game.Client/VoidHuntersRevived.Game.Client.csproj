@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game\Guppy.Game.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Graphics.Common\VoidHuntersRevived.Domain.Graphics.Common.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Physics.Common\VoidHuntersRevived.Domain.Physics.Common.csproj" />
+    <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Game.Core\VoidHuntersRevived.Game.Core.csproj" />
   </ItemGroup>
   

@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Game.Server.Guppy
 {
     [AutoLoad]
     [SceneFilter<ServerGameScene>]
-    internal class ConfigureSimulationsComponent : ISceneComponent
+    internal class ConfigureSimulationsComponent : ISceneComponent<IScene>
     {
         private readonly ISimulationService _simulationService;
 

@@ -18,7 +18,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     {
         private readonly INetScope<IStrategy> _netScope;
 
-        internal readonly TickBuffer _ticks;
+        private readonly TickBuffer _tickBuffer;
+
+        public TickBuffer TickBuffer => _tickBuffer;
 
         public LockstepStrategy_Client(
             INetScope<IStrategy> netScope,
@@ -29,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             Lazy<ILogger> logger) : base(settings, simulation, engineService, logger)
         {
             _netScope = netScope;
-            _ticks = ticks;
+            _tickBuffer = ticks;
         }
 
         public override void Update(GameTime realTime)
@@ -56,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return false;
             }
 
-            if (this.TimeSinceStep < this.StepTimeSpan && _ticks.Count == 0)
+            if (this.TimeSinceStep < this.StepTimeSpan && _tickBuffer.Count == 0)
             {
                 return false;
             }
@@ -77,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return false;
             }
 
-            return _ticks.TryPop(current.Id + 1, out next);
+            return _tickBuffer.TryPop(current.Id + 1, out next);
         }
 
         public override void Input(VhId sourceId, IInputData data)

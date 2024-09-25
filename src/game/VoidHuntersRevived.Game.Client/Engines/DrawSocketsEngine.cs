@@ -1,11 +1,9 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Common;
 using Guppy.Game.MonoGame.Common.Primitives;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -14,7 +12,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [SequenceGroup<DrawSequence>(DrawSequence.PostDraw)]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     internal class DrawSocketsEngine : StrategyEngine
     {
