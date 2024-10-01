@@ -12,6 +12,12 @@
             "args": [ 
                 "'${workspaceFolder}\\src\\game\\VoidHuntersRevived.Game.Client\\Content\\Client\\Shaders'", 
                 "'${workspaceFolder}\\src\\game\\VoidHuntersRevived.Game.Client\\Content\\Client\\Shaders\\Compiled'" ]
+        },
+        {
+            "name": "First Time Setup",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\scripts\\setup.ps1"
         }
     ]
 }
