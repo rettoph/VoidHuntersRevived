@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Guppy.Core.Common.Extensions.System;
+using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Common.Providers;
 using VoidHuntersRevived.Domain.Graphics.Common;
@@ -16,7 +17,6 @@ namespace VoidHuntersRevived.Domain.Graphics.Providers
 
         private readonly Dictionary<PrimitiveGroupEnum, IVertexTypeManager<TVertex>> _vertexTypeManagersByGroup;
         private readonly IVertexTypeManager<TVertex>[] _orderedVertexTypeManagers;
-        private readonly KeyValuePair<PrimitiveGroupEnum, IVertexBuffer<TVertex>> _buffersByGroup;
         public Type VertexType => typeof(TVertex);
 
         public IPrimitive<TVertex>[] Primitives { get; }
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Providers
         {
             if (primitives.Any(x => x is not IPrimitive<TVertex>))
             {
-                throw new ArgumentException();
+                throw new ArgumentException($"Not all primitives are of type {typeof(IPrimitive<TVertex>).GetFormattedName()}", nameof(primitives));
             }
 
             this.Primitives = primitives.OfType<IPrimitive<TVertex>>().ToArray();
