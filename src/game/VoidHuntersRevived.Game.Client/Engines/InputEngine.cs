@@ -29,6 +29,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [PeerFilter(PeerType.Client)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal class InputEngine : StrategyEngine,
+        IOnInitializeEngine<IStrategy>,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
         IInputSubscriber<Input_Spam_Click>,
@@ -63,7 +64,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         }
 
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
-        public void Initialize(IStrategy strategy)
+        public void OnInitialize(IStrategy strategy)
         {
             IStrategy readStrategy = _simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
 

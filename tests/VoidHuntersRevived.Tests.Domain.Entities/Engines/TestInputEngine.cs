@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common;
+﻿using Guppy.Core.Common.Attributes;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -7,14 +8,13 @@ using VoidHuntersRevived.Tests.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities.Engines
 {
-    internal class TestInputEngine : StrategyEngine, IEventEngine<TestSpawnInput>, IEventEngine<TestDepawnInput>
+    internal class TestInputEngine : StrategyEngine, IOnInitializeEngine<IStrategy>, IEventEngine<TestSpawnInput>, IEventEngine<TestDepawnInput>
     {
         private IEntitySpawnService _entitySpawnService = null!;
 
-        public override void Initialize(IStrategy simulation)
+        [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
+        public void OnInitialize(IStrategy simulation)
         {
-            base.Initialize(simulation);
-
             _entitySpawnService = simulation.Engines.Get<IEntitySpawnService>();
         }
 

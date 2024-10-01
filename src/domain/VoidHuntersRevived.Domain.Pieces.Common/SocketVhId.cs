@@ -13,6 +13,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
             Index = index;
         }
 
+        public override bool Equals(object? obj)
+        {
+            return obj is SocketVhId id &&
+                   NodeVhId.Equals(id.NodeVhId) &&
+                   Index == id.Index;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(NodeVhId, Index);
+        }
+
         public static bool operator ==(SocketVhId socketVhId1, SocketVhId socketVhId2)
         {
             return socketVhId1.NodeVhId == socketVhId2.NodeVhId && socketVhId1.Index == socketVhId2.Index;
