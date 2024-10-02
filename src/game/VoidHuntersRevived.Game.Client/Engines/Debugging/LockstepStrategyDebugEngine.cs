@@ -14,26 +14,18 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
     [AutoLoad]
     [StrategyFilter<ILockstepStrategy>]
-    internal class LockstepStrategyDebugEngine : StrategyEngine<ILockstepStrategy>, IImGuiComponent, IOnDebugEngine
+    internal class LockstepStrategyDebugEngine(
+        IImGui imgui,
+        IImGuiObjectExplorerService objectExplorer,
+        IScene guppy) : StrategyEngine<ILockstepStrategy>, IImGuiComponent, IOnDebugEngine
     {
         public string? Group => nameof(IStrategy);
 
-        private readonly IImGui _imgui;
-        private readonly IImGuiObjectExplorerService _objectExplorer;
-        private readonly IScene _scene;
+        private readonly IImGui _imgui = imgui;
+        private readonly IImGuiObjectExplorerService _objectExplorer = objectExplorer;
+        private readonly IScene _scene = guppy;
         private bool _historyViewerEnabled;
-        private string _filter;
-
-        public LockstepStrategyDebugEngine(
-            IImGui imgui,
-            IImGuiObjectExplorerService objectExplorer,
-            IScene guppy)
-        {
-            _imgui = imgui;
-            _objectExplorer = objectExplorer;
-            _scene = guppy;
-            _filter = string.Empty;
-        }
+        private string _filter = string.Empty;
 
         [SequenceGroup<DebugSequenceGroup>("Strategy")]
         public void OnDebug(GameTime gameTime)

@@ -5,17 +5,13 @@ using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 namespace VoidHuntersRevived.Domain.Graphics.Common.Components
 {
     [PolymorphicJsonType<IEntityComponent>(nameof(PrimitiveGroup))]
-    public struct PrimitiveGroup : IEntityComponent
+    public struct PrimitiveGroup(PrimitiveGroupEnum group) : IEntityComponent
     {
-        public PrimitiveGroupEnum Value { get; set; }
+        public PrimitiveGroupEnum Value { get; set; } = group;
 
         public PrimitiveGroup() : this(PrimitiveGroupEnum.None)
         {
 
-        }
-        public PrimitiveGroup(PrimitiveGroupEnum group)
-        {
-            this.Value = group;
         }
     }
 }

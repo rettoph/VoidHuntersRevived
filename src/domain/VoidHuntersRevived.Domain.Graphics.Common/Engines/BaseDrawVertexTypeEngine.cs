@@ -7,17 +7,12 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Engines
 {
-    public abstract class BaseDrawVertexTypeEngine<TVertex> : StrategyEngine, IOnDrawEngine
+    public abstract class BaseDrawVertexTypeEngine<TVertex>(IVertexTypeService vertexTypeService) : StrategyEngine, IOnDrawEngine
         where TVertex : unmanaged, IVertexType
     {
-        private readonly IVertexTypeManagerProvider<TVertex> _vertexTypeManagerProvider;
+        private readonly IVertexTypeManagerProvider<TVertex> _vertexTypeManagerProvider = vertexTypeService.GetByVertexType<TVertex>();
 
         protected abstract Effect effect { get; }
-
-        public BaseDrawVertexTypeEngine(IVertexTypeService vertexTypeService)
-        {
-            _vertexTypeManagerProvider = vertexTypeService.GetByVertexType<TVertex>();
-        }
 
         public virtual void OnDraw(GameTime gameTime)
         {

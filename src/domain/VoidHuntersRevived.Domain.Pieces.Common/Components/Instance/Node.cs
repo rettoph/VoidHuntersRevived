@@ -8,17 +8,17 @@ using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 {
-    public struct Node : IEntityComponent
+    public struct Node(EntityId id, EntityId treeId) : IEntityComponent
     {
-        private bool _dirtyTransformation;
-        private bool _dirtyXnaTransformation;
-        private Location _localLocation;
-        private FixMatrix _worldTransformation;
+        private bool _dirtyTransformation = true;
+        private bool _dirtyXnaTransformation = true;
+        private Location _localLocation = new Location();
+        private FixMatrix _worldTransformation = FixMatrix.Identity;
         private FixMatrix _transformation;
         private Matrix _xnaTransformation;
 
-        public readonly EntityId Id;
-        public readonly EntityId TreeId;
+        public readonly EntityId Id = id;
+        public readonly EntityId TreeId = treeId;
 
         public Location LocalLocation => _localLocation;
         public FixMatrix Transformation
@@ -50,17 +50,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 
                 return _xnaTransformation;
             }
-        }
-
-        public Node(EntityId id, EntityId treeId)
-        {
-            this.Id = id;
-            this.TreeId = treeId;
-
-            _dirtyTransformation = true;
-            _dirtyXnaTransformation = true;
-            _localLocation = new Location();
-            _worldTransformation = FixMatrix.Identity;
         }
 
         public void WorldTransform(FixMatrix world)

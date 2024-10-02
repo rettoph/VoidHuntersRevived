@@ -10,19 +10,12 @@ using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
-    internal sealed class EntityTypeConfigurationResolverConverter : JsonConverter<ResourceResolver<EntityTypeConfiguration>>
+    internal sealed class EntityTypeConfigurationResolverConverter(
+        Lazy<IResourceService> resourceService,
+        IPolymorphicJsonSerializerService<IEntityType> entityTypeTypeService) : JsonConverter<ResourceResolver<EntityTypeConfiguration>>
     {
-        private readonly Lazy<IResourceService> _resourceService;
-        private readonly IPolymorphicJsonSerializerService<IEntityType> _entityTypeTypeService;
-
-
-        public EntityTypeConfigurationResolverConverter(
-            Lazy<IResourceService> resourceService,
-            IPolymorphicJsonSerializerService<IEntityType> entityTypeTypeService)
-        {
-            _resourceService = resourceService;
-            _entityTypeTypeService = entityTypeTypeService;
-        }
+        private readonly Lazy<IResourceService> _resourceService = resourceService;
+        private readonly IPolymorphicJsonSerializerService<IEntityType> _entityTypeTypeService = entityTypeTypeService;
 
         public override ResourceResolver<EntityTypeConfiguration>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

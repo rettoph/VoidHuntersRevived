@@ -4,15 +4,9 @@ using VoidHuntersRevived.Domain.Pieces.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
-    public class BlueprintPiece : IBlueprintPiece
+    public class BlueprintPiece(Key<IEntityType> pieceTypeKey, IBlueprintPiece[][] children) : IBlueprintPiece
     {
-        public Key<IEntityType> PieceTypeKey { get; }
-        public IBlueprintPiece[][] Children { get; }
-
-        public BlueprintPiece(Key<IEntityType> pieceTypeKey, IBlueprintPiece[][] children)
-        {
-            this.PieceTypeKey = pieceTypeKey;
-            this.Children = children;
-        }
+        public Key<IEntityType> PieceTypeKey { get; } = pieceTypeKey;
+        public IBlueprintPiece[][] Children { get; } = children;
     }
 }

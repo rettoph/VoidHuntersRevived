@@ -12,19 +12,14 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
-    internal sealed class TacticalEngine : StrategyEngine,
+    internal sealed class TacticalEngine(
+        IEntityQueryService entityQueryService) : StrategyEngine,
         IEventEngine<Tactical_SetTarget>,
         IOnStepEngine
     {
         private static readonly Fix64 AimDamping = Fix64.One / (Fix64)32;
 
-        private readonly IEntityQueryService _entityQueryService;
-
-        public TacticalEngine(
-            IEntityQueryService entityQueryService)
-        {
-            _entityQueryService = entityQueryService;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
         public void Process(VhId eventId, Tactical_SetTarget data)
         {

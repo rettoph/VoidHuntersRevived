@@ -15,16 +15,10 @@ namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<ServerGameScene>]
-    internal class ServerPeerComponent : ISceneComponent<IScene>, IUpdatableComponent
+    internal class ServerPeerComponent(IServerPeer server, INetScope<IStrategy> scope) : ISceneComponent<IScene>, IUpdatableComponent
     {
-        private readonly IServerPeer _server;
-        private readonly INetScope<IStrategy> _scope;
-
-        public ServerPeerComponent(IServerPeer server, INetScope<IStrategy> scope)
-        {
-            _server = server;
-            _scope = scope;
-        }
+        private readonly IServerPeer _server = server;
+        private readonly INetScope<IStrategy> _scope = scope;
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Setup)]
         public void Initialize(IScene scene)

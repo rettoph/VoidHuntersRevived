@@ -9,7 +9,15 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
     /// <summary>
     /// Describes a 2D-FixRectangle. 
     /// </summary>
-    public struct FixRectangle
+    /// <remarks>
+    /// Creates a new instance of <see cref="FixRectangle"/> struct, with the specified
+    /// position, width, and height.
+    /// </remarks>
+    /// <param name="x">The x coordinate of the top-left corner of the created <see cref="FixRectangle"/>.</param>
+    /// <param name="y">The y coordinate of the top-left corner of the created <see cref="FixRectangle"/>.</param>
+    /// <param name="width">The width of the created <see cref="FixRectangle"/>.</param>
+    /// <param name="height">The height of the created <see cref="FixRectangle"/>.</param>
+    public struct FixRectangle(Fix64 x, Fix64 y, Fix64 width, Fix64 height)
     {
         private static FixRectangle emptyFixRectangle = new FixRectangle();
 
@@ -18,25 +26,25 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
         /// The x coordinate of the top-left corner of this <see cref="FixRectangle"/>.
         /// </summary>
         [DataMember]
-        public Fix64 X;
+        public Fix64 X = x;
 
         /// <summary>
         /// The y coordinate of the top-left corner of this <see cref="FixRectangle"/>.
         /// </summary>
         [DataMember]
-        public Fix64 Y;
+        public Fix64 Y = y;
 
         /// <summary>
         /// The width of this <see cref="FixRectangle"/>.
         /// </summary>
         [DataMember]
-        public Fix64 Width;
+        public Fix64 Width = width;
 
         /// <summary>
         /// The height of this <see cref="FixRectangle"/>.
         /// </summary>
         [DataMember]
-        public Fix64 Height;
+        public Fix64 Height = height;
 
         /// <summary>
         /// Returns a <see cref="FixRectangle"/> with X=0, Y=0, Width=0, Height=0.
@@ -76,22 +84,6 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
         public Fix64 Bottom
         {
             get { return (this.Y + this.Height); }
-        }
-
-        /// <summary>
-        /// Creates a new instance of <see cref="FixRectangle"/> struct, with the specified
-        /// position, width, and height.
-        /// </summary>
-        /// <param name="x">The x coordinate of the top-left corner of the created <see cref="FixRectangle"/>.</param>
-        /// <param name="y">The y coordinate of the top-left corner of the created <see cref="FixRectangle"/>.</param>
-        /// <param name="width">The width of the created <see cref="FixRectangle"/>.</param>
-        /// <param name="height">The height of the created <see cref="FixRectangle"/>.</param>
-        public FixRectangle(Fix64 x, Fix64 y, Fix64 width, Fix64 height)
-        {
-            this.X = x;
-            this.Y = y;
-            this.Width = width;
-            this.Height = height;
         }
 
         public bool Contains(FixMatrix transformation)

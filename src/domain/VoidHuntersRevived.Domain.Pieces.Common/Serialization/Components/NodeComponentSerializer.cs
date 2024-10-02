@@ -8,14 +8,9 @@ using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
 {
     [AutoLoad]
-    public sealed class NodeComponentSerializer : ComponentSerializer<Node>
+    public sealed class NodeComponentSerializer(IEntityQueryService entityQueryService) : ComponentSerializer<Node>
     {
-        private readonly IEntityQueryService _entityQueryService;
-
-        public NodeComponentSerializer(IEntityQueryService entityQueryService)
-        {
-            _entityQueryService = entityQueryService;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
         protected override Node Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
         {

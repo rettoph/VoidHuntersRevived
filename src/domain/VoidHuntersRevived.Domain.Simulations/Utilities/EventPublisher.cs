@@ -46,19 +46,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
             return publishers;
         }
     }
-    internal class EventPublisher<T> : EventPublisher
+    internal class EventPublisher<T>(ILogger logger, List<IEventEngine> subscribers) : EventPublisher
         where T : class, IEventData
     {
-        private readonly IEventEngine<T>[] _subscribers;
-        private readonly IRevertEventEngine<T>[] _reverters;
-        private readonly ILogger _logger;
-
-        public EventPublisher(ILogger logger, List<IEventEngine> subscribers)
-        {
-            _logger = logger;
-            _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();
-            _reverters = subscribers.OfType<IRevertEventEngine<T>>().ToArray();
-        }
+        private readonly IEventEngine<T>[] _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();
+        private readonly IRevertEventEngine<T>[] _reverters = subscribers.OfType<IRevertEventEngine<T>>().ToArray();
+        private readonly ILogger _logger = logger;
 
         public override void Publish(EventDto @event)
         {

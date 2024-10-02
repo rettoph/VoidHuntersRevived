@@ -10,14 +10,9 @@ using VoidHuntersRevived.Domain.Graphics.Engines;
 namespace VoidHuntersRevived.Domain.Graphics.Providers
 {
     [AutoLoad]
-    public class VertexTypeEntityEngineProvider : IEngineProvider
+    public class VertexTypeEntityEngineProvider(IVertexTypeService vertexTypeService) : IEngineProvider
     {
-        private readonly IVertexTypeService _vertexTypeService;
-
-        public VertexTypeEntityEngineProvider(IVertexTypeService vertexTypeService)
-        {
-            _vertexTypeService = vertexTypeService;
-        }
+        private readonly IVertexTypeService _vertexTypeService = vertexTypeService;
 
         public IEnumerable<IEngine> GetEngines()
         {

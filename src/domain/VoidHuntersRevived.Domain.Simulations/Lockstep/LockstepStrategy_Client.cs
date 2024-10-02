@@ -13,26 +13,20 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [PeerFilter(PeerType.Client)]
-    public sealed class LockstepStrategy_Client : LockstepStrategy,
+    public sealed class LockstepStrategy_Client(
+        INetScope<IStrategy> netScope,
+        TickBuffer ticks,
+        ISettingService settings,
+        Lazy<ISimulation> simulation,
+        Lazy<IEngineService> engineService,
+        Lazy<ILogger> logger) : LockstepStrategy(settings, simulation, engineService, logger),
         IDisposable
     {
-        private readonly INetScope<IStrategy> _netScope;
+        private readonly INetScope<IStrategy> _netScope = netScope;
 
-        private readonly TickBuffer _tickBuffer;
+        private readonly TickBuffer _tickBuffer = ticks;
 
         public TickBuffer TickBuffer => _tickBuffer;
-
-        public LockstepStrategy_Client(
-            INetScope<IStrategy> netScope,
-            TickBuffer ticks,
-            ISettingService settings,
-            Lazy<ISimulation> simulation,
-            Lazy<IEngineService> engineService,
-            Lazy<ILogger> logger) : base(settings, simulation, engineService, logger)
-        {
-            _netScope = netScope;
-            _tickBuffer = ticks;
-        }
 
         public override void Update(GameTime realTime)
         {

@@ -12,16 +12,10 @@ using VoidHuntersRevived.Domain.Pieces.Common.Services;
 namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
 {
     [AutoLoad]
-    public class SocketIdsComponentSerializer : ComponentSerializer<Sockets>
+    public class SocketIdsComponentSerializer(IEntityQueryService entityQueryService, ISocketService socketService) : ComponentSerializer<Sockets>
     {
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ISocketService _socketService;
-
-        public SocketIdsComponentSerializer(IEntityQueryService entityQueryService, ISocketService socketService)
-        {
-            _entityQueryService = entityQueryService;
-            _socketService = socketService;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ISocketService _socketService = socketService;
 
         protected override void Write(EntityWriter writer, in EntityId id, in Sockets instance, in SerializationOptions options)
         {

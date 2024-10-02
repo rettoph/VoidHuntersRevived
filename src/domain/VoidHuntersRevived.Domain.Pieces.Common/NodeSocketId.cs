@@ -4,14 +4,14 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common
 {
-    public struct NodeSocketId : IEquatable<NodeSocketId>
+    public struct NodeSocketId(EntityId nodeId, byte index) : IEquatable<NodeSocketId>
     {
         private static Dictionary<byte, FilterContextID> _filterContexts = new Dictionary<byte, FilterContextID>();
 
         public static readonly NodeSocketId Empty = default!;
 
-        public readonly EntityId NodeId;
-        public readonly byte Index;
+        public readonly EntityId NodeId = nodeId;
+        public readonly byte Index = index;
 
         public readonly FilterContextID FilterContextId
         {
@@ -28,12 +28,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
         }
 
         public SocketVhId VhId => new SocketVhId(this.NodeId.VhId, Index);
-
-        public NodeSocketId(EntityId nodeId, byte index)
-        {
-            this.NodeId = nodeId;
-            this.Index = index;
-        }
 
         public override bool Equals(object? obj)
         {

@@ -19,18 +19,12 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     /// </summary>
     /// <typeparam name="TOwner"></typeparam>
     /// <typeparam name="TItems"></typeparam>
-    internal sealed class BelongsToEngine<TOwner, TItems> : StrategyEngine, IOnSpawnEngine<BelongsTo<TOwner, TItems>>
+    internal sealed class BelongsToEngine<TOwner, TItems>(IEntityQueryService entityQueryService, ILogger logger) : StrategyEngine, IOnSpawnEngine<BelongsTo<TOwner, TItems>>
         where TOwner : unmanaged, IEntityComponent
         where TItems : unmanaged, IEntityComponent
     {
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ILogger _logger;
-
-        public BelongsToEngine(IEntityQueryService entityQueryService, ILogger logger)
-        {
-            _entityQueryService = entityQueryService;
-            _logger = logger;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ILogger _logger = logger;
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref BelongsTo<TOwner, TItems> belongsTo, in GroupIndex groupIndex)
         {

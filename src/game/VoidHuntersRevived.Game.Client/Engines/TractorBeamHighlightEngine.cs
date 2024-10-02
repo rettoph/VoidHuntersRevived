@@ -15,32 +15,22 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    internal class TractorBeamHighlightEngine : StrategyEngine, IOnDrawEngine
+    internal class TractorBeamHighlightEngine(
+        Camera2D camera,
+        IEntityQueryService entityQueryService,
+        ISocketService socketService,
+        ITractorBeamEmitterService tractorBeamEmitterService,
+        IUserShipService userShipService,
+        ILogger logger) : StrategyEngine, IOnDrawEngine
     {
-        private readonly ILogger _logger;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ISocketService _socketService;
-        private readonly Camera2D _camera;
-        private readonly ITractorBeamEmitterService _tractorBeamEmitterService;
-        private readonly IUserShipService _userShipService;
+        private readonly ILogger _logger = logger;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ISocketService _socketService = socketService;
+        private readonly Camera2D _camera = camera;
+        private readonly ITractorBeamEmitterService _tractorBeamEmitterService = tractorBeamEmitterService;
+        private readonly IUserShipService _userShipService = userShipService;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
-
-        public TractorBeamHighlightEngine(
-            Camera2D camera,
-            IEntityQueryService entityQueryService,
-            ISocketService socketService,
-            ITractorBeamEmitterService tractorBeamEmitterService,
-            IUserShipService userShipService,
-            ILogger logger)
-        {
-            _camera = camera;
-            _entityQueryService = entityQueryService;
-            _socketService = socketService;
-            _logger = logger;
-            _tractorBeamEmitterService = tractorBeamEmitterService;
-            _userShipService = userShipService;
-        }
 
         public override void Ready()
         {

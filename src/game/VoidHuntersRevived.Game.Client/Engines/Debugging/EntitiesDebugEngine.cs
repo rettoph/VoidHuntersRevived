@@ -11,16 +11,10 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
     [AutoLoad]
-    internal class EntitiesDebugEngine : StrategyEngine, IOnDebugEngine
+    internal class EntitiesDebugEngine(IImGui imgui, IEntityQueryService entityQueryService) : StrategyEngine, IOnDebugEngine
     {
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly IImGui _imgui;
-
-        public EntitiesDebugEngine(IImGui imgui, IEntityQueryService entityQueryService)
-        {
-            _imgui = imgui;
-            _entityQueryService = entityQueryService;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly IImGui _imgui = imgui;
 
         [SequenceGroup<DebugSequenceGroup>("Entities")]
         public void OnDebug(GameTime gameTime)

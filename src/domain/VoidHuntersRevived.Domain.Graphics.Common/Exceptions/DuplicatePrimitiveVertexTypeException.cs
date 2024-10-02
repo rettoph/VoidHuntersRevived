@@ -1,15 +1,9 @@
 ﻿namespace VoidHuntersRevived.Domain.Graphics.Common.Exceptions
 {
-    public class DuplicatePrimitiveVertexTypeException : Exception
+    public class DuplicatePrimitiveVertexTypeException(Type vertexType, IPrimitive[] duplicates) : Exception(GetMessage(vertexType, duplicates))
     {
-        public readonly Type VertexType;
-        public readonly IPrimitive[] Primitives;
-
-        public DuplicatePrimitiveVertexTypeException(Type vertexType, IPrimitive[] duplicates) : base(GetMessage(vertexType, duplicates))
-        {
-            this.VertexType = vertexType;
-            this.Primitives = duplicates;
-        }
+        public readonly Type VertexType = vertexType;
+        public readonly IPrimitive[] Primitives = duplicates;
 
         private static string GetMessage(Type vertexType, IPrimitive[] duplicates)
         {

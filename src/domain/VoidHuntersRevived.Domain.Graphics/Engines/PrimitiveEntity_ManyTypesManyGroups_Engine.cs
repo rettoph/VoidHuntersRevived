@@ -15,17 +15,11 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    public sealed class PrimitiveEntity_ManyTypesManyGroups_Engine<TVertex> : BaseVertexTypeEntityEngine<TVertex>
+    public sealed class PrimitiveEntity_ManyTypesManyGroups_Engine<TVertex>(IVertexTypeManagerProvider<TVertex> vertexTypeManagerProvider) : BaseVertexTypeEntityEngine<TVertex>
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {
-        private readonly Dictionary<Key<IEntityType>, IPrimitive<TVertex>> _primitivesByType;
-        private readonly IVertexBuffer<TVertex>[] _vertexBuffers;
-
-        public PrimitiveEntity_ManyTypesManyGroups_Engine(IVertexTypeManagerProvider<TVertex> vertexTypeManagerProvider)
-        {
-            _primitivesByType = vertexTypeManagerProvider.Primitives.ToDictionary(x => x.EntityTypeKey ?? throw new NotImplementedException(), x => x);
-            _vertexBuffers = vertexTypeManagerProvider.Primitives.SelectMany(x => x.GetAllVertexBuffers()).Select(x => x.Value).ToArray();
-        }
+        private readonly Dictionary<Key<IEntityType>, IPrimitive<TVertex>> _primitivesByType = vertexTypeManagerProvider.Primitives.ToDictionary(x => x.EntityTypeKey ?? throw new NotImplementedException(), x => x);
+        private readonly IVertexBuffer<TVertex>[] _vertexBuffers = vertexTypeManagerProvider.Primitives.SelectMany(x => x.GetAllVertexBuffers()).Select(x => x.Value).ToArray();
 
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
         public override void OnDraw(GameTime gameTime)

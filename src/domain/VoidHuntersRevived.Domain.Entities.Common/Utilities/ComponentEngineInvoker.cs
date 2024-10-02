@@ -40,15 +40,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         }
     }
 
-    internal class OnSpawnEngineInvoker<T> : ComponentEngineInvoker
+    internal class OnSpawnEngineInvoker<T>(IEnumerable<IEngine> engines) : ComponentEngineInvoker
         where T : unmanaged, IEntityComponent
     {
-        private FasterList<IOnSpawnEngine<T>> _engines;
-
-        public OnSpawnEngineInvoker(IEnumerable<IEngine> engines)
-        {
-            _engines = new FasterList<IOnSpawnEngine<T>>(engines.OfType<IOnSpawnEngine<T>>().ToList());
-        }
+        private FasterList<IOnSpawnEngine<T>> _engines = new FasterList<IOnSpawnEngine<T>>(engines.OfType<IOnSpawnEngine<T>>().ToList());
 
         public override void Invoke(VhId sourceEventId, IEntityType type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {
@@ -60,15 +55,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         }
     }
 
-    internal class OnDespawnEngineInvoker<T> : ComponentEngineInvoker
+    internal class OnDespawnEngineInvoker<T>(IEnumerable<IEngine> engines) : ComponentEngineInvoker
         where T : unmanaged, IEntityComponent
     {
-        private FasterList<IOnDespawnEngine<T>> _engines;
-
-        public OnDespawnEngineInvoker(IEnumerable<IEngine> engines)
-        {
-            _engines = new FasterList<IOnDespawnEngine<T>>(engines.OfType<IOnDespawnEngine<T>>().ToList());
-        }
+        private FasterList<IOnDespawnEngine<T>> _engines = new FasterList<IOnDespawnEngine<T>>(engines.OfType<IOnDespawnEngine<T>>().ToList());
 
         public override void Invoke(VhId sourceEventId, IEntityType type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {

@@ -6,17 +6,12 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
-    internal sealed class DisposableEngine<T> : IEngine, IReactOnRemoveEx<T>, IQueryingEntitiesEngine
+    internal sealed class DisposableEngine<T>(ILogger logger) : IEngine, IReactOnRemoveEx<T>, IQueryingEntitiesEngine
         where T : unmanaged, IEntityComponent, IDisposable
     {
         private static readonly string _tName = typeof(T).GetFormattedName();
 
-        private readonly ILogger _logger;
-
-        public DisposableEngine(ILogger logger)
-        {
-            _logger = logger;
-        }
+        private readonly ILogger _logger = logger;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 

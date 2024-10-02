@@ -6,25 +6,16 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    public sealed class EntityWriter : BinaryWriter
+    public sealed class EntityWriter(
+        IEntityTypeProviderService entityTypeService,
+        IEntityQueryService entityQueryService,
+        ILogger logger) : BinaryWriter(new MemoryStream())
     {
-        private readonly Stack<EntityId> _nested;
-        private readonly List<long> _positions;
-        private readonly IEntityTypeProviderService _entityTypeService;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ILogger _logger;
-
-        public EntityWriter(
-            IEntityTypeProviderService entityTypeService,
-            IEntityQueryService entityQueryService,
-            ILogger logger) : base(new MemoryStream())
-        {
-            _nested = new Stack<EntityId>();
-            _positions = new List<long>();
-            _entityTypeService = entityTypeService;
-            _entityQueryService = entityQueryService;
-            _logger = logger;
-        }
+        private readonly Stack<EntityId> _nested = new Stack<EntityId>();
+        private readonly List<long> _positions = new List<long>();
+        private readonly IEntityTypeProviderService _entityTypeService = entityTypeService;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ILogger _logger = logger;
 
         public unsafe void WriteStruct<T>(T value)
             where T : unmanaged

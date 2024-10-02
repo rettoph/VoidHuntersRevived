@@ -4,18 +4,13 @@ using System.Diagnostics;
 namespace VoidHuntersRevived.Common
 {
     [DebuggerDisplay("Type = {Type.Name}, Name = {Name}")]
-    public struct Key<T>
+    public struct Key<T>(VhId id)
     {
         private static readonly Map<VhId, string> _map = new Map<VhId, string>();
 
-        public readonly VhId Id;
+        public readonly VhId Id = id;
         public string Name => _map[this.Id];
         public Type Type => typeof(T);
-
-        public Key(VhId id)
-        {
-            this.Id = id;
-        }
 
         public static Key<T> GetByName(string name)
         {

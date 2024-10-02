@@ -15,24 +15,16 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 namespace VoidHuntersRevived.Game.Core.Engines
 {
     [AutoLoad]
-    internal sealed class SimulationEngine : StrategyEngine, IEventEngine<Simulation_Begin>
+    internal sealed class SimulationEngine(
+        ITreeService treeService,
+        ITeamService teamService,
+        IEntityTypeService entityTypeService,
+        IBlueprintService blueprintService) : StrategyEngine, IEventEngine<Simulation_Begin>
     {
-        private readonly ITreeService _treeService;
-        private readonly ITeamService _teamService;
-        private readonly IEntityTypeService _entityTypeService;
-        private readonly IBlueprintService _blueprintService;
-
-        public SimulationEngine(
-            ITreeService treeService,
-            ITeamService teamService,
-            IEntityTypeService entityTypeService,
-            IBlueprintService blueprintService)
-        {
-            _treeService = treeService;
-            _teamService = teamService;
-            _entityTypeService = entityTypeService;
-            _blueprintService = blueprintService;
-        }
+        private readonly ITreeService _treeService = treeService;
+        private readonly ITeamService _teamService = teamService;
+        private readonly IEntityTypeService _entityTypeService = entityTypeService;
+        private readonly IBlueprintService _blueprintService = blueprintService;
 
         public void Process(VhId eventId, Simulation_Begin data)
         {

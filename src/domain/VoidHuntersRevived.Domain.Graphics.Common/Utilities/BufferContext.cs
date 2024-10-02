@@ -16,21 +16,13 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
         public abstract IndexBuffer BuildIndexBuffer(GraphicsDevice graphics);
     }
 
-    public class BufferContext<TVertex> : BufferContext
+    public class BufferContext<TVertex>(PrimitiveType primitiveType, TVertex[] vertices, short[] indices) : BufferContext
         where TVertex : unmanaged, IVertexType
     {
-        private readonly TVertex[] _vertices;
-        private readonly short[] _indices;
+        private readonly TVertex[] _vertices = vertices;
+        private readonly short[] _indices = indices;
 
-        public override PrimitiveType PrimitiveType { get; }
-
-        public BufferContext(PrimitiveType primitiveType, TVertex[] vertices, short[] indices)
-        {
-            _vertices = vertices;
-            _indices = indices;
-
-            this.PrimitiveType = primitiveType;
-        }
+        public override PrimitiveType PrimitiveType { get; } = primitiveType;
 
         public override VertexBuffer BuildVertexBuffer(GraphicsDevice graphics)
         {

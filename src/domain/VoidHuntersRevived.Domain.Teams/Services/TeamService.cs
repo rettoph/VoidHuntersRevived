@@ -12,7 +12,10 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Services
 {
-    internal class TeamService : StrategyEngine, ITeamService, IOnInitializeEngine
+    internal class TeamService(
+        IEntityTypeService entityTypeService,
+        IEntityQueryService entityQueryService,
+        IPrivateEntitySpawnService privateEntitySpawnService) : StrategyEngine, ITeamService, IOnInitializeEngine
     {
         private struct TeamData
         {
@@ -22,22 +25,11 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         }
 
         private BelongsTo<Team, TeamMember> _defaultTeamComponent;
-        private Dictionary<Id<Team>, BelongsTo<Team, TeamMember>> _teamComponents;
+        private Dictionary<Id<Team>, BelongsTo<Team, TeamMember>> _teamComponents = new Dictionary<Id<Team>, BelongsTo<Team, TeamMember>>();
 
-        private readonly IEntityTypeService _entityTypeService;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly IPrivateEntitySpawnService _privateEntitySpawnService;
-
-        public TeamService(
-            IEntityTypeService entityTypeService,
-            IEntityQueryService entityQueryService,
-            IPrivateEntitySpawnService privateEntitySpawnService)
-        {
-            _entityTypeService = entityTypeService;
-            _entityQueryService = entityQueryService;
-            _privateEntitySpawnService = privateEntitySpawnService;
-            _teamComponents = new Dictionary<Id<Team>, BelongsTo<Team, TeamMember>>();
-        }
+        private readonly IEntityTypeService _entityTypeService = entityTypeService;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly IPrivateEntitySpawnService _privateEntitySpawnService = privateEntitySpawnService;
 
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
         public void OnInitialize(IStrategy strategy)

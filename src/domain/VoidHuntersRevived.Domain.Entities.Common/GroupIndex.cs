@@ -2,15 +2,9 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public struct GroupIndex
+    public struct GroupIndex(ExclusiveGroupStruct groupID, uint index)
     {
-        public readonly ExclusiveGroupStruct GroupID;
-        public readonly uint Index;
-
-        public GroupIndex(ExclusiveGroupStruct groupID, uint index)
-        {
-            this.GroupID = groupID;
-            this.Index = index;
-        }
+        public readonly ExclusiveGroupStruct GroupID = groupID;
+        public readonly uint Index = index;
     }
 }

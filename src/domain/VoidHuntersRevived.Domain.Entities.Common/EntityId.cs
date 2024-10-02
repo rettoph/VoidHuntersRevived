@@ -3,25 +3,19 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public struct EntityId : IEntityComponent
+    public struct EntityId(EGID eGID, VhId vhId) : IEntityComponent
     {
         public static readonly EntityId Empty = default;
 
         /// <summary>
         /// Svelto's EGID, non deterministic.
         /// </summary>
-        public readonly EGID EGID;
+        public readonly EGID EGID = eGID;
 
         /// <summary>
         /// Determinstic internal id
         /// </summary>
-        public readonly VhId VhId;
-
-        public EntityId(EGID eGID, VhId vhId)
-        {
-            this.EGID = eGID;
-            this.VhId = vhId;
-        }
+        public readonly VhId VhId = vhId;
 
         public override bool Equals(object? obj)
         {

@@ -15,22 +15,14 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    internal class BodyPhysicsBubbleEngine : StrategyEngine, IOnStepEngine, IOnDespawnEngine<Enabled>
+    internal class BodyPhysicsBubbleEngine(IEntityQueryService entityQueryService, ISpace space) : StrategyEngine, IOnStepEngine, IOnDespawnEngine<Enabled>
     {
         private static readonly Fix64 Two = (Fix64)2;
 
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ISpace _space;
-        private FixRectangle[] _bubbleBuffer;
-        private int _bubbleBufferCount;
-
-        public BodyPhysicsBubbleEngine(IEntityQueryService entityQueryService, ISpace space)
-        {
-            _entityQueryService = entityQueryService;
-            _space = space;
-            _bubbleBuffer = new FixRectangle[8];
-            _bubbleBufferCount = 0;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ISpace _space = space;
+        private FixRectangle[] _bubbleBuffer = new FixRectangle[8];
+        private int _bubbleBufferCount = 0;
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)

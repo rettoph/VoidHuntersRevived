@@ -4,15 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace VoidHuntersRevived.Game.Client.Graphics.Effects
 {
-    public class VisibleEffect : Effect
+    public class VisibleEffect(GraphicsDevice graphicsDevice, IResourceService resourceService) : Effect(graphicsDevice, resourceService.GetValue(Resources.EffectCodes.Visible).Value)
     {
         public Matrix WorldViewProjection
         {
             set => this.Parameters[nameof(WorldViewProjection)].SetValue(value);
-        }
-
-        public VisibleEffect(GraphicsDevice graphicsDevice, IResourceService resourceService) : base(graphicsDevice, resourceService.GetValue(Resources.EffectCodes.Visible).Value)
-        {
         }
     }
 }

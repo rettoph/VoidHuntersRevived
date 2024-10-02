@@ -3,26 +3,21 @@ using XnaVector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace VoidHuntersRevived.Common.FixedPoint
 {
-    public struct FixVector2
+    public struct FixVector2(Fix64 x, Fix64 y)
     {
         public static FixVector2 Zero = new FixVector2(Fix64.Zero, Fix64.Zero);
         public static FixVector2 One = new FixVector2(Fix64.One, Fix64.One);
         public static FixVector2 UnitX = new FixVector2(Fix64.One, Fix64.Zero);
         public static FixVector2 UnitY = new FixVector2(Fix64.Zero, Fix64.One);
 
-        public Fix64 X;
-        public Fix64 Y;
+        public Fix64 X = x;
+        public Fix64 Y = y;
 
         public Fix64 Length => Fix64.Sqrt(this.X * this.X + this.Y * this.Y);
 
         public FixVector2(double x, double y) : this((Fix64)x, (Fix64)y)
         {
 
-        }
-        public FixVector2(Fix64 x, Fix64 y)
-        {
-            this.X = x;
-            this.Y = y;
         }
 
         public static void Distance(ref FixVector2 v1, ref FixVector2 v2, out Fix64 result)

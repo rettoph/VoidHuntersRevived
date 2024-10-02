@@ -28,7 +28,10 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [PeerFilter(PeerType.Client)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    internal class InputEngine : StrategyEngine,
+    internal class InputEngine(
+        Camera2D camera,
+        IEntityQueryService entityQueryService,
+        ISimulation simulation) : StrategyEngine,
         IOnInitializeEngine<IStrategy>,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
@@ -37,31 +40,17 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         private bool _spamClick;
 
-        private readonly Camera2D _camera;
-        private readonly ISimulation _simulation;
+        private readonly Camera2D _camera = camera;
+        private readonly ISimulation _simulation = simulation;
 
-        private IEntityQueryService _readEntityQueryService;
-        private ITractorBeamEmitterService _readTractorBeamEmitterService;
-        private ISocketService _readSocketService;
-        private IUserShipService _readUserShipService;
+        private IEntityQueryService _readEntityQueryService = null!;
+        private ITractorBeamEmitterService _readTractorBeamEmitterService = null!;
+        private ISocketService _readSocketService = null!;
+        private IUserShipService _readUserShipService = null!;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
         public string name { get; } = nameof(InputEngine);
-
-        public InputEngine(
-            Camera2D camera,
-            IEntityQueryService entityQueryService,
-            ISimulation simulation)
-        {
-            _camera = camera;
-            _simulation = simulation;
-
-            _readEntityQueryService = null!;
-            _readTractorBeamEmitterService = null!;
-            _readSocketService = null!;
-            _readUserShipService = null!;
-        }
 
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
         public void OnInitialize(IStrategy strategy)

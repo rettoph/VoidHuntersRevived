@@ -20,29 +20,18 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    public class DrawVertexVisibleEngine : BaseDrawVertexTypeEngine<VertexVisible>, IOnStepEngine
+    public class DrawVertexVisibleEngine(
+        IEntityQueryService entityQueryService,
+        IVertexTypeService vertexTypeService,
+        Camera2D camera,
+        GraphicsDevice graphics,
+        VisibleEffect effect) : BaseDrawVertexTypeEngine<VertexVisible>(vertexTypeService), IOnStepEngine
     {
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly Camera2D _camera;
-        private readonly GraphicsDevice _graphics;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly Camera2D _camera = camera;
+        private readonly GraphicsDevice _graphics = graphics;
 
-        protected override VisibleEffect effect { get; }
-
-        public DrawVertexVisibleEngine(
-            IEntityQueryService entityQueryService,
-            IVertexTypeService vertexTypeService,
-            Camera2D camera,
-            GraphicsDevice graphics,
-            GameWindow window,
-            SpriteBatch spriteBatch,
-            VisibleEffect effect) : base(vertexTypeService)
-        {
-            _entityQueryService = entityQueryService;
-            _camera = camera;
-            _graphics = graphics;
-
-            this.effect = effect;
-        }
+        protected override VisibleEffect effect { get; } = effect;
 
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.Draw)]
         public override void OnDraw(GameTime gameTime)
@@ -75,7 +64,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((vertices, colorSchemes, nodes, statuses, count), _) in _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Node>())
+            foreach (var ((vertices, colorSchemes, nodes, _, count), _) in _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Node>())
             {
                 for (int i = 0; i < count; i++)
                 {

@@ -8,29 +8,20 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    public class EntityReader : BinaryReader
+    public class EntityReader(
+        IEntityTypeProviderService entityTypeProviderService,
+        IEntityQueryService entityQueryService,
+        IEntitySpawnService entitySpawnService,
+        ILogger logger) : BinaryReader(new MemoryStream())
     {
         private static unsafe long EntityHeaderSize = sizeof(VhId) + sizeof(Id<IEntityType>);
 
-        private readonly IEntityTypeProviderService _entityTypeProviderService;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly IEntitySpawnService _entitySpawnService;
-        private readonly ILogger _logger;
+        private readonly IEntityTypeProviderService _entityTypeProviderService = entityTypeProviderService;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
+        private readonly ILogger _logger = logger;
 
-        private EntityData _loaded;
-
-        public EntityReader(
-            IEntityTypeProviderService entityTypeProviderService,
-            IEntityQueryService entityQueryService,
-            IEntitySpawnService entitySpawnService,
-            ILogger logger) : base(new MemoryStream())
-        {
-            _loaded = EntityData.Default;
-            _entityTypeProviderService = entityTypeProviderService;
-            _entityQueryService = entityQueryService;
-            _entitySpawnService = entitySpawnService;
-            _logger = logger;
-        }
+        private EntityData _loaded = EntityData.Default;
 
         public void Load(EntityData data, long position)
         {

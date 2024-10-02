@@ -5,19 +5,13 @@ using VoidHuntersRevived.Domain.Pieces.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common
 {
-    public sealed class Blueprint : IEntityResource<Blueprint>
+    public sealed class Blueprint(string name, IBlueprintPiece head) : IEntityResource<Blueprint>
     {
         private Id<Blueprint>? _id;
 
         public Id<Blueprint> Id => _id ??= HashBuilder<Blueprint, VhId, VhId>.Instance.CalculateId(VhId.HashString(this.Name), this.Head.CalculateHash());
-        public readonly string Name;
-        public readonly IBlueprintPiece Head;
-
-        public Blueprint(string name, IBlueprintPiece head)
-        {
-            this.Name = name;
-            this.Head = head;
-        }
+        public readonly string Name = name;
+        public readonly IBlueprintPiece Head = head;
 
         // public EntityId Spawn(VhId treeId, VhId vhid, Id<ITeam> teamId, IEntityQueryService entities)
         // {

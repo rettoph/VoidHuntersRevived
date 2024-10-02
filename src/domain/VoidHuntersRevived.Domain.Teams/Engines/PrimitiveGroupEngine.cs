@@ -7,10 +7,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Engines;
 namespace VoidHuntersRevived.Domain.Teams.Engines
 {
     [AutoLoad]
-    internal class PrimitiveGroupEngine : BaseTeamInstanceComponentEngine<PrimitiveGroup>
+    internal class PrimitiveGroupEngine(IEntityQueryService entityQueryService) : BaseTeamInstanceComponentEngine<PrimitiveGroup>(entityQueryService)
     {
-        public PrimitiveGroupEngine(IEntityQueryService entityQueryService) : base(entityQueryService)
-        {
-        }
     }
 }

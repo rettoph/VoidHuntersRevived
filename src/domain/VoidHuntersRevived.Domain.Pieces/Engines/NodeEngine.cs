@@ -20,29 +20,20 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class NodeEngine : StrategyEngine,
+    internal sealed class NodeEngine(
+        IEntityQueryService entityQueryService,
+        IEntitySpawnService entitySpawnService,
+        ISocketService socketService,
+        ILogger logger) : StrategyEngine,
         IOnSpawnEngine<Node>,
         IOnDespawnEngine<Node>,
         IOnStepEngine
     {
-        private readonly ISocketService _socketService;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly IEntitySpawnService _entitySpawnService;
-        private readonly ILogger _logger;
-        private readonly DictionaryQueue<EntityId, VhId> _dirtyTrees;
-
-        public NodeEngine(
-            IEntityQueryService entityQueryService,
-            IEntitySpawnService entitySpawnService,
-            ISocketService socketService,
-            ILogger logger)
-        {
-            _entityQueryService = entityQueryService;
-            _entitySpawnService = entitySpawnService;
-            _socketService = socketService;
-            _logger = logger;
-            _dirtyTrees = new DictionaryQueue<EntityId, VhId>();
-        }
+        private readonly ISocketService _socketService = socketService;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
+        private readonly ILogger _logger = logger;
+        private readonly DictionaryQueue<EntityId, VhId> _dirtyTrees = new DictionaryQueue<EntityId, VhId>();
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Node node, in GroupIndex groupIndex)
         {

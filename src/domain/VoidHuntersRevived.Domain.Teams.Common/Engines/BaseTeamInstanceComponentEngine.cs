@@ -10,15 +10,10 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Engines
     /// <summary>
     /// Allows for entity components to be overwritten by their teams
     /// </summary>
-    public abstract class BaseTeamInstanceComponentEngine<TComponent> : StrategyEngine, IReactOnAddEx<TComponent>
+    public abstract class BaseTeamInstanceComponentEngine<TComponent>(IEntityQueryService entityQueryService) : StrategyEngine, IReactOnAddEx<TComponent>
         where TComponent : unmanaged, IEntityComponent
     {
-        private readonly IEntityQueryService _entityQueryService;
-
-        public BaseTeamInstanceComponentEngine(IEntityQueryService entityQueryService)
-        {
-            _entityQueryService = entityQueryService;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<TComponent> entities, ExclusiveGroupStruct groupID)
         {

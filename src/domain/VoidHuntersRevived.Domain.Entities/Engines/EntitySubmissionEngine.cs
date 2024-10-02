@@ -8,14 +8,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
-    public sealed class EntitySubmissionEngine : IEngine, IOnStepEngine
+    public sealed class EntitySubmissionEngine(EntitiesSubmissionScheduler scheduler) : IEngine, IOnStepEngine
     {
-        private readonly EntitiesSubmissionScheduler _scheduler;
-
-        public EntitySubmissionEngine(EntitiesSubmissionScheduler scheduler)
-        {
-            _scheduler = scheduler;
-        }
+        private readonly EntitiesSubmissionScheduler _scheduler = scheduler;
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SubmitChanges)]
         public void OnStep(Step step)

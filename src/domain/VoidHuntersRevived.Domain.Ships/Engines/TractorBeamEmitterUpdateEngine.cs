@@ -21,28 +21,19 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
-    internal sealed class TractorBeamEmitterUpdateEngine : StrategyEngine,
+    internal sealed class TractorBeamEmitterUpdateEngine(
+        IEntityQueryService entityQueryService,
+        ISpace space,
+        ILogger logger,
+        ITractorBeamEmitterService tractorBeamEmitterService,
+        ISocketService socketService) : StrategyEngine,
         IOnStepEngine
     {
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ISpace _space;
-        private readonly ILogger _logger;
-        private readonly ITractorBeamEmitterService _tractorBeamEmitterService;
-        private readonly ISocketService _socketService;
-
-        public TractorBeamEmitterUpdateEngine(
-            IEntityQueryService entityQueryService,
-            ISpace space,
-            ILogger logger,
-            ITractorBeamEmitterService tractorBeamEmitterService,
-            ISocketService socketService)
-        {
-            _entityQueryService = entityQueryService;
-            _space = space;
-            _logger = logger;
-            _tractorBeamEmitterService = tractorBeamEmitterService;
-            _socketService = socketService;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ISpace _space = space;
+        private readonly ILogger _logger = logger;
+        private readonly ITractorBeamEmitterService _tractorBeamEmitterService = tractorBeamEmitterService;
+        private readonly ISocketService _socketService = socketService;
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.ProcessInput)]
         public void OnStep(Step step)

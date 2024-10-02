@@ -7,10 +7,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Engines;
 namespace VoidHuntersRevived.Domain.Teams.Engines
 {
     [AutoLoad]
-    internal class ColorSchemeEngine : BaseTeamInstanceComponentEngine<ColorScheme>
+    internal class ColorSchemeEngine(IEntityQueryService entityQueryService) : BaseTeamInstanceComponentEngine<ColorScheme>(entityQueryService)
     {
-        public ColorSchemeEngine(IEntityQueryService entityQueryService) : base(entityQueryService)
-        {
-        }
     }
 }

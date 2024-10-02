@@ -13,29 +13,20 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal sealed partial class SocketService : StrategyEngine, ISocketService
+    internal sealed partial class SocketService(
+        IEntityQueryService entityQueryService,
+        IEntitySpawnService entitySpawnService,
+        IEntitySerializationService entitySerializationService,
+        ITreeService treeService,
+        ILogger logger) : StrategyEngine, ISocketService
     {
         private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
 
-        private readonly ILogger _logger;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly IEntitySpawnService _entitySpawnService;
-        private readonly IEntitySerializationService _entitySerializationService;
-        private readonly ITreeService _treeService;
-
-        public SocketService(
-            IEntityQueryService entityQueryService,
-            IEntitySpawnService entitySpawnService,
-            IEntitySerializationService entitySerializationService,
-            ITreeService treeService,
-            ILogger logger)
-        {
-            _logger = logger;
-            _entityQueryService = entityQueryService;
-            _entitySpawnService = entitySpawnService;
-            _entitySerializationService = entitySerializationService;
-            _treeService = treeService;
-        }
+        private readonly ILogger _logger = logger;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
+        private readonly IEntitySerializationService _entitySerializationService = entitySerializationService;
+        private readonly ITreeService _treeService = treeService;
 
         public NodeSocket GetSocket(NodeSocketId socketId)
         {

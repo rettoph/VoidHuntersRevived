@@ -18,23 +18,17 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal class ThrustableEngine : StrategyEngine,
+    internal class ThrustableEngine(IEntityQueryService entityQueryService, ISpace space) : StrategyEngine,
         IOnSpawnEngine<Thrustable>,
         IOnDespawnEngine<Thrustable>,
         IEventEngine<Tree_Clean>,
         IOnStepEngine
     {
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ISpace _space;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ISpace _space = space;
 
         private static readonly Fix64 Buffer = (Fix64)0.01m;
         private static readonly Fix64 BufferPi = Fix64.Pi - Buffer;
-
-        public ThrustableEngine(IEntityQueryService entityQueryService, ISpace space)
-        {
-            _entityQueryService = entityQueryService;
-            _space = space;
-        }
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
         {

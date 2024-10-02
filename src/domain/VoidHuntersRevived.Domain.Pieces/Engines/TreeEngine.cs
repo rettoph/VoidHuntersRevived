@@ -13,26 +13,19 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class TreeEngine : StrategyEngine,
+    internal sealed class TreeEngine(
+        IEntityQueryService entityQueryService,
+        IEntitySpawnService entitySpawnService,
+        ILogger logger) : StrategyEngine,
         IOnSpawnEngine<Tree>,
         IOnDespawnEngine<Tree>,
         IOnStepEngine
     {
 
         private HashSet<EGID> _removedNodes = new HashSet<EGID>();
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly IEntitySpawnService _entitySpawnService;
-        private readonly ILogger _logger;
-
-        public TreeEngine(
-            IEntityQueryService entityQueryService,
-            IEntitySpawnService entitySpawnService,
-            ILogger logger)
-        {
-            _entityQueryService = entityQueryService;
-            _entitySpawnService = entitySpawnService;
-            _logger = logger;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
+        private readonly ILogger _logger = logger;
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {

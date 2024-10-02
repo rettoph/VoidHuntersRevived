@@ -3,14 +3,9 @@ using Svelto.ECS;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    public abstract class ComponentSerializerFactory
+    public abstract class ComponentSerializerFactory(Type type)
     {
-        public readonly Type Type;
-
-        public ComponentSerializerFactory(Type type)
-        {
-            this.Type = type;
-        }
+        public readonly Type Type = type;
 
         public abstract ComponentSerializer Create(ILifetimeScope scope);
     }

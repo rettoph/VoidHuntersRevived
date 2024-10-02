@@ -13,21 +13,14 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
-    internal class UserShipService : StrategyEngine, IUserShipService,
+    internal class UserShipService(INetScope<IStrategy> netScope, IEntityQueryService entityQueryService) : StrategyEngine, IUserShipService,
         IOnSpawnEngine<UserId>,
         IOnDespawnEngine<UserId>,
         IEventEngine<SetUserShipUserId>
     {
-        private readonly Map<EntityId, int> _shipVhIdUserIdMap;
-        private readonly INetScope<IStrategy> _netScope;
-        private readonly IEntityQueryService _entityQueryService;
-
-        public UserShipService(INetScope<IStrategy> netScope, IEntityQueryService entityQueryService)
-        {
-            _netScope = netScope;
-            _shipVhIdUserIdMap = new Map<EntityId, int>();
-            _entityQueryService = entityQueryService;
-        }
+        private readonly Map<EntityId, int> _shipVhIdUserIdMap = new Map<EntityId, int>();
+        private readonly INetScope<IStrategy> _netScope = netScope;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref UserId userId, in GroupIndex groupIndex)
         {

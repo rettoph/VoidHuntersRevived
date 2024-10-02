@@ -9,14 +9,9 @@ using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
 namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
 {
     [AutoLoad]
-    public sealed class CouplingComponentSerializer : ComponentSerializer<Coupling>
+    public sealed class CouplingComponentSerializer(IEntityQueryService entityQueryService) : ComponentSerializer<Coupling>
     {
-        private readonly IEntityQueryService _entityQueryService;
-
-        public CouplingComponentSerializer(IEntityQueryService entityQueryService)
-        {
-            _entityQueryService = entityQueryService;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
         protected override Coupling Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
         {

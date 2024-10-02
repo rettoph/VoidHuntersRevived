@@ -15,16 +15,10 @@ using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 namespace VoidHuntersRevived.Game.Client.Graphics.Factories
 {
     [AutoLoad]
-    internal sealed class VisiblePrimitiveFactory : IPrimitiveFactory
+    internal sealed class VisiblePrimitiveFactory(IEntityTypeService entityTypeService, GraphicsDevice graphics) : IPrimitiveFactory
     {
-        private readonly GraphicsDevice _graphics;
-        private readonly IEntityTypeService _entityTypeService;
-
-        public VisiblePrimitiveFactory(IEntityTypeService entityTypeService, GraphicsDevice graphics)
-        {
-            _graphics = graphics;
-            _entityTypeService = entityTypeService;
-        }
+        private readonly GraphicsDevice _graphics = graphics;
+        private readonly IEntityTypeService _entityTypeService = entityTypeService;
 
         public IEnumerable<IPrimitive> BuildPrimitives()
         {

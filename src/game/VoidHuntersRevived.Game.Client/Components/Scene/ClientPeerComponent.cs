@@ -11,14 +11,9 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<MultiplayerGameScene>]
-    internal class ClientPeerComponent : ISceneComponent<IScene>, IUpdatableComponent
+    internal class ClientPeerComponent(IClientPeer client) : ISceneComponent<IScene>, IUpdatableComponent
     {
-        private readonly IClientPeer _client;
-
-        public ClientPeerComponent(IClientPeer client)
-        {
-            _client = client;
-        }
+        private readonly IClientPeer _client = client;
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Setup)]
         public void Initialize(IScene scene)

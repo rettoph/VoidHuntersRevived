@@ -9,21 +9,14 @@ using VoidHuntersRevived.Domain.Entities.Engines;
 namespace VoidHuntersRevived.Domain.Entities.Providers
 {
     [AutoLoad]
-    internal class BelongsToEngineProvider : IEngineProvider
+    internal class BelongsToEngineProvider(
+        IEntityTypeService entityTypeService,
+        IEntityQueryService entityQueryService,
+        ILogger logger) : IEngineProvider
     {
-        private readonly IEntityTypeService _entityTypeService;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ILogger _logger;
-
-        public BelongsToEngineProvider(
-            IEntityTypeService entityTypeService,
-            IEntityQueryService entityQueryService,
-            ILogger logger)
-        {
-            _entityTypeService = entityTypeService;
-            _entityQueryService = entityQueryService;
-            _logger = logger;
-        }
+        private readonly IEntityTypeService _entityTypeService = entityTypeService;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ILogger _logger = logger;
 
         public IEnumerable<IEngine> GetEngines()
         {

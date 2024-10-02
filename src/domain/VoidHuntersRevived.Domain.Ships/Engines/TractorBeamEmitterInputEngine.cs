@@ -10,23 +10,16 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
-    internal sealed class TractorBeamEmitterInputEngine : StrategyEngine,
+    internal sealed class TractorBeamEmitterInputEngine(
+        ITractorBeamEmitterService tractorBeamEmitterService,
+        IEntityQueryService entityQueryService,
+        ILogger logger) : StrategyEngine,
         IEventEngine<Input_TractorBeamEmitter_Select>,
         IEventEngine<Input_TractorBeamEmitter_Deselect>
     {
-        private readonly ITractorBeamEmitterService _tractorBeamEmitterService;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ILogger _logger;
-
-        public TractorBeamEmitterInputEngine(
-            ITractorBeamEmitterService tractorBeamEmitterService,
-            IEntityQueryService entityQueryService,
-            ILogger logger)
-        {
-            _tractorBeamEmitterService = tractorBeamEmitterService;
-            _entityQueryService = entityQueryService;
-            _logger = logger;
-        }
+        private readonly ITractorBeamEmitterService _tractorBeamEmitterService = tractorBeamEmitterService;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ILogger _logger = logger;
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Select data)
         {
