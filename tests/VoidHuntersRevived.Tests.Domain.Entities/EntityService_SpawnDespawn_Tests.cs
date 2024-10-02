@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         public EntityService_SpawnDespawn_Tests()
         {
             _sourceIdGeneratorIndex = 0;
-            _inputs = new List<EventDto>();
+            _inputs = [];
             _gameTime = new GameTime(TimeSpan.Zero, TimeSpan.Zero);
             _tickBuffer = new TickBuffer();
 

@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         ILogger logger) : BinaryWriter(new MemoryStream())
     {
         private readonly Stack<EntityId> _nested = new Stack<EntityId>();
-        private readonly List<long> _positions = new List<long>();
+        private readonly List<long> _positions = [];
         private readonly IEntityTypeProviderService _entityTypeService = entityTypeService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;

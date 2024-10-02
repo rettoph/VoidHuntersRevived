@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public struct NodeSocketId(EntityId nodeId, byte index) : IEquatable<NodeSocketId>
     {
-        private static Dictionary<byte, FilterContextID> _filterContexts = new Dictionary<byte, FilterContextID>();
+        private static Dictionary<byte, FilterContextID> _filterContexts = [];
 
         public static readonly NodeSocketId Empty = default!;
 

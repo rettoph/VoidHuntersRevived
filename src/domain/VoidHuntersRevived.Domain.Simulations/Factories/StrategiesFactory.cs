@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
 
         public IEnumerable<IStrategy> BuildStrategies(ISimulation simulation, StrategyTypeEnum[] strategies)
         {
-            List<Type> strategyTypes = new List<Type>();
+            List<Type> strategyTypes = [];
             if (_netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Predictive))
             {
                 strategyTypes.Add(typeof(PredictiveStrategy));

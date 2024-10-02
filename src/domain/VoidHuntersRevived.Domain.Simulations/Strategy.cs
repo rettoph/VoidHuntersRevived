@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             _engineService = engineService;
             _logger = logger;
             _enqueued = new Queue<EventDto>();
-            _publishers = new Dictionary<Type, EventPublisher>();
+            _publishers = [];
             _stepActions = new ActionSequenceGroup<OnStepSequenceGroup, Step>();
             _drawActions = new ActionSequenceGroup<OnDrawSequenceGroup, GameTime>();
 

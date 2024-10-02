@@ -323,7 +323,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
             return (decimal)(FixedMath64)value;
         }
 
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             if (obj is null)
             {
@@ -333,22 +333,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
             return ((FixedMath64)obj).Equals(obj);
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return m_rawValue.GetHashCode();
         }
 
-        public bool Equals(Fix64 other)
+        public readonly bool Equals(Fix64 other)
         {
             return m_rawValue == other.m_rawValue;
         }
 
-        public int CompareTo(Fix64 other)
+        public readonly int CompareTo(Fix64 other)
         {
             return m_rawValue.CompareTo(other.m_rawValue);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             // Up to 10 decimal places
             return ((decimal)this).ToString("0.##########");
@@ -369,7 +369,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <summary>
         /// The underlying integer representation
         /// </summary>
-        public long RawValue => m_rawValue;
+        public readonly long RawValue => m_rawValue;
 
         /// <summary>
         /// This is the constructor from raw value; it can only be used interally.

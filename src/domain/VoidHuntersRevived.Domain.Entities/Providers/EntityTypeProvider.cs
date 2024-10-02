@@ -171,7 +171,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 
         private static IEnumerable<IEntityType> GetImplementedTypes(IEntityType entityType, IEntityTypeService entityTypeService, HashSet<IEntityType>? result = null)
         {
-            result ??= new HashSet<IEntityType>();
+            result ??= [];
 
             if (result.Contains(entityType) == true)
             {

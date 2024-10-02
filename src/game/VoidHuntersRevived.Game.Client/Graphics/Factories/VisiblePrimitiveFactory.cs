@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
 
         public IEnumerable<IPrimitive> BuildPrimitives()
         {
-            List<IPrimitive> primitives = new List<IPrimitive>();
+            List<IPrimitive> primitives = [];
 
             foreach (IEntityType entityTypeProvider in _entityTypeService.GetAll())
             {
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
             return primitives;
         }
 
-        private static IPrimitive BuildVisiblePrimitive(
+        private static Primitive<VertexVisible> BuildVisiblePrimitive(
             Key<IEntityType> entityTypeKey,
             int sequence,
             Visible visible,
@@ -50,8 +50,8 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
             int count;
             short[] indexBuffer = new short[10];
 
-            List<VertexStaticVisible> fillVertices = new List<VertexStaticVisible>();
-            List<short> fillIndices = new List<short>();
+            List<VertexStaticVisible> fillVertices = [];
+            List<short> fillIndices = [];
 
             count = 0;
             for (int shape_i = 0; shape_i < visible.Fill.count; shape_i++)
@@ -77,8 +77,8 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
                 }
             }
 
-            List<VertexStaticVisible> traceVertices = new List<VertexStaticVisible>();
-            List<short> traceIndices = new List<short>();
+            List<VertexStaticVisible> traceVertices = [];
+            List<short> traceIndices = [];
 
             count = 0;
             for (int shape_i = 0; shape_i < visible.Trace.count; shape_i++)
@@ -100,16 +100,16 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
                 }
             }
 
-            VertexBuffer fillBuffer = new VertexBuffer(graphics, typeof(VertexStaticVisible), fillVertices.Count, BufferUsage.WriteOnly);
+            VertexBuffer fillBuffer = new(graphics, typeof(VertexStaticVisible), fillVertices.Count, BufferUsage.WriteOnly);
             fillBuffer.SetData(fillVertices.ToArray());
 
-            IndexBuffer fillIndexBuffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, fillIndices.Count, BufferUsage.WriteOnly);
+            IndexBuffer fillIndexBuffer = new(graphics, IndexElementSize.SixteenBits, fillIndices.Count, BufferUsage.WriteOnly);
             fillIndexBuffer.SetData(fillIndices.ToArray());
 
-            VertexBuffer traceBuffer = new VertexBuffer(graphics, typeof(VertexStaticVisible), traceVertices.Count, BufferUsage.WriteOnly);
+            VertexBuffer traceBuffer = new(graphics, typeof(VertexStaticVisible), traceVertices.Count, BufferUsage.WriteOnly);
             traceBuffer.SetData(traceVertices.ToArray());
 
-            IndexBuffer traceIndexBuffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, traceIndices.Count, BufferUsage.WriteOnly);
+            IndexBuffer traceIndexBuffer = new(graphics, IndexElementSize.SixteenBits, traceIndices.Count, BufferUsage.WriteOnly);
             traceIndexBuffer.SetData(traceIndices.ToArray());
 
             return new Primitive<VertexVisible>(
@@ -120,8 +120,8 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Factories
                     new PrimitiveGroupSequence(PrimitiveGroupEnum.Foreground, sequence)
                 ],
                 bufferContexts: [
-                    new BufferContext<VertexStaticVisible>(PrimitiveType.TriangleList, fillVertices.ToArray(), fillIndices.ToArray()),
-                    new BufferContext<VertexStaticVisible>(PrimitiveType.LineList, traceVertices.ToArray(), traceIndices.ToArray()),
+                    new BufferContext<VertexStaticVisible>(PrimitiveType.TriangleList, [.. fillVertices], [.. fillIndices]),
+                    new BufferContext<VertexStaticVisible>(PrimitiveType.LineList, [.. traceVertices], [.. traceIndices]),
                 ]);
         }
     }

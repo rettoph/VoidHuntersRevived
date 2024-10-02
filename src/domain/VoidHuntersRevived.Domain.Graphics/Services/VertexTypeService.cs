@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
         {
             _uniqueNumberProvider = uniqueNumberProvider;
             _primitiveService = primitiveService;
-            _vertexTypeManagerProvidersByVertexType = new Dictionary<Type, IVertexTypeManagerProvider>();
+            _vertexTypeManagerProvidersByVertexType = [];
 
             IReadOnlyDictionary<Type, IPrimitive[]> primitivesByVertexType = _primitiveService.GetAllByVertexType();
             foreach ((Type vertexType, IPrimitive[] primitives) in primitivesByVertexType)

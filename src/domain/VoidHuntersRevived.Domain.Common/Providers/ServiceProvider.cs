@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Common.Providers
 
         public ServiceProvider()
         {
-            _cache = new Dictionary<TKey, TService>();
+            _cache = [];
         }
 
         protected abstract TService Factory(TKey key);

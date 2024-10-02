@@ -114,7 +114,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 
             using (_imgui.ApplyID(nameof(World.BodyList)))
             {
-                _objectExplorer.DrawObjectExplorer(_world.BodyList, _filter, 8, new HashSet<object>() { _world });
+                _objectExplorer.DrawObjectExplorer(_world.BodyList, _filter, 8, [_world]);
             }
 
             using (_imgui.ApplyID(nameof(World.ContactManager)))

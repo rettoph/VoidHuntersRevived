@@ -30,8 +30,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal class InputEngine(
         Camera2D camera,
-        IEntityQueryService entityQueryService,
-        ISimulation simulation) : StrategyEngine,
+        ISimulation simulation
+    ) : StrategyEngine,
         IOnInitializeEngine<IStrategy>,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
@@ -49,8 +49,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private IUserShipService _readUserShipService = null!;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
-
-        public string name { get; } = nameof(InputEngine);
 
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
         public void OnInitialize(IStrategy strategy)
@@ -87,7 +85,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            VhId eventId = new VhId(messageId);
+            VhId eventId = new(messageId);
 
             if (message.Value)
             {

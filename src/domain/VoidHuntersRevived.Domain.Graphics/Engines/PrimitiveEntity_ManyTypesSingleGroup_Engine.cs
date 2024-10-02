@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
         {
             _vertexTypeManager = vertexTypeManagerProvider.GetAll().Single();
             _vertexBuffersByType = vertexTypeManagerProvider.Primitives.ToDictionary(x => x.EntityTypeKey ?? throw new NotImplementedException(), x => x.GetAllVertexBuffers().Single().Value);
-            _vertexBuffers = _vertexBuffersByType.Values.ToArray();
+            _vertexBuffers = [.. _vertexBuffersByType.Values];
         }
 
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]

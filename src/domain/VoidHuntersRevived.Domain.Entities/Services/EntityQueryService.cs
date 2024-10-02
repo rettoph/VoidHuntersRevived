@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     public class EntityQueryService : IEntityQueryService, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; } = null!;
-        private readonly Dictionary<VhId, EntityId> _ids = new Dictionary<VhId, EntityId>();
+        private readonly Dictionary<VhId, EntityId> _ids = [];
 
         public void Ready()
         {

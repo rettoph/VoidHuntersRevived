@@ -13,8 +13,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public EntityTypeFlags Flags { get; init; }
         public Key<IEntityType>[] Include { get; init; } = Array.Empty<Key<IEntityType>>();
 
-        public HashSet<Type> RequiredComponents { get; init; } = new HashSet<Type>();
-        public required Dictionary<Type, IEntityComponent> Components { get; init; } = new Dictionary<Type, IEntityComponent>();
+        public HashSet<Type> RequiredComponents { get; init; } = [];
+        public required Dictionary<Type, IEntityComponent> Components { get; init; } = [];
 
         public EntityInitializerDelegate? Initializer { get; init; }
 
@@ -40,9 +40,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             }
 
             Type? type = null;
-            HashSet<Key<IEntityType>> included = new HashSet<Key<IEntityType>>();
-            HashSet<Type> requiredComponents = new HashSet<Type>();
-            Dictionary<Type, IEntityComponent> components = new Dictionary<Type, IEntityComponent>();
+            HashSet<Key<IEntityType>> included = [];
+            HashSet<Type> requiredComponents = [];
+            Dictionary<Type, IEntityComponent> components = [];
             EntityInitializerDelegate? initializer = null;
 
             EntityTypeConfiguration.PopulateCombineConfigurationValues(

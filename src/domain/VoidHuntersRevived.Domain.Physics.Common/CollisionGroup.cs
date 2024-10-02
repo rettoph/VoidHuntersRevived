@@ -53,8 +53,8 @@ namespace VoidHuntersRevived.Domain.Physics.Common
             }
         }
 
-        private static List<string> _names = new List<string>();
-        private static Dictionary<string, CollisionGroup> _dict = new Dictionary<string, CollisionGroup>();
+        private static List<string> _names = [];
+        private static Dictionary<string, CollisionGroup> _dict = [];
         public static CollisionGroup Create(string name, params CollisionCategory[] categories)
         {
             var group = new CollisionGroup((byte)_names.Count, categories);

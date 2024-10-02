@@ -7,7 +7,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Extensions.System.Collection
     {
         public static IComponentBuilder[] ToComponentBuilders(this Dictionary<Type, IEntityComponent> components)
         {
-            List<IComponentBuilder> builders = new List<IComponentBuilder>();
+            List<IComponentBuilder> builders = [];
 
             foreach ((Type type, object value) in components)
             {

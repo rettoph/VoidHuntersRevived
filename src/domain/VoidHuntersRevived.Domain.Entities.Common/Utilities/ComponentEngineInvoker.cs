@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 
         public static bool Create(Type componentEngineInvokerType, Type engineType, Type componentType, IEnumerable<IEngine> engines, [MaybeNullWhen(false)] out ComponentEngineInvoker invoker)
         {
-            List<IEngine> onComponentEngines = new List<IEngine>();
+            List<IEngine> onComponentEngines = [];
 
             foreach (IEngine engine in engines)
             {

@@ -7,15 +7,14 @@ using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<IStrategy>]
-    internal class ImGuiEngineComponent(ISimulationService simulationService) : ISceneComponent<IStrategy>, IImGuiComponent
+    internal class ImGuiEngineComponent : ISceneComponent<IStrategy>, IImGuiComponent
     {
-        private readonly ActionSequenceGroup<ImGuiSequenceGroup, GameTime> _imGuiActions = new ActionSequenceGroup<ImGuiSequenceGroup, GameTime>();
+        private readonly ActionSequenceGroup<ImGuiSequenceGroup, GameTime> _imGuiActions = new();
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PostInitialize)]
         public void Initialize(IStrategy strategy)

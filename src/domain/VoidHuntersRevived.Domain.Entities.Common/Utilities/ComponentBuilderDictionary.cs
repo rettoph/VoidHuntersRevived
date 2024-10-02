@@ -14,8 +14,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 
         public ComponentBuilderDictionary()
         {
-            _values = new Dictionary<Type, IEntityComponent>();
-            _builders = new Dictionary<Type, IComponentBuilder>();
+            _values = [];
+            _builders = [];
         }
 
         public ComponentBuilderDictionary(IEnumerable<ComponentBuilderDictionary> dictionaries) : this()

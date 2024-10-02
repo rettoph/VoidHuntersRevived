@@ -127,7 +127,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// </exception>
         public Fix64 this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -200,7 +200,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         #endregion
 
         #region Private Members
-        private static FixMatrix identity = new FixMatrix(Fix64.One, Fix64.Zero, Fix64.Zero, Fix64.Zero,
+        private static FixMatrix identity = new(Fix64.One, Fix64.Zero, Fix64.Zero, Fix64.Zero,
                                                     Fix64.Zero, Fix64.One, Fix64.Zero, Fix64.Zero,
                                                     Fix64.Zero, Fix64.Zero, Fix64.One, Fix64.Zero,
                                                     Fix64.Zero, Fix64.Zero, Fix64.Zero, Fix64.One);
@@ -553,7 +553,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// </summary>
         /// <param name="other">The <see cref="FixMatrix"/> to compare.</param>
         /// <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
-        public bool Equals(FixMatrix other)
+        public readonly bool Equals(FixMatrix other)
         {
             return ((((((this.M11 == other.M11) && (this.M22 == other.M22)) && ((this.M33 == other.M33) && (this.M44 == other.M44))) && (((this.M12 == other.M12) && (this.M13 == other.M13)) && ((this.M14 == other.M14) && (this.M21 == other.M21)))) && ((((this.M23 == other.M23) && (this.M24 == other.M24)) && ((this.M31 == other.M31) && (this.M32 == other.M32))) && (((this.M34 == other.M34) && (this.M41 == other.M41)) && (this.M42 == other.M42)))) && (this.M43 == other.M43));
         }
@@ -1305,7 +1305,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// {M41:[<see cref="M41"/>] M42:[<see cref="M42"/>] M43:[<see cref="M43"/>] M44:[<see cref="M44"/>]}
         /// </summary>
         /// <returns>A <see cref="String"/> representation of this <see cref="FixMatrix"/>.</returns>
-        public override string ToString()
+        public override readonly string ToString()
         {
             return "{M11:" + M11 + " M12:" + M12 + " M13:" + M13 + " M14:" + M14 + "}"
                 + " {M21:" + M21 + " M22:" + M22 + " M23:" + M23 + " M24:" + M24 + "}"

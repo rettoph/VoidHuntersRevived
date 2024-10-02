@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Common.Utilities
 
         private readonly TimeSpan _maximumAge = maximumAge;
         private readonly Queue<Cached> _cached = new Queue<Cached>();
-        private readonly Dictionary<T, int> _count = new Dictionary<T, int>();
+        private readonly Dictionary<T, int> _count = [];
         private Cached _item;
 
         public IEnumerable<T> Prune()

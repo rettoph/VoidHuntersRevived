@@ -5,7 +5,7 @@
         public Fix64 Length = length;
         public Fix64 Radians = radians;
 
-        public FixVector2 ToVector2()
+        public readonly FixVector2 ToVector2()
         {
             return new FixVector2(
                 x: Fix64.Cos(Radians) * Length,

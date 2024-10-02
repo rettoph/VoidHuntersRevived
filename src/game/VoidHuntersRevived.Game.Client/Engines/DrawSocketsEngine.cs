@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly Camera2D _camera = camera;
         private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch = primitiveBatch;
-        private readonly PrimitiveShape _jointShape = new PrimitiveShape(new[]
+        private readonly PrimitiveShape _jointShape = new(new[]
             {
                 new Vector2(-0.05f, -0.05f),
                 new Vector2(0f, 0f),

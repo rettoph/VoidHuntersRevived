@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         }
 
         private BelongsTo<Team, TeamMember> _defaultTeamComponent;
-        private Dictionary<Id<Team>, BelongsTo<Team, TeamMember>> _teamComponents = new Dictionary<Id<Team>, BelongsTo<Team, TeamMember>>();
+        private Dictionary<Id<Team>, BelongsTo<Team, TeamMember>> _teamComponents = [];
 
         private readonly IEntityTypeService _entityTypeService = entityTypeService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
             defaultTeamComponent = new BelongsTo<Team, TeamMember>(defaultTeamId.VhId);
 
             // Spawn additional team entities...
-            teamComponents = new Dictionary<Id<Team>, BelongsTo<Team, TeamMember>>();
+            teamComponents = [];
             TeamEntityType[] teamEntityTypes = _entityTypeService.GetAll<TeamEntityType>();
 
             foreach (IEntityType teamEntityType in teamEntityTypes)

@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             Lazy<ILogger> logger) : base(StrategyTypeEnum.Lockstep, simulation, engineService, logger)
         {
             _tickActions = new ActionSequenceGroup<OnTickSequenceGroup, Tick>();
-            _history = new List<Tick>();
+            _history = [];
             _stepsSinceTick = 0;
             _timeSinceStep = TimeSpan.Zero;
             _step = new Step()

@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IOnStepEngine
     {
 
-        private HashSet<EGID> _removedNodes = new HashSet<EGID>();
+        private HashSet<EGID> _removedNodes = [];
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;

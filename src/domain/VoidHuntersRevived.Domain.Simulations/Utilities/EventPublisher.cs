@@ -15,14 +15,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
         public static void PopulatePublishers(IEngineService engines, ILogger logger, Dictionary<Type, EventPublisher> publishers)
         {
-            Dictionary<Type, List<IEventEngine>> subscriptions = new();
+            Dictionary<Type, List<IEventEngine>> subscriptions = [];
             foreach (IEventEngine system in engines.OfType<IEventEngine>())
             {
                 foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventEngine<>)))
                 {
                     if (!subscriptions.TryGetValue(subscriberType.GenericTypeArguments[0], out List<IEventEngine>? subSystems))
                     {
-                        subscriptions[subscriberType.GenericTypeArguments[0]] = subSystems = new List<IEventEngine>();
+                        subscriptions[subscriberType.GenericTypeArguments[0]] = subSystems = [];
                     }
 
                     subSystems.Add(system);
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
         public static Dictionary<Type, EventPublisher> BuildPublishers(IEngineService engines, ILogger logger)
         {
-            Dictionary<Type, EventPublisher> publishers = new();
+            Dictionary<Type, EventPublisher> publishers = [];
 
             EventPublisher.PopulatePublishers(engines, logger, publishers);
 

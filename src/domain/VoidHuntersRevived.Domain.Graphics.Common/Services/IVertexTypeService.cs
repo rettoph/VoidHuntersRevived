@@ -7,6 +7,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Services
     {
         public IVertexTypeManagerProvider<TVertex> GetByVertexType<TVertex>()
             where TVertex : unmanaged, IVertexType;
+
         public IReadOnlyDictionary<Type, IVertexTypeManagerProvider> GetAllByVertexType();
     }
 }

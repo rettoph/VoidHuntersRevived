@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Providers
             }
 
             this.Primitives = primitives.OfType<IPrimitive<TVertex>>().ToArray();
-            this.Groups = this.Primitives.SelectMany(x => x.Groups).Distinct().Order().ToArray();
+            this.Groups = [.. this.Primitives.SelectMany(x => x.Groups).Distinct().Order()];
 
             _vertexTypeManagersByGroup = this.Groups.ToDictionary(
                 keySelector: g => g,
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Providers
                     primitives: this.Primitives.Where(p => p.Groups.Contains(g)).ToArray())
                 );
 
-            _orderedVertexTypeManagers = _vertexTypeManagersByGroup.Values.OrderBy(x => x.Group).ToArray();
+            _orderedVertexTypeManagers = [.. _vertexTypeManagersByGroup.Values.OrderBy(x => x.Group)];
         }
 
         public IVertexTypeManager<TVertex> GetByGroup(PrimitiveGroupEnum group)

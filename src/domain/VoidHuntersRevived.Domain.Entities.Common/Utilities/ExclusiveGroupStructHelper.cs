@@ -5,7 +5,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
     public static class ExclusiveGroupStructHelper
     {
-        private static readonly Dictionary<string, ExclusiveGroup> _groups = new Dictionary<string, ExclusiveGroup>();
+        private static readonly Dictionary<string, ExclusiveGroup> _groups = [];
 
         public static ExclusiveGroupStruct GetOrCreateExclusiveStruct(string name)
         {

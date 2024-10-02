@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
         IEventEngine<UserJoined>
     {
         private readonly INetScope<IStrategy> _scope = scope;
-        private readonly List<Tick> _history = new List<Tick>();
+        private readonly List<Tick> _history = [];
         private readonly ILogger _logger = logger;
 
         public string name { get; } = nameof(LockstepServer_TickEngine);

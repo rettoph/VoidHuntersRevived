@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         ISubscriber<INetIncomingMessage<EventDto>>
     {
         private readonly IBus _bus = bus;
-        private readonly List<EventDto> _inputs = new List<EventDto>();
+        private readonly List<EventDto> _inputs = [];
 
         public override void Initialize(ISimulation simulation)
         {

@@ -23,8 +23,8 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             Type? type = null;
             EntityTypeFlags flags = EntityTypeFlags.None;
             Key<IEntityType>[] include = Array.Empty<Key<IEntityType>>();
-            Dictionary<Type, IEntityComponent> components = new Dictionary<Type, IEntityComponent>();
-            Dictionary<Type, IEntityComponent> typeEntityComponents = new Dictionary<Type, IEntityComponent>();
+            Dictionary<Type, IEntityComponent> components = [];
+            Dictionary<Type, IEntityComponent> typeEntityComponents = [];
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();

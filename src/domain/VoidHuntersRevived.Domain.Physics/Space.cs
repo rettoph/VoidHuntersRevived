@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Physics
         public Space(ILogger logger, AetherWorld aether)
         {
             _aether = aether;
-            _bodies = new Dictionary<VhId, Body>();
+            _bodies = [];
             _logger = logger;
 
             _aether.BodyAwakeChanged += this.HandleBodyAwakeChanged;

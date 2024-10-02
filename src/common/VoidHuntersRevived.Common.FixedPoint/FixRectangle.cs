@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
     /// <param name="height">The height of the created <see cref="FixRectangle"/>.</param>
     public struct FixRectangle(Fix64 x, Fix64 y, Fix64 width, Fix64 height)
     {
-        private static FixRectangle emptyFixRectangle = new FixRectangle();
+        private static FixRectangle emptyFixRectangle = new();
 
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
         /// <summary>
         /// Returns the x coordinate of the left edge of this <see cref="FixRectangle"/>.
         /// </summary>
-        public Fix64 Left
+        public readonly Fix64 Left
         {
             get { return this.X; }
         }
@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
         /// <summary>
         /// Returns the x coordinate of the right edge of this <see cref="FixRectangle"/>.
         /// </summary>
-        public Fix64 Right
+        public readonly Fix64 Right
         {
             get { return (this.X + this.Width); }
         }
@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
         /// <summary>
         /// Returns the y coordinate of the top edge of this <see cref="FixRectangle"/>.
         /// </summary>
-        public Fix64 Top
+        public readonly Fix64 Top
         {
             get { return this.Y; }
         }
@@ -81,7 +81,7 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
         /// <summary>
         /// Returns the y coordinate of the bottom edge of this <see cref="FixRectangle"/>.
         /// </summary>
-        public Fix64 Bottom
+        public readonly Fix64 Bottom
         {
             get { return (this.Y + this.Height); }
         }
