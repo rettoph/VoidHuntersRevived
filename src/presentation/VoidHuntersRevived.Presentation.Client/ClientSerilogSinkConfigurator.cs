@@ -14,6 +14,8 @@ namespace VoidHuntersRevived.Presentation.Client
         public void Configure(LoggerConfiguration config, string template)
         {
             config.WriteTo.Terminal(_terminal, outputTemplate: template);
+
+            config.WriteTo.Console(outputTemplate: template);
         }
     }
 }

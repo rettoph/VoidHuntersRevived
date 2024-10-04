@@ -6,9 +6,6 @@
     "ColorScheme": {
       "Primary": "Color.ThrusterPrimaryColor",
       "Secondary": "Color.ThrusterSecondaryColor"
-    },
-    "PrimitiveSequence": {
-      "Value": -10
     }
   }
 }

@@ -9,7 +9,7 @@
       "Primary": "Color.TeamOnePrimaryColor",
       "Secondary": "Color.TeamOneSecondaryColor"
     },
-    "PrimitiveGroup": {
+    "PrimitiveSequenceGroup.Visible": {
       "Value": "Foreground"
     }
   }

@@ -5,7 +5,7 @@
     "Team": {
       "Name": "String.TeamZeroName"
     },
-    "PrimitiveGroup": {
+    "PrimitiveSequenceGroup.Visible": {
       "Value": "Background"
     }
   }

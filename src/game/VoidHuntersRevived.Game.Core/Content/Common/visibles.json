@@ -1,0 +1,10 @@
+[
+  {
+    "type": "Visible",
+    "values": {
+      "Visible.Hull.Triangle": "Visibles\\visible.hull.triangle.json",
+      "Visible.Hull.Square": "Visibles\\visible.hull.square.json",
+      "Visible.Thruster": "Visibles\\visible.thruster.json"
+    }
+  }
+]

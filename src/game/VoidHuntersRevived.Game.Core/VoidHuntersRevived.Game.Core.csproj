@@ -32,6 +32,10 @@
     <None Remove="Content\Common\teams.json" />
     <None Remove="Content\Common\Teams\team.00.json" />
     <None Remove="Content\Common\Teams\team.01.json" />
+    <None Remove="Content\Common\visibles.json" />
+    <None Remove="Content\Common\Visibles\visible.hull.square.json" />
+    <None Remove="Content\Common\Visibles\visible.hull.triangle.json" />
+    <None Remove="Content\Common\Visibles\visible.thruster.json" />
   </ItemGroup>
 
   <ItemGroup>

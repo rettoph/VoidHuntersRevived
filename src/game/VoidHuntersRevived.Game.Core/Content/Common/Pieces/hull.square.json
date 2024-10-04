@@ -121,6 +121,9 @@
           ]
         }
       ]
+    },
+    "Primitive.Visible": {
+      "Type": "primitive.visible.hull.square"
     }
   }
 }

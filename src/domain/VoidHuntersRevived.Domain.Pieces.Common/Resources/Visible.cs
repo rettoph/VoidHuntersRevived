@@ -3,22 +3,23 @@ using Microsoft.Xna.Framework;
 using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Extensions.Svelto;
-using VoidHuntersRevived.Common.Extensions.System;
 using VoidHuntersRevived.Common.Helpers;
-using VoidHuntersRevived.Domain.Entities.Common.Interfaces;
+using VoidHuntersRevived.Domain.Graphics.Common.Contexts;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
-namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
+namespace VoidHuntersRevived.Domain.Pieces.Common.Resources
 {
     [PolymorphicJsonType<IEntityComponent>(nameof(Visible))]
-    public struct Visible : IDisposable, IPieceComponent, ICloneableComponent<Visible>
+    public struct Visible : IPieceComponent
     {
-        private static float TraceThickness = 1f;
+        private static readonly float TraceThickness = 1f;
         private static readonly Matrix OuterScaleMatrix = Matrix.CreateScale(0.1f);
         private static readonly Matrix InnerScaleMatrix = Matrix.CreateScale(-0.1f);
 
         private NativeDynamicArrayCast<Shape> _trace;
+
+        public required PrimitiveContext Primitive { get; init; }
 
         public required NativeDynamicArrayCast<Shape> Fill { get; init; }
         public required NativeDynamicArrayCast<Shape> Trace
@@ -28,14 +29,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
             {
                 _trace = value;
 
-                NativeDynamicArrayCast<Shape> traceVertices = new NativeDynamicArrayCast<Shape>((uint)value.count, Allocator.Persistent);
+                NativeDynamicArrayCast<Shape> traceVertices = new((uint)value.count, Allocator.Persistent);
 
                 for (int i = 0; i < value.count; i++)
                 {
                     traceVertices.Set(i, BuildTraceVertices(ref value[i]));
                 }
 
-                this.TraceVertices = traceVertices;
+                TraceVertices = traceVertices;
             }
         }
 
@@ -45,27 +46,27 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
         {
             for (int i = 0; i < Fill.count; i++)
             {
-                this.Fill[i].Dispose();
+                Fill[i].Dispose();
             }
 
             for (int i = 0; i < Trace.count; i++)
             {
-                this.Trace[i].Dispose();
+                Trace[i].Dispose();
             }
 
             for (int i = 0; i < TraceVertices.count; i++)
             {
-                this.TraceVertices[i].Dispose();
+                TraceVertices[i].Dispose();
             }
 
-            this.Fill.Dispose();
-            this.Trace.Dispose();
-            this.TraceVertices.Dispose();
+            Fill.Dispose();
+            Trace.Dispose();
+            TraceVertices.Dispose();
         }
 
         private Shape BuildTraceVertices(ref Shape shape)
         {
-            NativeDynamicArrayCast<Vector2> vertices = new NativeDynamicArrayCast<Vector2>((uint)shape.Vertices.count * 5, Allocator.Persistent);
+            NativeDynamicArrayCast<Vector2> vertices = new((uint)shape.Vertices.count * 5, Allocator.Persistent);
 
             uint index = 0;
             for (int i = 0; i < shape.Vertices.count; i++)
@@ -102,23 +103,24 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
         {
             IEnumerable<PolygonHelper.VertexAngle> vertexAngles = PolygonHelper.CalculateVertexAngles(sides);
 
-            return new Visible()
-            {
-                Fill = new[]
-                {
-                    new Shape()
-                    {
-                        Vertices = vertexAngles.Select(x => x.XnaVertex).ToNativeDynamicArray()
-                    }
-                }.ToNativeDynamicArray(),
-                Trace = new[]
-                {
-                    new Shape()
-                    {
-                        Vertices = vertexAngles.Select(x => x.XnaVertex).Concat(vertexAngles.First().XnaVertex.Yield()).ToNativeDynamicArray()
-                    }
-                }.ToNativeDynamicArray()
-            };
+            throw new NotImplementedException();
+            // return new Visible()
+            // {
+            //     Fill = new[]
+            //     {
+            //         new Shape()
+            //         {
+            //             Vertices = vertexAngles.Select(x => x.XnaVertex).ToNativeDynamicArray()
+            //         }
+            //     }.ToNativeDynamicArray(),
+            //     Trace = new[]
+            //     {
+            //         new Shape()
+            //         {
+            //             Vertices = vertexAngles.Select(x => x.XnaVertex).Concat(vertexAngles.First().XnaVertex.Yield()).ToNativeDynamicArray()
+            //         }
+            //     }.ToNativeDynamicArray()
+            // };
         }
 
         private static Vector2? TryGetVertex(ref Shape shape, int index)
@@ -171,15 +173,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Static
             float gridAngle = vertex.Angle(p1);
 
             return vertex + Vector2Helper.FromPolar(gridAngle + angle / 2, MathF.Abs(AAS(angle / 2)));
-        }
-
-        public Visible Clone()
-        {
-            return new Visible()
-            {
-                Fill = this.Fill.Clone(Allocator.Persistent, x => x.Clone()),
-                Trace = this.Trace.Clone(Allocator.Persistent, x => x.Clone())
-            };
         }
     }
 }

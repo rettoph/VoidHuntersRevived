@@ -1,18 +1,22 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Interfaces;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using System.Diagnostics;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Graphics.Common.Contexts;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
+using VoidHuntersRevived.Domain.Graphics.Common.Utilities;
 
-namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
+namespace VoidHuntersRevived.Domain.Graphics.Common
 {
-    [DebuggerDisplay("EntityTypeKey = {EntityTypeKey?.Name}, VertexType = {VertexType.Name}, Group = {Group}")]
-    public class VertexBuffer<TVertex> : IVertexBuffer<TVertex>
+    [DebuggerDisplay("Type = {Type.Name}, VertexType = {VertexType.Name}, SequenceGroup = {SequenceGroup}")]
+    public abstract class BasePrimitive<TVertex> : IPrimitive<TVertex>, IQueryingEntitiesEngine
         where TVertex : unmanaged, IVertexType
     {
         private static int FilterId;
-        private static FilterContextID FilterContextId = FilterContextID.GetNewContextID();
+        private static readonly FilterContextID FilterContextId = FilterContextID.GetNewContextID();
 
         private const int DefaultBufferSize = 256;
 
@@ -21,7 +25,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
         private readonly CombinedFilterID _combinedFilterId;
         private readonly VertexBuffer[] _staticBuffers;
         private readonly IndexBuffer[] _indexBuffers;
-        private readonly PrimitiveType[] _primitiveTyes;
+        private readonly Effect _effect;
+        private readonly PrimitiveType[] _primitiveTypes;
         private VertexBuffer _instanceBuffer;
         private TVertex[] _instanceVertices;
         private int _instanceCount = 0;
@@ -30,58 +35,59 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
         public readonly int BufferCount;
         public VertexBufferBinding[][] VertexBufferBindings => _bindings;
         public IndexBuffer[] IndexBuffers => _indexBuffers;
-        public PrimitiveType[] PrimitiveTypes => _primitiveTyes;
+        public PrimitiveType[] PrimitiveTypes => _primitiveTypes;
         public readonly int[] StaticPrimitiveCount;
         public int InstanceCount => _instanceCount;
+        public Effect Effect => _effect;
         public Func<int, int> PrimitiveCount => (idx) => StaticPrimitiveCount[idx] * InstanceCount;
 
-        public EntitiesDB EntitiesDb { get; set; } = null!;
-
-        public Key<IEntityType>? EntityTypeKey { get; }
-        public PrimitiveGroupEnum Group { get; }
+        public Key<IPrimitive> Type { get; }
+        public PrimitiveSequenceGroupEnum SequenceGroup { get; }
         public Type VertexType => typeof(TVertex);
 
         public int Sequence { get; }
+        public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public VertexBuffer(
-            Key<IEntityType>? entityTypeKey,
-            PrimitiveGroupEnum group,
-            int sequence,
+        SequenceGroup<PrimitiveSequenceGroupEnum> IRuntimeSequenceGroup<PrimitiveSequenceGroupEnum>.Value => SequenceGroup<PrimitiveSequenceGroupEnum>.GetByValue(this.SequenceGroup);
+
+        public BasePrimitive(
+            PrimitiveContext context,
+            PrimitiveSequenceGroupEnum sequenceGroup,
             GraphicsDevice graphics,
-            VertexBuffer[] staticBuffers,
-            IndexBuffer[] indexBuffers,
-            PrimitiveType[] primitiveTypes)
+            BufferContext staticBufferContext,
+            Effect effect)
         {
-            if (staticBuffers.Length != indexBuffers.Length || staticBuffers.Length != primitiveTypes.Length)
-            {
-                throw new ArgumentException();
-            }
-
             _graphics = graphics;
             _combinedFilterId = new CombinedFilterID(FilterId++, FilterContextId);
             _instanceVertices = new TVertex[DefaultBufferSize];
             _instanceBuffer = new DynamicVertexBuffer(_graphics, typeof(TVertex), _instanceVertices.Length, BufferUsage.WriteOnly);
+            _effect = effect;
 
-            _staticBuffers = staticBuffers;
-            _indexBuffers = indexBuffers;
-            _primitiveTyes = primitiveTypes;
+            _staticBuffers = staticBufferContext.BuildVertexBuffers(graphics);
+            _indexBuffers = staticBufferContext.BuildIndexBuffers(graphics);
+            _primitiveTypes = [.. staticBufferContext.GetTypes()];
             _bindings = _staticBuffers.Select((x, idx) => new VertexBufferBinding[]
             {
-                new VertexBufferBinding(_staticBuffers[idx], 0, 0),
-                new VertexBufferBinding(_instanceBuffer, 0, 1)
+                new(_staticBuffers[idx], 0, 0),
+                new(_instanceBuffer, 0, 1)
             }).ToArray();
 
-            StaticPrimitiveCount = _primitiveTyes.Select(x => x switch
+            this.StaticPrimitiveCount = staticBufferContext.GetTypes().Select(x => x switch
             {
                 PrimitiveType.LineList => 2,
                 PrimitiveType.TriangleList => 3,
                 _ => throw new NotImplementedException()
             }).Select((x, idx) => _indexBuffers[idx].IndexCount / x).ToArray();
 
-            this.BufferCount = staticBuffers.Length;
-            this.EntityTypeKey = entityTypeKey;
-            this.Group = group;
-            this.Sequence = sequence;
+            this.BufferCount = _staticBuffers.Length;
+            this.Type = context.Type;
+            this.SequenceGroup = sequenceGroup;
+            this.Sequence = context.Sequence;
+        }
+
+        public void Ready()
+        {
+            //
         }
 
         public void EnsureFit(int size)
@@ -103,8 +109,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
             _instanceBuffer = new DynamicVertexBuffer(_graphics, typeof(TVertex), _instanceVertices.Length, BufferUsage.WriteOnly);
             _bindings = _staticBuffers.Select((x, idx) => new VertexBufferBinding[]
             {
-                new VertexBufferBinding(_staticBuffers[idx], 0, 0),
-                new VertexBufferBinding(_instanceBuffer, 0, 1)
+                new(_staticBuffers[idx], 0, 0),
+                new(_instanceBuffer, 0, 1)
             }).ToArray();
         }
 
@@ -130,29 +136,44 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
             return ref _instanceVertices[_instanceCount++];
         }
 
-        public void Flush()
+        protected virtual bool Flush()
         {
+            if (_instanceCount == 0)
+            {
+                return false;
+            }
+
             _instanceBuffer.SetData(_instanceVertices, 0, _instanceCount);
+            return true;
         }
 
-        public void Clear()
+        protected virtual void Clear()
         {
             _instanceCount = 0;
         }
 
-        public void Draw(Effect effect)
+        public virtual void Draw(GameTime gameTime)
         {
+            if (this.Flush() == false)
+            {
+                return;
+            }
+
+            _graphics.BlendState = BlendState.NonPremultiplied;
+
             for (int i = 0; i < this.BufferCount; i++)
             {
                 _graphics.SetVertexBuffers(this.VertexBufferBindings[i]);
                 _graphics.Indices = this.IndexBuffers[i];
 
-                foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+                foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
                     _graphics.DrawInstancedPrimitives(this.PrimitiveTypes[i], 0, 0, this.StaticPrimitiveCount[i], this.InstanceCount);
                 }
             }
+
+            this.Clear();
         }
 
         public void Dispose()
@@ -173,7 +194,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
         public ref EntityFilterCollection GetFilter<TComponent>()
             where TComponent : unmanaged, IVertexType, IEntityComponent
         {
-            return ref this.EntitiesDb.GetFilters().GetOrCreatePersistentFilter<TComponent>(_combinedFilterId);
+            return ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<TComponent>(_combinedFilterId);
         }
     }
 }

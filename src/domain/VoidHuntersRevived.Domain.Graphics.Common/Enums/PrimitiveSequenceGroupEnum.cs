@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Domain.Graphics.Common.Enums
 {
-    public enum PrimitiveGroupEnum
+    public enum PrimitiveSequenceGroupEnum
     {
         None = 0,
         Background = 1,

@@ -1,25 +1,20 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Services
 {
     public interface IPrimitiveService
     {
-        IPrimitive GetByEntityTypeKey(Key<IEntityType> entityTypeKey);
-        IPrimitive<TVertex> GetByEntityTypeKey<TVertex>(Key<IEntityType> entityTypeKey)
-            where TVertex : unmanaged, IVertexType;
-
-        IPrimitive GetByVertexType(Type vertexType);
-        IPrimitive<TVertex> GetByVertexType<TVertex>()
-            where TVertex : unmanaged, IVertexType;
-
-        IEnumerable<IPrimitive> GetAllByVertexType(Type vertexType);
-        IEnumerable<IPrimitive<TVertex>> GetAllByVertexType<TVertex>()
-            where TVertex : unmanaged, IVertexType;
-
-        IReadOnlyDictionary<Type, IPrimitive[]> GetAllByVertexType();
+        IEnumerable<Type> GetAllVertexTypes();
 
         IEnumerable<IPrimitive> GetAll();
+        IEnumerable<IPrimitive<TVertex>> GetAll<TVertex>() where TVertex : unmanaged, IVertexType;
+    }
+
+    public interface IPrimitiveService<TVertex>
+        where TVertex : unmanaged, IVertexType
+    {
+        IPrimitive<TVertex> GetPrimitiveByTypeAndSequenceGroup(Key<IPrimitive> type, PrimitiveSequenceGroupEnum sequenceGroup);
     }
 }

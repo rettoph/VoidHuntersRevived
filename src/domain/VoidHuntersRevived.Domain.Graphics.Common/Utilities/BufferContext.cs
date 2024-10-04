@@ -1,43 +1,90 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System.Runtime.InteropServices;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 {
     public abstract class BufferContext
     {
-        public abstract PrimitiveType PrimitiveType { get; }
-
         internal BufferContext()
         {
 
         }
 
-        public abstract VertexBuffer BuildVertexBuffer(GraphicsDevice graphics);
+        public abstract VertexBuffer[] BuildVertexBuffers(GraphicsDevice graphics);
 
-        public abstract IndexBuffer BuildIndexBuffer(GraphicsDevice graphics);
+        public abstract IndexBuffer[] BuildIndexBuffers(GraphicsDevice graphics);
+
+        public abstract IEnumerable<PrimitiveType> GetTypes();
     }
 
-    public class BufferContext<TVertex>(PrimitiveType primitiveType, TVertex[] vertices, short[] indices) : BufferContext
+    public class BufferContext<TVertex> : BufferContext
         where TVertex : unmanaged, IVertexType
     {
-        private readonly TVertex[] _vertices = vertices;
-        private readonly short[] _indices = indices;
+        private readonly List<PrimitiveType> _types = [];
+        private readonly Dictionary<PrimitiveType, List<TVertex>> _vertices = [];
+        private readonly Dictionary<PrimitiveType, List<short>> _indices = [];
 
-        public override PrimitiveType PrimitiveType { get; } = primitiveType;
-
-        public override VertexBuffer BuildVertexBuffer(GraphicsDevice graphics)
+        public void AddVertex(PrimitiveType type, TVertex vertex, out short index)
         {
-            VertexBuffer buffer = new VertexBuffer(graphics, typeof(TVertex), _vertices.Length, BufferUsage.WriteOnly);
-            buffer.SetData(_vertices);
+            this.GetCollections(type, out var vertices, out _);
 
-            return buffer;
+            index = (short)vertices.Count;
+            vertices.Add(vertex);
         }
 
-        public override IndexBuffer BuildIndexBuffer(GraphicsDevice graphics)
+        public void AddIndices(PrimitiveType type, params short[] indices)
         {
-            IndexBuffer buffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, _indices.Length, BufferUsage.WriteOnly);
-            buffer.SetData(_indices);
+            this.GetCollections(type, out var _, out var list);
+            list.AddRange(indices);
+        }
 
-            return buffer;
+        public override IEnumerable<PrimitiveType> GetTypes() => _types;
+
+        public override VertexBuffer[] BuildVertexBuffers(GraphicsDevice graphics)
+        {
+            List<VertexBuffer> buffers = [];
+
+            foreach (PrimitiveType type in this.GetTypes())
+            {
+                VertexBuffer buffer = new(graphics, typeof(TVertex), _vertices[type].Count, BufferUsage.WriteOnly);
+                buffer.SetData([.. _vertices[type]]);
+                buffers.Add(buffer);
+            }
+
+            return [.. buffers];
+        }
+
+        public override IndexBuffer[] BuildIndexBuffers(GraphicsDevice graphics)
+        {
+            List<IndexBuffer> buffers = [];
+
+            foreach (PrimitiveType type in this.GetTypes())
+            {
+                IndexBuffer buffer = new(graphics, IndexElementSize.SixteenBits, _indices[type].Count, BufferUsage.WriteOnly);
+                buffer.SetData([.. _indices[type]]);
+                buffers.Add(buffer);
+            }
+
+            return [.. buffers];
+        }
+
+        private void GetCollections(PrimitiveType type, out List<TVertex> vertices, out List<short> indices)
+        {
+            ref List<TVertex> verticesRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_vertices, type, out bool exists)!;
+            if (exists == true)
+            {
+                vertices = verticesRef;
+                indices = _indices[type];
+                return;
+            }
+
+            verticesRef = [];
+
+            vertices = verticesRef;
+            indices = [];
+
+            _types.Add(type);
+            _indices.Add(type, indices);
         }
     }
 }

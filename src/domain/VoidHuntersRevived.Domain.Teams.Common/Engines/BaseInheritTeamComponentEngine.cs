@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Engines
     /// <summary>
     /// Allows for entity components to be overwritten by their teams
     /// </summary>
-    public abstract class BaseTeamInstanceComponentEngine<TComponent>(IEntityQueryService entityQueryService) : StrategyEngine, IReactOnAddEx<TComponent>
+    public abstract class BaseInheritTeamComponentEngine<TComponent>(IEntityQueryService entityQueryService) : StrategyEngine, IReactOnAddEx<TComponent>
         where TComponent : unmanaged, IEntityComponent
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Engines
             }
 
             var (instanceComponents, _) = entities;
-            var (instances, belongsToTeams, belongsToTypes, _) = components;
+            var (_, belongsToTeams, _) = components;
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {

@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
 using Guppy.Core.Serialization.Common.Services;
 using Svelto.ECS;
 using System.Text.Json;
@@ -11,10 +10,8 @@ using VoidHuntersRevived.Domain.Entities.Common.Enums;
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
     internal sealed class EntityTypeConfigurationResolverConverter(
-        Lazy<IResourceService> resourceService,
         IPolymorphicJsonSerializerService<IEntityType> entityTypeTypeService) : JsonConverter<ResourceResolver<EntityTypeConfiguration>>
     {
-        private readonly Lazy<IResourceService> _resourceService = resourceService;
         private readonly IPolymorphicJsonSerializerService<IEntityType> _entityTypeTypeService = entityTypeTypeService;
 
         public override ResourceResolver<EntityTypeConfiguration>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -66,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 
             return new ResourceResolver<EntityTypeConfiguration>(() =>
             {
-                EntityTypeConfiguration entityTypeConfiguration = new EntityTypeConfiguration()
+                EntityTypeConfiguration entityTypeConfiguration = new()
                 {
                     Key = key.Value,
                     Type = type,
