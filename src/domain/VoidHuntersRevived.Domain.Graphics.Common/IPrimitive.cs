@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common
 {
-    public interface IPrimitive : IRuntimeSequenceGroup<PrimitiveSequenceGroupEnum>
+    public interface IPrimitive : IRuntimeSequenceGroup<PrimitiveSequenceGroupEnum>, IRuntimeSequence<PrimitiveSequenceGroupEnum>
     {
         Key<IPrimitive> Type { get; }
 

@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
     [SceneFilter<IStrategy>]
     internal class ImGuiEngineComponent : ISceneComponent<IStrategy>, IImGuiComponent
     {
-        private readonly ActionSequenceGroup<ImGuiSequenceGroup, GameTime> _imGuiActions = new();
+        private readonly ActionSequenceGroup<ImGuiSequenceGroup, GameTime> _imGuiActions = new(true);
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PostInitialize)]
         public void Initialize(IStrategy strategy)

@@ -50,6 +50,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
 
         SequenceGroup<PrimitiveSequenceGroupEnum> IRuntimeSequenceGroup<PrimitiveSequenceGroupEnum>.Value => SequenceGroup<PrimitiveSequenceGroupEnum>.GetByValue(this.SequenceGroup);
 
+        int IRuntimeSequence<PrimitiveSequenceGroupEnum>.Value => this.Sequence;
+
         public BasePrimitive(
             PrimitiveContext context,
             PrimitiveSequenceGroupEnum sequenceGroup,

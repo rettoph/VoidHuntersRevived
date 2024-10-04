@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
     internal sealed class DebugEngineComponent(IImGui imgui) : ISceneComponent<IStrategy>, IDebugComponent
     {
         private readonly IImGui _imgui = imgui;
-        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions = new();
+        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions = new(true);
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IStrategy strategy)

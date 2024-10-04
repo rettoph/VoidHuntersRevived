@@ -15,12 +15,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
     public class DrawPrimitivesEngine(IPrimitiveService primitiveService) : StrategyEngine, IOnInitializeEngine, IOnDrawEngine
     {
         private readonly IPrimitiveService _primitiveService = primitiveService;
-        private readonly ActionSequenceGroup<PrimitiveSequenceGroupEnum, GameTime> _primitiveActions = new();
+        private readonly ActionSequenceGroup<PrimitiveSequenceGroupEnum, GameTime> _primitiveActions = new(true);
 
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
         public void OnInitialize(IStrategy strategy)
         {
-            _primitiveActions.Add(_primitiveService.GetAll().OrderBy(x => x.Sequence));
+            _primitiveActions.Add(_primitiveService.GetAll());
         }
 
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.Draw)]
