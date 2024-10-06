@@ -6,7 +6,7 @@ using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 
-namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
     public struct Node(EntityId id, EntityId treeId) : IEntityComponent
     {

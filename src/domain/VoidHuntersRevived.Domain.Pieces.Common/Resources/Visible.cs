@@ -1,102 +1,72 @@
-﻿using Guppy.Core.Serialization.Common.Attributes;
-using Microsoft.Xna.Framework;
-using Svelto.Common;
-using Svelto.DataStructures;
-using Svelto.ECS;
+﻿using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common.Helpers;
 using VoidHuntersRevived.Domain.Graphics.Common.Contexts;
-using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Resources
 {
-    [PolymorphicJsonType<IEntityComponent>(nameof(Visible))]
-    public struct Visible : IPieceComponent
+    public class Visible
     {
         private static readonly float TraceThickness = 1f;
         private static readonly Matrix OuterScaleMatrix = Matrix.CreateScale(0.1f);
         private static readonly Matrix InnerScaleMatrix = Matrix.CreateScale(-0.1f);
 
-        private NativeDynamicArrayCast<Shape> _trace;
+        private Shape[] _trace = [];
 
         public required PrimitiveContext Primitive { get; init; }
 
-        public required NativeDynamicArrayCast<Shape> Fill { get; init; }
-        public required NativeDynamicArrayCast<Shape> Trace
+        public required Shape[] Fill { get; init; }
+        public required Shape[] Trace
         {
             get => _trace;
             init
             {
                 _trace = value;
 
-                NativeDynamicArrayCast<Shape> traceVertices = new((uint)value.count, Allocator.Persistent);
+                List<Shape> traceVertices = new(value.Length);
 
-                for (int i = 0; i < value.count; i++)
+                for (int i = 0; i < value.Length; i++)
                 {
-                    traceVertices.Set(i, BuildTraceVertices(ref value[i]));
+                    traceVertices.Add(BuildTraceVertices(ref value[i]));
                 }
 
-                TraceVertices = traceVertices;
+                this.TraceVertices = [.. traceVertices];
             }
         }
 
-        public NativeDynamicArrayCast<Shape> TraceVertices { get; private set; }
-
-        public void Dispose()
-        {
-            for (int i = 0; i < Fill.count; i++)
-            {
-                Fill[i].Dispose();
-            }
-
-            for (int i = 0; i < Trace.count; i++)
-            {
-                Trace[i].Dispose();
-            }
-
-            for (int i = 0; i < TraceVertices.count; i++)
-            {
-                TraceVertices[i].Dispose();
-            }
-
-            Fill.Dispose();
-            Trace.Dispose();
-            TraceVertices.Dispose();
-        }
+        public Shape[] TraceVertices { get; private set; } = [];
 
         private Shape BuildTraceVertices(ref Shape shape)
         {
-            NativeDynamicArrayCast<Vector2> vertices = new((uint)shape.Vertices.count * 5, Allocator.Persistent);
+            List<Vector2> vertices = [];
 
-            uint index = 0;
-            for (int i = 0; i < shape.Vertices.count; i++)
+            for (int i = 0; i < shape.Vertices.Length; i++)
             {
                 PopulateTraceVertices(
                     vertices: ref vertices,
-                    index: ref index,
-                    p1: TryGetVertex(ref shape, i - 1),
-                    vertex: TryGetVertex(ref shape, i) ?? throw new Exception(),
-                    p2: TryGetVertex(ref shape, i + 1));
+                    p1: TryGetVertex(shape, i - 1),
+                    vertex: TryGetVertex(shape, i) ?? throw new Exception(),
+                    p2: TryGetVertex(shape, i + 1));
             }
 
             return new Shape()
             {
-                Vertices = vertices
+                Vertices = [.. vertices]
             };
         }
 
-        private void PopulateTraceVertices(ref NativeDynamicArrayCast<Vector2> vertices, ref uint index, Vector2? p1, Vector2 vertex, Vector2? p2)
+        private void PopulateTraceVertices(ref List<Vector2> vertices, Vector2? p1, Vector2 vertex, Vector2? p2)
         {
             p1 ??= p2;
             p2 ??= p1;
 
             // For reference, see
             // https://www.desmos.com/calculator/dxdt9k1usk
-            vertices.Set(index++, CalculateInner(p1!.Value, vertex, p2!.Value));
-            vertices.Set(index++, CalculateEdge(p2!.Value, vertex, p1!.Value));
-            vertices.Set(index++, CalculateCorner(p1!.Value, vertex, p2!.Value));
-            vertices.Set(index++, CalculateEdge(p1!.Value, vertex, p2!.Value));
-            vertices.Set(index++, vertex);
+            vertices.Add(CalculateInner(p1!.Value, vertex, p2!.Value));
+            vertices.Add(CalculateEdge(p2!.Value, vertex, p1!.Value));
+            vertices.Add(CalculateCorner(p1!.Value, vertex, p2!.Value));
+            vertices.Add(CalculateEdge(p1!.Value, vertex, p2!.Value));
+            vertices.Add(vertex);
         }
 
         public static Visible Polygon(int sides)
@@ -123,22 +93,22 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Resources
             // };
         }
 
-        private static Vector2? TryGetVertex(ref Shape shape, int index)
+        private static Vector2? TryGetVertex(Shape shape, int index)
         {
-            bool wrap = shape.Vertices[shape.Vertices.count - 1] == shape.Vertices[0];
+            bool wrap = shape.Vertices[shape.Vertices.Length - 1] == shape.Vertices[0];
             if (index < 0 && wrap)
             {
-                index = shape.Vertices.count + index - 1;
+                index = shape.Vertices.Length + index - 1;
                 return shape.Vertices[index];
             }
 
-            if (index >= shape.Vertices.count && wrap)
+            if (index >= shape.Vertices.Length && wrap)
             {
-                index = index % shape.Vertices.count + 1;
+                index = index % shape.Vertices.Length + 1;
                 return shape.Vertices[index];
             }
 
-            if (index < shape.Vertices.count)
+            if (index < shape.Vertices.Length)
             {
                 return shape.Vertices[index];
             }

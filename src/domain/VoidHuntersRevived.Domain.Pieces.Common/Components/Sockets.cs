@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Interfaces;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
-namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
     [PolymorphicJsonType<IEntityComponent>(nameof(Sockets))]
     public struct Sockets : IEntityComponent, IDisposable, IPieceComponent, ICloneableComponent<Sockets>
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
 
         public void Dispose()
         {
-            this.Items.Dispose();
+            Items.Dispose();
         }
 
         public static Sockets Polygon(int sides)
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
         {
             return new Sockets()
             {
-                Items = this.Items.Clone(Allocator.Persistent)
+                Items = Items.Clone(Allocator.Persistent)
             };
         }
     }

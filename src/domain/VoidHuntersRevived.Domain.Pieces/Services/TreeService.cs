@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 

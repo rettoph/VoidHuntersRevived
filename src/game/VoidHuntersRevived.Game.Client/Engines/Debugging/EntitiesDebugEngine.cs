@@ -5,7 +5,7 @@ using Guppy.Game.ImGui.Common.Extensions;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging

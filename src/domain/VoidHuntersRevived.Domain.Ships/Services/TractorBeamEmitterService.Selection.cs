@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Physics.Common.Extensions.FixedPoint;
 using VoidHuntersRevived.Domain.Pieces.Common;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Descriptors;
 using VoidHuntersRevived.Domain.Ships.Common.Events;

@@ -3,7 +3,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 
-namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
     [PolymorphicJsonType<IEntityComponent>(nameof(Plug))]
     public struct Plug : IEntityComponent, IPieceComponent

@@ -1,5 +1,4 @@
-﻿using Svelto.DataStructures;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Graphics.Common.Contexts;
 using VoidHuntersRevived.Domain.Pieces.Common;
@@ -12,8 +11,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
         public override Visible Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             PrimitiveContext primitive = default;
-            NativeDynamicArrayCast<Shape> fill = default;
-            NativeDynamicArrayCast<Shape> trace = default;
+            Shape[] fill = [];
+            Shape[] trace = [];
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -27,11 +26,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                         reader.Read();
                         break;
                     case nameof(Visible.Fill):
-                        fill = JsonSerializer.Deserialize<NativeDynamicArrayCast<Shape>>(ref reader, options);
+                        fill = JsonSerializer.Deserialize<Shape[]>(ref reader, options) ?? [];
                         reader.Read();
                         break;
                     case nameof(Visible.Trace):
-                        trace = JsonSerializer.Deserialize<NativeDynamicArrayCast<Shape>>(ref reader, options);
+                        trace = JsonSerializer.Deserialize<Shape[]>(ref reader, options) ?? [];
                         reader.Read();
                         break;
                 }

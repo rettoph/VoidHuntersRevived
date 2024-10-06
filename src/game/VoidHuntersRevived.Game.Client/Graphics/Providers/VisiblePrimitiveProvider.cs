@@ -55,14 +55,14 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Providers
         {
             short[] indexBuffer = new short[10];
             BufferContext<VertexStaticVisible> staticBufferContext = new();
-            for (int shape_i = 0; shape_i < visible.Fill.count; shape_i++)
+            for (int shape_i = 0; shape_i < visible.Fill.Length; shape_i++)
             {
                 Shape shape = visible.Fill[shape_i];
 
                 staticBufferContext.AddVertex(PrimitiveType.TriangleList, new VertexStaticVisible(shape.Vertices[0]), out indexBuffer[0]);
                 staticBufferContext.AddVertex(PrimitiveType.TriangleList, new VertexStaticVisible(shape.Vertices[1]), out indexBuffer[1]);
 
-                for (int vertex_i = 2; vertex_i < shape.Vertices.count; vertex_i++)
+                for (int vertex_i = 2; vertex_i < shape.Vertices.Length; vertex_i++)
                 {
                     staticBufferContext.AddVertex(PrimitiveType.TriangleList, new VertexStaticVisible(shape.Vertices[vertex_i]), out indexBuffer[2]);
                     staticBufferContext.AddIndices(PrimitiveType.TriangleList, indexBuffer[..3]);
@@ -71,13 +71,13 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Providers
                 }
             }
 
-            for (int shape_i = 0; shape_i < visible.Trace.count; shape_i++)
+            for (int shape_i = 0; shape_i < visible.Trace.Length; shape_i++)
             {
                 Shape shape = visible.Trace[shape_i];
 
                 staticBufferContext.AddVertex(PrimitiveType.LineList, new VertexStaticVisible(shape.Vertices[0]), out indexBuffer[0]);
 
-                for (int vertex_i = 1; vertex_i < shape.Vertices.count; vertex_i++)
+                for (int vertex_i = 1; vertex_i < shape.Vertices.Length; vertex_i++)
                 {
                     staticBufferContext.AddVertex(PrimitiveType.LineList, new VertexStaticVisible(shape.Vertices[vertex_i]), out indexBuffer[1]);
                     staticBufferContext.AddIndices(PrimitiveType.LineList, indexBuffer[..2]);

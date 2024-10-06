@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Interfaces;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
-namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
+namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
     [PolymorphicJsonType<IEntityComponent>(nameof(Rigid))]
     public struct Rigid : IEntityComponent, IDisposable, IPieceComponent, ICloneableComponent<Rigid>
@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
                 Shapes[i].Dispose();
             }
 
-            this.Shapes.Dispose();
+            Shapes.Dispose();
         }
 
         public static Rigid Polygon(Fix64 density, int sides)
@@ -47,8 +47,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components.Instance
         {
             return new Rigid()
             {
-                Centeroid = this.Centeroid,
-                Shapes = this.Shapes.Clone(Svelto.Common.Allocator.Persistent, x => x.Clone())
+                Centeroid = Centeroid,
+                Shapes = Shapes.Clone(Svelto.Common.Allocator.Persistent, x => x.Clone())
             };
         }
     }
