@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Presentation.Client
         {
             config.WriteTo.Terminal(_terminal, outputTemplate: template);
 
-            config.WriteTo.Console(outputTemplate: template);
+            // config.WriteTo.Console(outputTemplate: template);
         }
     }
 }

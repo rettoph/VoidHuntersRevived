@@ -40,8 +40,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
                 {
                     configuration.WithContainerBuilder(builder =>
                     {
-                        builder.RegisterInstance<ITerminal>(_terminal).AsImplementedInterfaces();
-
                         builder.RegisterInstance(simulation).As<ISimulation>();
                         builder.RegisterNetScope<IStrategy>(_netScope.Group.Peer.Type, _netScope.Group.Id);
                     });
