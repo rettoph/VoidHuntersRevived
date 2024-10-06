@@ -73,7 +73,7 @@
       }
     },
     "Primitive.Visible": {
-      "Type": "primitive.visible.hull.square"
+      "Type": "Primitive.Visible.Hull.Square"
     }
   }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Runtime.InteropServices;
+using System.Text.Json.Serialization;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
 {
@@ -25,8 +26,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
     {
         VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
 
-        private static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration
-        (
+        private static readonly VertexDeclaration VertexDeclaration = new(
             new VertexElement(0, VertexElementFormat.Byte4, VertexElementUsage.BlendIndices, 0),
             new VertexElement(4, VertexElementFormat.Vector2, VertexElementUsage.Position, 0)
         );
@@ -36,6 +36,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
 
         [FieldOffset(4)]
         public Vector2 Position;
+
+        // TODO: Investigate updating JsonSerializerOptions.IncludeFields so this attribute is not needed
+        // There might be cascading issues by changing that value?
+        [JsonInclude]
+        [FieldOffset(4)]
+        public float X;
+
+        [JsonInclude]
+        [FieldOffset(8)]
+        public float Y;
 
         public VertexStaticVisible(Vector2 position)
         {

@@ -1,0 +1,8 @@
+[
+  {
+    "type": "PrimitiveType",
+    "values": {
+      "Primitive.Visible.Hull.Square": "Primitives\\primitive.visible.hull.square.json"
+    }
+  }
+]

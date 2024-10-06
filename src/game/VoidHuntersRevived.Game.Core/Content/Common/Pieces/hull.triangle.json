@@ -60,7 +60,7 @@
       }
     },
     "Primitive.Visible": {
-      "Type": "primitive.visible.hull.triangle"
+      "Type": "Primitive.Visible.Hull.Square"
     }
   }
 }

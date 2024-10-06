@@ -8,7 +8,7 @@
       "teams.json",
       "pieces.json",
       "blueprints.json",
-      "visibles.json"
+      "primitives.json"
     ]
   }
 }

@@ -15,5 +15,11 @@
   <ItemGroup>
     <Folder Include="Factories\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.Xna.Framework.Graphics.PrimitiveType">
+      <Alias>PrimitiveTypeEnum</Alias>
+    </Using>
+  </ItemGroup>
 	
 </Project>

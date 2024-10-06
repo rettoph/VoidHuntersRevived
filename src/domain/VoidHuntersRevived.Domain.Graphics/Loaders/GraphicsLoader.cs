@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Serialization.Json.Converters;
 using Guppy.Engine.Common.Loaders;
 using System.Text.Json.Serialization;
+using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
 using VoidHuntersRevived.Domain.Graphics.Serialization.Json;
 using VoidHuntersRevived.Domain.Graphics.Services;
@@ -17,8 +19,10 @@ namespace VoidHuntersRevived.Domain.Graphics.Loaders
             builder.RegisterGeneric(typeof(PrimitiveService<>)).As(typeof(IPrimitiveService<>)).SingleInstance();
 
             builder.RegisterType<PrimitiveContextConverter>().As<JsonConverter>().SingleInstance();
-            builder.RegisterType<PrimitiveConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<PrimitiveEntityConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<PrimitiveSequenceGroupConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<PrimitiveTypeConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<PolymorphicConverter<PrimitiveType>>().As<JsonConverter>().SingleInstance();
         }
     }
 }

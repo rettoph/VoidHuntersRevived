@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
 
             this.RequireComponents([
                 typeof(Rigid),
-                typeof(Primitive<VertexVisible>)
+                typeof(PrimitiveEntity<VertexVisible>)
             ]);
         }
     }

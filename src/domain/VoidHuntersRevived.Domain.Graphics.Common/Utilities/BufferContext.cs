@@ -14,17 +14,17 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 
         public abstract IndexBuffer[] BuildIndexBuffers(GraphicsDevice graphics);
 
-        public abstract IEnumerable<PrimitiveType> GetTypes();
+        public abstract IEnumerable<PrimitiveTypeEnum> GetTypes();
     }
 
     public class BufferContext<TVertex> : BufferContext
         where TVertex : unmanaged, IVertexType
     {
-        private readonly List<PrimitiveType> _types = [];
-        private readonly Dictionary<PrimitiveType, List<TVertex>> _vertices = [];
-        private readonly Dictionary<PrimitiveType, List<short>> _indices = [];
+        private readonly List<PrimitiveTypeEnum> _types = [];
+        private readonly Dictionary<PrimitiveTypeEnum, List<TVertex>> _vertices = [];
+        private readonly Dictionary<PrimitiveTypeEnum, List<short>> _indices = [];
 
-        public void AddVertex(PrimitiveType type, TVertex vertex, out short index)
+        public void AddVertex(PrimitiveTypeEnum type, TVertex vertex, out short index)
         {
             this.GetCollections(type, out var vertices, out _);
 
@@ -32,19 +32,19 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
             vertices.Add(vertex);
         }
 
-        public void AddIndices(PrimitiveType type, params short[] indices)
+        public void AddIndices(PrimitiveTypeEnum type, params short[] indices)
         {
             this.GetCollections(type, out var _, out var list);
             list.AddRange(indices);
         }
 
-        public override IEnumerable<PrimitiveType> GetTypes() => _types;
+        public override IEnumerable<PrimitiveTypeEnum> GetTypes() => _types;
 
         public override VertexBuffer[] BuildVertexBuffers(GraphicsDevice graphics)
         {
             List<VertexBuffer> buffers = [];
 
-            foreach (PrimitiveType type in this.GetTypes())
+            foreach (PrimitiveTypeEnum type in this.GetTypes())
             {
                 VertexBuffer buffer = new(graphics, typeof(TVertex), _vertices[type].Count, BufferUsage.WriteOnly);
                 buffer.SetData([.. _vertices[type]]);
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
         {
             List<IndexBuffer> buffers = [];
 
-            foreach (PrimitiveType type in this.GetTypes())
+            foreach (PrimitiveTypeEnum type in this.GetTypes())
             {
                 IndexBuffer buffer = new(graphics, IndexElementSize.SixteenBits, _indices[type].Count, BufferUsage.WriteOnly);
                 buffer.SetData([.. _indices[type]]);
@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
             return [.. buffers];
         }
 
-        private void GetCollections(PrimitiveType type, out List<TVertex> vertices, out List<short> indices)
+        private void GetCollections(PrimitiveTypeEnum type, out List<TVertex> vertices, out List<short> indices)
         {
             ref List<TVertex> verticesRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_vertices, type, out bool exists)!;
             if (exists == true)

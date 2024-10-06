@@ -12,5 +12,11 @@
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations.Common\VoidHuntersRevived.Domain.Simulations.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Teams.Common\VoidHuntersRevived.Domain.Teams.Common.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Microsoft.Xna.Framework.Graphics.PrimitiveType">
+			<Alias>PrimitiveTypeEnum</Alias>
+		</Using>
+	</ItemGroup>
 	
 </Project>

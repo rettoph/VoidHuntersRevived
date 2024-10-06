@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
         private readonly VertexBuffer[] _staticBuffers;
         private readonly IndexBuffer[] _indexBuffers;
         private readonly Effect _effect;
-        private readonly PrimitiveType[] _primitiveTypes;
+        private readonly PrimitiveTypeEnum[] _primitiveTypes;
         private VertexBuffer _instanceBuffer;
         private TVertex[] _instanceVertices;
         private int _instanceCount = 0;
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
         public readonly int BufferCount;
         public VertexBufferBinding[][] VertexBufferBindings => _bindings;
         public IndexBuffer[] IndexBuffers => _indexBuffers;
-        public PrimitiveType[] PrimitiveTypes => _primitiveTypes;
+        public PrimitiveTypeEnum[] PrimitiveTypes => _primitiveTypes;
         public readonly int[] StaticPrimitiveCount;
         public int InstanceCount => _instanceCount;
         public Effect Effect => _effect;
@@ -74,8 +74,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
 
             this.StaticPrimitiveCount = staticBufferContext.GetTypes().Select(x => x switch
             {
-                PrimitiveType.LineList => 2,
-                PrimitiveType.TriangleList => 3,
+                PrimitiveTypeEnum.LineList => 2,
+                PrimitiveTypeEnum.TriangleList => 3,
                 _ => throw new NotImplementedException()
             }).Select((x, idx) => _indexBuffers[idx].IndexCount / x).ToArray();
 

@@ -9,6 +9,7 @@ using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Primitives
 {
+
     public class VisiblePrimitive(
         PrimitiveContext context,
         PrimitiveSequenceGroupEnum sequenceGroup,

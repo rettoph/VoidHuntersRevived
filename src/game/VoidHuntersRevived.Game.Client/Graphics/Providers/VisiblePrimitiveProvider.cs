@@ -59,13 +59,13 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Providers
             {
                 Shape shape = visible.Fill[shape_i];
 
-                staticBufferContext.AddVertex(PrimitiveType.TriangleList, new VertexStaticVisible(shape.Vertices[0]), out indexBuffer[0]);
-                staticBufferContext.AddVertex(PrimitiveType.TriangleList, new VertexStaticVisible(shape.Vertices[1]), out indexBuffer[1]);
+                staticBufferContext.AddVertex(Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleList, new VertexStaticVisible(shape.Vertices[0]), out indexBuffer[0]);
+                staticBufferContext.AddVertex(Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleList, new VertexStaticVisible(shape.Vertices[1]), out indexBuffer[1]);
 
                 for (int vertex_i = 2; vertex_i < shape.Vertices.Length; vertex_i++)
                 {
-                    staticBufferContext.AddVertex(PrimitiveType.TriangleList, new VertexStaticVisible(shape.Vertices[vertex_i]), out indexBuffer[2]);
-                    staticBufferContext.AddIndices(PrimitiveType.TriangleList, indexBuffer[..3]);
+                    staticBufferContext.AddVertex(Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleList, new VertexStaticVisible(shape.Vertices[vertex_i]), out indexBuffer[2]);
+                    staticBufferContext.AddIndices(Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleList, indexBuffer[..3]);
 
                     indexBuffer[1] = indexBuffer[2];
                 }
@@ -75,12 +75,12 @@ namespace VoidHuntersRevived.Game.Client.Graphics.Providers
             {
                 Shape shape = visible.Trace[shape_i];
 
-                staticBufferContext.AddVertex(PrimitiveType.LineList, new VertexStaticVisible(shape.Vertices[0]), out indexBuffer[0]);
+                staticBufferContext.AddVertex(Microsoft.Xna.Framework.Graphics.PrimitiveType.LineList, new VertexStaticVisible(shape.Vertices[0]), out indexBuffer[0]);
 
                 for (int vertex_i = 1; vertex_i < shape.Vertices.Length; vertex_i++)
                 {
-                    staticBufferContext.AddVertex(PrimitiveType.LineList, new VertexStaticVisible(shape.Vertices[vertex_i]), out indexBuffer[1]);
-                    staticBufferContext.AddIndices(PrimitiveType.LineList, indexBuffer[..2]);
+                    staticBufferContext.AddVertex(Microsoft.Xna.Framework.Graphics.PrimitiveType.LineList, new VertexStaticVisible(shape.Vertices[vertex_i]), out indexBuffer[1]);
+                    staticBufferContext.AddIndices(Microsoft.Xna.Framework.Graphics.PrimitiveType.LineList, indexBuffer[..2]);
 
                     indexBuffer[0] = indexBuffer[1];
                 }

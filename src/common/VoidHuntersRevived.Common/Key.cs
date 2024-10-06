@@ -1,12 +1,14 @@
 ﻿using Guppy.Core.Common.Collections;
+using Guppy.Core.Resources.Common;
 using System.Diagnostics;
 
 namespace VoidHuntersRevived.Common
 {
     [DebuggerDisplay("Type = {Type.Name}, Name = {Name}")]
-    public struct Key<T>(VhId id)
+    public readonly struct Key<T>(VhId id)
+        where T : notnull
     {
-        private static readonly Map<VhId, string> _map = new Map<VhId, string>();
+        private static readonly Map<VhId, string> _map = new();
 
         public readonly VhId Id = id;
         public string Name => _map[this.Id];
@@ -73,6 +75,17 @@ namespace VoidHuntersRevived.Common
         public override int GetHashCode()
         {
             return HashCode.Combine(Id);
+        }
+
+        public static implicit operator Key<T>(Resource<T> resource)
+
+        {
+            return Key<T>.GetByName(resource.Name);
+        }
+
+        public static implicit operator Resource<T>(Key<T> key)
+        {
+            return Resource<T>.Get(key.Name);
         }
     }
 }
