@@ -25,8 +25,8 @@ namespace VoidHuntersRevived.Game.Client.Loaders
                 EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
             });
 
-            services.RegisterType<ShaderAntiAliasingEffect>().InstancePerDependency();
-            services.RegisterType<VisibleEffect>().InstancePerDependency();
+            services.RegisterType<ShaderAntiAliasingEffect>().SingleInstance();
+            services.RegisterType<VisibleEffect>().SingleInstance();
 
             services.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
             {

@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
                     Primitive<TVertex> primitive = primitives[i];
 
                     _vertexTypeService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
-                        .GetFilter<TVertex>()
+                        .GetFilter<TVertex>(this.entitiesDB)
                         .Add(nativeIds[i], groupID, i);
                 }
 
@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
                 }
 
                 _vertexTypeService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
-                    .GetFilter<TVertex>()
+                    .GetFilter<TVertex>(this.entitiesDB)
                     .Add(nativeIds[i], groupID, i);
             }
         }

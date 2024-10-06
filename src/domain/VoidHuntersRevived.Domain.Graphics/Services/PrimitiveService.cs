@@ -1,8 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Microsoft.Xna.Framework.Graphics;
-using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 using VoidHuntersRevived.Domain.Graphics.Common.Providers;
@@ -12,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
 {
     public class PrimitiveService(
         IFiltered<IPrimitive> primitives,
-        IFiltered<IPrimitiveProvider> providers) : IPrimitiveService, IEngineProvider
+        IFiltered<IPrimitiveProvider> providers) : IPrimitiveService
     {
         private readonly IPrimitive[] _primitives = [.. primitives, .. providers.SelectMany(x => x.GetPrimitives())];
 
@@ -22,8 +20,6 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
             where TVertex : unmanaged, IVertexType => _primitives.OfType<IPrimitive<TVertex>>();
 
         public IEnumerable<Type> GetAllVertexTypes() => _primitives.Select(x => x.VertexType).Distinct();
-
-        IEnumerable<IEngine> IEngineProvider.GetEngines() => _primitives.OfType<IEngine>();
     }
 
     public class PrimitiveService<TVertex>(IPrimitiveService primitiveService) : IPrimitiveService<TVertex>

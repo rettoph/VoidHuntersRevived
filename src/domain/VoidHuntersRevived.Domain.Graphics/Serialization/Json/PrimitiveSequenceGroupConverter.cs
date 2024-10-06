@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
 
         public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            PrimitiveSequenceGroupEnum value = PrimitiveSequenceGroupEnum.None;
+            PrimitiveSequenceGroupEnum value = PrimitiveSequenceGroupEnum.Background;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();

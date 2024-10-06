@@ -1,7 +1,5 @@
 ﻿using Guppy.Game.MonoGame.Common.Utilities.Cameras;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Svelto.ECS;
 using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Contexts;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
@@ -11,7 +9,6 @@ using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Primitives
 {
-    [AllowMultiple]
     public class VisiblePrimitive(
         PrimitiveContext context,
         PrimitiveSequenceGroupEnum sequenceGroup,
@@ -23,11 +20,11 @@ namespace VoidHuntersRevived.Game.Client.Primitives
         private readonly VisibleEffect _effect = effect;
         private readonly Camera2D _camera = camera;
 
-        public override void Draw(GameTime gameTime)
+        public override void Draw(IDrawPrimitiveContext context)
         {
             _effect.WorldViewProjection = _camera.World * _camera.View * _camera.Projection;
 
-            base.Draw(gameTime);
+            base.Draw(context);
         }
     }
 }

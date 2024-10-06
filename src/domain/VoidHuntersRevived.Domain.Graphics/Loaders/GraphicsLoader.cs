@@ -13,8 +13,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Loaders
     {
         public void ConfigureServices(ContainerBuilder builder)
         {
-            builder.RegisterType<PrimitiveService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(PrimitiveService<>)).As(typeof(IPrimitiveService<>)).InstancePerLifetimeScope();
+            builder.RegisterType<PrimitiveService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterGeneric(typeof(PrimitiveService<>)).As(typeof(IPrimitiveService<>)).SingleInstance();
 
             builder.RegisterType<PrimitiveContextConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<PrimitiveConverter>().As<JsonConverter>().SingleInstance();

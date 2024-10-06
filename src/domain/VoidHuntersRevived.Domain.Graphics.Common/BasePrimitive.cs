@@ -1,6 +1,5 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Interfaces;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using System.Diagnostics;
@@ -12,7 +11,7 @@ using VoidHuntersRevived.Domain.Graphics.Common.Utilities;
 namespace VoidHuntersRevived.Domain.Graphics.Common
 {
     [DebuggerDisplay("Type = {Type.Name}, VertexType = {VertexType.Name}, SequenceGroup = {SequenceGroup}")]
-    public abstract class BasePrimitive<TVertex> : IPrimitive<TVertex>, IQueryingEntitiesEngine
+    public abstract class BasePrimitive<TVertex> : IPrimitive<TVertex>
         where TVertex : unmanaged, IVertexType
     {
         private static int FilterId;
@@ -46,7 +45,6 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
         public Type VertexType => typeof(TVertex);
 
         public int Sequence { get; }
-        public EntitiesDB entitiesDB { get; set; } = null!;
 
         SequenceGroup<PrimitiveSequenceGroupEnum> IRuntimeSequenceGroup<PrimitiveSequenceGroupEnum>.Value => SequenceGroup<PrimitiveSequenceGroupEnum>.GetByValue(this.SequenceGroup);
 
@@ -154,7 +152,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
             _instanceCount = 0;
         }
 
-        public virtual void Draw(GameTime gameTime)
+        public virtual void Draw(IDrawPrimitiveContext context)
         {
             if (this.Flush() == false)
             {
@@ -193,10 +191,10 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
             }
         }
 
-        public ref EntityFilterCollection GetFilter<TComponent>()
+        public ref EntityFilterCollection GetFilter<TComponent>(EntitiesDB entitiesDb)
             where TComponent : unmanaged, IVertexType, IEntityComponent
         {
-            return ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<TComponent>(_combinedFilterId);
+            return ref entitiesDb.GetFilters().GetOrCreatePersistentFilter<TComponent>(_combinedFilterId);
         }
     }
 }

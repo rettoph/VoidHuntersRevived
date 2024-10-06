@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Common.Interfaces;
-using Microsoft.Xna.Framework;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Interfaces;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -22,11 +22,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
 
         int InstanceCount { get; }
 
-        void Draw(GameTime gameTime);
+        [RequireSequenceGroup<PrimitiveSequenceGroupEnum>]
+        void Draw(IDrawPrimitiveContext context);
 
         void EnsureFit(int size);
 
-        ref EntityFilterCollection GetFilter<TComponent>()
+        ref EntityFilterCollection GetFilter<TComponent>(EntitiesDB entitiesDb)
             where TComponent : unmanaged, IVertexType, IEntityComponent;
     }
 
