@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Game.Client.Loaders
             });
 
             services.RegisterType<ShaderAntiAliasingEffect>().SingleInstance();
-            services.RegisterType<VisibleEffect>().SingleInstance();
+            services.RegisterType<VisibleEffect>().AsImplementedInterfaces().AsSelf().SingleInstance();
 
             services.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
             {
