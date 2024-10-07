@@ -19,15 +19,28 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
         public IEnumerable<Type> GetAllVertexTypes() => _primitives.Select(x => x.VertexType).Distinct();
     }
 
-    public class PrimitiveService<TVertex>(IResourceService resourceService) : IPrimitiveService<TVertex>
+    public class PrimitiveService<TVertex> : IPrimitiveService<TVertex>
         where TVertex : unmanaged, IVertexType
     {
-        private readonly Dictionary<PrimitiveTypeSequenceGroup, IPrimitive<TVertex>> _grouped = resourceService.GetValues<IPrimitiveType>()
-            .SelectMany(t => t.Value.Primitives.Select(p => (type: t, primitive: p)))
-            .Where(x => x.primitive is Primitive<TVertex>)
-            .ToDictionary(
-                keySelector: x => new PrimitiveTypeSequenceGroup(x.type.Resource, x.primitive.SequenceGroup),
-                elementSelector: x => (IPrimitive<TVertex>)x.primitive);
+        private readonly Dictionary<PrimitiveTypeSequenceGroup, IPrimitive<TVertex>> _grouped;
+        private readonly IPrimitive<TVertex>[] _all;
+
+        public PrimitiveService(IResourceService resourceService)
+        {
+            _grouped = resourceService.GetValues<IPrimitiveType>()
+                .SelectMany(t => t.Value.Primitives.Select(p => (type: t, primitive: p)))
+                .Where(x => x.primitive is Primitive<TVertex>)
+                .ToDictionary(
+                    keySelector: x => new PrimitiveTypeSequenceGroup(x.type.Resource, x.primitive.SequenceGroup),
+                    elementSelector: x => (IPrimitive<TVertex>)x.primitive);
+
+            _all = [.. _grouped.Values];
+        }
+
+        public IPrimitive<TVertex>[] GetAll()
+        {
+            return _all;
+        }
 
         public IPrimitive<TVertex> GetPrimitiveByTypeAndSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup)
         {

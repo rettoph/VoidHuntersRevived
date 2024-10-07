@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
@@ -18,9 +19,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
         int InstanceCount { get; }
         VertexBuffer InstanceVertexBuffer { get; }
         VertexBufferBinding[][] VertexBufferBindings { get; }
-
-        ref EntityFilterCollection GetFilter<TComponent>(EntitiesDB entitiesDb)
-            where TComponent : unmanaged, IVertexType, IEntityComponent;
+        CombinedFilterID CombinedFilterId { get; }
     }
 
     public interface IPrimitive<TVertexInstance> : IPrimitive
@@ -43,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
         void Clear();
 
         [RequireSequenceGroup<PrimitiveSequenceGroupEnum>]
-        void Draw(EntitiesDB entities);
+        void Draw(GameTime gameTime);
     }
 
     public interface IPrimitive<TVertexInstance, TVertexStatic, TEffect> : IPrimitive<TVertexInstance>

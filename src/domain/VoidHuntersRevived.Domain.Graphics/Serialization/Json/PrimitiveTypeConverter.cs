@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Svelto.ECS;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -103,12 +102,6 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
             PrimitiveTypeEnum[] bufferTypes = [.. indexBufferContexts.Select(x => x.Type)];
 
             Type primitiveType = typeof(Primitive<,,>).MakeGenericType(typeToConvert.GenericTypeArguments);
-            if (instanceVertexType.IsAssignableTo<IEntityComponent>())
-            { // If the instance vertex is an entity component lets use the EntityPrimitive implementation
-                // This will automatically copy instance vertex data from the entitiesDb when drawing to the screen.
-                primitiveType = typeof(EntityPrimitive<,,>).MakeGenericType(typeToConvert.GenericTypeArguments);
-            }
-
             Lazy<IPrimitive[]> primitives = new(() =>
             {
                 Effect effect = (Effect)_scope.Resolve(effectType);

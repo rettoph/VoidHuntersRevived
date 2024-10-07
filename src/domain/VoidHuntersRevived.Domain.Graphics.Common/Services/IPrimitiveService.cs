@@ -16,6 +16,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Services
     public interface IPrimitiveService<TVertex>
         where TVertex : unmanaged, IVertexType
     {
+        IPrimitive<TVertex>[] GetAll();
         IPrimitive<TVertex> GetPrimitiveByTypeAndSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup);
     }
 }

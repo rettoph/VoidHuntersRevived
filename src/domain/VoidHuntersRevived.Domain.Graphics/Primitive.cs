@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Interfaces;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Graphics.Common;
@@ -12,8 +13,6 @@ namespace VoidHuntersRevived.Domain.Graphics
         private static int FilterId;
         private static readonly FilterContextID FilterContextId = FilterContextID.GetNewContextID();
 
-        private readonly CombinedFilterID _combinedFilterId;
-
         public Type VertexType { get; }
         public int Sequence { get; }
         public VertexBuffer StaticVertexBuffer { get; }
@@ -25,6 +24,7 @@ namespace VoidHuntersRevived.Domain.Graphics
         public int InstanceCount { get; protected set; }
         public VertexBuffer InstanceVertexBuffer { get; protected set; }
         public VertexBufferBinding[][] VertexBufferBindings { get; protected set; }
+        public CombinedFilterID CombinedFilterId { get; }
 
         internal Primitive(
             Type vertexType,
@@ -35,8 +35,6 @@ namespace VoidHuntersRevived.Domain.Graphics
             PrimitiveTypeEnum[] bufferTypes,
             GraphicsDevice graphics)
         {
-            _combinedFilterId = new CombinedFilterID(FilterId++, FilterContextId);
-
             this.VertexType = vertexType;
             this.Sequence = sequence;
             this.SequenceGroup = sequenceGroup;
@@ -53,12 +51,8 @@ namespace VoidHuntersRevived.Domain.Graphics
 
             this.InstanceVertexBuffer = default!;
             this.VertexBufferBindings = [];
-        }
 
-        public ref EntityFilterCollection GetFilter<TComponent>(EntitiesDB entitiesDb)
-            where TComponent : unmanaged, IVertexType, IEntityComponent
-        {
-            return ref entitiesDb.GetFilters().GetOrCreatePersistentFilter<TComponent>(_combinedFilterId);
+            this.CombinedFilterId = new CombinedFilterID(FilterId++, FilterContextId);
         }
 
         public abstract void Dispose();
@@ -152,7 +146,7 @@ namespace VoidHuntersRevived.Domain.Graphics
             this.InstanceCount = 0;
         }
 
-        public abstract void Draw(EntitiesDB entitiesDb);
+        public abstract void Draw(GameTime gameTime);
 
         public override void Dispose()
         {
@@ -181,7 +175,7 @@ namespace VoidHuntersRevived.Domain.Graphics
         int IRuntimeSequence<PrimitiveSequenceGroupEnum>.Value => this.Sequence;
         SequenceGroup<PrimitiveSequenceGroupEnum> IRuntimeSequenceGroup<PrimitiveSequenceGroupEnum>.Value => SequenceGroup<PrimitiveSequenceGroupEnum>.GetByValue(this.SequenceGroup);
 
-        public override void Draw(EntitiesDB entites)
+        public override void Draw(GameTime gameTime)
         {
             if (this.Flush() == false)
             {

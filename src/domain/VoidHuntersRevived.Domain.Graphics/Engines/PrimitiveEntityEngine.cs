@@ -5,7 +5,9 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
+using VoidHuntersRevived.Domain.Graphics.Common.Extensions;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -16,12 +18,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     public sealed class PrimitiveEntityEngine<TVertex>(
-        IPrimitiveService<TVertex> vertexTypeService,
+        IPrimitiveService<TVertex> primitiveService,
         IEntityQueryService entityQueryService
     ) : StrategyEngine, IReactOnAddEx<Common.Components.Primitive<TVertex>>, IOnDrawEngine, IQueryingEntitiesEngine
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {
-        private readonly IPrimitiveService<TVertex> _vertexTypeService = vertexTypeService;
+        private readonly IPrimitiveService<TVertex> _primitiveService = primitiveService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
@@ -29,12 +31,10 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
         public void OnDraw(GameTime gameTime)
         {
-            // throw new NotImplementedException();
-
-            // foreach (IVertexBuffer<TVertex> vertexBuffer in _vertexBuffers)
-            // {
-            //     this.CopySpawnedEntityVertexData(vertexBuffer);
-            // }
+            foreach (IPrimitive<TVertex> primitive in _primitiveService.GetAll())
+            {
+                this.CopyEntityDataToVertexBuffer(primitive);
+            }
         }
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Common.Components.Primitive<TVertex>> entities, ExclusiveGroupStruct groupID)
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
                 {
                     Common.Components.Primitive<TVertex> primitive = primitives[i];
 
-                    _vertexTypeService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
+                    _primitiveService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
                         .GetFilter<TVertex>(this.entitiesDB)
                         .Add(nativeIds[i], groupID, i);
                 }
@@ -68,9 +68,32 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
                     primitive = new Common.Components.Primitive<TVertex>(primitive.Type, teamSequenceGroup.Value);
                 }
 
-                _vertexTypeService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
+                _primitiveService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
                     .GetFilter<TVertex>(this.entitiesDB)
                     .Add(nativeIds[i], groupID, i);
+            }
+        }
+
+        private void CopyEntityDataToVertexBuffer(IPrimitive<TVertex> primitive)
+        {
+            ref EntityFilterCollection filter = ref primitive.GetFilter<TVertex>(this.entitiesDB);
+
+            foreach (var (indices, group) in filter)
+            {
+                primitive.EnsureFit(indices.count);
+
+                var (vertices, statuses, _) = this.entitiesDB.QueryEntities<TVertex, EntityStatus>(group);
+
+                for (int i = 0; i < indices.count; i++)
+                {
+                    uint index = indices[i];
+                    if (statuses[index].IsDespawned)
+                    { // Dont render pieces that have been despawned
+                        continue;
+                    }
+
+                    primitive.SetNextVertexUnsafe(vertices[index]);
+                }
             }
         }
     }
