@@ -1,0 +1,50 @@
+{
+  "Type": "PrimitiveType.Visible",
+  "Value": {
+    "Primitives": [
+      {
+        "SequenceGroup": "Background",
+        "Sequence": 0
+      },
+      {
+        "SequenceGroup": "Foreground",
+        "Sequence": 0
+      }
+    ],
+    "VertexBuffer": [
+      {
+        "X": 0,
+        "Y": 0
+      },
+      {
+        "X": 1,
+        "Y": 0
+      },
+      {
+        "X": 0.5,
+        "Y": 0.8660254038
+      }
+    ],
+    "IndexBuffers": [
+      {
+        "Type": "TriangleList",
+        "Values": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "Type": "LineList",
+        "Values": [
+          0,
+          1,
+          1,
+          2,
+          2,
+          3
+        ]
+      }
+    ]
+  }
+}
