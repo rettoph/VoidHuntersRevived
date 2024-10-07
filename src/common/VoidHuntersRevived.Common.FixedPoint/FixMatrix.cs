@@ -5,49 +5,30 @@ namespace VoidHuntersRevived.Common.FixedPoint
     /// <summary>
     /// Represents the right-handed 4x4 floating point matrix, which can store translation, scale and rotation information.
     /// </summary>
-    public struct FixMatrix : IEquatable<FixMatrix>
+    /// <remarks>
+    /// Constructs a matrix.
+    /// </remarks>
+    /// <param name="m11">A first row and first column value.</param>
+    /// <param name="m12">A first row and second column value.</param>
+    /// <param name="m13">A first row and third column value.</param>
+    /// <param name="m14">A first row and fourth column value.</param>
+    /// <param name="m21">A second row and first column value.</param>
+    /// <param name="m22">A second row and second column value.</param>
+    /// <param name="m23">A second row and third column value.</param>
+    /// <param name="m24">A second row and fourth column value.</param>
+    /// <param name="m31">A third row and first column value.</param>
+    /// <param name="m32">A third row and second column value.</param>
+    /// <param name="m33">A third row and third column value.</param>
+    /// <param name="m34">A third row and fourth column value.</param>
+    /// <param name="m41">A fourth row and first column value.</param>
+    /// <param name="m42">A fourth row and second column value.</param>
+    /// <param name="m43">A fourth row and third column value.</param>
+    /// <param name="m44">A fourth row and fourth column value.</param>
+    public struct FixMatrix(Fix64 m11, Fix64 m12, Fix64 m13, Fix64 m14, Fix64 m21, Fix64 m22, Fix64 m23, Fix64 m24, Fix64 m31,
+                  Fix64 m32, Fix64 m33, Fix64 m34, Fix64 m41, Fix64 m42, Fix64 m43, Fix64 m44) : IEquatable<FixMatrix>
     {
-        #region Public Constructors
 
-        /// <summary>
-        /// Constructs a matrix.
-        /// </summary>
-        /// <param name="m11">A first row and first column value.</param>
-        /// <param name="m12">A first row and second column value.</param>
-        /// <param name="m13">A first row and third column value.</param>
-        /// <param name="m14">A first row and fourth column value.</param>
-        /// <param name="m21">A second row and first column value.</param>
-        /// <param name="m22">A second row and second column value.</param>
-        /// <param name="m23">A second row and third column value.</param>
-        /// <param name="m24">A second row and fourth column value.</param>
-        /// <param name="m31">A third row and first column value.</param>
-        /// <param name="m32">A third row and second column value.</param>
-        /// <param name="m33">A third row and third column value.</param>
-        /// <param name="m34">A third row and fourth column value.</param>
-        /// <param name="m41">A fourth row and first column value.</param>
-        /// <param name="m42">A fourth row and second column value.</param>
-        /// <param name="m43">A fourth row and third column value.</param>
-        /// <param name="m44">A fourth row and fourth column value.</param>
-        public FixMatrix(Fix64 m11, Fix64 m12, Fix64 m13, Fix64 m14, Fix64 m21, Fix64 m22, Fix64 m23, Fix64 m24, Fix64 m31,
-                      Fix64 m32, Fix64 m33, Fix64 m34, Fix64 m41, Fix64 m42, Fix64 m43, Fix64 m44)
-        {
-            this.M11 = m11;
-            this.M12 = m12;
-            this.M13 = m13;
-            this.M14 = m14;
-            this.M21 = m21;
-            this.M22 = m22;
-            this.M23 = m23;
-            this.M24 = m24;
-            this.M31 = m31;
-            this.M32 = m32;
-            this.M33 = m33;
-            this.M34 = m34;
-            this.M41 = m41;
-            this.M42 = m42;
-            this.M43 = m43;
-            this.M44 = m44;
-        }
+        #region Public Constructors
 
         #endregion
 
@@ -56,82 +37,82 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <summary>
         /// A first row and first column value.
         /// </summary>
-        public Fix64 M11;
+        public Fix64 M11 = m11;
 
         /// <summary>
         /// A first row and second column value.
         /// </summary>
-        public Fix64 M12;
+        public Fix64 M12 = m12;
 
         /// <summary>
         /// A first row and third column value.
         /// </summary>
-        public Fix64 M13;
+        public Fix64 M13 = m13;
 
         /// <summary>
         /// A first row and fourth column value.
         /// </summary>
-        public Fix64 M14;
+        public Fix64 M14 = m14;
 
         /// <summary>
         /// A second row and first column value.
         /// </summary>
-        public Fix64 M21;
+        public Fix64 M21 = m21;
 
         /// <summary>
         /// A second row and second column value.
         /// </summary>
-        public Fix64 M22;
+        public Fix64 M22 = m22;
 
         /// <summary>
         /// A second row and third column value.
         /// </summary>
-        public Fix64 M23;
+        public Fix64 M23 = m23;
 
         /// <summary>
         /// A second row and fourth column value.
         /// </summary>
-        public Fix64 M24;
+        public Fix64 M24 = m24;
 
         /// <summary>
         /// A third row and first column value.
         /// </summary>
-        public Fix64 M31;
+        public Fix64 M31 = m31;
 
         /// <summary>
         /// A third row and second column value.
         /// </summary>
-        public Fix64 M32;
+        public Fix64 M32 = m32;
 
         /// <summary>
         /// A third row and third column value.
         /// </summary>
-        public Fix64 M33;
+        public Fix64 M33 = m33;
 
         /// <summary>
         /// A third row and fourth column value.
         /// </summary>
-        public Fix64 M34;
+        public Fix64 M34 = m34;
 
         /// <summary>
         /// A fourth row and first column value.
         /// </summary>
-        public Fix64 M41;
+        public Fix64 M41 = m41;
 
         /// <summary>
         /// A fourth row and second column value.
         /// </summary>
-        public Fix64 M42;
+        public Fix64 M42 = m42;
 
         /// <summary>
         /// A fourth row and third column value.
         /// </summary>
-        public Fix64 M43;
+        public Fix64 M43 = m43;
 
         /// <summary>
         /// A fourth row and fourth column value.
         /// </summary>
-        public Fix64 M44;
+        public Fix64 M44 = m44;
 
         #endregion
 
@@ -146,7 +127,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// </exception>
         public Fix64 this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -219,7 +200,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         #endregion
 
         #region Private Members
-        private static FixMatrix identity = new FixMatrix(Fix64.One, Fix64.Zero, Fix64.Zero, Fix64.Zero,
+        private static FixMatrix identity = new(Fix64.One, Fix64.Zero, Fix64.Zero, Fix64.Zero,
                                                     Fix64.Zero, Fix64.One, Fix64.Zero, Fix64.Zero,
                                                     Fix64.Zero, Fix64.Zero, Fix64.One, Fix64.Zero,
                                                     Fix64.Zero, Fix64.Zero, Fix64.Zero, Fix64.One);
@@ -572,7 +553,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// </summary>
         /// <param name="other">The <see cref="FixMatrix"/> to compare.</param>
         /// <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
-        public bool Equals(FixMatrix other)
+        public readonly bool Equals(FixMatrix other)
         {
             return ((((((this.M11 == other.M11) && (this.M22 == other.M22)) && ((this.M33 == other.M33) && (this.M44 == other.M44))) && (((this.M12 == other.M12) && (this.M13 == other.M13)) && ((this.M14 == other.M14) && (this.M21 == other.M21)))) && ((((this.M23 == other.M23) && (this.M24 == other.M24)) && ((this.M31 == other.M31) && (this.M32 == other.M32))) && (((this.M34 == other.M34) && (this.M41 == other.M41)) && (this.M42 == other.M42)))) && (this.M43 == other.M43));
         }
@@ -1324,7 +1305,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// {M41:[<see cref="M41"/>] M42:[<see cref="M42"/>] M43:[<see cref="M43"/>] M44:[<see cref="M44"/>]}
         /// </summary>
         /// <returns>A <see cref="String"/> representation of this <see cref="FixMatrix"/>.</returns>
-        public override string ToString()
+        public override readonly string ToString()
         {
             return "{M11:" + M11 + " M12:" + M12 + " M13:" + M13 + " M14:" + M14 + "}"
                 + " {M21:" + M21 + " M22:" + M22 + " M23:" + M23 + " M24:" + M24 + "}"

@@ -10,29 +10,20 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    public sealed class EngineService : IEngineService
+    public sealed class EngineService(
+        IFiltered<IEngine> engines,
+        IBrokerService brokers,
+        Lazy<IFiltered<IEngineProvider>> engineProviders,
+        EnginesRoot enginesRoot,
+        EntitiesSubmissionScheduler scheduler) : IEngineService
     {
-        private readonly IBrokerService _brokers;
-        private readonly EnginesRoot _enginesRoot;
-        private readonly EntitiesSubmissionScheduler _scheduler;
-        private readonly Lazy<IFiltered<IEngineProvider>> _engineProviders;
-        private List<IEngine> _engines;
+        private readonly IBrokerService _brokers = brokers;
+        private readonly EnginesRoot _enginesRoot = enginesRoot;
+        private readonly EntitiesSubmissionScheduler _scheduler = scheduler;
+        private readonly Lazy<IFiltered<IEngineProvider>> _engineProviders = engineProviders;
+        private List<IEngine> _engines = engines.ToList();
 
         public EnginesRoot Root => _enginesRoot;
-
-        public EngineService(
-            IFiltered<IEngine> engines,
-            IBrokerService brokers,
-            Lazy<IFiltered<IEngineProvider>> engineProviders,
-            EnginesRoot enginesRoot,
-            EntitiesSubmissionScheduler scheduler)
-        {
-            _brokers = brokers;
-            _enginesRoot = enginesRoot;
-            _engineProviders = engineProviders;
-            _scheduler = scheduler;
-            _engines = engines.ToList();
-        }
 
         public void Initialize(IStrategy strategy)
         {

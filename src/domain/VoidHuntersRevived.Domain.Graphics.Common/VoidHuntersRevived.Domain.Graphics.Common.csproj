@@ -7,8 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game.MonoGame.Common\Guppy.Game.MonoGame.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Common\VoidHuntersRevived.Domain.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities.Common\VoidHuntersRevived.Domain.Entities.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.Xna.Framework.Graphics.PrimitiveType">
+      <Alias>PrimitiveTypeEnum</Alias>
+    </Using>
   </ItemGroup>
 	
 </Project>

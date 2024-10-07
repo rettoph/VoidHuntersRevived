@@ -2,15 +2,21 @@
 
 namespace VoidHuntersRevived.Domain.Pieces.Common
 {
-    public struct SocketVhId
+    public struct SocketVhId(VhId nodeVhId, byte index)
     {
-        public readonly VhId NodeVhId;
-        public readonly byte Index;
+        public readonly VhId NodeVhId = nodeVhId;
+        public readonly byte Index = index;
 
-        public SocketVhId(VhId nodeVhId, byte index)
+        public override bool Equals(object? obj)
         {
-            NodeVhId = nodeVhId;
-            Index = index;
+            return obj is SocketVhId id &&
+                   NodeVhId.Equals(id.NodeVhId) &&
+                   Index == id.Index;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(NodeVhId, Index);
         }
 
         public static bool operator ==(SocketVhId socketVhId1, SocketVhId socketVhId2)

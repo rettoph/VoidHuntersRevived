@@ -4,20 +4,14 @@ using VoidHuntersRevived.Domain.Entities.Common.Interfaces;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
-    internal class CloneableComponentBuilder<T> : IComponentBuilder, IDisposable
+    internal class CloneableComponentBuilder<T>(T instance) : IComponentBuilder, IDisposable
         where T : unmanaged, ICloneableComponent<T>
     {
-        private readonly ComponentBuilder<T> _builder;
-        private readonly T _instance;
+        private readonly ComponentBuilder<T> _builder = new ComponentBuilder<T>(instance);
+        private readonly T _instance = instance;
 
         bool IComponentBuilder.isUnmanaged => true;
         ComponentID IComponentBuilder.getComponentID => ComponentTypeID<T>.id;
-
-        public CloneableComponentBuilder(T instance)
-        {
-            _builder = new ComponentBuilder<T>(instance);
-            _instance = instance;
-        }
 
         void IComponentBuilder.BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid, IEnumerable<object> implementors)
         {

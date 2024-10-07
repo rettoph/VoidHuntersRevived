@@ -18,28 +18,19 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 namespace VoidHuntersRevived.Game.Core.Engines
 {
     [AutoLoad]
-    internal sealed class UserEngine : StrategyEngine, IGetReadyEngine,
+    internal sealed class UserEngine(
+        ITreeService treeService,
+        ITeamService teamService,
+        IEntityTypeService entityTypeService,
+        IBlueprintService blueprintService,
+        INetScope<IStrategy> scope) : StrategyEngine, IGetReadyEngine,
         IEventEngine<UserJoined>
     {
-        private readonly INetScope<IStrategy> _scope;
-        private readonly ITreeService _treeService;
-        private readonly ITeamService _teamService;
-        private readonly IEntityTypeService _entityTypeService;
-        private readonly IBlueprintService _blueprintService;
-
-        public UserEngine(
-            ITreeService treeService,
-            ITeamService teamService,
-            IEntityTypeService entityTypeService,
-            IBlueprintService blueprintService,
-            INetScope<IStrategy> scope)
-        {
-            _scope = scope;
-            _treeService = treeService;
-            _teamService = teamService;
-            _entityTypeService = entityTypeService;
-            _blueprintService = blueprintService;
-        }
+        private readonly INetScope<IStrategy> _scope = scope;
+        private readonly ITreeService _treeService = treeService;
+        private readonly ITeamService _teamService = teamService;
+        private readonly IEntityTypeService _entityTypeService = entityTypeService;
+        private readonly IBlueprintService _blueprintService = blueprintService;
 
         public string name { get; } = nameof(UserEngine);
 

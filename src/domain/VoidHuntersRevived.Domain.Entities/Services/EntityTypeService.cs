@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             _entityTypes = entityTypesDictionary.Values.ToDictionary(x => x.Key, x => x);
-            _entityTypesByType = new Dictionary<Type, object>();
+            _entityTypesByType = [];
             _distinctComponentTypes = _entityTypes.SelectMany(x => x.Value.Components.Keys).Distinct().ToArray();
         }
 

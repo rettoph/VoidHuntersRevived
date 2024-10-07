@@ -8,14 +8,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    internal sealed class SpaceEngine : StrategyEngine, IOnStepEngine
+    internal sealed class SpaceEngine(ISpace space) : StrategyEngine, IOnStepEngine
     {
-        private readonly ISpace _space;
-
-        public SpaceEngine(ISpace space)
-        {
-            _space = space;
-        }
+        private readonly ISpace _space = space;
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.StepSpace)]
         public void OnStep(Step step)

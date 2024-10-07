@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Physics
         {
             _space = space;
             _aether = space._aether.CreateBody(AetherVector2.Zero, FixedMath64.Zero, BodyType.Dynamic);
-            _fixtures = new Dictionary<VhId, Fixture>();
+            _fixtures = [];
             _aether.Tag = this;
             _aether.AngularDamping = (Fix64)1m;
             _aether.LinearDamping = (Fix64)0.25m;

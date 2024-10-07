@@ -1,17 +1,11 @@
 ﻿namespace VoidHuntersRevived.Common.FixedPoint
 {
-    public struct FixPolar
+    public struct FixPolar(Fix64 length, Fix64 radians)
     {
-        public Fix64 Length;
-        public Fix64 Radians;
+        public Fix64 Length = length;
+        public Fix64 Radians = radians;
 
-        public FixPolar(Fix64 length, Fix64 radians)
-        {
-            Length = length;
-            Radians = radians;
-        }
-
-        public FixVector2 ToVector2()
+        public readonly FixVector2 ToVector2()
         {
             return new FixVector2(
                 x: Fix64.Cos(Radians) * Length,

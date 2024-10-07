@@ -5,16 +5,10 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations
 {
-    public class SimulationBuilder : BaseInstanceBuilder<StrategyTypeEnum[], Simulation>
+    public class SimulationBuilder(VhId id, PeerType peerType) : BaseInstanceBuilder<StrategyTypeEnum[], Simulation>
     {
-        public VhId Id;
-        public readonly StrategiesFactoryBuilder StrategiesFactoryBuilder;
-
-        public SimulationBuilder(VhId id, PeerType peerType)
-        {
-            this.Id = id;
-            this.StrategiesFactoryBuilder = new StrategiesFactoryBuilder(peerType);
-        }
+        public VhId Id = id;
+        public readonly StrategiesFactoryBuilder StrategiesFactoryBuilder = new StrategiesFactoryBuilder(peerType);
 
         protected override Simulation build(StrategyTypeEnum[] strategies)
         {

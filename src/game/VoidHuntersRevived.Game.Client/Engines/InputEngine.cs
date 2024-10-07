@@ -10,7 +10,7 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
@@ -28,7 +28,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [AutoLoad]
     [PeerFilter(PeerType.Client)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    internal class InputEngine : StrategyEngine,
+    internal class InputEngine(
+        Camera2D camera,
+        ISimulation simulation
+    ) : StrategyEngine,
+        IOnInitializeEngine<IStrategy>,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
         IInputSubscriber<Input_Spam_Click>,
@@ -36,34 +40,18 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         private bool _spamClick;
 
-        private readonly Camera2D _camera;
-        private readonly ISimulation _simulation;
+        private readonly Camera2D _camera = camera;
+        private readonly ISimulation _simulation = simulation;
 
-        private IEntityQueryService _readEntityQueryService;
-        private ITractorBeamEmitterService _readTractorBeamEmitterService;
-        private ISocketService _readSocketService;
-        private IUserShipService _readUserShipService;
+        private IEntityQueryService _readEntityQueryService = null!;
+        private ITractorBeamEmitterService _readTractorBeamEmitterService = null!;
+        private ISocketService _readSocketService = null!;
+        private IUserShipService _readUserShipService = null!;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
-        public string name { get; } = nameof(InputEngine);
-
-        public InputEngine(
-            Camera2D camera,
-            IEntityQueryService entityQueryService,
-            ISimulation simulation)
-        {
-            _camera = camera;
-            _simulation = simulation;
-
-            _readEntityQueryService = null!;
-            _readTractorBeamEmitterService = null!;
-            _readSocketService = null!;
-            _readUserShipService = null!;
-        }
-
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
-        public void Initialize(IStrategy strategy)
+        public void OnInitialize(IStrategy strategy)
         {
             IStrategy readStrategy = _simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
 
@@ -97,7 +85,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            VhId eventId = new VhId(messageId);
+            VhId eventId = new(messageId);
 
             if (message.Value)
             {

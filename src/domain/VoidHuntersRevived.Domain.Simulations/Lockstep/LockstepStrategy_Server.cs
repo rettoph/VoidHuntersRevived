@@ -15,22 +15,16 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     [PeerFilter(PeerType.Server)]
-    public sealed class LockstepStrategy_Server : LockstepStrategy,
+    public sealed class LockstepStrategy_Server(
+        IBus bus,
+        ISettingService settings,
+        Lazy<ISimulation> simulation,
+        Lazy<IEngineService> engineService,
+        Lazy<ILogger> logger) : LockstepStrategy(settings, simulation, engineService, logger),
         ISubscriber<INetIncomingMessage<EventDto>>
     {
-        private readonly IBus _bus;
-        private readonly List<EventDto> _inputs;
-
-        public LockstepStrategy_Server(
-            IBus bus,
-            ISettingService settings,
-            Lazy<ISimulation> simulation,
-            Lazy<IEngineService> engineService,
-            Lazy<ILogger> logger) : base(settings, simulation, engineService, logger)
-        {
-            _bus = bus;
-            _inputs = new List<EventDto>();
-        }
+        private readonly IBus _bus = bus;
+        private readonly List<EventDto> _inputs = [];
 
         public override void Initialize(ISimulation simulation)
         {

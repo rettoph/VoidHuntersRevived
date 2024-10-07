@@ -7,14 +7,9 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Serialization.Json
 {
-    public class KeyConverter : JsonConverter<object>
+    public class KeyConverter(IPolymorphicJsonSerializerService<object> polymorphicJsonSerializerService) : JsonConverter<object>
     {
-        private readonly IPolymorphicJsonSerializerService<object> _polymorphicJsonSerializerService;
-
-        public KeyConverter(IPolymorphicJsonSerializerService<object> polymorphicJsonSerializerService)
-        {
-            _polymorphicJsonSerializerService = polymorphicJsonSerializerService;
-        }
+        private readonly IPolymorphicJsonSerializerService<object> _polymorphicJsonSerializerService = polymorphicJsonSerializerService;
 
         public override bool CanConvert(Type typeToConvert)
         {

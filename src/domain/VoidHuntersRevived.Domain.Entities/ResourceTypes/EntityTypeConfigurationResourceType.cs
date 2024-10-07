@@ -10,16 +10,11 @@ using VoidHuntersRevived.Domain.Entities.Common;
 namespace VoidHuntersRevived.Domain.Entities.ResourceTypes
 {
     [AutoLoad]
-    internal class EntityTypeConfigurationResourceType : ResourceType<EntityTypeConfiguration>
+    internal class EntityTypeConfigurationResourceType(IFileService files) : ResourceType<EntityTypeConfiguration>
     {
-        private readonly IFileService _files;
+        private readonly IFileService _files = files;
 
         public override string Name => "EntityType";
-
-        public EntityTypeConfigurationResourceType(IFileService files)
-        {
-            _files = files;
-        }
 
         protected override bool TryGetResolver(Resource<EntityTypeConfiguration> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out ResourceResolver<EntityTypeConfiguration> resolver)
         {

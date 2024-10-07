@@ -9,14 +9,9 @@ namespace VoidHuntersRevived.Game.Core.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<VoidHuntersGameScene>]
-    internal class SimulationFrameComponent : ISceneComponent, IDrawableComponent, IUpdatableComponent
+    internal class SimulationFrameComponent(ISimulationService simulationService) : ISceneComponent, IDrawableComponent, IUpdatableComponent
     {
-        private readonly ISimulationService _simulationService;
-
-        public SimulationFrameComponent(ISimulationService simulationService)
-        {
-            _simulationService = simulationService;
-        }
+        private readonly ISimulationService _simulationService = simulationService;
 
         [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.PostDraw)]
         public void Draw(GameTime gameTime)

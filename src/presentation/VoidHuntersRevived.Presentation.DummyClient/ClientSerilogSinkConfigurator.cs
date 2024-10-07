@@ -7,14 +7,9 @@ using VoidHuntersRevived.Presentation.Core;
 namespace VoidHuntersRevived.Presentation.Client
 {
     [AutoLoad]
-    internal sealed class ClientSerilogSinkConfigurator : ISerilogSinkConfigurator
+    internal sealed class ClientSerilogSinkConfigurator(ITerminal terminal) : ISerilogSinkConfigurator
     {
-        private readonly ITerminal _terminal;
-
-        public ClientSerilogSinkConfigurator(ITerminal terminal)
-        {
-            _terminal = terminal;
-        }
+        private readonly ITerminal _terminal = terminal;
 
         public void Configure(LoggerConfiguration config, string template)
         {

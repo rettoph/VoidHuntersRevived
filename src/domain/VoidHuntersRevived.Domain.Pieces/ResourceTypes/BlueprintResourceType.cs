@@ -8,16 +8,11 @@ using VoidHuntersRevived.Domain.Pieces.Common;
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
     [AutoLoad]
-    internal class BlueprintResourceType : SimpleResourceType<Blueprint>
+    internal class BlueprintResourceType(IFileService files) : SimpleResourceType<Blueprint>
     {
-        private readonly IFileService _files;
+        private readonly IFileService _files = files;
 
         public override string Name => "Blueprint";
-
-        public BlueprintResourceType(IFileService files)
-        {
-            _files = files;
-        }
 
         protected override bool TryResolve(Resource<Blueprint> resource, DirectoryLocation root, string input, out Blueprint value)
         {

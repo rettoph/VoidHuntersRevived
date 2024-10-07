@@ -8,24 +8,16 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public partial class EntitySpawnService : StrategyEngine, IEntitySpawnService, IPrivateEntitySpawnService
+    public partial class EntitySpawnService(
+        EntityQueryService entityQueryingService,
+        IEntityTypeProviderService entityTypeProviderService,
+        IEntityService entityService,
+        ILogger logger) : StrategyEngine, IEntitySpawnService, IPrivateEntitySpawnService
     {
-        private readonly EntityQueryService _entityQueryService;
-        private readonly IEntityTypeProviderService _entityTypeProviderService;
-        private readonly IEntityService _entityService;
-        private readonly ILogger _logger;
-
-        public EntitySpawnService(
-            EntityQueryService entityQueryingService,
-            IEntityTypeProviderService entityTypeProviderService,
-            IEntityService entityService,
-            ILogger logger)
-        {
-            _entityQueryService = entityQueryingService;
-            _entityTypeProviderService = entityTypeProviderService;
-            _entityService = entityService;
-            _logger = logger;
-        }
+        private readonly EntityQueryService _entityQueryService = entityQueryingService;
+        private readonly IEntityTypeProviderService _entityTypeProviderService = entityTypeProviderService;
+        private readonly IEntityService _entityService = entityService;
+        private readonly ILogger _logger = logger;
 
         EntityId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityType> entityTypeKey, VhId vhid)
         {

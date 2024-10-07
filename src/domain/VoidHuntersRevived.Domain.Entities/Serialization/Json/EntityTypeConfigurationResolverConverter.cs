@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
 using Guppy.Core.Serialization.Common.Services;
 using Svelto.ECS;
 using System.Text.Json;
@@ -10,19 +9,10 @@ using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
-    internal sealed class EntityTypeConfigurationResolverConverter : JsonConverter<ResourceResolver<EntityTypeConfiguration>>
+    internal sealed class EntityTypeConfigurationResolverConverter(
+        IPolymorphicJsonSerializerService<IEntityType> entityTypeTypeService) : JsonConverter<ResourceResolver<EntityTypeConfiguration>>
     {
-        private readonly Lazy<IResourceService> _resourceService;
-        private readonly IPolymorphicJsonSerializerService<IEntityType> _entityTypeTypeService;
-
-
-        public EntityTypeConfigurationResolverConverter(
-            Lazy<IResourceService> resourceService,
-            IPolymorphicJsonSerializerService<IEntityType> entityTypeTypeService)
-        {
-            _resourceService = resourceService;
-            _entityTypeTypeService = entityTypeTypeService;
-        }
+        private readonly IPolymorphicJsonSerializerService<IEntityType> _entityTypeTypeService = entityTypeTypeService;
 
         public override ResourceResolver<EntityTypeConfiguration>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -30,8 +20,8 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             Type? type = null;
             EntityTypeFlags flags = EntityTypeFlags.None;
             Key<IEntityType>[] include = Array.Empty<Key<IEntityType>>();
-            Dictionary<Type, IEntityComponent> components = new Dictionary<Type, IEntityComponent>();
-            Dictionary<Type, IEntityComponent> typeEntityComponents = new Dictionary<Type, IEntityComponent>();
+            Dictionary<Type, IEntityComponent> components = [];
+            Dictionary<Type, IEntityComponent> typeEntityComponents = [];
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -73,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 
             return new ResourceResolver<EntityTypeConfiguration>(() =>
             {
-                EntityTypeConfiguration entityTypeConfiguration = new EntityTypeConfiguration()
+                EntityTypeConfiguration entityTypeConfiguration = new()
                 {
                     Key = key.Value,
                     Type = type,

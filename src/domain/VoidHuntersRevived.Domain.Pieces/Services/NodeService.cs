@@ -1,18 +1,13 @@
 ﻿using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal sealed class NodeService : INodeService
+    internal sealed class NodeService(IEntityQueryService entityQueryService) : INodeService
     {
-        private readonly IEntityQueryService _entityQueryService;
-
-        public NodeService(IEntityQueryService entityQueryService)
-        {
-            _entityQueryService = entityQueryService;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
         public ref Tree GetTree(in Node node)
         {

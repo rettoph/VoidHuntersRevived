@@ -5,14 +5,9 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class ComponentSerializerService : IComponentSerializerService
+    public class ComponentSerializerService(IFiltered<ComponentSerializer> serializers) : IComponentSerializerService
     {
-        private Dictionary<Type, ComponentSerializer> _serializers;
-
-        public ComponentSerializerService(IFiltered<ComponentSerializer> serializers)
-        {
-            _serializers = serializers.ToDictionary(x => x.Type, x => x);
-        }
+        private Dictionary<Type, ComponentSerializer> _serializers = serializers.ToDictionary(x => x.Type, x => x);
 
         public ComponentSerializer GetComponentSerializerByType(Type componentType)
         {

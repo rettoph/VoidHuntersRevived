@@ -11,24 +11,17 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    internal sealed class DrawLockstepWireframeEngine : StrategyEngine,
+    internal sealed class DrawLockstepWireframeEngine(
+        ILogger logger,
+        IEntityQueryService entityQueryService) : StrategyEngine,
         ISubscriber<Input_Toggle_LockstepWireframe>
     {
-        private readonly short[] _indexBuffer;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ILogger _logger;
+        private readonly short[] _indexBuffer = new short[3];
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ILogger _logger = logger;
         private bool _visible;
 
         public string name { get; } = nameof(DrawLockstepWireframeEngine);
-
-        public DrawLockstepWireframeEngine(
-            ILogger logger,
-            IEntityQueryService entityQueryService)
-        {
-            _entityQueryService = entityQueryService;
-            _indexBuffer = new short[3];
-            _logger = logger;
-        }
 
         // public void Step(in GameTimeTeam _param)
         // {

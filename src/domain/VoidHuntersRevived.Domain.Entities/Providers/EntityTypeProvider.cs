@@ -169,9 +169,9 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // throw new NotImplementedException();
         }
 
-        private static IEnumerable<IEntityType> GetImplementedTypes(IEntityType entityType, IEntityTypeService entityTypeService, HashSet<IEntityType> result = null)
+        private static IEnumerable<IEntityType> GetImplementedTypes(IEntityType entityType, IEntityTypeService entityTypeService, HashSet<IEntityType>? result = null)
         {
-            result ??= new HashSet<IEntityType>();
+            result ??= [];
 
             if (result.Contains(entityType) == true)
             {

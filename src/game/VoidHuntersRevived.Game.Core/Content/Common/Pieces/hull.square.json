@@ -72,55 +72,8 @@
         "Rotation": 1.5707963267
       }
     },
-    "Visible": {
-      "Fill": [
-        {
-          "Vertices": [
-            {
-              "X": 0,
-              "Y": 0
-            },
-            {
-              "X": 1,
-              "Y": 0
-            },
-            {
-              "X": 1,
-              "Y": 1
-            },
-            {
-              "X": 0,
-              "Y": 1
-            }
-          ]
-        }
-      ],
-      "Trace": [
-        {
-          "Vertices": [
-            {
-              "X": 0,
-              "Y": 0
-            },
-            {
-              "X": 1,
-              "Y": 0
-            },
-            {
-              "X": 1,
-              "Y": 1
-            },
-            {
-              "X": 0,
-              "Y": 1
-            },
-            {
-              "X": 0,
-              "Y": 0
-            }
-          ]
-        }
-      ]
+    "Primitive.Visible": {
+      "Type": "Primitive.Visible.Hull.Square"
     }
   }
 }

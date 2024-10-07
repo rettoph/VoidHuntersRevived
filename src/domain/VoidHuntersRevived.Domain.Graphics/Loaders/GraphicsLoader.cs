@@ -1,6 +1,11 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Serialization.Json.Converters;
 using Guppy.Engine.Common.Loaders;
+using System.Text.Json.Serialization;
+using VoidHuntersRevived.Domain.Graphics.Common;
+using VoidHuntersRevived.Domain.Graphics.Common.Services;
+using VoidHuntersRevived.Domain.Graphics.Serialization.Json;
 using VoidHuntersRevived.Domain.Graphics.Services;
 
 namespace VoidHuntersRevived.Domain.Graphics.Loaders
@@ -10,8 +15,13 @@ namespace VoidHuntersRevived.Domain.Graphics.Loaders
     {
         public void ConfigureServices(ContainerBuilder builder)
         {
-            builder.RegisterType<PrimitiveService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<VertexTypeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<PrimitiveService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterGeneric(typeof(PrimitiveService<>)).As(typeof(IPrimitiveService<>)).SingleInstance();
+
+            builder.RegisterType<PrimitiveConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<PrimitiveSequenceGroupConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<PrimitiveTypeConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<PolymorphicConverter<IPrimitiveType>>().As<JsonConverter>().SingleInstance();
         }
     }
 }

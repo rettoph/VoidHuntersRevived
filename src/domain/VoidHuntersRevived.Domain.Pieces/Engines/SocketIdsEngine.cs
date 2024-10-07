@@ -5,32 +5,24 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class SocketIdsEngine : StrategyEngine,
+    internal sealed class SocketIdsEngine(
+        IEntityQueryService entityQueryService,
+        IEntitySpawnService entitySpawnService,
+        ISocketService socketService,
+        ILogger logger) : StrategyEngine,
         IOnDespawnEngine<Sockets>
     {
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly IEntitySpawnService _entitySpawnService;
-        private readonly ISocketService _socketService;
-        private readonly ILogger _logger;
-
-        public SocketIdsEngine(
-            IEntityQueryService entityQueryService,
-            IEntitySpawnService entitySpawnService,
-            ISocketService socketService,
-            ILogger logger)
-        {
-            _entityQueryService = entityQueryService;
-            _entitySpawnService = entitySpawnService;
-            _socketService = socketService;
-            _logger = logger;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
+        private readonly ISocketService _socketService = socketService;
+        private readonly ILogger _logger = logger;
 
         public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Sockets sockets, in GroupIndex groupIndex)
         {

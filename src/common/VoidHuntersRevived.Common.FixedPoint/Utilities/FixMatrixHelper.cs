@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Common.FixedPoint.Utilities
             Fix64 cos2 = transformation2.M11;
             Fix64 sin2 = transformation2.M12;
 
-            FixMatrix result = new FixMatrix(
+            FixMatrix result = new(
                 cos1cos2 - sin1sin2, cos1sin2 + sin1cos2, Fix64.Zero, Fix64.Zero,
                 -sin1cos2 - cos1sin2, cos1cos2 - sin1sin2, Fix64.Zero, Fix64.Zero,
                 Fix64.Zero, Fix64.Zero, Fix64.One, Fix64.Zero,
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Common.FixedPoint.Utilities
             float y1 = (float)transformation1.M42;
             float y2 = (float)transformation2.M42;
 
-            Matrix result = new Matrix(
+            Matrix result = new(
                 cos1cos2 - sin1sin2, cos1sin2 + sin1cos2, 0, 0,
                 -sin1cos2 - cos1sin2, cos1cos2 - sin1sin2, 0, 0,
                 0, 0, 1, 0,

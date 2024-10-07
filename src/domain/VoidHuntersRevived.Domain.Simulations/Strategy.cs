@@ -42,9 +42,9 @@ namespace VoidHuntersRevived.Domain.Simulations
             _engineService = engineService;
             _logger = logger;
             _enqueued = new Queue<EventDto>();
-            _publishers = new Dictionary<Type, EventPublisher>();
-            _stepActions = new ActionSequenceGroup<OnStepSequenceGroup, Step>();
-            _drawActions = new ActionSequenceGroup<OnDrawSequenceGroup, GameTime>();
+            _publishers = [];
+            _stepActions = new ActionSequenceGroup<OnStepSequenceGroup, Step>(false);
+            _drawActions = new ActionSequenceGroup<OnDrawSequenceGroup, GameTime>(true);
 
             this.Type = type;
 
@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             // Call all engine initializers
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<OnInitializeSequenceGroup>.Invoke(this.Engines, initializeDelegate, [this]);
+            DelegateSequenceGroup<OnInitializeSequenceGroup>.Invoke(this.Engines, initializeDelegate, false, [this]);
         }
 
         public virtual void Dispose()

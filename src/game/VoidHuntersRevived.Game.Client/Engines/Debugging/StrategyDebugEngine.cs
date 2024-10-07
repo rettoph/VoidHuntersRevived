@@ -11,14 +11,9 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
     [AutoLoad]
     [StrategyFilter<Strategy>]
-    internal class StrategyDebugEngine : StrategyEngine<Strategy>, IOnDebugEngine
+    internal class StrategyDebugEngine(IImGui imgui) : StrategyEngine<Strategy>, IOnDebugEngine
     {
-        private readonly IImGui _imgui;
-
-        public StrategyDebugEngine(IImGui imgui)
-        {
-            _imgui = imgui;
-        }
+        private readonly IImGui _imgui = imgui;
 
         [SequenceGroup<DebugSequenceGroup>("Strategy")]
         public void OnDebug(GameTime gameTime)

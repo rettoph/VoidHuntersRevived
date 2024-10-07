@@ -11,14 +11,9 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
     [AutoLoad]
     [StrategyFilter<LockstepStrategy_Server>]
-    internal class LockstepStrategy_ServerDebugEngine : StrategyEngine<LockstepStrategy_Server>, IOnDebugEngine
+    internal class LockstepStrategy_ServerDebugEngine(IImGui imgui) : StrategyEngine<LockstepStrategy_Server>, IOnDebugEngine
     {
-        private readonly IImGui _imgui;
-
-        public LockstepStrategy_ServerDebugEngine(IImGui imgui)
-        {
-            _imgui = imgui;
-        }
+        private readonly IImGui _imgui = imgui;
 
         [SequenceGroup<DebugSequenceGroup>("Strategy")]
         public void OnDebug(GameTime gameTime)

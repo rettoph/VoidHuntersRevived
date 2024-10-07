@@ -7,17 +7,12 @@ using VoidHuntersRevived.Game.Client.Messages;
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
-    internal class InvokeGarbageCollectionComponent : ISceneComponent,
+    internal class InvokeGarbageCollectionComponent(ILogger logger) : ISceneComponent,
         ISubscriber<Input_Invoke_Garbage_Collection>
     {
-        private ILogger _logger;
+        private ILogger _logger = logger;
         private DateTime _lastInvocation;
         private DateTime _lastWarning;
-
-        public InvokeGarbageCollectionComponent(ILogger logger)
-        {
-            _logger = logger;
-        }
 
         public void Process(in Guid messageId, Input_Invoke_Garbage_Collection message)
         {

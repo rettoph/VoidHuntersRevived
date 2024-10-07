@@ -12,26 +12,18 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class TractorableEngine : StrategyEngine,
+    internal sealed class TractorableEngine(
+        ITractorBeamEmitterService tractorBeamEmitterService,
+        ITacticalService tacticalService,
+        IEntityQueryService entityQueryService,
+        ILogger logger) : StrategyEngine,
         IOnSpawnEngine<Tractorable>,
         IOnDespawnEngine<Tractorable>
     {
-        private readonly ITractorBeamEmitterService _tractorBeamEmitterService;
-        private readonly ITacticalService _tacticalService;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ILogger _logger;
-
-        public TractorableEngine(
-            ITractorBeamEmitterService tractorBeamEmitterService,
-            ITacticalService tacticalService,
-            IEntityQueryService entityQueryService,
-            ILogger logger)
-        {
-            _tractorBeamEmitterService = tractorBeamEmitterService;
-            _tacticalService = tacticalService;
-            _entityQueryService = entityQueryService;
-            _logger = logger;
-        }
+        private readonly ITractorBeamEmitterService _tractorBeamEmitterService = tractorBeamEmitterService;
+        private readonly ITacticalService _tacticalService = tacticalService;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ILogger _logger = logger;
 
         public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
         {

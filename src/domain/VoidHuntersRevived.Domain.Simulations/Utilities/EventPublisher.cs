@@ -15,14 +15,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
         public static void PopulatePublishers(IEngineService engines, ILogger logger, Dictionary<Type, EventPublisher> publishers)
         {
-            Dictionary<Type, List<IEventEngine>> subscriptions = new();
+            Dictionary<Type, List<IEventEngine>> subscriptions = [];
             foreach (IEventEngine system in engines.OfType<IEventEngine>())
             {
                 foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventEngine<>)))
                 {
                     if (!subscriptions.TryGetValue(subscriberType.GenericTypeArguments[0], out List<IEventEngine>? subSystems))
                     {
-                        subscriptions[subscriberType.GenericTypeArguments[0]] = subSystems = new List<IEventEngine>();
+                        subscriptions[subscriberType.GenericTypeArguments[0]] = subSystems = [];
                     }
 
                     subSystems.Add(system);
@@ -39,26 +39,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
         public static Dictionary<Type, EventPublisher> BuildPublishers(IEngineService engines, ILogger logger)
         {
-            Dictionary<Type, EventPublisher> publishers = new();
+            Dictionary<Type, EventPublisher> publishers = [];
 
             EventPublisher.PopulatePublishers(engines, logger, publishers);
 
             return publishers;
         }
     }
-    internal class EventPublisher<T> : EventPublisher
+    internal class EventPublisher<T>(ILogger logger, List<IEventEngine> subscribers) : EventPublisher
         where T : class, IEventData
     {
-        private readonly IEventEngine<T>[] _subscribers;
-        private readonly IRevertEventEngine<T>[] _reverters;
-        private readonly ILogger _logger;
-
-        public EventPublisher(ILogger logger, List<IEventEngine> subscribers)
-        {
-            _logger = logger;
-            _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();
-            _reverters = subscribers.OfType<IRevertEventEngine<T>>().ToArray();
-        }
+        private readonly IEventEngine<T>[] _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();
+        private readonly IRevertEventEngine<T>[] _reverters = subscribers.OfType<IRevertEventEngine<T>>().ToArray();
+        private readonly ILogger _logger = logger;
 
         public override void Publish(EventDto @event)
         {

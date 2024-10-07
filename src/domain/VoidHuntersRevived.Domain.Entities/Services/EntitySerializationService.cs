@@ -8,18 +8,12 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class EntitySerializationService : StrategyEngine, IEntitySerializationService
+    public class EntitySerializationService(
+        EntityWriter writer,
+        EntityReader reader) : StrategyEngine, IEntitySerializationService
     {
-        private readonly EntityReader _reader;
-        private readonly EntityWriter _writer;
-
-        public EntitySerializationService(
-            EntityWriter writer,
-            EntityReader reader)
-        {
-            _reader = reader;
-            _writer = writer;
-        }
+        private readonly EntityReader _reader = reader;
+        private readonly EntityWriter _writer = writer;
 
         public EntityData Serialize(EntityId id, SerializationOptions options)
         {

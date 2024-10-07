@@ -7,14 +7,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Attributes
 {
-    public class StrategyFilterAttribute : GuppyConfigurationAttribute
+    public class StrategyFilterAttribute(StrategyTypeEnum requiredSimulationType) : GuppyConfigurationAttribute
     {
-        public readonly StrategyTypeEnum RequiredStrategyType;
-
-        public StrategyFilterAttribute(StrategyTypeEnum requiredSimulationType)
-        {
-            this.RequiredStrategyType = requiredSimulationType;
-        }
+        public readonly StrategyTypeEnum RequiredStrategyType = requiredSimulationType;
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {

@@ -18,9 +18,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Services
 
         public EngineServiceBuilder()
         {
-            this.Engines = new MockFiltered<IEngine>();
+            this.Engines = [];
             this.BrokerService = new Mocker<IBrokerService>();
-            this.EngineProvider = new MockFiltered<IEngineProvider>();
+            this.EngineProvider = [];
             this.EntitiesSubmissionScheduler = new Mocker<EntitiesSubmissionScheduler>();
             this.EnginesRoot = new Mocker<EnginesRoot>();
         }

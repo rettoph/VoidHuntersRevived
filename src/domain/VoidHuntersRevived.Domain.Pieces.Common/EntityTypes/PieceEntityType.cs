@@ -3,8 +3,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Static;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Teams.Common.EntityTypes;
 
@@ -20,13 +19,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.EntityTypes
                 new Coupling(),
                 new Node(),
                 new BelongsTo<Tree, Node>(),
-                new PrimitiveGroup(),
                 new VertexVisible()
             ]);
 
             this.RequireComponents([
                 typeof(Rigid),
-                typeof(Visible)
+                typeof(Primitive<VertexVisible>)
             ]);
         }
     }

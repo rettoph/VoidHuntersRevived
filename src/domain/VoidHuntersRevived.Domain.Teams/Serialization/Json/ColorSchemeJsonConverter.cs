@@ -7,14 +7,9 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
-    internal class ColorSchemeJsonConverter : JsonConverter<ColorScheme>
+    internal class ColorSchemeJsonConverter(IResourceService resources) : JsonConverter<ColorScheme>
     {
-        private readonly IResourceService _resources;
-
-        public ColorSchemeJsonConverter(IResourceService resources)
-        {
-            _resources = resources;
-        }
+        private readonly IResourceService _resources = resources;
 
         public override ColorScheme Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

@@ -3,21 +3,14 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities
 {
-    internal unsafe struct EntityModificationRequest
+    internal unsafe struct EntityModificationRequest(
+        VhId sourceId,
+        EntityModificationType modificationType,
+        in EntityId id)
     {
-        public readonly VhId SourceEventId;
-        public readonly EntityModificationType ModificationType;
-        public readonly EntityId Id;
-
-        public EntityModificationRequest(
-            VhId sourceId,
-            EntityModificationType modificationType,
-            in EntityId id)
-        {
-            SourceEventId = sourceId;
-            ModificationType = modificationType;
-            Id = id;
-        }
+        public readonly VhId SourceEventId = sourceId;
+        public readonly EntityModificationType ModificationType = modificationType;
+        public readonly EntityId Id = id;
     }
 
     internal enum EntityModificationType

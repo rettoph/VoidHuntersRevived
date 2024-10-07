@@ -3,26 +3,21 @@ using XnaVector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace VoidHuntersRevived.Common.FixedPoint
 {
-    public struct FixVector2
+    public struct FixVector2(Fix64 x, Fix64 y)
     {
-        public static FixVector2 Zero = new FixVector2(Fix64.Zero, Fix64.Zero);
-        public static FixVector2 One = new FixVector2(Fix64.One, Fix64.One);
-        public static FixVector2 UnitX = new FixVector2(Fix64.One, Fix64.Zero);
-        public static FixVector2 UnitY = new FixVector2(Fix64.Zero, Fix64.One);
+        public static readonly FixVector2 Zero = new(Fix64.Zero, Fix64.Zero);
+        public static readonly FixVector2 One = new(Fix64.One, Fix64.One);
+        public static readonly FixVector2 UnitX = new(Fix64.One, Fix64.Zero);
+        public static readonly FixVector2 UnitY = new(Fix64.Zero, Fix64.One);
 
-        public Fix64 X;
-        public Fix64 Y;
+        public Fix64 X = x;
+        public Fix64 Y = y;
 
-        public Fix64 Length => Fix64.Sqrt(this.X * this.X + this.Y * this.Y);
+        public readonly Fix64 Length => Fix64.Sqrt(this.X * this.X + this.Y * this.Y);
 
         public FixVector2(double x, double y) : this((Fix64)x, (Fix64)y)
         {
 
-        }
-        public FixVector2(Fix64 x, Fix64 y)
-        {
-            this.X = x;
-            this.Y = y;
         }
 
         public static void Distance(ref FixVector2 v1, ref FixVector2 v2, out Fix64 result)
@@ -39,7 +34,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
             return Fix64.Sqrt(dx * dx + dy * dy);
         }
 
-        public FixPolar ToPolar()
+        public readonly FixPolar ToPolar()
         {
             return new FixPolar(
                 length: this.Length,
@@ -102,10 +97,9 @@ namespace VoidHuntersRevived.Common.FixedPoint
             int destinationIndex,
             int length)
         {
-            if (sourceArray == null)
-                throw new ArgumentNullException("sourceArray");
-            if (destinationArray == null)
-                throw new ArgumentNullException("destinationArray");
+            ArgumentNullException.ThrowIfNull(sourceArray);
+            ArgumentNullException.ThrowIfNull(destinationArray);
+
             if (sourceArray.Length < sourceIndex + length)
                 throw new ArgumentException("Source array length is lesser than sourceIndex + length");
             if (destinationArray.Length < destinationIndex + length)
@@ -224,6 +218,18 @@ namespace VoidHuntersRevived.Common.FixedPoint
         public static FixVector2 Rotate(FixVector2 vector2, Fix64 radians)
         {
             return FixVector2.FromPolar(vector2.Length, Fix64.Atan2(vector2.X, vector2.Y) + radians);
+        }
+
+        public override readonly bool Equals(object? obj)
+        {
+            return obj is FixVector2 vector &&
+                   EqualityComparer<Fix64>.Default.Equals(X, vector.X) &&
+                   EqualityComparer<Fix64>.Default.Equals(Y, vector.Y);
+        }
+
+        public override readonly int GetHashCode()
+        {
+            return HashCode.Combine(X, Y);
         }
     }
 }

@@ -18,20 +18,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     [AutoLoad]
     [PeerFilter(PeerType.Server)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    internal class LockstepServer_TickEngine : StrategyEngine<ILockstepStrategy>,
+    internal class LockstepServer_TickEngine(ILogger logger, INetScope<IStrategy> scope) : StrategyEngine<ILockstepStrategy>,
         IOnTickEngine,
         IEventEngine<UserJoined>
     {
-        private readonly INetScope<IStrategy> _scope;
-        private readonly List<Tick> _history;
-        private readonly ILogger _logger;
-
-        public LockstepServer_TickEngine(ILogger logger, INetScope<IStrategy> scope)
-        {
-            _scope = scope;
-            _history = new List<Tick>();
-            _logger = logger;
-        }
+        private readonly INetScope<IStrategy> _scope = scope;
+        private readonly List<Tick> _history = [];
+        private readonly ILogger _logger = logger;
 
         public string name { get; } = nameof(LockstepServer_TickEngine);
 

@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             _ref = new UnmanagedReference<IEntityType>(this);
 
             this.Key = key;
-            this.RequiredComponents = new HashSet<Type>();
+            this.RequiredComponents = [];
             this.Components = new ComponentBuilderDictionary();
 
             // TODO: Some of these components should just be marked as required rather than
@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 
         public void Verify()
         {
-            List<string> missingRequiredComponents = new List<string>();
+            List<string> missingRequiredComponents = [];
 
             foreach (Type requiredType in this.RequiredComponents)
             {

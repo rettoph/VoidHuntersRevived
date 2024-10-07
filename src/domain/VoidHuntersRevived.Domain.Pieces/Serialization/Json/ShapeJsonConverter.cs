@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Svelto.DataStructures;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Pieces.Common;
@@ -10,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
     {
         public override Shape Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            NativeDynamicArrayCast<Vector2> vertices = default;
+            Vector2[] vertices = [];
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -20,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 switch (propertyName)
                 {
                     case nameof(Shape.Vertices):
-                        vertices = JsonSerializer.Deserialize<NativeDynamicArrayCast<Vector2>>(ref reader, options);
+                        vertices = JsonSerializer.Deserialize<Vector2[]>(ref reader, options) ?? [];
                         reader.Read();
                         break;
                 }

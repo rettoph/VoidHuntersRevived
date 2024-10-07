@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Serialization.Json.Converters;
+using Guppy.Core.Serialization.Common.Converters;
 using Guppy.Engine.Common.Loaders;
 using Serilog;
 using Svelto.ECS;
@@ -40,6 +40,7 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<EntityTypeConfigurationResolverConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<ResourceComponentConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<DictionaryPolymorphicConverter<IEntityComponent>>().As<JsonConverter>().SingleInstance();
 
             builder.Configure<LoggerConfiguration>((scope, config) =>

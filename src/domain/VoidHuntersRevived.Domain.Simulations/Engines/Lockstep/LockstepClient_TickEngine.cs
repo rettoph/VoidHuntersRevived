@@ -17,20 +17,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     [AutoLoad]
     [PeerFilter(PeerType.Client)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    internal class LockstepClient_TickEngine : StrategyEngine,
+    internal class LockstepClient_TickEngine(ILogger logger, TickBuffer ticks) : StrategyEngine,
         ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<INetIncomingMessage<TickHistoryStart>>,
         ISubscriber<INetIncomingMessage<TickHistoryItem>>,
         ISubscriber<INetIncomingMessage<TickHistoryEnd>>
     {
-        private readonly TickBuffer _ticks;
-        private readonly ILogger _logger;
-
-        public LockstepClient_TickEngine(ILogger logger, TickBuffer ticks)
-        {
-            _ticks = ticks;
-            _logger = logger;
-        }
+        private readonly TickBuffer _ticks = ticks;
+        private readonly ILogger _logger = logger;
 
         public void Process(in Guid messsageId, INetIncomingMessage<Tick> message)
         {

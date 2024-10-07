@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
 {

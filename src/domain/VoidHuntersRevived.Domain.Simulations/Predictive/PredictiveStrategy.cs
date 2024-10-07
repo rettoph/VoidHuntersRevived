@@ -15,28 +15,18 @@ using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
-    public sealed class PredictiveStrategy : Strategy
+    public sealed class PredictiveStrategy(
+        Lazy<ISimulation> simulation,
+        Lazy<IEngineService> engineService,
+        Lazy<ILogger> logger) : Strategy(StrategyTypeEnum.Predictive, simulation, engineService, logger)
     {
         private static readonly Pool<PredictedEvent> PredictionPool = new Pool<PredictedEvent>(ushort.MaxValue);
-        private ILockstepStrategy _lockstep;
-        private Step _step;
+        private ILockstepStrategy _lockstep = null!;
+        private Step _step = new Step();
         private double _lastStepTime;
-        private IPredictiveSynchronizationEngine[] _synchronizations;
-        private readonly DictionaryQueue<VhId, PredictedEvent> _predictedEvents;
-        private readonly Queue<EventDto> _confirmedEvents;
-
-
-        public PredictiveStrategy(
-            Lazy<ISimulation> simulation,
-            Lazy<IEngineService> engineService,
-            Lazy<ILogger> logger) : base(StrategyTypeEnum.Predictive, simulation, engineService, logger)
-        {
-            _lockstep = null!;
-            _step = new Step();
-            _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
-            _predictedEvents = new DictionaryQueue<VhId, PredictedEvent>();
-            _confirmedEvents = new Queue<EventDto>();
-        }
+        private IPredictiveSynchronizationEngine[] _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
+        private readonly DictionaryQueue<VhId, PredictedEvent> _predictedEvents = new DictionaryQueue<VhId, PredictedEvent>();
+        private readonly Queue<EventDto> _confirmedEvents = new Queue<EventDto>();
 
         public override void Initialize(ISimulation simulation)
         {

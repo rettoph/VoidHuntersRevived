@@ -7,20 +7,12 @@ using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Entities.Services
 {
-    public sealed class EntityTypeProviderServiceBuilder : BaseInstanceBuilder<EntityTypeProviderService>
+    public sealed class EntityTypeProviderServiceBuilder(EntityServiceBuilder? entityService = null) : BaseInstanceBuilder<EntityTypeProviderService>
     {
-        public Mocker<IUniqueNumberProvider> UniqueNumberProviderService;
-        public readonly EntityServiceBuilder EntityService;
-        public Mocker<IComponentSerializerService> ComponentSerializerService;
-        public Mocker<EnginesRoot> EnginesRoot;
-
-        public EntityTypeProviderServiceBuilder(EntityServiceBuilder? entityService = null)
-        {
-            this.UniqueNumberProviderService = new Mocker<IUniqueNumberProvider>();
-            this.EntityService = entityService ?? new EntityServiceBuilder();
-            this.ComponentSerializerService = new Mocker<IComponentSerializerService>();
-            this.EnginesRoot = new Mocker<EnginesRoot>();
-        }
+        public Mocker<IUniqueNumberProvider> UniqueNumberProviderService = new Mocker<IUniqueNumberProvider>();
+        public readonly EntityServiceBuilder EntityService = entityService ?? new EntityServiceBuilder();
+        public Mocker<IComponentSerializerService> ComponentSerializerService = new Mocker<IComponentSerializerService>();
+        public Mocker<EnginesRoot> EnginesRoot = new Mocker<EnginesRoot>();
 
         protected override EntityTypeProviderService build()
         {

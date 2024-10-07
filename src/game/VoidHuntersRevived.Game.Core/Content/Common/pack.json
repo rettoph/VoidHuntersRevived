@@ -6,8 +6,9 @@
       "colors.json",
       "strings.json",
       "teams.json",
-      "piece-types.json",
-      "blueprints.json"
+      "pieces.json",
+      "blueprints.json",
+      "primitives.json"
     ]
   }
 }

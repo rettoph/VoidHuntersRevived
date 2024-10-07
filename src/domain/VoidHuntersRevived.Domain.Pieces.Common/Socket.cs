@@ -2,13 +2,8 @@
 
 namespace VoidHuntersRevived.Domain.Pieces.Common
 {
-    public struct Socket
+    public struct Socket(Location location)
     {
-        public Location Location { get; set; }
-
-        public Socket(Location location)
-        {
-            this.Location = location;
-        }
+        public Location Location { get; set; } = location;
     }
 }

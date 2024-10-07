@@ -2,32 +2,19 @@
 
 namespace VoidHuntersRevived.Common.Utilities
 {
-    public class HashCache<T>
+    public class HashCache<T>(TimeSpan maximumAge)
         where T : struct
     {
-        private struct Cached
+        private struct Cached(in T value)
         {
-            public readonly T Value;
-            public readonly DateTime CachedAt;
-
-            public Cached(in T value)
-            {
-                Value = value;
-                CachedAt = DateTime.Now;
-            }
+            public readonly T Value = value;
+            public readonly DateTime CachedAt = DateTime.Now;
         }
 
-        private readonly TimeSpan _maximumAge;
-        private readonly Queue<Cached> _cached;
-        private readonly Dictionary<T, int> _count;
+        private readonly TimeSpan _maximumAge = maximumAge;
+        private readonly Queue<Cached> _cached = new Queue<Cached>();
+        private readonly Dictionary<T, int> _count = [];
         private Cached _item;
-
-        public HashCache(TimeSpan maximumAge)
-        {
-            _maximumAge = maximumAge;
-            _cached = new Queue<Cached>();
-            _count = new Dictionary<T, int>();
-        }
 
         public IEnumerable<T> Prune()
         {

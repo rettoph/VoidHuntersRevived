@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         public SimulationService(IStrategiesFactory strategiesFactory)
         {
             _strategiesFactory = strategiesFactory;
-            _simulations = new List<ISimulation>();
+            _simulations = [];
 
             this.Instances = new ReadOnlyCollection<ISimulation>(_simulations);
         }

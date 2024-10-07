@@ -10,25 +10,17 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    internal sealed class DrawActiveThrustableEngine : StrategyEngine
+    internal sealed class DrawActiveThrustableEngine(
+        ILogger logger,
+        IEntityQueryService entityQueryService,
+        Camera2D camera) : StrategyEngine
     {
-        private readonly short[] _indexBuffer;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly ILogger _logger;
-        private readonly Camera2D _camera;
+        private readonly short[] _indexBuffer = new short[3];
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly ILogger _logger = logger;
+        private readonly Camera2D _camera = camera;
 
         public string name { get; } = nameof(DrawActiveThrustableEngine);
-
-        public DrawActiveThrustableEngine(
-            ILogger logger,
-            IEntityQueryService entityQueryService,
-            Camera2D camera)
-        {
-            _entityQueryService = entityQueryService;
-            _indexBuffer = new short[3];
-            _logger = logger;
-            _camera = camera;
-        }
 
         // public void Step(in GameTimeTeam _param)
         // {

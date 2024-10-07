@@ -6,10 +6,10 @@ using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Physics.Common
 {
-    public struct Polygon : IDisposable
+    public struct Polygon(Fix64 density, NativeDynamicArrayCast<FixVector2> vertices) : IDisposable
     {
-        public readonly Fix64 Density;
-        public readonly NativeDynamicArrayCast<FixVector2> Vertices;
+        public readonly Fix64 Density = density;
+        public readonly NativeDynamicArrayCast<FixVector2> Vertices = vertices;
 
         public FixVector2 Centeroid
         {
@@ -28,11 +28,6 @@ namespace VoidHuntersRevived.Domain.Physics.Common
 
         public Polygon(Fix64 density, params FixVector2[] vertices) : this(density, vertices.ToNativeDynamicArray())
         {
-        }
-        public Polygon(Fix64 density, NativeDynamicArrayCast<FixVector2> vertices)
-        {
-            this.Density = density;
-            this.Vertices = vertices;
         }
 
         public void Dispose()

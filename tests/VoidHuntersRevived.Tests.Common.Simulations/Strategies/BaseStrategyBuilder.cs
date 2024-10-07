@@ -11,27 +11,15 @@ using VoidHuntersRevived.Tests.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Strategies
 {
-    public abstract class BaseStrategyBuilder : BaseInstanceBuilder<ISimulation, IStrategy>, IStrategyBuilder
+    public abstract class BaseStrategyBuilder(PeerType peerType, StrategyTypeEnum type) : BaseInstanceBuilder<ISimulation, IStrategy>, IStrategyBuilder
     {
-        public PeerType PeerType { get; }
-        public StrategyTypeEnum Type { get; }
-        public EngineServiceBuilder EngineServiceBuilder { get; }
-        public Mocker<ILogger> Logger { get; }
-        public Mocker<ISettingService> SettingService { get; }
-        public Mocker<INetScope<IStrategy>> NetScope { get; }
-        public Mocker<TickBuffer> TickBuffer { get; }
-        public Mocker<IBus> Bus { get; }
-
-        protected BaseStrategyBuilder(PeerType peerType, StrategyTypeEnum type)
-        {
-            this.PeerType = peerType;
-            this.Type = type;
-            this.EngineServiceBuilder = new EngineServiceBuilder();
-            this.Logger = new Mocker<ILogger>();
-            this.SettingService = new Mocker<ISettingService>();
-            this.NetScope = new Mocker<INetScope<IStrategy>>();
-            this.TickBuffer = new Mocker<TickBuffer>();
-            this.Bus = new Mocker<IBus>();
-        }
+        public PeerType PeerType { get; } = peerType;
+        public StrategyTypeEnum Type { get; } = type;
+        public EngineServiceBuilder EngineServiceBuilder { get; } = new EngineServiceBuilder();
+        public Mocker<ILogger> Logger { get; } = new Mocker<ILogger>();
+        public Mocker<ISettingService> SettingService { get; } = new Mocker<ISettingService>();
+        public Mocker<INetScope<IStrategy>> NetScope { get; } = new Mocker<INetScope<IStrategy>>();
+        public Mocker<TickBuffer> TickBuffer { get; } = new Mocker<TickBuffer>();
+        public Mocker<IBus> Bus { get; } = new Mocker<IBus>();
     }
 }

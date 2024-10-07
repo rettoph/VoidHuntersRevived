@@ -8,14 +8,9 @@ using VoidHuntersRevived.Domain.Entities.Engines;
 namespace VoidHuntersRevived.Domain.Entities.Loaders
 {
     [AutoLoad]
-    internal class SveltoLoader : IServiceLoader
+    internal class SveltoLoader(IAssemblyService assemblies) : IServiceLoader
     {
-        private readonly IAssemblyService _assemblies;
-
-        public SveltoLoader(IAssemblyService assemblies)
-        {
-            _assemblies = assemblies;
-        }
+        private readonly IAssemblyService _assemblies = assemblies;
 
         public void ConfigureServices(ContainerBuilder services)
         {

@@ -9,16 +9,11 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
-    internal sealed class HelmEngine : StrategyEngine,
+    internal sealed class HelmEngine(
+        IEntityQueryService entityQueryService) : StrategyEngine,
         IEventEngine<Helm_SetDirection>
     {
-        private readonly IEntityQueryService _entityQueryService;
-
-        public HelmEngine(
-            IEntityQueryService entityQueryService)
-        {
-            _entityQueryService = entityQueryService;
-        }
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
         public void Process(VhId vhid, Helm_SetDirection data)
         {

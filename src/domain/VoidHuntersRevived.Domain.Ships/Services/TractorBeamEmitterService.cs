@@ -5,7 +5,7 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
-using VoidHuntersRevived.Domain.Pieces.Common.Components.Instance;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
@@ -14,41 +14,28 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
-    public sealed partial class TractorBeamEmitterService : StrategyEngine, ITractorBeamEmitterService
+    public sealed partial class TractorBeamEmitterService(
+        ISpace space,
+        IEntityQueryService entityQueryService,
+        IEntitySpawnService entitySpawnService,
+        IEntitySerializationService entitySerializationService,
+        INodeService nodeService,
+        ITreeService treeService,
+        ISocketService socketService,
+        ITeamService teamService,
+        ILogger logger) : StrategyEngine, ITractorBeamEmitterService
     {
         private static Fix64 QueryRadius = (Fix64)3;
 
-        private readonly ISpace _space;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly IEntitySpawnService _entitySpawnService;
-        private readonly IEntitySerializationService _entitySerializationService;
-        private readonly INodeService _nodeService;
-        private readonly ITreeService _treeService;
-        private readonly ITeamService _teamService;
-        private readonly ISocketService _socketService;
-        private readonly ILogger _logger;
-
-        public TractorBeamEmitterService(
-            ISpace space,
-            IEntityQueryService entityQueryService,
-            IEntitySpawnService entitySpawnService,
-            IEntitySerializationService entitySerializationService,
-            INodeService nodeService,
-            ITreeService treeService,
-            ISocketService socketService,
-            ITeamService teamService,
-            ILogger logger)
-        {
-            _space = space;
-            _entityQueryService = entityQueryService;
-            _entitySpawnService = entitySpawnService;
-            _entitySerializationService = entitySerializationService;
-            _nodeService = nodeService;
-            _treeService = treeService;
-            _socketService = socketService;
-            _teamService = teamService;
-            _logger = logger;
-        }
+        private readonly ISpace _space = space;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
+        private readonly IEntitySerializationService _entitySerializationService = entitySerializationService;
+        private readonly INodeService _nodeService = nodeService;
+        private readonly ITreeService _treeService = treeService;
+        private readonly ITeamService _teamService = teamService;
+        private readonly ISocketService _socketService = socketService;
+        private readonly ILogger _logger = logger;
 
         public ref EntityFilterCollection GetTractorableFilter(EntityId tractorBeamEmitterId)
         {

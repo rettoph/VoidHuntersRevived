@@ -7,23 +7,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Utilities
     public static class PolygonHelper
     {
         [StructLayout(LayoutKind.Explicit)]
-        public readonly struct VertexAngle
+        public readonly struct VertexAngle(FixVector2 vertex, Fix64 angle)
         {
             [FieldOffset(0)]
-            public readonly Vector2 XnaVertex;
+            public readonly Vector2 XnaVertex = (Vector2)vertex;
 
             [FieldOffset(32)]
-            public readonly FixVector2 FixedVertex;
+            public readonly FixVector2 FixedVertex = vertex;
 
             [FieldOffset(160)]
-            public readonly Fix64 Angle;
-
-            public VertexAngle(FixVector2 vertex, Fix64 angle)
-            {
-                this.XnaVertex = (Vector2)vertex;
-                this.FixedVertex = vertex;
-                this.Angle = angle;
-            }
+            public readonly Fix64 Angle = angle;
         }
 
         public static IEnumerable<VertexAngle> CalculateVertexAngles(int sides)

@@ -2,16 +2,11 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public struct Id<T> : IId<T>, IEquatable<Id<T>>
+    public struct Id<T>(VhId value) : IId<T>, IEquatable<Id<T>>
     {
-        private readonly VhId _value;
+        private readonly VhId _value = value;
 
         public VhId Value => _value;
-
-        public Id(VhId value)
-        {
-            _value = value;
-        }
 
         public override bool Equals(object? obj)
         {

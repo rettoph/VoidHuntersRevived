@@ -1,11 +1,15 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Resources.Serialization.Json;
 using Guppy.Engine.Common.Loaders;
 using Serilog;
+using Svelto.ECS;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Pieces.Services;
 
@@ -14,27 +18,26 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
     [AutoLoad]
     public sealed class PieceLoader : IServiceLoader
     {
-        public void ConfigureServices(ContainerBuilder services)
+        public void ConfigureServices(ContainerBuilder builder)
         {
-            services.RegisterType<BlueprintConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<BlueprintPieceConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<RigidJsonConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<VisibleJsonConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<ShapeJsonConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<SocketsJsonConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<LocationJsonConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<PlugJsonConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<ThrustableJsonConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<NodeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            services.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<BlueprintConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<BlueprintPieceConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<RigidJsonConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<ShapeJsonConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<SocketsJsonConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<LocationJsonConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<PlugJsonConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<ThrustableJsonConverter>().As<JsonConverter>().SingleInstance();
 
-            services.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<Primitive<VertexVisible>, IEntityComponent>("Primitive.Visible")).SingleInstance();
+            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<PrimitiveSequenceGroup<VertexVisible>, IEntityComponent>("PrimitiveSequenceGroup.Visible")).SingleInstance();
 
-            services.RegisterType<NodeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-            services.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-            services.Configure<LoggerConfiguration>((scope, config) =>
+            builder.Configure<LoggerConfiguration>((scope, config) =>
             {
                 config.Destructure.AsScalar(typeof(Id<Blueprint>));
             });

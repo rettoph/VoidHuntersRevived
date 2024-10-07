@@ -12,22 +12,15 @@ using VoidHuntersRevived.Domain.Simulations.Predictive;
 
 namespace VoidHuntersRevived.Domain.Simulations.Factories
 {
-    public sealed class StrategiesFactory : IStrategiesFactory
+    public sealed class StrategiesFactory(INetScope<IStrategy> netScope, ISceneService scenes, ITerminal terminal) : IStrategiesFactory
     {
-        private readonly INetScope<IStrategy> _netScope;
-        private readonly ISceneService _scenes;
-        private readonly ITerminal _terminal;
-
-        public StrategiesFactory(INetScope<IStrategy> netScope, ISceneService scenes, ITerminal terminal)
-        {
-            _netScope = netScope;
-            _scenes = scenes;
-            _terminal = terminal;
-        }
+        private readonly INetScope<IStrategy> _netScope = netScope;
+        private readonly ISceneService _scenes = scenes;
+        private readonly ITerminal _terminal = terminal;
 
         public IEnumerable<IStrategy> BuildStrategies(ISimulation simulation, StrategyTypeEnum[] strategies)
         {
-            List<Type> strategyTypes = new List<Type>();
+            List<Type> strategyTypes = [];
             if (_netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Predictive))
             {
                 strategyTypes.Add(typeof(PredictiveStrategy));
@@ -47,8 +40,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Factories
                 {
                     configuration.WithContainerBuilder(builder =>
                     {
-                        builder.RegisterInstance<ITerminal>(_terminal).AsImplementedInterfaces();
-
                         builder.RegisterInstance(simulation).As<ISimulation>();
                         builder.RegisterNetScope<IStrategy>(_netScope.Group.Peer.Type, _netScope.Group.Id);
                     });

@@ -11,14 +11,9 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     [AutoLoad]
     [SceneFilter<LocalGameScene>]
-    internal class ConfigureSimulationsComponent : ISceneComponent<IScene>
+    internal class ConfigureSimulationsComponent(ISimulationService simulationService) : ISceneComponent<IScene>
     {
-        private readonly ISimulationService _simulationService;
-
-        public ConfigureSimulationsComponent(ISimulationService simulationService)
-        {
-            _simulationService = simulationService;
-        }
+        private readonly ISimulationService _simulationService = simulationService;
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PreInitialize)]
         public void Initialize(IScene scene)

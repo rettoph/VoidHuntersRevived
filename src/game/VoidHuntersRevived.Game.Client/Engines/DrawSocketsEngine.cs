@@ -13,27 +13,19 @@ namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Predictive)]
-    internal class DrawSocketsEngine : StrategyEngine
+    internal class DrawSocketsEngine(IScreen screen, IEntityQueryService entityQueryService, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch) : StrategyEngine
     {
-        private readonly IScreen _screen;
-        private readonly IEntityQueryService _entityQueryService;
-        private readonly Camera2D _camera;
-        private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch;
-        private readonly PrimitiveShape _jointShape;
-
-        public DrawSocketsEngine(IScreen screen, IEntityQueryService entityQueryService, Camera2D camera, PrimitiveBatch<VertexPositionColor> primitiveBatch)
-        {
-            _screen = screen;
-            _entityQueryService = entityQueryService;
-            _camera = camera;
-            _primitiveBatch = primitiveBatch;
-            _jointShape = new PrimitiveShape(new[]
+        private readonly IScreen _screen = screen;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+        private readonly Camera2D _camera = camera;
+        private readonly PrimitiveBatch<VertexPositionColor> _primitiveBatch = primitiveBatch;
+        private readonly PrimitiveShape _jointShape = new(new[]
             {
                 new Vector2(-0.05f, -0.05f),
                 new Vector2(0f, 0f),
                 new Vector2(-0.05f, 0.05f),
             });
-        }
+
         public string name { get; } = nameof(DrawSocketsEngine);
 
         // public void Step(in GameTimeTeam _param)

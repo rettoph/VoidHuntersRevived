@@ -8,19 +8,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     public class TickBuffer : IEnumerable<Tick>
     {
         [DebuggerDisplay("Id: {Data.Id}")]
-        private sealed class Node
+        private sealed class Node(Tick data)
         {
             public int Id => Data.Id;
             public int ParentId => Id - 1;
             public int ChildId => Id + 1;
 
-            public Tick Data { get; private set; }
+            public Tick Data { get; private set; } = data;
             public Node? Child { get; private set; }
-
-            public Node(Tick data)
-            {
-                Data = data;
-            }
 
             public EnqueueTickResponse Add(Node child)
             {

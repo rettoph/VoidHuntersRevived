@@ -1,51 +1,90 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System.Runtime.InteropServices;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 {
     public abstract class BufferContext
     {
-        public abstract PrimitiveType PrimitiveType { get; }
-
         internal BufferContext()
         {
 
         }
 
-        public abstract VertexBuffer BuildVertexBuffer(GraphicsDevice graphics);
+        public abstract VertexBuffer[] BuildVertexBuffers(GraphicsDevice graphics);
 
-        public abstract IndexBuffer BuildIndexBuffer(GraphicsDevice graphics);
+        public abstract IndexBuffer[] BuildIndexBuffers(GraphicsDevice graphics);
+
+        public abstract IEnumerable<PrimitiveTypeEnum> GetTypes();
     }
 
     public class BufferContext<TVertex> : BufferContext
         where TVertex : unmanaged, IVertexType
     {
-        private readonly TVertex[] _vertices;
-        private readonly short[] _indices;
+        private readonly List<PrimitiveTypeEnum> _types = [];
+        private readonly Dictionary<PrimitiveTypeEnum, List<TVertex>> _vertices = [];
+        private readonly Dictionary<PrimitiveTypeEnum, List<short>> _indices = [];
 
-        public override PrimitiveType PrimitiveType { get; }
-
-        public BufferContext(PrimitiveType primitiveType, TVertex[] vertices, short[] indices)
+        public void AddVertex(PrimitiveTypeEnum type, TVertex vertex, out short index)
         {
-            _vertices = vertices;
-            _indices = indices;
+            this.GetCollections(type, out var vertices, out _);
 
-            this.PrimitiveType = primitiveType;
+            index = (short)vertices.Count;
+            vertices.Add(vertex);
         }
 
-        public override VertexBuffer BuildVertexBuffer(GraphicsDevice graphics)
+        public void AddIndices(PrimitiveTypeEnum type, params short[] indices)
         {
-            VertexBuffer buffer = new VertexBuffer(graphics, typeof(TVertex), _vertices.Length, BufferUsage.WriteOnly);
-            buffer.SetData(_vertices);
-
-            return buffer;
+            this.GetCollections(type, out var _, out var list);
+            list.AddRange(indices);
         }
 
-        public override IndexBuffer BuildIndexBuffer(GraphicsDevice graphics)
-        {
-            IndexBuffer buffer = new IndexBuffer(graphics, IndexElementSize.SixteenBits, _indices.Length, BufferUsage.WriteOnly);
-            buffer.SetData(_indices);
+        public override IEnumerable<PrimitiveTypeEnum> GetTypes() => _types;
 
-            return buffer;
+        public override VertexBuffer[] BuildVertexBuffers(GraphicsDevice graphics)
+        {
+            List<VertexBuffer> buffers = [];
+
+            foreach (PrimitiveTypeEnum type in this.GetTypes())
+            {
+                VertexBuffer buffer = new(graphics, typeof(TVertex), _vertices[type].Count, BufferUsage.WriteOnly);
+                buffer.SetData([.. _vertices[type]]);
+                buffers.Add(buffer);
+            }
+
+            return [.. buffers];
+        }
+
+        public override IndexBuffer[] BuildIndexBuffers(GraphicsDevice graphics)
+        {
+            List<IndexBuffer> buffers = [];
+
+            foreach (PrimitiveTypeEnum type in this.GetTypes())
+            {
+                IndexBuffer buffer = new(graphics, IndexElementSize.SixteenBits, _indices[type].Count, BufferUsage.WriteOnly);
+                buffer.SetData([.. _indices[type]]);
+                buffers.Add(buffer);
+            }
+
+            return [.. buffers];
+        }
+
+        private void GetCollections(PrimitiveTypeEnum type, out List<TVertex> vertices, out List<short> indices)
+        {
+            ref List<TVertex> verticesRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_vertices, type, out bool exists)!;
+            if (exists == true)
+            {
+                vertices = verticesRef;
+                indices = _indices[type];
+                return;
+            }
+
+            verticesRef = [];
+
+            vertices = verticesRef;
+            indices = [];
+
+            _types.Add(type);
+            _indices.Add(type, indices);
         }
     }
 }

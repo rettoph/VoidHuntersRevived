@@ -1,14 +1,8 @@
 ﻿namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    public struct EntityReaderState
+    public struct EntityReaderState(EntityData data, int position)
     {
-        public readonly EntityData Data;
-        public readonly int Position;
-
-        public EntityReaderState(EntityData data, int position)
-        {
-            Data = data;
-            Position = position;
-        }
+        public readonly EntityData Data = data;
+        public readonly int Position = position;
     }
 }
