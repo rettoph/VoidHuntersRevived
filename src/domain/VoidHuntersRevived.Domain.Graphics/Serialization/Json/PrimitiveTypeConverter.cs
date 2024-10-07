@@ -14,10 +14,10 @@ using VertexBuffer = Microsoft.Xna.Framework.Graphics.VertexBuffer;
 
 namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
 {
-    public class PrimitiveTypeConverter(GraphicsDevice graphics, ILifetimeScope scope) : JsonConverter<object>
+    public class PrimitiveTypeConverter(ILifetimeScope scope, GraphicsDevice? graphics = null) : JsonConverter<object>
     {
-        private readonly GraphicsDevice _graphics = graphics;
         private readonly ILifetimeScope _scope = scope;
+        private readonly GraphicsDevice? _graphics = graphics;
 
         public override bool CanConvert(Type typeToConvert)
         {
@@ -41,6 +41,15 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
 
         public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (_graphics is null)
+            {
+                reader.Skip();
+
+                Type notImplementedPrimitiveTypeType = typeof(DefaultPrimitiveType<,,>).MakeGenericType(typeToConvert.GenericTypeArguments);
+                object? notImplementedInstance = Activator.CreateInstance(notImplementedPrimitiveTypeType);
+                return notImplementedInstance ?? throw new NotImplementedException();
+            }
+
             Type instanceVertexType = typeToConvert.GenericTypeArguments[0];
             Type staticVertexType = typeToConvert.GenericTypeArguments[1];
             Type effectType = typeToConvert.GenericTypeArguments[2];

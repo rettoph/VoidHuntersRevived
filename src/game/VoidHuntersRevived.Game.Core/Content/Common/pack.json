@@ -8,7 +8,9 @@
       "teams.json",
       "pieces.json",
       "blueprints.json",
-      "primitives.json"
+      "primitives.json",
+      "spritefonts.json",
+      "effects.json"
     ]
   }
 }

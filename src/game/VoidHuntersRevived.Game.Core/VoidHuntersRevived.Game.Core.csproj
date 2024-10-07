@@ -4,9 +4,14 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <MonoGamePlatform>DesktopGL</MonoGamePlatform>
   </PropertyGroup>
+	
+  <Import Project="..\..\..\libraries\Guppy\libraries\MonoGame\Tools\MonoGame.Content.Builder.Task\MonoGame.Content.Builder.Task.props" />
+  <Import Project="..\..\..\libraries\Guppy\libraries\MonoGame\Tools\MonoGame.Content.Builder.Task\MonoGame.Content.Builder.Task.targets" />
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game.Graphics.Common\Guppy.Game.Graphics.Common.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Common\VoidHuntersRevived.Domain.Common.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Physics.Common\VoidHuntersRevived.Domain.Physics.Common.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Pieces.Common\VoidHuntersRevived.Domain.Pieces.Common.csproj" />
@@ -14,33 +19,23 @@
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Teams.Common\VoidHuntersRevived.Domain.Teams.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Content\Common\**\*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="Content\Common\**\*.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Descriptors\**" />
-    <EmbeddedResource Remove="Descriptors\**" />
-    <None Remove="Descriptors\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="Content\Common\Shaders\Compiled\*.mgfx">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Content\Common\Pieces\base.hull.json" />
-    <None Remove="Content\Common\Pieces\base.thruster.json" />
-    <None Remove="Content\Common\primitives.json" />
-    <None Remove="Content\Common\Primitives\primitive.visible.hull.square.json" />
-    <None Remove="Content\Common\Primitives\primitive.visible.hull.triangle.json" />
-    <None Remove="Content\Common\Primitives\primitive.visible.thruster.json" />
-    <None Remove="Content\Common\teams.json" />
-    <None Remove="Content\Common\Teams\team.00.json" />
-    <None Remove="Content\Common\Teams\team.01.json" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="Content\Common\Shaders\*.fx" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Update="Content\Common\Pieces\base.hull.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' == 'Windows_NT' ">
+		<Exec Command="pwsh.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File $(SolutionDir)scripts\compile-fx.ps1 &quot;$(ProjectDir)Content\Common\Shaders&quot; &quot;$(ProjectDir)Content\Common\Shaders\Compiled&quot;" />
+	</Target>
 </Project>

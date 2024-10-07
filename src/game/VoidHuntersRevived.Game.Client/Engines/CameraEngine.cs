@@ -1,10 +1,10 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Game.Graphics.Common;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Messages;
 using Guppy.Game.MonoGame.Common;
-using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -23,14 +23,14 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal sealed class CameraEngine : StrategyEngine, IOnDrawEngine,
         IInputSubscriber<CursorScroll>
     {
-        private readonly Camera2D _camera;
+        private readonly ICamera2D _camera;
         private readonly IScreen _screen;
         private Vector2 _offset;
         private readonly IUserShipService _userShipService;
         private readonly IEntityQueryService _entitieQueryService;
 
         public CameraEngine(
-            Camera2D camera,
+            ICamera2D camera,
             IScreen screen,
             IUserShipService userShipService,
             IEntityQueryService entityQueryService)
@@ -76,12 +76,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 location = _entitieQueryService.QueryById<Location>(shipId).Position.ToXna();
             }
 
-            _camera.TargetPosition = location + _offset;
+            _camera.Position = location + _offset;
         }
 
         public void Process(in Guid messageId, CursorScroll message)
         {
-            _camera.TargetZoom *= ((float)Math.Pow(1.5, message.Delta / 120));
+            _camera.Zoom *= ((float)Math.Pow(1.5, message.Delta / 120));
         }
     }
 }

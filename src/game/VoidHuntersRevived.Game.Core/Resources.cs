@@ -1,10 +1,24 @@
 ﻿using Guppy.Core.Resources.Common;
+using Guppy.Game.Graphics.Common.Resources;
+using Guppy.Game.ImGui.Common.Styling;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
-namespace VoidHuntersRevived.Common
+namespace VoidHuntersRevived.Game.Core
 {
     public static class Resources
     {
+        public static class SpriteFonts
+        {
+            public static readonly Resource<SpriteFont> Default = Resource<SpriteFont>.Get($"{nameof(SpriteFont)}.{nameof(Default)}");
+        }
+
+        public static class EffectCodes
+        {
+            public static readonly Resource<IEffectCode> ShaderAntiAliasing = Resource<IEffectCode>.Get($"EffectCode.{nameof(ShaderAntiAliasing)}");
+            public static readonly Resource<IEffectCode> Visible = Resource<IEffectCode>.Get($"EffectCode.{nameof(Visible)}");
+        }
+
         public static class Strings
         {
             public static readonly Resource<string> TeamZeroName = Resource<string>.Get($"{nameof(String)}.{nameof(TeamZeroName)}");
@@ -26,6 +40,12 @@ namespace VoidHuntersRevived.Common
 
             public static readonly Resource<Color> TractorBeamHighlight = Resource<Color>.Get($"{nameof(Color)}.{nameof(TractorBeamHighlight)}");
             public static readonly Resource<Color> ActiveThrustableHighlight = Resource<Color>.Get($"{nameof(Color)}.{nameof(TractorBeamHighlight)}");
+        }
+
+        public static class ImGuiStyles
+        {
+            public static readonly Resource<ImStyle> ButtonGreen = Resource<ImStyle>.Get($"{nameof(ImStyle)}.{nameof(ButtonGreen)}");
+            public static readonly Resource<ImStyle> ButtonRed = Resource<ImStyle>.Get($"{nameof(ImStyle)}.{nameof(ButtonRed)}");
         }
     }
 }

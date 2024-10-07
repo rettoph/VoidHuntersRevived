@@ -13,16 +13,16 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Client/Fonts/BiomeLight-Normal.spritefont
+#begin Common/Fonts/BiomeLight-Normal.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Client/Fonts/BiomeLight-Normal.spritefont
+/build:Common/Fonts/BiomeLight-Normal.spritefont
 
-#begin Client/Shaders/ShaderAntiAliasing.fx
+#begin Common/Shaders/ShaderAntiAliasing.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Client/Shaders/ShaderAntiAliasing.fx
+/build:Common/Shaders/ShaderAntiAliasing.fx
 

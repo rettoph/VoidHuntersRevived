@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
-using Guppy.Game.MonoGame.Common.Utilities.Cameras;
+using Guppy.Game.Graphics.Common;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
@@ -15,13 +15,13 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
     [StrategyFilter(StrategyTypeEnum.Predictive)]
     public class DrawPrimitivesEngine(
         IPrimitiveService primitiveService,
-        Camera2D camera
+        ICamera2D camera
     ) : StrategyEngine,
         IOnInitializeEngine,
         IOnDrawEngine
     {
         private readonly IPrimitiveService _primitiveService = primitiveService;
-        private readonly Camera2D _camera = camera;
+        private readonly ICamera2D _camera = camera;
         private readonly ActionSequenceGroup<PrimitiveSequenceGroupEnum, GameTime> _primitiveActions = new(true);
 
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]

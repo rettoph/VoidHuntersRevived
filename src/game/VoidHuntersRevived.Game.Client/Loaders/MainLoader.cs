@@ -1,34 +1,19 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Files.Common;
-using Guppy.Core.Resources.Common.Configuration;
-using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Engine.Common.Loaders;
 using Guppy.Game;
 using Guppy.Game.MonoGame.Common.Extensions;
-using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Game.Client.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Loaders
 {
     [AutoLoad]
     internal sealed class MainLoader : IServiceLoader
     {
-        public void ConfigureServices(ContainerBuilder services)
+        public void ConfigureServices(ContainerBuilder builder)
         {
-            services.RegisterType<Camera2D>().As<Camera>().AsSelf().SingleInstance();
-
-            services.RegisterResourcePack(new ResourcePackConfiguration()
-            {
-                EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
-            });
-
-            services.RegisterType<ShaderAntiAliasingEffect>().SingleInstance();
-            services.RegisterType<VisibleEffect>().AsImplementedInterfaces().AsSelf().SingleInstance();
-
-            services.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
+            builder.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
             {
                 configuration.SetSceneHasDebugWindow(true).SetSceneHasTerminalWindow(true);
             });

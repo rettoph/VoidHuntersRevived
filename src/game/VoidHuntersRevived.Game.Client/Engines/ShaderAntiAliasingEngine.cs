@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Game.Client.Graphics.Effects;
+using VoidHuntersRevived.Game.Core.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {

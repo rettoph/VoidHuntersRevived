@@ -3,12 +3,12 @@ using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Graphics.Common;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
 using Guppy.Game.ImGui.Common.Extensions;
 using Guppy.Game.ImGui.Common.Services;
 using Guppy.Game.ImGui.Common.Styling;
-using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using tainicom.Aether.Physics2D.Diagnostics;
@@ -16,6 +16,7 @@ using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
+using VoidHuntersRevived.Game.Core;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
@@ -30,12 +31,12 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         private readonly IImGuiObjectExplorerService _objectExplorer;
         private readonly World _world;
         private readonly DebugView _debug;
-        private readonly Camera2D _camera;
+        private readonly ICamera2D _camera;
         private bool _debugViewEnabled;
         private bool _aetherExplorerEnabled;
         private string _filter;
-        private ResourceValue<ImStyle> _buttonRedStyle;
-        private ResourceValue<ImStyle> _buttonGreenStyle;
+        private readonly ResourceValue<ImStyle> _buttonRedStyle;
+        private readonly ResourceValue<ImStyle> _buttonGreenStyle;
 
         public AetherDebugEngine(
             IStrategy strategy,
@@ -45,7 +46,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
             IResourceService resourceService,
             World world,
             GraphicsDevice graphics,
-            Camera2D camera)
+            ICamera2D camera)
         {
             _strategy = strategy;
             _scene = scene;
@@ -57,8 +58,8 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
             _debug.LoadContent(graphics, resourceService.GetValue(Resources.SpriteFonts.Default));
             _filter = string.Empty;
 
-            _buttonRedStyle = resourceService.GetValue(Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed);
-            _buttonGreenStyle = resourceService.GetValue(Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen);
+            _buttonRedStyle = resourceService.GetValue(Resources.ImGuiStyles.ButtonRed);
+            _buttonGreenStyle = resourceService.GetValue(Resources.ImGuiStyles.ButtonGreen);
         }
 
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.Draw)]

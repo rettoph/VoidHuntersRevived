@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.MonoGame.Common.Utilities.Cameras;
+using Guppy.Game.Graphics.Common;
 using Serilog;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
@@ -13,12 +13,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
     internal sealed class DrawActiveThrustableEngine(
         ILogger logger,
         IEntityQueryService entityQueryService,
-        Camera2D camera) : StrategyEngine
+        ICamera2D camera) : StrategyEngine
     {
         private readonly short[] _indexBuffer = new short[3];
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
-        private readonly Camera2D _camera = camera;
+        private readonly ICamera2D _camera = camera;
 
         public string name { get; } = nameof(DrawActiveThrustableEngine);
 
