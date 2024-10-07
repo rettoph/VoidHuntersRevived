@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Extensions.Autofac
             where TVertexStatic : unmanaged, IVertexType
             where TEffect : Effect
         {
-            var polymorphicMap = new PolymorphicJsonType<PrimitiveType<TVertexInstance, TVertexStatic, TEffect>, PrimitiveType>(name);
+            var polymorphicMap = new PolymorphicJsonType<IPrimitiveType<TVertexInstance, TVertexStatic, TEffect>, IPrimitiveType>(name);
             builder.RegisterInstance<PolymorphicJsonType>(polymorphicMap).SingleInstance();
         }
     }

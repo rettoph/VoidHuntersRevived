@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Graphics
@@ -22,14 +21,14 @@ namespace VoidHuntersRevived.Domain.Graphics
         where TVertexStatic : unmanaged, IVertexType
         where TEffect : Effect
     {
-        public override void OnDraw(IDrawPrimitiveContext context)
+        public override void Draw(EntitiesDB entitiesDb)
         {
-            this.CopyEntityDataToVertexBuffer(context.EntitiesDb);
+            this.CopyEntityDataToVertexBuffer(entitiesDb);
 
-            base.OnDraw(context);
+            base.Draw(entitiesDb);
         }
 
-        public void CopyEntityDataToVertexBuffer(EntitiesDB entitiesDb)
+        private void CopyEntityDataToVertexBuffer(EntitiesDB entitiesDb)
         {
             ref EntityFilterCollection filter = ref this.GetFilter<TVertexInstance>(entitiesDb);
 

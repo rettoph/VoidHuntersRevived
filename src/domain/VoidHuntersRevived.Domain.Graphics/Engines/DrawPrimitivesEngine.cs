@@ -3,7 +3,6 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -25,20 +24,9 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
     {
         private readonly IPrimitiveService _primitiveService = primitiveService;
         private readonly Camera2D _camera = camera;
-        private readonly ActionSequenceGroup<PrimitiveSequenceGroupEnum, IDrawPrimitiveContext> _primitiveActions = new(true);
-        private DrawPrimitiveContext _context = default!;
+        private readonly ActionSequenceGroup<PrimitiveSequenceGroupEnum, EntitiesDB> _primitiveActions = new(true);
 
-        public EntitiesDB entitiesDB
-        {
-            set
-            {
-                _context = new DrawPrimitiveContext()
-                {
-                    Camera = _camera,
-                    EntitiesDb = value,
-                };
-            }
-        }
+        public EntitiesDB entitiesDB { get; set; } = default!;
 
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
         public void OnInitialize(IStrategy strategy)
@@ -49,9 +37,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.Draw)]
         public void OnDraw(GameTime gameTime)
         {
-            _context.GameTime = gameTime;
-
-            _primitiveActions.Invoke(_context);
+            _primitiveActions.Invoke(this.entitiesDB);
         }
     }
 }

@@ -2,13 +2,12 @@
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Graphics.Common;
-using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 using VertexPosition = Microsoft.Xna.Framework.Graphics.VertexPosition;
 
 namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
 {
-    public class PrimitiveEntityConverter : JsonConverter<object>
+    public class PrimitiveConverter : JsonConverter<object>
     {
         public override bool CanConvert(Type typeToConvert)
         {
@@ -17,13 +16,13 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
                 return false;
             }
 
-            bool result = typeToConvert.GetGenericTypeDefinition() == typeof(PrimitiveEntity<>);
+            bool result = typeToConvert.GetGenericTypeDefinition() == typeof(Common.Components.Primitive<>);
             return result;
         }
 
         public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Key<PrimitiveType>? type = default;
+            Key<IPrimitiveType>? type = default;
             PrimitiveSequenceGroupEnum sequenceGroup = PrimitiveSequenceGroupEnum.Background;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -33,11 +32,11 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(PrimitiveEntity<VertexPosition>.Type):
-                        type = JsonSerializer.Deserialize<Key<PrimitiveType>>(ref reader, options);
+                    case nameof(Common.Components.Primitive<VertexPosition>.Type):
+                        type = JsonSerializer.Deserialize<Key<IPrimitiveType>>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(PrimitiveEntity<VertexPosition>.SequenceGroup):
+                    case nameof(Common.Components.Primitive<VertexPosition>.SequenceGroup):
                         sequenceGroup = JsonSerializer.Deserialize<PrimitiveSequenceGroupEnum>(ref reader, options);
                         reader.Read();
                         break;

@@ -22,12 +22,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
 
         public override bool CanConvert(Type typeToConvert)
         {
-            if (typeToConvert.IsAssignableTo<Common.PrimitiveType>() == false)
-            {
-                return false;
-            }
-
-            if (typeToConvert.IsAbstract == true)
+            if (typeToConvert.IsAssignableTo<IPrimitiveType>() == false)
             {
                 return false;
             }
@@ -37,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
                 return false;
             }
 
-            if (typeToConvert.GetGenericTypeDefinition() != typeof(PrimitiveType<,,>))
+            if (typeToConvert.GetGenericTypeDefinition() != typeof(IPrimitiveType<,,>))
             {
                 return false;
             }
@@ -62,15 +57,15 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(PrimitiveType.Primitives):
+                    case nameof(IPrimitiveType.Primitives):
                         primitiveContexts = JsonSerializer.Deserialize<PrimitiveContextTwo[]>(ref reader, options) ?? [];
                         reader.Read();
                         break;
-                    case nameof(PrimitiveType.VertexBuffer):
+                    case nameof(IPrimitiveType.VertexBuffer):
                         vertices = (Array?)JsonSerializer.Deserialize(ref reader, staticVertexType.MakeArrayType(), options);
                         reader.Read();
                         break;
-                    case nameof(PrimitiveType.IndexBuffers):
+                    case nameof(IPrimitiveType.IndexBuffers):
                         indexBufferContexts = JsonSerializer.Deserialize<IndexBufferContext[]>(ref reader, options) ?? [];
                         reader.Read();
                         break;
@@ -114,18 +109,19 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
                 primitiveType = typeof(EntityPrimitive<,,>).MakeGenericType(typeToConvert.GenericTypeArguments);
             }
 
-            Lazy<Primitive[]> primitives = new(() =>
+            Lazy<IPrimitive[]> primitives = new(() =>
             {
                 Effect effect = (Effect)_scope.Resolve(effectType);
 
                 return primitiveContexts.Select(x =>
                 {
-                    Primitive? primitive = (Primitive?)Activator.CreateInstance(primitiveType, [x.Sequence, x.SequenceGroup, vertexBuffer, indexBuffers, bufferTypes, effect, _graphics]);
+                    IPrimitive? primitive = (IPrimitive?)Activator.CreateInstance(primitiveType, [x.Sequence, x.SequenceGroup, vertexBuffer, indexBuffers, bufferTypes, effect, _graphics]);
                     return primitive ?? throw new NotImplementedException();
                 }).ToArray();
             });
 
-            object? instance = Activator.CreateInstance(typeToConvert, [primitives, vertexBuffer, indexBuffers, bufferTypes]);
+            Type primitiveTypeType = typeof(PrimitiveType<,,>).MakeGenericType(typeToConvert.GenericTypeArguments);
+            object? instance = Activator.CreateInstance(primitiveTypeType, [primitives, vertexBuffer, indexBuffers, bufferTypes]);
 
             return instance ?? throw new NotImplementedException();
         }

@@ -3,20 +3,21 @@ using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.ResourceTypes;
+using VoidHuntersRevived.Domain.Graphics;
 using VoidHuntersRevived.Domain.Graphics.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
     [AutoLoad]
-    public class PrimitiveTypeResourceType(IFileService files) : SimpleResourceType<PrimitiveType>
+    public class PrimitiveTypeResourceType(IFileService files) : SimpleResourceType<IPrimitiveType>
     {
         private readonly IFileService _files = files;
 
         public override string Name => nameof(PrimitiveType);
 
-        protected override bool TryResolve(Resource<PrimitiveType> resource, DirectoryLocation root, string input, out PrimitiveType value)
+        protected override bool TryResolve(Resource<IPrimitiveType> resource, DirectoryLocation root, string input, out IPrimitiveType value)
         {
-            IFile<PrimitiveType> primitive = _files.Get<PrimitiveType>(
+            IFile<IPrimitiveType> primitive = _files.Get<IPrimitiveType>(
                 new FileLocation(root, input),
                 true);
 

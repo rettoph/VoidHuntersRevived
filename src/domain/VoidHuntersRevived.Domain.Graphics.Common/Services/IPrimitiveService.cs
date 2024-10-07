@@ -8,14 +8,14 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Services
     {
         IEnumerable<Type> GetAllVertexTypes();
 
-        IEnumerable<Primitive> GetAll();
-        IEnumerable<Primitive<TVertex>> GetAll<TVertex>()
+        IEnumerable<IPrimitive> GetAll();
+        IEnumerable<IPrimitive<TVertex>> GetAll<TVertex>()
         where TVertex : unmanaged, IVertexType;
     }
 
     public interface IPrimitiveService<TVertex>
         where TVertex : unmanaged, IVertexType
     {
-        Primitive<TVertex> GetPrimitiveByTypeAndSequenceGroup(Key<PrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup);
+        IPrimitive<TVertex> GetPrimitiveByTypeAndSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup);
     }
 }

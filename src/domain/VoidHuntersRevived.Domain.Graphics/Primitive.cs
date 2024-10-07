@@ -2,27 +2,26 @@
 using Guppy.Core.Common.Interfaces;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
+using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
-using VoidHuntersRevived.Domain.Graphics.Common.Interfaces;
 
-namespace VoidHuntersRevived.Domain.Graphics.Common
+namespace VoidHuntersRevived.Domain.Graphics
 {
-    public abstract class Primitive
+    public abstract class Primitive : IPrimitive
     {
         private static int FilterId;
         private static readonly FilterContextID FilterContextId = FilterContextID.GetNewContextID();
 
         private readonly CombinedFilterID _combinedFilterId;
 
-        public readonly Type VertexType;
-        public readonly int Sequence;
-        public readonly VertexBuffer StaticVertexBuffer;
-        public readonly IndexBuffer[] StaticIndexBuffers;
-        public readonly PrimitiveTypeEnum[] BufferTypes;
-        public readonly int[] StaticPrimitiveCount;
-        public readonly GraphicsDevice Graphics;
-        public readonly PrimitiveSequenceGroupEnum SequenceGroup;
-
+        public Type VertexType { get; }
+        public int Sequence { get; }
+        public VertexBuffer StaticVertexBuffer { get; }
+        public IndexBuffer[] StaticIndexBuffers { get; }
+        public PrimitiveTypeEnum[] BufferTypes { get; }
+        public int[] StaticPrimitiveCount { get; }
+        public GraphicsDevice Graphics { get; }
+        public PrimitiveSequenceGroupEnum SequenceGroup { get; }
         public int InstanceCount { get; protected set; }
         public VertexBuffer InstanceVertexBuffer { get; protected set; }
         public VertexBufferBinding[][] VertexBufferBindings { get; protected set; }
@@ -61,9 +60,11 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
         {
             return ref entitiesDb.GetFilters().GetOrCreatePersistentFilter<TComponent>(_combinedFilterId);
         }
+
+        public abstract void Dispose();
     }
 
-    public abstract class Primitive<TVertexInstance> : Primitive, IOnDrawPrimitive
+    public abstract class Primitive<TVertexInstance> : Primitive, IPrimitive<TVertexInstance>
         where TVertexInstance : unmanaged, IVertexType
     {
         private const int DefaultBufferSize = 256;
@@ -135,7 +136,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
             return ref _instanceVertices[this.InstanceCount++];
         }
 
-        protected virtual bool Flush()
+        public virtual bool Flush()
         {
             if (this.InstanceCount == 0)
             {
@@ -146,12 +147,17 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
             return true;
         }
 
-        protected virtual void Clear()
+        public virtual void Clear()
         {
             this.InstanceCount = 0;
         }
 
-        public abstract void OnDraw(IDrawPrimitiveContext context);
+        public abstract void Draw(EntitiesDB entitiesDb);
+
+        public override void Dispose()
+        {
+            this.InstanceVertexBuffer?.Dispose();
+        }
     }
 
     public class Primitive<TVertexInstance, TVertexStatic, TEffect>(
@@ -163,20 +169,19 @@ namespace VoidHuntersRevived.Domain.Graphics.Common
             TEffect effect,
             GraphicsDevice graphics
         ) : Primitive<TVertexInstance>(sequence, sequenceGroup, staticVertexBuffer, staticIndexBuffers, bufferTypes, graphics),
+            IPrimitive<TVertexInstance, TVertexStatic, TEffect>,
             IRuntimeSequence<PrimitiveSequenceGroupEnum>,
             IRuntimeSequenceGroup<PrimitiveSequenceGroupEnum>
         where TVertexInstance : unmanaged, IVertexType
         where TVertexStatic : unmanaged, IVertexType
         where TEffect : Effect
     {
-        public readonly TEffect Effect = effect;
-
-
+        public TEffect Effect { get; } = effect;
 
         int IRuntimeSequence<PrimitiveSequenceGroupEnum>.Value => this.Sequence;
         SequenceGroup<PrimitiveSequenceGroupEnum> IRuntimeSequenceGroup<PrimitiveSequenceGroupEnum>.Value => SequenceGroup<PrimitiveSequenceGroupEnum>.GetByValue(this.SequenceGroup);
 
-        public override void OnDraw(IDrawPrimitiveContext context)
+        public override void Draw(EntitiesDB entites)
         {
             if (this.Flush() == false)
             {
