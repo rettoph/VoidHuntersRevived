@@ -1,5 +1,4 @@
-﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Graphics.Common.Enums;
+﻿using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Contexts
 {
@@ -7,11 +6,5 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Contexts
     {
         public PrimitiveSequenceGroupEnum SequenceGroup { get; set; }
         public int Sequence { get; set; }
-    }
-
-    public readonly struct PrimitiveContext(Key<IPrimitive> type, int sequence)
-    {
-        public readonly Key<IPrimitive> Type = type;
-        public readonly int Sequence = sequence;
     }
 }

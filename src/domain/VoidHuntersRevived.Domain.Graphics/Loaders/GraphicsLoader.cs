@@ -18,7 +18,6 @@ namespace VoidHuntersRevived.Domain.Graphics.Loaders
             builder.RegisterType<PrimitiveService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterGeneric(typeof(PrimitiveService<>)).As(typeof(IPrimitiveService<>)).SingleInstance();
 
-            builder.RegisterType<PrimitiveContextConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<PrimitiveEntityConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<PrimitiveSequenceGroupConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<PrimitiveTypeConverter>().As<JsonConverter>().SingleInstance();

@@ -28,7 +28,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
             builder.RegisterType<BlueprintConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<BlueprintPieceConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<RigidJsonConverter>().As<JsonConverter>().SingleInstance();
-            builder.RegisterType<VisibleJsonConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<ShapeJsonConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<SocketsJsonConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<LocationJsonConverter>().As<JsonConverter>().SingleInstance();
