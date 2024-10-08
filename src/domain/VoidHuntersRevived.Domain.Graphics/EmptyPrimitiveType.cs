@@ -4,7 +4,7 @@ using VoidHuntersRevived.Domain.Graphics.Common;
 namespace VoidHuntersRevived.Domain.Graphics
 {
 
-    public class DefaultPrimitiveType<TVertexInstance, TVertexStatic, TEffect> : IPrimitiveType<TVertexInstance, TVertexStatic, TEffect>
+    public class EmptyPrimitiveType<TVertexInstance, TVertexStatic, TEffect> : IPrimitiveType<TVertexInstance, TVertexStatic, TEffect>
         where TVertexInstance : unmanaged, IVertexType
         where TVertexStatic : unmanaged, IVertexType
         where TEffect : Effect

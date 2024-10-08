@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Collections;
+using Guppy.Game.Common.Attributes;
+using Guppy.Game.Graphics.Common.Constants;
 using Microsoft.Xna.Framework;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
@@ -15,18 +17,19 @@ using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
+    [SetSceneConfiguration<bool>(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, true)]
     public sealed class PredictiveStrategy(
         Lazy<ISimulation> simulation,
         Lazy<IEngineService> engineService,
         Lazy<ILogger> logger) : Strategy(StrategyTypeEnum.Predictive, simulation, engineService, logger)
     {
-        private static readonly Pool<PredictedEvent> PredictionPool = new Pool<PredictedEvent>(ushort.MaxValue);
+        private static readonly Pool<PredictedEvent> PredictionPool = new(ushort.MaxValue);
         private ILockstepStrategy _lockstep = null!;
-        private Step _step = new Step();
+        private readonly Step _step = new();
         private double _lastStepTime;
         private IPredictiveSynchronizationEngine[] _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
-        private readonly DictionaryQueue<VhId, PredictedEvent> _predictedEvents = new DictionaryQueue<VhId, PredictedEvent>();
-        private readonly Queue<EventDto> _confirmedEvents = new Queue<EventDto>();
+        private readonly DictionaryQueue<VhId, PredictedEvent> _predictedEvents = new();
+        private readonly Queue<EventDto> _confirmedEvents = new();
 
         public override void Initialize(ISimulation simulation)
         {

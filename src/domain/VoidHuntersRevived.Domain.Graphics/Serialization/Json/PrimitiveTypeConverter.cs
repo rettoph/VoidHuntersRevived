@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using Guppy.Game.Graphics.Common;
+using Guppy.Game.Graphics.Common.Enums;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -6,7 +8,6 @@ using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Contexts;
 using BufferUsage = Microsoft.Xna.Framework.Graphics.BufferUsage;
 using Effect = Microsoft.Xna.Framework.Graphics.Effect;
-using GraphicsDevice = Microsoft.Xna.Framework.Graphics.GraphicsDevice;
 using IndexBuffer = Microsoft.Xna.Framework.Graphics.IndexBuffer;
 using IndexElementSize = Microsoft.Xna.Framework.Graphics.IndexElementSize;
 using IVertexType = Microsoft.Xna.Framework.Graphics.IVertexType;
@@ -14,10 +15,10 @@ using VertexBuffer = Microsoft.Xna.Framework.Graphics.VertexBuffer;
 
 namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
 {
-    public class PrimitiveTypeConverter(ILifetimeScope scope, GraphicsDevice? graphics = null) : JsonConverter<object>
+    public class PrimitiveTypeConverter(ILifetimeScope scope, IGraphicsDevice graphics) : JsonConverter<object>
     {
         private readonly ILifetimeScope _scope = scope;
-        private readonly GraphicsDevice? _graphics = graphics;
+        private readonly IGraphicsDevice _graphics = graphics;
 
         public override bool CanConvert(Type typeToConvert)
         {
@@ -41,13 +42,13 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
 
         public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (_graphics is null)
+            if (_graphics.Status == GraphicsObjectStatusEnum.NotImplemented)
             {
                 reader.Skip();
 
-                Type notImplementedPrimitiveTypeType = typeof(DefaultPrimitiveType<,,>).MakeGenericType(typeToConvert.GenericTypeArguments);
-                object? notImplementedInstance = Activator.CreateInstance(notImplementedPrimitiveTypeType);
-                return notImplementedInstance ?? throw new NotImplementedException();
+                Type emptyPrimitiveTypeType = typeof(EmptyPrimitiveType<,,>).MakeGenericType(typeToConvert.GenericTypeArguments);
+                object? emptyPrimitiveType = Activator.CreateInstance(emptyPrimitiveTypeType);
+                return emptyPrimitiveType ?? throw new NotImplementedException();
             }
 
             Type instanceVertexType = typeToConvert.GenericTypeArguments[0];
@@ -97,12 +98,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
                 throw new NotImplementedException();
             }
 
-            VertexBuffer vertexBuffer = new(_graphics, staticVertexType, vertices.Length, BufferUsage.WriteOnly);
+            VertexBuffer vertexBuffer = new(_graphics.Value, staticVertexType, vertices.Length, BufferUsage.WriteOnly);
             SetDataMethod.MakeGenericMethod(staticVertexType).Invoke(null, [vertexBuffer, vertices]);
 
             IndexBuffer[] indexBuffers = indexBufferContexts.Select(x =>
             {
-                IndexBuffer indexBuffer = new(_graphics, IndexElementSize.SixteenBits, x.Values.Length, BufferUsage.WriteOnly);
+                IndexBuffer indexBuffer = new(_graphics.Value, IndexElementSize.SixteenBits, x.Values.Length, BufferUsage.WriteOnly);
                 indexBuffer.SetData(x.Values);
 
                 return indexBuffer;
@@ -117,7 +118,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
 
                 return primitiveContexts.Select(x =>
                 {
-                    IPrimitive? primitive = (IPrimitive?)Activator.CreateInstance(primitiveType, [x.Sequence, x.SequenceGroup, vertexBuffer, indexBuffers, bufferTypes, effect, _graphics]);
+                    IPrimitive? primitive = (IPrimitive?)Activator.CreateInstance(primitiveType, [x.Sequence, x.SequenceGroup, vertexBuffer, indexBuffers, bufferTypes, effect, _graphics.Value]);
                     return primitive ?? throw new NotImplementedException();
                 }).ToArray();
             });

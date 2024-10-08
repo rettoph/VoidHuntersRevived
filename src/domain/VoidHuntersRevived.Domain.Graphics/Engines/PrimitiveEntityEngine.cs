@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Graphics.Common.Attributes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
@@ -9,14 +10,13 @@ using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Graphics.Common.Extensions;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
-    [StrategyFilter(StrategyTypeEnum.Predictive)]
+    [GraphicsEnabled]
     public sealed class PrimitiveEntityEngine<TVertex>(
         IPrimitiveService<TVertex> primitiveService,
         IEntityQueryService entityQueryService

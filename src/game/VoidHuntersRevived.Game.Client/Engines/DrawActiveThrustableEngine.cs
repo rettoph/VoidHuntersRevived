@@ -1,15 +1,14 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Game.Graphics.Common;
+using Guppy.Game.Graphics.Common.Attributes;
 using Serilog;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [AutoLoad]
-    [StrategyFilter(StrategyTypeEnum.Predictive)]
+    [GraphicsEnabled]
     internal sealed class DrawActiveThrustableEngine(
         ILogger logger,
         IEntityQueryService entityQueryService,
