@@ -7,20 +7,20 @@ using VoidHuntersRevived.Domain.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Strategies
 {
-    public sealed class ServerLockstepStrategyBuilder : BaseStrategyBuilder
+    public sealed class ClientLockstepStrategyBuilder : BaseStrategyBuilder
     {
-        public ServerLockstepStrategyBuilder() : base(PeerType.Server, StrategyTypeEnum.Lockstep)
+        public ClientLockstepStrategyBuilder() : base(PeerType.Client, StrategyTypeEnum.Lockstep)
         {
         }
 
-        protected override IStrategy build(ISimulation simulation)
+        protected override IStrategy build()
         {
-            return new LockstepStrategy_Server(
-                this.Bus.GetInstance(),
+            return new LockstepStrategy_Client(
+                this.NetScope.GetInstance(),
+                this.TickBuffer.GetInstance(),
                 this.SettingService.GetInstance(),
-                simulation.ToLazy(),
                 this.EngineServiceBuilder.GetLazy<IEngineService>(),
-                this.Logger.GetLazy());
+                this.Logger.GetInstance().ToLazy());
         }
     }
 }

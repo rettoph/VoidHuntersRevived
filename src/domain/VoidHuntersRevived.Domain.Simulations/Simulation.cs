@@ -3,14 +3,13 @@ using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Factories;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public sealed class Simulation : ISimulation
     {
-        private Dictionary<StrategyTypeEnum, IStrategy> _strategyTypes;
-        private List<IStrategy> _strategies;
+        private readonly Dictionary<StrategyTypeEnum, IStrategy> _strategyTypes;
+        private readonly List<IStrategy> _strategies;
 
         public VhId Id { get; }
 
@@ -18,9 +17,9 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public IReadOnlyCollection<IStrategy> Strategies { get; }
 
-        public Simulation(VhId id, IStrategiesFactory strategiesFactory, params StrategyTypeEnum[] strategies)
+        public Simulation(VhId id, IEnumerable<IStrategy> strategies)
         {
-            _strategies = strategiesFactory.BuildStrategies(this, strategies).ToList();
+            _strategies = strategies.ToList();
             _strategyTypes = _strategies.ToDictionary(x => x.Type, x => x);
 
             this.Id = id;

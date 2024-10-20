@@ -1,18 +1,17 @@
-﻿using Guppy.Core.Network.Common.Enums;
-using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
+using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations
 {
-    public class SimulationBuilder(VhId id, PeerType peerType) : BaseInstanceBuilder<StrategyTypeEnum[], Simulation>
+    public class SimulationBuilder(VhId id, StrategiesBuilder strategiesBuilder) : BaseInstanceBuilder<ISimulation>
     {
         public VhId Id = id;
-        public readonly StrategiesFactoryBuilder StrategiesFactoryBuilder = new StrategiesFactoryBuilder(peerType);
+        public StrategiesBuilder StrategiesBuilder = strategiesBuilder;
 
-        protected override Simulation build(StrategyTypeEnum[] strategies)
+        protected override Simulation build()
         {
-            return new Simulation(this.Id, this.StrategiesFactoryBuilder.GetInstance(), strategies);
+            return new Simulation(this.Id, this.StrategiesBuilder.Build());
         }
     }
 }

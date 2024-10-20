@@ -23,11 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\domain\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
-    <ProjectReference Include="..\..\src\domain\VoidHuntersRevived.Domain\VoidHuntersRevived.Domain.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Tests.Common.Entities\VoidHuntersRevived.Tests.Common.Entities.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Tests.Common.Simulations\VoidHuntersRevived.Tests.Common.Simulations.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Tests.Domain.Simulations.Common\VoidHuntersRevived.Tests.Domain.Simulations.Common.csproj" />
+    <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
+    <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
+    <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain\VoidHuntersRevived.Domain.csproj" />
+    <ProjectReference Include="..\..\common\VoidHuntersRevived.Tests.Common.Entities\VoidHuntersRevived.Tests.Common.Entities.csproj" />
+    <ProjectReference Include="..\..\common\VoidHuntersRevived.Tests.Common.Simulations\VoidHuntersRevived.Tests.Common.Simulations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

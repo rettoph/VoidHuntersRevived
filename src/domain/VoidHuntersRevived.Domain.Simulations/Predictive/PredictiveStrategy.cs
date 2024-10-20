@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common.Collections;
+﻿using Guppy.Core.Common.Collections;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Graphics.Common.Constants;
 using Microsoft.Xna.Framework;
@@ -19,9 +18,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     [SetSceneConfiguration<bool>(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, true)]
     public sealed class PredictiveStrategy(
-        Lazy<ISimulation> simulation,
         Lazy<IEngineService> engineService,
-        Lazy<ILogger> logger) : Strategy(StrategyTypeEnum.Predictive, simulation, engineService, logger)
+        Lazy<ILogger> logger) : Strategy(StrategyTypeEnum.Predictive, engineService, logger)
     {
         private static readonly Pool<PredictedEvent> PredictionPool = new(ushort.MaxValue);
         private ILockstepStrategy _lockstep = null!;
@@ -161,11 +159,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             prediction.Status = @event.Data.IsPrivate ? PredictedEventStatus.Confirmed : PredictedEventStatus.Unconfirmed;
             prediction.SetEvent(@event, this.CurrentStep);
             return prediction;
-        }
-
-        public static object Factory(ILifetimeScope scope)
-        {
-            return new PredictiveStrategy(scope.Resolve<Lazy<ISimulation>>(), scope.Resolve<Lazy<IEngineService>>(), scope.Resolve<Lazy<ILogger>>());
         }
     }
 }

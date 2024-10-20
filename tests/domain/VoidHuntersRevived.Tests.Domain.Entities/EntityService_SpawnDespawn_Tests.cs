@@ -1,24 +1,12 @@
-using Guppy.Core.Network.Common.Enums;
-using Guppy.Core.Resources.Common;
 using Microsoft.Xna.Framework;
-using Svelto.ECS;
-using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
-using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Events;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Engines;
-using VoidHuntersRevived.Domain.Entities.Services;
-using VoidHuntersRevived.Domain.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
-using VoidHuntersRevived.Tests.Common.Entities.Services;
 using VoidHuntersRevived.Tests.Common.Extensions;
 using VoidHuntersRevived.Tests.Common.Simulations;
 using VoidHuntersRevived.Tests.Common.Simulations.Strategies;
@@ -29,46 +17,21 @@ using VoidHuntersRevived.Tests.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {
-    public class EntityService_SpawnDespawn_Tests : IDisposable
+    public class EntityService_SpawnDespawn_Tests : BaseSimulationTests
     {
-        private static readonly SettingValue<int> StepsPerTick = new SettingValue<int>(Settings.StepsPerTick, 3);
-        private static readonly SettingValue<Fix64> StepInterval = new SettingValue<Fix64>(Settings.StepInterval, (Fix64)20 / (Fix64)1000);
-        private static readonly StrategyTypeEnum[] StrategyTypes = [
-            StrategyTypeEnum.Predictive,
-            StrategyTypeEnum.Lockstep
-        ];
+        private readonly GameTime _gameTime;
+        private readonly List<EventDto> _inputs;
+        private readonly LockstepStrategy_Client _lockstep;
+        private readonly PredictiveStrategy _predictive;
 
+        protected override IEntityType[] EntityTypes => [new TestEntityType()];
 
-        public static IEntityType[] TestEntityTypes = [new TestEntityType()];
-
-        private int _sourceIdGeneratorIndex;
-        private TickBuffer _tickBuffer;
-        private SimulationBuilder _builder;
-        private ISimulation _simulation;
-        private GameTime _gameTime;
-        private List<EventDto> _inputs;
-        private LockstepStrategy_Client _lockstep;
-        private PredictiveStrategy _predictive;
-
-        public EntityService_SpawnDespawn_Tests()
+        public EntityService_SpawnDespawn_Tests() : base([typeof(ClientLockstepStrategyBuilder), typeof(PredictiveStrategyBuilder)])
         {
-            _sourceIdGeneratorIndex = 0;
             _inputs = [];
             _gameTime = new GameTime(TimeSpan.Zero, TimeSpan.Zero);
-            _tickBuffer = new TickBuffer();
-
-            _builder = new SimulationBuilder(VhId.Empty, PeerType.Client);
-            _builder.StrategiesFactoryBuilder.Configure(this.ConfigureStrategy);
-
-            _simulation = _builder.BuildInstance(StrategyTypes);
-
-            _lockstep = (LockstepStrategy_Client?)_simulation[StrategyTypeEnum.Lockstep] ?? throw new NotImplementedException();
-            _predictive = (PredictiveStrategy?)_simulation[StrategyTypeEnum.Predictive] ?? throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            _simulation.Dispose();
+            _predictive = (PredictiveStrategy?)this.simulation[StrategyTypeEnum.Predictive] ?? throw new NotImplementedException();
+            _lockstep = (LockstepStrategy_Client?)this.simulation[StrategyTypeEnum.Lockstep] ?? throw new NotImplementedException();
         }
 
         [Theory]
@@ -77,9 +40,9 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         [InlineData(1000, 50, 5)]
         public void EntityService_SpawnDespawn_PredictiveSynchronizesWithLockstep(int range, int segment, int simulatedRealtimeIntervalInMilliseconds)
         {
-            Dictionary<StrategyTypeEnum, int> totals = this.CalculateTotalEntities<TestComponent>();
-            Assert.Equal(0, totals[StrategyTypeEnum.Predictive]);
-            Assert.Equal(0, totals[StrategyTypeEnum.Lockstep]);
+            Dictionary<IStrategy, int> totals = this.CalculateTotalEntities<TestComponent>();
+            Assert.Equal(0, totals[_predictive]);
+            Assert.Equal(0, totals[_lockstep]);
 
             // "Predict" 10 initial entities to be discarded
             this.InputMany(this.GenerateTestSpawnInput, true, segment, 0)
@@ -87,8 +50,8 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
 
             // Ensure the prediction was made in the predictive strategy but not on the lockstep strategy
             totals = this.CalculateTotalEntities<TestComponent>();
-            Assert.Equal(segment, totals[StrategyTypeEnum.Predictive]);
-            Assert.Equal(0, totals[StrategyTypeEnum.Lockstep]);
+            Assert.Equal(segment, totals[_predictive]);
+            Assert.Equal(0, totals[_lockstep]);
 
             for (int x = 0; x < range; x++)
             {
@@ -99,10 +62,6 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                     this.Update(simulatedRealtimeIntervalInMilliseconds, 1)
                         .Input(this.GenerateTestDepawnInput(y, doDiscard))
                         .Input(this.GenerateTestSpawnInput(y + range, doDiscard));
-
-#if DEBUG
-                    totals = this.CalculateTotalEntities<TestComponent>();
-#endif
                 }
 
                 this.Update(simulatedRealtimeIntervalInMilliseconds, 10);
@@ -122,8 +81,8 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             // Ideally the total number of entities within both simulations should be the same. A mismatch indicates some sort of desyncronization between 
             // the predictive and lockstep strategies
             totals = this.CalculateTotalEntities<TestComponent>();
-            Assert.Equal(1, totals[StrategyTypeEnum.Predictive]);
-            Assert.Equal(1, totals[StrategyTypeEnum.Lockstep]);
+            Assert.Equal(1, totals[_predictive]);
+            Assert.Equal(1, totals[_lockstep]);
         }
 
         private EntityService_SpawnDespawn_Tests InputMany<T>(Func<int, bool, T> inputGenerator, bool doDiscard, int count, int offset)
@@ -142,7 +101,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         {
             VhId sourceId = this.GenerateSourceId();
 
-            _simulation.Input(sourceId, input);
+            this.simulation.Input(sourceId, input);
 
             if (input.DoDiscard == true)
             { // Simulate the "discarding" of a lockstep event - as if the server regected the event.
@@ -164,67 +123,33 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             {
                 if (_lockstep.StepsSinceTick == _lockstep.StepsPerTick)
                 {
-                    _tickBuffer.TryEnqueue(Tick.Create(_lockstep.CurrentTick.Id + 1, _inputs.ToArray()));
+                    this.tickBuffer.TryEnqueue(Tick.Create(_lockstep.CurrentTick.Id + 1, _inputs.ToArray()));
                     _inputs.Clear();
                 }
 
-                _simulation.Update(_gameTime.Step(interval));
+                this.simulation.Update(_gameTime.Step(interval));
             }
 
             return this;
         }
 
-        private void ConfigureStrategy(IStrategyBuilder builder)
+        protected override void ConfigureStrategy(IStrategyBuilder builder)
         {
-            // Setup mocks
-            EntitiesSubmissionScheduler entitiesSubmissionScheduler = new EntitiesSubmissionScheduler();
-            EnginesRoot enginesRoot = new EnginesRoot(entitiesSubmissionScheduler);
-
-            EntityServiceBuilder entityService = new EntityServiceBuilder();
-            entityService.EntityTypeService.Setup(x => x.GetAll(), TestEntityTypes);
-            entityService.EntityTypeProviderService.UniqueNumberProviderService.SetInstance(new UniqueNumberProvider());
-            entityService.EntityTypeProviderService.EnginesRoot.SetInstance(enginesRoot);
-            entityService.EntityQueryService.SetInstance(new EntityQueryService());
-            entityService.EntitySpawnService.SetInstance(new EntitySpawnService(entityService.EntityQueryService.GetInstance(), entityService.EntityTypeProviderService.GetInstance(), entityService.GetInstance(), builder.Logger.GetInstance()));
-
-            // Configure strategy
-            builder.TickBuffer.SetInstance(this._tickBuffer);
-            builder.EngineServiceBuilder.EntitiesSubmissionScheduler.SetInstance(entitiesSubmissionScheduler);
-            builder.EngineServiceBuilder.EnginesRoot.SetInstance(enginesRoot);
-
-            builder.SettingService
-                .Setup(settings => settings.GetValue<Fix64>(Settings.StepInterval), () => StepInterval)
-                .Setup(settings => settings.GetValue<int>(Settings.StepsPerTick), () => StepsPerTick);
+            base.ConfigureStrategy(builder);
 
             builder.EngineServiceBuilder.Engines.AddRange([
-                entityService.EntityTypeProviderService.GetInstance(),
-                entityService.GetInstance(),
-                entityService.EntityQueryService.GetInstance(),
-                entityService.EntitySpawnService.GetInstance(),
-                new EntitySubmissionEngine(entitiesSubmissionScheduler),
                 new TestInputEngine()
             ]);
         }
 
         private TestSpawnInput GenerateTestSpawnInput(int id, bool doDiscard)
         {
-            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id), EntityType = TestEntityTypes[0], DoDiscard = doDiscard };
+            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id), EntityType = EntityTypes[0], DoDiscard = doDiscard };
         }
 
         private TestDepawnInput GenerateTestDepawnInput(int id, bool doDiscard)
         {
             return new TestDepawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id), DoDiscard = doDiscard };
-        }
-
-        private VhId GenerateSourceId()
-        {
-            return HashBuilder<SpawnEntity, int>.Instance.Calculate(_sourceIdGeneratorIndex++);
-        }
-
-        private Dictionary<StrategyTypeEnum, int> CalculateTotalEntities<T>()
-            where T : unmanaged, IEntityComponent
-        {
-            return _simulation.Strategies.ToDictionary(x => x.Type, x => x.Engines.Get<IEntityQueryService>().CalculateTotal<T>());
         }
     }
 }

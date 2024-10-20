@@ -17,9 +17,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         INetScope<IStrategy> netScope,
         TickBuffer ticks,
         ISettingService settings,
-        Lazy<ISimulation> simulation,
         Lazy<IEngineService> engineService,
-        Lazy<ILogger> logger) : LockstepStrategy(settings, simulation, engineService, logger),
+        Lazy<ILogger> logger) : LockstepStrategy(settings, engineService, logger),
         IDisposable
     {
         private readonly INetScope<IStrategy> _netScope = netScope;

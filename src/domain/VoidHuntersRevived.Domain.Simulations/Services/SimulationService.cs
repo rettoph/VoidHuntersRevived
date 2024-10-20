@@ -1,23 +1,32 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Autofac;
+using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Enums;
+using Guppy.Game.Common;
+using Guppy.Game.Common.Extensions;
+using Guppy.Game.Common.Services;
+using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Factories;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Predictive;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
     internal sealed partial class SimulationService : ISimulationService, IDisposable
     {
-        private readonly IStrategiesFactory _strategiesFactory;
+        private readonly INetScope<IStrategy> _netScope;
+        private readonly ISceneService _scenes;
         private readonly List<ISimulation> _simulations;
 
         public ReadOnlyCollection<ISimulation> Instances { get; }
 
-        public SimulationService(IStrategiesFactory strategiesFactory)
+        public SimulationService(INetScope<IStrategy> netScope, ISceneService scenes, ITerminal terminal)
         {
-            _strategiesFactory = strategiesFactory;
+            _netScope = netScope;
+            _scenes = scenes;
             _simulations = [];
 
             this.Instances = new ReadOnlyCollection<ISimulation>(_simulations);
@@ -33,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public ISimulation Create(VhId id, params StrategyTypeEnum[] strategies)
         {
-            ISimulation simulation = new Simulation(id, _strategiesFactory, strategies);
+            ISimulation simulation = new Simulation(id, this.BuildStrategies(strategies));
 
             _simulations.Add(simulation);
 
@@ -53,6 +62,36 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             foreach (ISimulation simulation in _simulations)
             {
                 simulation.Update(gameTime);
+            }
+        }
+
+        private IEnumerable<IStrategy> BuildStrategies(StrategyTypeEnum[] strategies)
+        {
+            List<Type> strategyTypes = [];
+            if (_netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Predictive))
+            {
+                strategyTypes.Add(typeof(PredictiveStrategy));
+            }
+            if (_netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Lockstep))
+            {
+                strategyTypes.Add(typeof(LockstepStrategy_Client));
+            }
+            if (_netScope.Group.Peer.Type == PeerType.Server && strategies.Contains(StrategyTypeEnum.Lockstep))
+            {
+                strategyTypes.Add(typeof(LockstepStrategy_Server));
+            }
+
+            foreach (Type type in strategyTypes)
+            {
+                IStrategy strategy = (IStrategy)_scenes.Create(type, configuration =>
+                {
+                    configuration.WithContainerBuilder(builder =>
+                    {
+                        builder.RegisterNetScope<IStrategy>(_netScope.Group.Peer.Type, _netScope.Group.Id);
+                    });
+                });
+
+                yield return strategy;
             }
         }
     }

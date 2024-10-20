@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Network.Common.Enums;
-using Guppy.Tests.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
@@ -13,10 +12,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Strategies
         {
         }
 
-        protected override IStrategy build(ISimulation simulation)
+        protected override IStrategy build()
         {
             return new PredictiveStrategy(
-                simulation.ToLazy(),
                 this.EngineServiceBuilder.GetLazy<IEngineService>(),
                 this.Logger.GetLazy());
         }

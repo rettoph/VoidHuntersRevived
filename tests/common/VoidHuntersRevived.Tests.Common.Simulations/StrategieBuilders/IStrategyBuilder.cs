@@ -11,7 +11,7 @@ using VoidHuntersRevived.Tests.Common.Simulations.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Strategies
 {
-    public interface IStrategyBuilder : IInstanceBuilder<ISimulation, IStrategy>
+    public interface IStrategyBuilder : IInstanceBuilder<IStrategy>
     {
         PeerType PeerType { get; }
         StrategyTypeEnum Type { get; }

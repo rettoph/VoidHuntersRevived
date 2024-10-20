@@ -29,8 +29,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     [PeerFilter(PeerType.Client)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal class InputEngine(
-        ICamera2D camera,
-        ISimulation simulation
+        ICamera2D camera
     ) : StrategyEngine,
         IOnInitializeEngine<IStrategy>,
         IInputSubscriber<Input_Helm_SetDirection>,
@@ -41,7 +40,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private bool _spamClick;
 
         private readonly ICamera2D _camera = camera;
-        private readonly ISimulation _simulation = simulation;
 
         private IEntityQueryService _readEntityQueryService = null!;
         private ITractorBeamEmitterService _readTractorBeamEmitterService = null!;
@@ -53,7 +51,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
         public void OnInitialize(IStrategy strategy)
         {
-            IStrategy readStrategy = _simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
+            IStrategy readStrategy = this.Strategy.Simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
 
             _readEntityQueryService = readStrategy.Engines.Get<IEntityService>().Query;
             _readTractorBeamEmitterService = readStrategy.Engines.Get<ITractorBeamEmitterService>();
@@ -68,7 +66,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _simulation.Input(
+            this.Strategy.Simulation.Input(
                 sourceId: new VhId(messageId),
                 data: new Helm_SetDirection()
                 {
@@ -94,7 +92,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     return;
                 }
 
-                _simulation.Input(
+                this.Strategy.Simulation.Input(
                     sourceId: eventId,
                     data: new Tactical_SetTarget()
                     {
@@ -103,7 +101,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         Snap = true
                     });
 
-                _simulation.Input(
+                this.Strategy.Simulation.Input(
                     sourceId: eventId,
                     data: new Input_TractorBeamEmitter_Select()
                     {
@@ -117,7 +115,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 SocketVhId? attachToSocket = _readSocketService.TryGetClosestOpenSocket(shipId, tactical.Target, out NodeSocket nodeSocket)
                             ? nodeSocket.Id.VhId : null;
 
-                _simulation.Input(
+                this.Strategy.Simulation.Input(
                     sourceId: eventId,
                     data: new Input_TractorBeamEmitter_Deselect()
                     {
@@ -153,7 +151,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 return;
             }
 
-            _simulation.Input(
+            this.Strategy.Simulation.Input(
                 sourceId: tick.Hash,
                 data: new Tactical_SetTarget()
                 {

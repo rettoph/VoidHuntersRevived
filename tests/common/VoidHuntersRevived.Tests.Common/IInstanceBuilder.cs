@@ -3,7 +3,7 @@
     public interface IInstanceBuilder<TOut>
         where TOut : notnull
     {
-        TOut BuildInstance();
+        TOut Build();
 
         TOut GetInstance();
 
@@ -16,7 +16,7 @@
     public interface IInstanceBuilder<TArg, TOut>
         where TOut : notnull
     {
-        TOut BuildInstance(TArg arg);
+        TOut Build(TArg arg);
 
         TOut GetInstance();
 

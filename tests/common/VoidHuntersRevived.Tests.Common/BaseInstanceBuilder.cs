@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Tests.Common
 
         protected abstract TOut build();
 
-        public TOut BuildInstance()
+        public TOut Build()
         {
             if (_instance is not null)
             {
@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Tests.Common
 
         public TOut GetInstance()
         {
-            return _instance ?? this.BuildInstance();
+            return _instance ?? this.Build();
         }
 
         public Lazy<TOut> GetLazy()
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Tests.Common
 
         protected abstract TOut build(TArg arg);
 
-        public TOut BuildInstance(TArg arg)
+        public TOut Build(TArg arg)
         {
             if (_instance is not null)
             {

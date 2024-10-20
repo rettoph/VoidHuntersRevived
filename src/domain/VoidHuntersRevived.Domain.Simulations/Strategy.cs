@@ -15,7 +15,6 @@ namespace VoidHuntersRevived.Domain.Simulations
     public abstract partial class Strategy : Scene, IStrategy, IDisposable
     {
         private readonly Lazy<ILogger> _logger;
-        private readonly Lazy<ISimulation> _simulation;
         private readonly Lazy<IEngineService> _engineService;
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
@@ -25,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected ILogger logger => _logger.Value;
 
         public readonly StrategyTypeEnum Type;
-        public ISimulation Simulation => _simulation.Value;
+        public ISimulation Simulation { get; private set; } = null!;
         public IEngineService Engines => _engineService.Value;
 
         public Step CurrentStep { get; private set; }
@@ -34,11 +33,9 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Strategy(
             StrategyTypeEnum type,
-            Lazy<ISimulation> simulation,
             Lazy<IEngineService> engineService,
             Lazy<ILogger> logger)
         {
-            _simulation = simulation;
             _engineService = engineService;
             _logger = logger;
             _enqueued = new Queue<EventDto>();
@@ -56,6 +53,8 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public virtual void Initialize(ISimulation simulation)
         {
+            this.Simulation = simulation;
+
             this.Engines.Initialize(this);
 
             EventPublisher.PopulatePublishers(this.Engines, this.logger, _publishers);

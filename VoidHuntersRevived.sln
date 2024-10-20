@@ -208,6 +208,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Tests.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Tests.Domain.Entities", "tests\domain\VoidHuntersRevived.Tests.Domain.Entities\VoidHuntersRevived.Tests.Domain.Entities.csproj", "{795FC7F3-845B-4F03-ABA9-ECAC2B1CFF5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Tests.Domain.Pieces", "tests\domain\VoidHuntersRevived.Tests.Domain.Pieces\VoidHuntersRevived.Tests.Domain.Pieces.csproj", "{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1940,6 +1942,30 @@ Global
 		{795FC7F3-845B-4F03-ABA9-ECAC2B1CFF5E}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
 		{795FC7F3-845B-4F03-ABA9-ECAC2B1CFF5E}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
 		{795FC7F3-845B-4F03-ABA9-ECAC2B1CFF5E}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Release|x64.Build.0 = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.Release|x86.Build.0 = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionDebug|Any CPU.Build.0 = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionDebug|x64.ActiveCfg = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionDebug|x64.Build.0 = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionDebug|x86.ActiveCfg = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionDebug|x86.Build.0 = Debug|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionRelease|Any CPU.Build.0 = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionRelease|x64.ActiveCfg = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2035,6 +2061,7 @@ Global
 		{C1CE2C23-5732-4B66-842D-F65C77319416} = {A11E99FB-C799-4DE8-BFB8-60E94A128018}
 		{A8CD5133-4F90-479D-B9ED-7AA544794FD3} = {A11E99FB-C799-4DE8-BFB8-60E94A128018}
 		{795FC7F3-845B-4F03-ABA9-ECAC2B1CFF5E} = {47EC166D-CC1C-4D64-844D-B3D14E10C2B3}
+		{6EDE27EB-ADC6-4661-B7B7-30E8421D47F7} = {47EC166D-CC1C-4D64-844D-B3D14E10C2B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB1CA3-2B6C-469F-B569-084FC0B57488}
