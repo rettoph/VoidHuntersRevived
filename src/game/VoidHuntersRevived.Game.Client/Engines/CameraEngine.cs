@@ -4,7 +4,6 @@ using Guppy.Core.Network.Common.Enums;
 using Guppy.Game.Graphics.Common;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Messages;
-using Guppy.Game.MonoGame.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -25,9 +24,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         private readonly ICamera2D _camera;
         private readonly IScreen _screen;
-        private Vector2 _offset;
         private readonly IUserShipService _userShipService;
         private readonly IEntityQueryService _entitieQueryService;
+        private Vector2 _offset;
+
+        private Vector2 _position;
+        private float _zoom;
 
         public CameraEngine(
             ICamera2D camera,
@@ -37,6 +39,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             _camera = camera;
             _camera.Zoom = 100;
+            _zoom = 100;
 
             _screen = screen;
             _userShipService = userShipService;
@@ -47,9 +50,6 @@ namespace VoidHuntersRevived.Game.Client.Engines
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
         public void OnDraw(GameTime gameTime)
         {
-            _screen.Camera.Update(gameTime);
-            _camera.Update(gameTime);
-
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
                 _offset -= Vector2.UnitY * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -76,12 +76,19 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 location = _entitieQueryService.QueryById<Location>(shipId).Position.ToXna();
             }
 
-            _camera.Position = location + _offset;
+            _position = location + _offset;
+
+            _camera.Position = Vector2.Lerp(_camera.Position, _position, (float)gameTime.ElapsedGameTime.TotalSeconds * 2);
+            _camera.Zoom = MathHelper.Lerp(_camera.Zoom, _zoom, (float)gameTime.ElapsedGameTime.TotalSeconds * 2);
+
+
+            _screen.Camera.Update(gameTime);
+            _camera.Update(gameTime);
         }
 
         public void Process(in Guid messageId, CursorScroll message)
         {
-            _camera.Zoom *= ((float)Math.Pow(1.5, message.Delta / 120));
+            _zoom *= ((float)Math.Pow(1.5, message.Delta / 120));
         }
     }
 }
