@@ -7,6 +7,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
     public class ResourceComponentConverter(IResourceService resourceService) : JsonConverter<object>
     {
+
         private readonly IResourceService _resourceService = resourceService;
 
         public override bool CanConvert(Type typeToConvert)

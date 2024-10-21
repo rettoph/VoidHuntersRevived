@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Components
 {
-    public readonly struct Primitive<TVertex>(Key<IPrimitiveType> primitiveType, PrimitiveSequenceGroupEnum sequenceGroup) : IEntityComponent
+    public readonly struct PrimitiveComponent<TVertex>(Key<IPrimitiveType> primitiveType, PrimitiveSequenceGroupEnum sequenceGroup) : IEntityComponent
         where TVertex : unmanaged, IVertexType
     {
         public readonly Key<IPrimitiveType> Type = primitiveType;

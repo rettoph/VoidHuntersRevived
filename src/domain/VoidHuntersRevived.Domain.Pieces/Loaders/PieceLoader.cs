@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Loaders
             builder.RegisterType<PlugJsonConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<ThrustableJsonConverter>().As<JsonConverter>().SingleInstance();
 
-            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<Primitive<VertexVisible>, IEntityComponent>("Primitive.Visible")).SingleInstance();
+            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<PrimitiveComponent<VertexVisible>, IEntityComponent>("Primitive.Visible")).SingleInstance();
             builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<PrimitiveSequenceGroup<VertexVisible>, IEntityComponent>("PrimitiveSequenceGroup.Visible")).SingleInstance();
 
             builder.Configure<LoggerConfiguration>((scope, config) =>

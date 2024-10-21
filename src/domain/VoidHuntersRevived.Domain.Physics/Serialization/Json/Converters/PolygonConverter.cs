@@ -1,17 +1,15 @@
-﻿using Svelto.DataStructures;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Common;
 
 namespace VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters
 {
-    internal class PolygonConverter : JsonConverter<Polygon>
+    public class PolygonConverter : JsonConverter<Polygon>
     {
         public override Polygon Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            NativeDynamicArrayCast<FixVector2> vertices = default;
+            FixVector2[] vertices = [];
             Fix64 density = Fix64.Zero;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -26,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters
                         reader.Read();
                         break;
                     case nameof(Polygon.Vertices):
-                        vertices = JsonSerializer.Deserialize<NativeDynamicArrayCast<FixVector2>>(ref reader, options);
+                        vertices = JsonSerializer.Deserialize<FixVector2[]>(ref reader, options) ?? [];
                         reader.Read();
                         break;
                 }
@@ -44,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters
             writer.WriteNumber(nameof(Polygon.Density), value.Density.RawValue);
 
             writer.WritePropertyName(nameof(Polygon.Vertices));
-            JsonSerializer.Serialize<NativeDynamicArray>(writer, value.Vertices.ToNativeArray(), options);
+            JsonSerializer.Serialize(writer, value.Vertices, options);
 
             writer.WriteEndObject();
         }

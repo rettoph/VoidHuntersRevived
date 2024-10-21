@@ -4,33 +4,7 @@
   "Include": [ "Piece.Base.Thruster" ],
   "Components": {
     "Rigid": {
-      "Centeroid": {
-        "X": 0,
-        "Y": 0
-      },
-      "Shapes": [
-        {
-          "Density": 0.5,
-          "Vertices": [
-            {
-              "X": 0.25,
-              "Y": -0.2
-            },
-            {
-              "X": 0.25,
-              "Y": 0.2
-            },
-            {
-              "X": -0.25,
-              "Y": 0.35
-            },
-            {
-              "X": -0.25,
-              "Y": -0.35
-            }
-          ]
-        }
-      ]
+      "Template": "Body.Thruster"
     },
     "Plug": {
       "Location": {

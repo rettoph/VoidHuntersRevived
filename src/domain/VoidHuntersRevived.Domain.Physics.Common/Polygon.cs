@@ -1,15 +1,11 @@
-﻿using Svelto.Common;
-using Svelto.DataStructures;
-using VoidHuntersRevived.Common.Extensions.Svelto;
-using VoidHuntersRevived.Common.Extensions.System;
-using VoidHuntersRevived.Common.FixedPoint;
+﻿using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Physics.Common
 {
-    public struct Polygon(Fix64 density, NativeDynamicArrayCast<FixVector2> vertices) : IDisposable
+    public readonly struct Polygon(Fix64 density, FixVector2[] vertices)
     {
         public readonly Fix64 Density = density;
-        public readonly NativeDynamicArrayCast<FixVector2> Vertices = vertices;
+        public readonly FixVector2[] Vertices = vertices;
 
         public FixVector2 Centeroid
         {
@@ -17,29 +13,13 @@ namespace VoidHuntersRevived.Domain.Physics.Common
             {
                 FixVector2 value = FixVector2.Zero;
 
-                for (int i = 0; i < this.Vertices.count; i++)
+                for (int i = 0; i < this.Vertices.Length; i++)
                 {
                     value += this.Vertices[i];
                 }
 
-                return value / (Fix64)this.Vertices.count;
+                return value / (Fix64)this.Vertices.Length;
             }
-        }
-
-        public Polygon(Fix64 density, params FixVector2[] vertices) : this(density, vertices.ToNativeDynamicArray())
-        {
-        }
-
-        public void Dispose()
-        {
-            this.Vertices.Dispose();
-        }
-
-        public Polygon Clone()
-        {
-            return new Polygon(
-                density: this.Density,
-                vertices: this.Vertices.Clone(Allocator.Persistent));
         }
     }
 }

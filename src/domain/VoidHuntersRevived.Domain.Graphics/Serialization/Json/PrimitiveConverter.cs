@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
                 return false;
             }
 
-            bool result = typeToConvert.GetGenericTypeDefinition() == typeof(Common.Components.Primitive<>);
+            bool result = typeToConvert.GetGenericTypeDefinition() == typeof(Common.Components.PrimitiveComponent<>);
             return result;
         }
 
@@ -32,11 +32,11 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(Common.Components.Primitive<VertexPosition>.Type):
+                    case nameof(Common.Components.PrimitiveComponent<VertexPosition>.Type):
                         type = JsonSerializer.Deserialize<Key<IPrimitiveType>>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(Common.Components.Primitive<VertexPosition>.SequenceGroup):
+                    case nameof(Common.Components.PrimitiveComponent<VertexPosition>.SequenceGroup):
                         sequenceGroup = JsonSerializer.Deserialize<PrimitiveSequenceGroupEnum>(ref reader, options);
                         reader.Read();
                         break;

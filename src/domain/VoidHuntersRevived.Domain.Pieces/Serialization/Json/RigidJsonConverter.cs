@@ -1,19 +1,20 @@
-﻿using Svelto.DataStructures;
+﻿using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
-    internal class RigidJsonConverter : JsonConverter<Rigid>
+    internal class RigidJsonConverter(IResourceService resources) : JsonConverter<Rigid>
     {
+        private readonly IResourceService _resources = resources;
+
         public override Rigid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            FixVector2 centeroid = default;
-            NativeDynamicArrayCast<Polygon> shapes = default;
+
+            ResourceValue<IBodyTemplate> template = default;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -22,12 +23,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(Rigid.Centeroid):
-                        centeroid = JsonSerializer.Deserialize<FixVector2>(ref reader, options);
-                        reader.Read();
-                        break;
-                    case nameof(Rigid.Shapes):
-                        shapes = JsonSerializer.Deserialize<NativeDynamicArrayCast<Polygon>>(ref reader, options);
+                    case nameof(Rigid.Template):
+                        template = JsonSerializer.Deserialize<ResourceValue<IBodyTemplate>>(ref reader, options);
                         reader.Read();
                         break;
                 }
@@ -35,11 +32,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new Rigid()
-            {
-                Centeroid = centeroid,
-                Shapes = shapes
-            };
+            return new Rigid(template);
         }
 
         public override void Write(Utf8JsonWriter writer, Rigid value, JsonSerializerOptions options)

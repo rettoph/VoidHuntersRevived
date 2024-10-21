@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Serilog;
+﻿using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -25,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         ITeamService teamService,
         ILogger logger) : StrategyEngine, ITractorBeamEmitterService
     {
-        private static Fix64 QueryRadius = (Fix64)3;
+        private static readonly Fix64 QueryRadius = (Fix64)3;
 
         private readonly ISpace _space = space;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
@@ -50,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 return false;
             }
 
-            AABB aabb = new AABB(target, QueryRadius, QueryRadius);
+            AABB aabb = new(target, QueryRadius, QueryRadius);
             Fix64 minDistance = QueryRadius;
             Node? callbackTargetNode = default!;
 
@@ -61,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     ref Node queryNode = ref _entityQueryService.QueryById<Node>(fixture.EntityId, out GroupIndex nodeGroupIndex);
                     ref Rigid queryRigid = ref _entityQueryService.QueryByGroupIndex<Rigid>(nodeGroupIndex);
 
-                    FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Centeroid, queryNode.Transformation);
+                    FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Template.Value.Centeroid, queryNode.Transformation);
                     FixVector2.Distance(ref target, ref queryNodePosition, out Fix64 queryNodeDistance);
 
                     if (queryNodeDistance > minDistance)

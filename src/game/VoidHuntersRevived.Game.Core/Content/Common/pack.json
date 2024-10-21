@@ -10,7 +10,8 @@
       "blueprints.json",
       "primitives.json",
       "spritefonts.json",
-      "effects.json"
+      "effects.json",
+      "bodies.json"
     ]
   }
 }
