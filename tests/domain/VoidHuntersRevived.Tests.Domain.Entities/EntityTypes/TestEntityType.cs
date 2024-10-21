@@ -2,7 +2,7 @@
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Tests.Domain.Entities.Components;
 
-namespace VoidHuntersRevived.Tests.Domain.Entities.Descriptors
+namespace VoidHuntersRevived.Tests.Domain.Entities.EntityTypes
 {
     public class TestEntityType : BaseEntityType
     {

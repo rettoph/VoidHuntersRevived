@@ -8,8 +8,8 @@ using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Tests.Common.Simulations;
 using VoidHuntersRevived.Tests.Common.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Domain.Entities.Components;
-using VoidHuntersRevived.Tests.Domain.Entities.Descriptors;
 using VoidHuntersRevived.Tests.Domain.Entities.Engines;
+using VoidHuntersRevived.Tests.Domain.Entities.EntityTypes;
 using VoidHuntersRevived.Tests.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
