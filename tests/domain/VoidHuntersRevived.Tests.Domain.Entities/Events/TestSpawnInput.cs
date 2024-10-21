@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities.Events
 {
-    internal class TestSpawnInput : TestInput, IInputData
+    internal class TestSpawnInput : IInputData
     {
         public VhId ShipVhId => throw new NotImplementedException();
 
@@ -13,11 +13,10 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Events
 
         public required VhId EntityId { get; init; }
         public required IEntityType EntityType { get; init; }
-        public override required bool DoDiscard { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<TestSpawnInput, VhId, VhId, VhId, bool>.Instance.Calculate(source, this.EntityId, this.EntityType.Key.Id, this.DoDiscard);
+            return HashBuilder<TestSpawnInput, VhId, VhId, VhId>.Instance.Calculate(source, this.EntityId, this.EntityType.Key.Id);
         }
     }
 }

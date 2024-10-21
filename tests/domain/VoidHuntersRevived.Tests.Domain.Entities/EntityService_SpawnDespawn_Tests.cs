@@ -1,13 +1,10 @@
-using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Common;
+using Svelto.ECS;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
-using VoidHuntersRevived.Tests.Common.Extensions;
 using VoidHuntersRevived.Tests.Common.Simulations;
 using VoidHuntersRevived.Tests.Common.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Domain.Entities.Components;
@@ -17,19 +14,15 @@ using VoidHuntersRevived.Tests.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {
-    public class EntityService_SpawnDespawn_Tests : BaseSimulationTests
+    public class EntityService_SpawnDespawn_Tests : BaseSimulationTests<EntityService_SpawnDespawn_Tests>
     {
-        private readonly GameTime _gameTime;
-        private readonly List<EventDto> _inputs;
         private readonly LockstepStrategy_Client _lockstep;
         private readonly PredictiveStrategy _predictive;
 
-        protected override IEntityType[] EntityTypes => [new TestEntityType()];
+        protected IEntityType[] EntityTypes => [new TestEntityType()];
 
         public EntityService_SpawnDespawn_Tests() : base([typeof(ClientLockstepStrategyBuilder), typeof(PredictiveStrategyBuilder)])
         {
-            _inputs = [];
-            _gameTime = new GameTime(TimeSpan.Zero, TimeSpan.Zero);
             _predictive = (PredictiveStrategy?)this.simulation[StrategyTypeEnum.Predictive] ?? throw new NotImplementedException();
             _lockstep = (LockstepStrategy_Client?)this.simulation[StrategyTypeEnum.Lockstep] ?? throw new NotImplementedException();
         }
@@ -45,7 +38,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             Assert.Equal(0, totals[_lockstep]);
 
             // "Predict" 10 initial entities to be discarded
-            this.InputMany(this.GenerateTestSpawnInput, true, segment, 0)
+            this.InputMany(this.GenerateTestSpawnInput, segment, 0, false)
                 .Update(simulatedRealtimeIntervalInMilliseconds, 4);
 
             // Ensure the prediction was made in the predictive strategy but not on the lockstep strategy
@@ -57,11 +50,11 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             {
                 for (int y = 0; y < segment; y++)
                 {
-                    bool doDiscard = y != (segment / 2);
+                    bool verified = y == (segment / 2);
 
                     this.Update(simulatedRealtimeIntervalInMilliseconds, 1)
-                        .Input(this.GenerateTestDepawnInput(y, doDiscard))
-                        .Input(this.GenerateTestSpawnInput(y + range, doDiscard));
+                        .Input(this.GenerateTestDepawnInput(y), verified)
+                        .Input(this.GenerateTestSpawnInput(y + range), verified);
                 }
 
                 this.Update(simulatedRealtimeIntervalInMilliseconds, 10);
@@ -85,71 +78,24 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             Assert.Equal(1, totals[_lockstep]);
         }
 
-        private EntityService_SpawnDespawn_Tests InputMany<T>(Func<int, bool, T> inputGenerator, bool doDiscard, int count, int offset)
-            where T : TestInput, IInputData
+        protected override IEnumerable<IEntityType> GetEntityTypes(IStrategyBuilder builder)
         {
-            for (int i = 0; i < count; i++)
-            {
-                this.Input(inputGenerator(i + offset, doDiscard));
-            }
-
-            return this;
+            return this.EntityTypes;
         }
 
-        private EntityService_SpawnDespawn_Tests Input<T>(T input)
-            where T : TestInput, IInputData
+        protected override IEnumerable<IEngine> GetEngines(IStrategyBuilder builder)
         {
-            VhId sourceId = this.GenerateSourceId();
-
-            this.simulation.Input(sourceId, input);
-
-            if (input.DoDiscard == true)
-            { // Simulate the "discarding" of a lockstep event - as if the server regected the event.
-                return this;
-            }
-
-            _inputs.Add(new EventDto()
-            {
-                SourceId = sourceId,
-                Data = input
-            });
-
-            return this;
+            return [new TestInputEngine()];
         }
 
-        private EntityService_SpawnDespawn_Tests Update(int interval, int count)
+        private TestSpawnInput GenerateTestSpawnInput(int id)
         {
-            for (int i = 0; i < count; i++)
-            {
-                if (_lockstep.StepsSinceTick == _lockstep.StepsPerTick)
-                {
-                    this.tickBuffer.TryEnqueue(Tick.Create(_lockstep.CurrentTick.Id + 1, _inputs.ToArray()));
-                    _inputs.Clear();
-                }
-
-                this.simulation.Update(_gameTime.Step(interval));
-            }
-
-            return this;
+            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id), EntityType = EntityTypes[0] };
         }
 
-        protected override void ConfigureStrategy(IStrategyBuilder builder)
+        private TestDepawnInput GenerateTestDepawnInput(int id)
         {
-            base.ConfigureStrategy(builder);
-
-            builder.EngineServiceBuilder.Engines.AddRange([
-                new TestInputEngine()
-            ]);
-        }
-
-        private TestSpawnInput GenerateTestSpawnInput(int id, bool doDiscard)
-        {
-            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id), EntityType = EntityTypes[0], DoDiscard = doDiscard };
-        }
-
-        private TestDepawnInput GenerateTestDepawnInput(int id, bool doDiscard)
-        {
-            return new TestDepawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id), DoDiscard = doDiscard };
+            return new TestDepawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id) };
         }
     }
 }

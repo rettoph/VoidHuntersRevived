@@ -20,11 +20,6 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Engines
 
         public void Process(VhId eventId, TestSpawnInput data)
         {
-            if (data.DoDiscard == true && this.Strategy.Type == StrategyTypeEnum.Lockstep)
-            {
-                return;
-            }
-
             _entitySpawnService.Spawn(eventId.Create(1), data.EntityType.Key, data.EntityId);
         }
 

@@ -29,9 +29,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         private int _stepsSinceTick;
         private readonly Step _step;
 
-        public readonly int StepsPerTick;
-        public readonly Fix64 StepInterval;
-        public readonly TimeSpan StepTimeSpan;
+        public int StepsPerTick { get; }
+        public Fix64 StepInterval { get; }
+        public TimeSpan StepTimeSpan { get; }
         public TimeSpan TimeSinceStep
         {
             get => _timeSinceStep;
