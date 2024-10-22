@@ -1,6 +1,6 @@
 {
   "Key": "Team.One",
-  "Type": "TeamEntityType",
+  "Type": "TeamEntityTemplate",
   "Components": {
     "Team": {
       "Name": "String.TeamOneName"

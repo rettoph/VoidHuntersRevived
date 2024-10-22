@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Game.Core.Engines
     internal sealed class UserEngine(
         ITreeService treeService,
         ITeamService teamService,
-        IEntityTypeService entityTypeService,
+        IEntityTemplateService entityTemplateService,
         IBlueprintService blueprintService,
         INetScope<IStrategy> scope) : StrategyEngine, IGetReadyEngine,
         IEventEngine<UserJoined>
@@ -29,20 +29,20 @@ namespace VoidHuntersRevived.Game.Core.Engines
         private readonly INetScope<IStrategy> _scope = scope;
         private readonly ITreeService _treeService = treeService;
         private readonly ITeamService _teamService = teamService;
-        private readonly IEntityTypeService _entityTypeService = entityTypeService;
+        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly IBlueprintService _blueprintService = blueprintService;
 
         public string name { get; } = nameof(UserEngine);
 
         public void Process(VhId eventId, UserJoined data)
         {
-            // IEntityType<HullEntityType> hull = _entityTypeService.GetAll<HullEntityType>().Last();
+            // IEntityTemplate<HullEntityTemplate> hull = _entityTemplateService.GetAll<HullEntityTemplate>().Last();
 
-            //_trees.Spawn(shipId, Teams.TeamOne, EntityTypes.UserShip, hull.EntityType);
-            // _treeFactory.Create(id.Create(1), EntityTypes.Chain, PieceTypes.HullSquare);
+            //_trees.Spawn(shipId, Teams.TeamOne, EntityTemplates.UserShip, hull.EntityTemplate);
+            // _treeFactory.Create(id.Create(1), EntityTemplates.Chain, PieceTypes.HullSquare);
 
             Blueprint blueprint = _blueprintService.GetAll().First();
-            _treeService.Spawn(eventId, eventId.Create(1), _teamService.GetOpenTeamComponent(), UserShipEntityType.UserShipEntityTypeKey, blueprint, (IEntityService entities, IEntityType entityType, EntityId id, ref EntityInitializer initializer) =>
+            _treeService.Spawn(eventId, eventId.Create(1), _teamService.GetOpenTeamComponent(), UserShipEntityTemplate.UserShipEntityTemplateKey, blueprint, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(new Location()
                 {

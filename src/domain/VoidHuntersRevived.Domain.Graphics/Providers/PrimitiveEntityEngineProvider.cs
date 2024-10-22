@@ -12,12 +12,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Providers
     [AutoLoad]
     public class PrimitiveEntityEngineProvider(
         IPrimitiveService primitiveService,
-        IEntityTypeService entityTypeService,
+        IEntityTemplateService entityTemplateService,
         IEntityQueryService entityQueryService,
         ILifetimeScope scope) : IEngineProvider
     {
         private readonly IPrimitiveService _primitiveService = primitiveService;
-        private readonly IEntityTypeService _entityTypeService = entityTypeService;
+        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILifetimeScope _scope = scope;
 

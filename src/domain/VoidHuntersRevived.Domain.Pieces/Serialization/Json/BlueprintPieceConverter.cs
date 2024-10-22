@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
     {
         public override IBlueprintPiece? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Key<IEntityType>? pieceTypeKey = null;
+            Key<IEntityTemplate>? pieceTypeKey = null;
             IBlueprintPiece[][] children = Array.Empty<IBlueprintPiece[]>();
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 switch (propertyName)
                 {
                     case nameof(IBlueprintPiece.PieceTypeKey):
-                        pieceTypeKey = JsonSerializer.Deserialize<Key<IEntityType>>(ref reader, options);
+                        pieceTypeKey = JsonSerializer.Deserialize<Key<IEntityTemplate>>(ref reader, options);
                         reader.Read();
                         break;
                     case nameof(IBlueprintPiece.Children):

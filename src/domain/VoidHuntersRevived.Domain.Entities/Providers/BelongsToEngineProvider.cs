@@ -10,17 +10,17 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 {
     [AutoLoad]
     internal class BelongsToEngineProvider(
-        IEntityTypeService entityTypeService,
+        IEntityTemplateService entityTemplateService,
         IEntityQueryService entityQueryService,
         ILogger logger) : IEngineProvider
     {
-        private readonly IEntityTypeService _entityTypeService = entityTypeService;
+        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
 
         public IEnumerable<IEngine> GetEngines()
         {
-            foreach (Type componentType in _entityTypeService.GetAllDistinctComponentTypes())
+            foreach (Type componentType in _entityTemplateService.GetAllDistinctComponentTypes())
             {
                 if (componentType.IsConstructedGenericType == false)
                 {

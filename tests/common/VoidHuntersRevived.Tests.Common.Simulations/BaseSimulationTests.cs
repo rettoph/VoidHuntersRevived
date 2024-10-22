@@ -119,7 +119,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             EnginesRoot enginesRoot = new(entitiesSubmissionScheduler);
 
             EntityServiceBuilder entityService = new();
-            entityService.EntityTypeService.Setup(x => x.GetAll(), this.GetEntityTypes(builder));
+            entityService.EntityTemplateService.Setup(x => x.GetAll(), this.GetEntityTemplates(builder));
             entityService.EntityTypeProviderService.UniqueNumberProviderService.SetInstance(new UniqueNumberProvider());
             entityService.EntityTypeProviderService.EnginesRoot.SetInstance(enginesRoot);
             entityService.EntityQueryService.SetInstance(new EntityQueryService());
@@ -144,7 +144,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             builder.EngineServiceBuilder.Engines.AddRange(this.GetEngines(builder));
         }
 
-        protected abstract IEnumerable<IEntityType> GetEntityTypes(IStrategyBuilder builder);
+        protected abstract IEnumerable<IEntityTemplate> GetEntityTemplates(IStrategyBuilder builder);
 
         protected abstract IEnumerable<IEngine> GetEngines(IStrategyBuilder builder);
 

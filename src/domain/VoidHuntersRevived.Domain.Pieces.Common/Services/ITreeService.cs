@@ -13,8 +13,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Services
         ref Node GetHead(in EntityId treeId);
         ref Node GetHead(in GroupIndex treeGroupIndex);
 
-        EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityType> treeTypeKey, Key<IEntityType> headNodeTypeKey, EntityInitializerDelegate? initializer = null);
-        EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityType> treeTypeKey, EntityData nodes, EntityInitializerDelegate initializer);
-        EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityType> treeTypeKey, Blueprint blueprint, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityTemplate> treeTypeKey, Key<IEntityTemplate> headNodeTypeKey, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityTemplate> treeTypeKey, EntityData nodes, EntityInitializerDelegate initializer);
+        EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityTemplate> treeTypeKey, Blueprint blueprint, EntityInitializerDelegate? initializer = null);
     }
 }

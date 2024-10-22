@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         private readonly INetScope<IStrategy> _netScope = netScope;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
-        public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref UserId userId, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref UserId userId, in GroupIndex groupIndex)
         {
             this.Strategy.Publish(sourceEventId, new SetUserShipUserId()
             {
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             });
         }
 
-        public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref UserId userId, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref UserId userId, in GroupIndex groupIndex)
         {
             this.Strategy.Publish(sourceEventId, new SetUserShipUserId()
             {

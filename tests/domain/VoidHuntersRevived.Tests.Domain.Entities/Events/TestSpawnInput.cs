@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Events
         public bool IsPredictable => true;
 
         public required VhId EntityId { get; init; }
-        public required IEntityType EntityType { get; init; }
+        public required IEntityTemplate EntityType { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {

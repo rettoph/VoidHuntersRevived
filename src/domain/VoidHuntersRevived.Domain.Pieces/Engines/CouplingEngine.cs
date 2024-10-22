@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly ISocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
 
-        public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
         {
             if (coupling.SocketId == default)
             {
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             filter.Add(in id, in groupIndex);
         }
 
-        public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
         {
             if (coupling.SocketId == default)
             {

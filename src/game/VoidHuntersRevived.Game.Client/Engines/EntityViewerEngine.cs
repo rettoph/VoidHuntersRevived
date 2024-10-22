@@ -9,7 +9,7 @@
     //    private readonly IScene _scene;
     //    private readonly IStrategy _strategy;
     //    private readonly IEntityQueryService _entityQueryService;
-    //    private readonly IEntityTypeProviderService _entityTypeService;
+    //    private readonly IEntityTemplateProviderService _entityTemplateService;
     //    private readonly IImGuiObjectExplorerService _objectExplorer;
     //    private readonly IObjectTextFilterService _objectFilter;
     //    private readonly IImGui _imgui;
@@ -26,7 +26,7 @@
     //        IScene scene,
     //        IStrategy strategy,
     //        IEntityQueryService entityQueryService,
-    //        IEntityTypeProviderService entityTypeService,
+    //        IEntityTemplateProviderService entityTemplateService,
     //        IImGuiObjectExplorerService objectExplorer,
     //        IObjectTextFilterService objectFilter,
     //        IImGui imgui)
@@ -34,7 +34,7 @@
     //        _strategy = strategy;
     //        _scene = scene;
     //        _entityQueryService = entityQueryService;
-    //        _entityTypeService = entityTypeService;
+    //        _entityTemplateService = entityTemplateService;
     //        _objectExplorer = objectExplorer;
     //        _imgui = imgui;
     //        _objectFilter = objectFilter;
@@ -111,7 +111,7 @@
     //
     //    }
     //
-    //    private TextFilterResult RenderEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityType type, EntityStatus status, uint nativeId)
+    //    private TextFilterResult RenderEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityTemplate type, EntityStatus status, uint nativeId)
     //    {
     //        using (_imgui.ApplyID($"{nameof(EntityId)}_{entityId.VhId.Value}"))
     //        {
@@ -186,7 +186,7 @@
     //        return TextFilterResult.NotMatched;
     //    }
     //
-    //    private TextFilterResult FilterEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityType type)
+    //    private TextFilterResult FilterEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityTemplate type)
     //    {
     //        _entityQueryService.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
     //        TextFilterResult result = this.BasicFilter($"{entityId.VhId}{descriptor.Name}{type.Key}");

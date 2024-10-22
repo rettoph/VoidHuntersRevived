@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Services
 {
     public class EntityServiceBuilder : BaseInstanceBuilder<EntityService>
     {
-        public Mocker<IEntityTypeService> EntityTypeService;
+        public Mocker<IEntityTemplateService> EntityTemplateService;
         public EntityTypeProviderServiceBuilder EntityTypeProviderService;
         public Mocker<EntityQueryService> EntityQueryService;
         public Mocker<EntitySpawnService> EntitySpawnService;
@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Services
 
         public EntityServiceBuilder(EntityTypeProviderServiceBuilder? entityTypeProviderService = null)
         {
-            this.EntityTypeService = new Mocker<IEntityTypeService>();
+            this.EntityTemplateService = new Mocker<IEntityTemplateService>();
             this.EntityTypeProviderService = entityTypeProviderService ?? new EntityTypeProviderServiceBuilder(this);
             this.EntityQueryService = new Mocker<EntityQueryService>();
             this.EntitySpawnService = new Mocker<EntitySpawnService>();
@@ -24,8 +24,8 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Services
         protected override EntityService build()
         {
             return new EntityService(
-                this.EntityTypeService.GetLazy(),
-                this.EntityTypeProviderService.GetLazy<IEntityTypeProviderService>(),
+                this.EntityTemplateService.GetLazy(),
+                this.EntityTypeProviderService.GetLazy<IEntityTemplateProviderService>(),
                 this.EntityQueryService.GetLazy<IEntityQueryService>(),
                 this.EntitySpawnService.GetLazy<IEntitySpawnService>(),
                 this.EntitySerializationService.GetLazy<IEntitySerializationService>());

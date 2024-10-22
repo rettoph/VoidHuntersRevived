@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly ILogger _logger = logger;
         private readonly DictionaryQueue<EntityId, VhId> _dirtyTrees = new DictionaryQueue<EntityId, VhId>();
 
-        public void OnSpawn(VhId sourceEventId, IEntityType type, EntityId id, ref Node node, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Node node, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnSpawn), id.VhId);
 
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             this.SetLocalTransformation(ref node, groupIndex, in treeLocation);
         }
 
-        public void OnDespawn(VhId sourceEventId, IEntityType type, EntityId id, ref Node node, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Node node, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnDespawn), id.VhId);
 

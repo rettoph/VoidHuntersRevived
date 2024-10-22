@@ -1,7 +1,5 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Utilities;
+﻿using Guppy.Core.Common.Utilities;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
@@ -13,19 +11,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        private readonly Lazy<IEntityTypeService> _entityTypeService;
-        private readonly Lazy<IEntityTypeProviderService> _entityTypeProviderService;
+        private readonly Lazy<IEntityTemplateService> _entityTemplateService;
+        private readonly Lazy<IEntityTemplateProviderService> _entityTemplateProviderService;
         private readonly Lazy<IEntityQueryService> _entityQueryService;
         private readonly Lazy<IEntitySpawnService> _entitySpawnService;
         private readonly Lazy<IEntitySerializationService> _entitySerializationService;
 
-        public IEntityTypeService Types => _entityTypeService.Value;
-        public IEntityTypeProviderService TypeProviders => _entityTypeProviderService.Value;
+        public IEntityTemplateService Templates => _entityTemplateService.Value;
+        public IEntityTemplateProviderService TemplateProviders => _entityTemplateProviderService.Value;
         public IEntityQueryService Query => _entityQueryService.Value;
         public IEntitySpawnService Spawn => _entitySpawnService.Value;
         public IEntitySerializationService Serialization => _entitySerializationService.Value;
 
-        IEntityTypeService IEntityService.Types => this.Types;
+        IEntityTemplateService IEntityService.Templates => this.Templates;
 
         IEntityQueryService IEntityService.Query => this.Query;
 
@@ -34,14 +32,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IEntitySerializationService IEntityService.Serialization => this.Serialization;
 
         public EntityService(
-            Lazy<IEntityTypeService> entityTypeService,
-            Lazy<IEntityTypeProviderService> entityTypeProviderService,
+            Lazy<IEntityTemplateService> entityTemplateService,
+            Lazy<IEntityTemplateProviderService> entityTemplateProviderService,
             Lazy<IEntityQueryService> entityQueryService,
             Lazy<IEntitySpawnService> entitySpawnService,
             Lazy<IEntitySerializationService> entitySerialzationService)
         {
-            _entityTypeService = entityTypeService;
-            _entityTypeProviderService = entityTypeProviderService;
+            _entityTemplateService = entityTemplateService;
+            _entityTemplateProviderService = entityTemplateProviderService;
             _entityQueryService = entityQueryService;
             _entitySpawnService = entitySpawnService;
             _entitySerializationService = entitySerialzationService;

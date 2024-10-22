@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
     internal abstract class ComponentEngineInvoker
     {
-        public abstract void Invoke(VhId sourceEventId, IEntityType type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex);
+        public abstract void Invoke(VhId sourceEventId, IEntityTemplate type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex);
 
         public static bool Create(Type componentEngineInvokerType, Type engineType, Type componentType, IEnumerable<IEngine> engines, [MaybeNullWhen(false)] out ComponentEngineInvoker invoker)
         {
@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
     {
         private FasterList<IOnSpawnEngine<T>> _engines = new FasterList<IOnSpawnEngine<T>>(engines.OfType<IOnSpawnEngine<T>>().ToList());
 
-        public override void Invoke(VhId sourceEventId, IEntityType type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
+        public override void Invoke(VhId sourceEventId, IEntityTemplate type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {
             ref T component = ref entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
             for (int i = 0; i < _engines.count; i++)
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
     {
         private FasterList<IOnDespawnEngine<T>> _engines = new FasterList<IOnDespawnEngine<T>>(engines.OfType<IOnDespawnEngine<T>>().ToList());
 
-        public override void Invoke(VhId sourceEventId, IEntityType type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
+        public override void Invoke(VhId sourceEventId, IEntityTemplate type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {
             ref T component = ref entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
             for (int i = 0; i < _engines.count; i++)

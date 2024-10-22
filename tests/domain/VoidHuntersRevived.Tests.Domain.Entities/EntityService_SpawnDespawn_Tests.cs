@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         private readonly LockstepStrategy_Client _lockstep;
         private readonly PredictiveStrategy _predictive;
 
-        protected IEntityType[] EntityTypes => [new TestEntityType()];
+        protected IEntityTemplate[] EntityTemplates => [new TestEntityTemplate()];
 
         public EntityService_SpawnDespawn_Tests() : base([typeof(ClientLockstepStrategyBuilder), typeof(PredictiveStrategyBuilder)])
         {
@@ -78,9 +78,9 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             Assert.Equal(1, totals[_lockstep]);
         }
 
-        protected override IEnumerable<IEntityType> GetEntityTypes(IStrategyBuilder builder)
+        protected override IEnumerable<IEntityTemplate> GetEntityTemplates(IStrategyBuilder builder)
         {
-            return this.EntityTypes;
+            return this.EntityTemplates;
         }
 
         protected override IEnumerable<IEngine> GetEngines(IStrategyBuilder builder)
@@ -90,12 +90,12 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
 
         private TestSpawnInput GenerateTestSpawnInput(int id)
         {
-            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id), EntityType = EntityTypes[0] };
+            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityTemplate, int>.Instance.Calculate(id), EntityType = EntityTemplates[0] };
         }
 
         private TestDepawnInput GenerateTestDepawnInput(int id)
         {
-            return new TestDepawnInput() { EntityId = HashBuilder<TestEntityType, int>.Instance.Calculate(id) };
+            return new TestDepawnInput() { EntityId = HashBuilder<TestEntityTemplate, int>.Instance.Calculate(id) };
         }
     }
 }

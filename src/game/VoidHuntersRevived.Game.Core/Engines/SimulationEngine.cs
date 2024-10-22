@@ -5,7 +5,7 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Pieces.Common.EntityTypes;
+using VoidHuntersRevived.Domain.Pieces.Common.EntityTemplates;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Descriptors;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -18,33 +18,33 @@ namespace VoidHuntersRevived.Game.Core.Engines
     internal sealed class SimulationEngine(
         ITreeService treeService,
         ITeamService teamService,
-        IEntityTypeService entityTypeService,
+        IEntityTemplateService entityTemplateService,
         IBlueprintService blueprintService) : StrategyEngine, IEventEngine<Simulation_Begin>
     {
         private readonly ITreeService _treeService = treeService;
         private readonly ITeamService _teamService = teamService;
-        private readonly IEntityTypeService _entityTypeService = entityTypeService;
+        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly IBlueprintService _blueprintService = blueprintService;
 
         public void Process(VhId eventId, Simulation_Begin data)
         {
-            //_trees.Spawn(eventId.Create(1), Teams.TeamZero, EntityTypes.Chain, _pieces.All<ThrusterDescriptor>().First().EntityType, null);
-            //_trees.Spawn(eventId.Create(int.MaxValue), Teams.TeamZero, EntityTypes.Chain, _blueprints.GetAll().First(), null);
+            //_trees.Spawn(eventId.Create(1), Teams.TeamZero, EntityTemplates.Chain, _pieces.All<ThrusterDescriptor>().First().EntityTemplate, null);
+            //_trees.Spawn(eventId.Create(int.MaxValue), Teams.TeamZero, EntityTemplates.Chain, _blueprints.GetAll().First(), null);
             //for(int j=0; j<1; j++)
             //{
-            //    _trees.Spawn(eventId.Create(int.MaxValue), Teams.TeamZero, EntityTypes.Chain, EntityTypes.Pieces.HullTriangle);
+            //    _trees.Spawn(eventId.Create(int.MaxValue), Teams.TeamZero, EntityTemplates.Chain, EntityTemplates.Pieces.HullTriangle);
             //}
 
             int i = 0;
             int radius = 2;
             int step = 2;
-            FixVector2 offset = new FixVector2(0, 0);
-            PieceEntityType[] pieceTypes = _entityTypeService.GetAll<PieceEntityType>();
+            FixVector2 offset = new(0, 0);
+            PieceEntityTemplate[] pieceTypes = _entityTemplateService.GetAll<PieceEntityTemplate>();
             for (int x = -radius; x < radius; x += step)
             {
                 for (int y = -radius; y < radius; y += step)
                 {
-                    _treeService.Spawn(eventId, eventId.Create(i++), _teamService.GetDefaultTeamComponent(), ChainEntityType.ChainEntityTypeKey, pieceTypes[i % pieceTypes.Length].Key, (IEntityService entities, IEntityType entityType, EntityId id, ref EntityInitializer initializer) =>
+                    _treeService.Spawn(eventId, eventId.Create(i++), _teamService.GetDefaultTeamComponent(), ChainEntityTemplate.ChainEntityTemplateKey, pieceTypes[i % pieceTypes.Length].Key, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
                     {
                         initializer.Init(new Location()
                         {
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Game.Core.Engines
                 }
             }
 
-            //_trees.Spawn(eventId.Create(2), EntityTypes.UserShip, EntityTypes.Pieces.HullSquare);
+            //_trees.Spawn(eventId.Create(2), EntityTemplates.UserShip, EntityTemplates.Pieces.HullSquare);
         }
     }
 }

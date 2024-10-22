@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<TComponent> entities, ExclusiveGroupStruct groupID)
         {
-            if (_entityQueryService.HasAll<EntityType, BelongsTo<Team, TeamMember>>(groupID, out var components) == false)
+            if (_entityQueryService.HasAll<EntityTemplate, BelongsTo<Team, TeamMember>>(groupID, out var components) == false)
             {
                 return;
             }

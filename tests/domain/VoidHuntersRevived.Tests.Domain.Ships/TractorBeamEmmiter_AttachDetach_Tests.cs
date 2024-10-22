@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             throw new NotImplementedException();
         }
 
-        protected override IEnumerable<IEntityType> GetEntityTypes(IStrategyBuilder builder)
+        protected override IEnumerable<IEntityTemplate> GetEntityTemplates(IStrategyBuilder builder)
         {
             throw new NotImplementedException();
         }

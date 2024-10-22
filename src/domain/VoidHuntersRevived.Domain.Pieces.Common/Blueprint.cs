@@ -12,13 +12,5 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
         public Id<Blueprint> Id => _id ??= HashBuilder<Blueprint, VhId, VhId>.Instance.CalculateId(VhId.HashString(this.Name), this.Head.CalculateHash());
         public readonly string Name = name;
         public readonly IBlueprintPiece Head = head;
-
-        // public EntityId Spawn(VhId treeId, VhId vhid, Id<ITeam> teamId, IEntityQueryService entities)
-        // {
-        //     return entities.Spawn(_piece.EntityType, vhid, teamId, (IEntityQueryService entities, IEntityType type, EntityId id, ref EntityInitializer initializer) =>
-        //     {
-        //         initializer.Init(new Node(id, entities.GetId(treeId)));
-        //     });
-        // }
     }
 }
