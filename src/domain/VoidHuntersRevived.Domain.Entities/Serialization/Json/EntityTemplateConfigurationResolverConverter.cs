@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Resources.Common;
-using Guppy.Core.Serialization.Common.Services;
+﻿using Guppy.Core.Serialization.Common.Services;
 using Svelto.ECS;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,11 +9,11 @@ using VoidHuntersRevived.Domain.Entities.Common.Enums;
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
     internal sealed class EntityTemplateConfigurationResolverConverter(
-        IPolymorphicJsonSerializerService<IEntityTemplate> entityTemplateTypeService) : JsonConverter<ResourceResolver<EntityTemplateConfiguration>>
+        IPolymorphicJsonSerializerService<IEntityTemplate> entityTemplateTypeService) : JsonConverter<EntityTemplateConfiguration>
     {
         private readonly IPolymorphicJsonSerializerService<IEntityTemplate> _entityTemplateTypeService = entityTemplateTypeService;
 
-        public override ResourceResolver<EntityTemplateConfiguration>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override EntityTemplateConfiguration? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             Key<IEntityTemplate>? key = null;
             Type? type = null;
@@ -61,22 +60,19 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                 throw new InvalidDataException();
             }
 
-            return new ResourceResolver<EntityTemplateConfiguration>(() =>
+            EntityTemplateConfiguration entityTemplateConfiguration = new()
             {
-                EntityTemplateConfiguration entityTemplateConfiguration = new()
-                {
-                    Key = key.Value,
-                    Type = type,
-                    Flags = flags,
-                    Components = components,
-                    Include = include,
-                };
+                Key = key.Value,
+                Type = type,
+                Flags = flags,
+                Components = components,
+                Include = include,
+            };
 
-                return entityTemplateConfiguration;
-            });
+            return entityTemplateConfiguration;
         }
 
-        public override void Write(Utf8JsonWriter writer, ResourceResolver<EntityTemplateConfiguration> value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, EntityTemplateConfiguration value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }
