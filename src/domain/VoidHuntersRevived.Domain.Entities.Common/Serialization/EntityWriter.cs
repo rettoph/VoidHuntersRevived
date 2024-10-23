@@ -7,13 +7,13 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
     public sealed class EntityWriter(
-        IEntityTemplateProviderService entityTemplateService,
+        IEntityTemplateFactoryService entityTemplateService,
         IEntityQueryService entityQueryService,
         ILogger logger) : BinaryWriter(new MemoryStream())
     {
         private readonly Stack<EntityId> _nested = new Stack<EntityId>();
         private readonly List<long> _positions = [];
-        private readonly IEntityTemplateProviderService _entityTemplateService = entityTemplateService;
+        private readonly IEntityTemplateFactoryService _entityTemplateService = entityTemplateService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
 

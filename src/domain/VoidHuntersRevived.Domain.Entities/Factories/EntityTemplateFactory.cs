@@ -8,17 +8,17 @@ using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Common.Factories;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
-namespace VoidHuntersRevived.Domain.Entities.Providers
+namespace VoidHuntersRevived.Domain.Entities.Factories
 {
-    internal sealed class EntityTemplateProvider : IEntityTemplateProvider, IDisposable
+    internal sealed class EntityTemplateFactory : IEntityTemplateFactory, IDisposable
     {
         private readonly UnmanagedReference<IEntityTemplate> _typeRef;
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
@@ -34,9 +34,9 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         private DynamicEntityDescriptor<VoidHuntersEntityDescriptor> _descriptor;
         private readonly ExclusiveGroupStruct _group;
 
-        public IEntityTemplate Type { get; }
+        public IEntityTemplate Template { get; }
 
-        public EntityTemplateProvider(
+        public EntityTemplateFactory(
             IEntityTemplate type,
             IEntityTemplateService entityTemplateService,
             IUniqueNumberProvider uniqueNumberProvider,
@@ -45,9 +45,9 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             EntityService entityService
         )
         {
-            this.Type = type;
+            Template = type;
 
-            _typeRef = new UnmanagedReference<IEntityTemplate>(this.Type);
+            _typeRef = new UnmanagedReference<IEntityTemplate>(Template);
             _uniqueNumberProvider = uniqueNumberProvider;
             _factory = factory;
             _functions = functions;
@@ -58,10 +58,10 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
             _serializers = null!;
 
-            _initializer = this.Type.Initializer ?? EntityTemplateProvider.DefaultInitializer;
+            _initializer = Template.Initializer ?? DefaultInitializer;
 
-            _descriptor = new DynamicEntityDescriptor<VoidHuntersEntityDescriptor>(this.Type.Components);
-            _group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{this.Type.Key}_{nameof(_group)}");
+            _descriptor = new DynamicEntityDescriptor<VoidHuntersEntityDescriptor>(Template.Components);
+            _group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{Template.Key}_{nameof(_group)}");
         }
 
         public void Initialize(
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 
             // Generate despawn engine invokers
             // Responsible for calling IOnSpawnEngine & IOnDespawnEngine engines
-            foreach (Type componentType in this.Type.Components.Keys)
+            foreach (Type componentType in Template.Components.Keys)
             {
                 if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engineService, out var invoker))
                 {
@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
 
             // Run custom instance initializer
-            _initializer!(_entities, this.Type, id, ref initializer);
+            _initializer!(_entities, Template, id, ref initializer);
 
             return initializer;
         }
@@ -118,7 +118,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // Call all OnSpawn engines
             for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
             {
-                _onSpawnEngineInvokers[i].Invoke(sourceEventId, this.Type, _entitiesDB, id, groupIndex);
+                _onSpawnEngineInvokers[i].Invoke(sourceEventId, Template, _entitiesDB, id, groupIndex);
             }
         }
 
@@ -127,7 +127,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
             // Call all OnDespawn engines
             for (int i = 0; i < _onDespawnEngineInvokers.count; i++)
             {
-                _onDespawnEngineInvokers[i].Invoke(sourceEventId, this.Type, _entitiesDB, id, groupIndex);
+                _onDespawnEngineInvokers[i].Invoke(sourceEventId, Template, _entitiesDB, id, groupIndex);
             }
         }
 

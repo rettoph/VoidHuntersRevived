@@ -9,14 +9,14 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
     public class EntityReader(
-        IEntityTemplateProviderService entityTemplateProviderService,
+        IEntityTemplateFactoryService entityTemplateProviderService,
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
         ILogger logger) : BinaryReader(new MemoryStream())
     {
         private static unsafe long EntityHeaderSize = sizeof(VhId) + sizeof(Id<IEntityTemplate>);
 
-        private readonly IEntityTemplateProviderService _entityTemplateProviderService = entityTemplateProviderService;
+        private readonly IEntityTemplateFactoryService _entityTemplateProviderService = entityTemplateProviderService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;

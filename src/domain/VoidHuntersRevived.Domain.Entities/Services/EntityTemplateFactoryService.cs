@@ -4,26 +4,26 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
+using VoidHuntersRevived.Domain.Entities.Common.Factories;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Providers;
+using VoidHuntersRevived.Domain.Entities.Factories;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class EntityTemplateProviderService : StrategyEngine, IEntityTemplateProviderService, IQueryingEntitiesEngine, IOnInitializeEngine
+    public class EntityTemplateFactoryService : StrategyEngine, IEntityTemplateFactoryService, IQueryingEntitiesEngine, IOnInitializeEngine
     {
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly Lazy<IComponentSerializerService> _componentSerializerService;
 
-        private readonly DoubleDictionary<IEntityTemplate, Key<IEntityTemplate>, IEntityTemplateProvider> _providers;
+        private readonly DoubleDictionary<IEntityTemplate, Key<IEntityTemplate>, IEntityTemplateFactory> _factories;
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        public EntityTemplateProviderService(
+        public EntityTemplateFactoryService(
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityTemplateService entityTemplateService,
             Lazy<IComponentSerializerService> componentSerializerService,
@@ -37,13 +37,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             // Create EntityTemplateProviders for all registered IEntityTemplate instances
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
             IEntityFunctions functions = enginesRoot.GenerateEntityFunctions();
-            _providers = _entityTemplateService.GetAll()
+            _factories = _entityTemplateService.GetAll()
                 .ToDoubleDictionary(
                     keySelector1: type => type,
                     keySelector2: type => type.Key,
                     elementSelector: type =>
                     {
-                        return (IEntityTemplateProvider)new EntityTemplateProvider(
+                        return (IEntityTemplateFactory)new EntityTemplateFactory(
                             type,
                             _entityTemplateService,
                             _uniqueNumberProvider,
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.PreInitialize)]
         public void OnInitialize(IStrategy strategy)
         {
-            foreach (IEntityTemplateProvider entityTemplateProvider in _providers.Values)
+            foreach (IEntityTemplateFactory entityTemplateProvider in _factories.Values)
             {
                 entityTemplateProvider.Initialize(
                     entitiesDB: this.entitiesDB,
@@ -66,14 +66,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public IEntityTemplateProvider GetByKey(Key<IEntityTemplate> key)
+        public IEntityTemplateFactory GetByKey(Key<IEntityTemplate> key)
         {
-            return _providers[key];
+            return _factories[key];
         }
 
-        public IEntityTemplateProvider GetByType(IEntityTemplate entityTemplate)
+        public IEntityTemplateFactory GetByType(IEntityTemplate entityTemplate)
         {
-            return _providers[entityTemplate];
+            return _factories[entityTemplate];
         }
     }
 }

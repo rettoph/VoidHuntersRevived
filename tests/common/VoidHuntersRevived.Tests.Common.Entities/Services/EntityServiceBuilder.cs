@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Services
         {
             return new EntityService(
                 this.EntityTemplateService.GetLazy(),
-                this.EntityTypeProviderService.GetLazy<IEntityTemplateProviderService>(),
+                this.EntityTypeProviderService.GetLazy<IEntityTemplateFactoryService>(),
                 this.EntityQueryService.GetLazy<IEntityQueryService>(),
                 this.EntitySpawnService.GetLazy<IEntitySpawnService>(),
                 this.EntitySerializationService.GetLazy<IEntitySerializationService>());

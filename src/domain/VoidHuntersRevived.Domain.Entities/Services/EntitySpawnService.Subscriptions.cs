@@ -4,7 +4,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Events;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
+using VoidHuntersRevived.Domain.Entities.Common.Factories;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -113,9 +113,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             ref EntityId id = ref _entityQueryService.AddId(data.VhId);
 
-            IEntityTemplateProvider provider = _entityTemplateProviderService.GetByKey(data.TypeKey);
+            IEntityTemplateFactory provider = _entityTemplateProviderService.GetByKey(data.TypeKey);
             EntityInitializer initializer = provider.HardSpawnInstanceEntity(eventId, data.VhId, out id);
-            data.Initializer.Invoke(_entityService, provider.Type, id, ref initializer);
+            data.Initializer.Invoke(_entityService, provider.Template, id, ref initializer);
         }
 
         public void Process(VhId eventId, SoftSpawnEntity data)
@@ -279,7 +279,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             Key<IEntityTemplate> typeKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Value.Key;
-            IEntityTemplateProvider descriptorEngine = _entityTemplateProviderService.GetByKey(typeKey);
+            IEntityTemplateFactory descriptorEngine = _entityTemplateProviderService.GetByKey(typeKey);
 
             if (status.Value < EntityStatusEnum.SoftDespawned)
             { // Ensure an entity gets soft despawned if it hasn't been already

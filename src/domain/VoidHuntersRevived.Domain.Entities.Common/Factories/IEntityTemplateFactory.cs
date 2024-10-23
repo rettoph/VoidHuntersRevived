@@ -6,14 +6,14 @@ using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
-namespace VoidHuntersRevived.Domain.Entities.Common.Providers
+namespace VoidHuntersRevived.Domain.Entities.Common.Factories
 {
     /// <summary>
     /// Represents the conglomerate of an entity type functions, including spawning, despawning, initialization, and serialization.
     /// </summary>
-    public interface IEntityTemplateProvider : IDisposable
+    public interface IEntityTemplateFactory : IDisposable
     {
-        IEntityTemplate Type { get; }
+        IEntityTemplate Template { get; }
 
         void Initialize(
             EntitiesDB entitiesDB,
