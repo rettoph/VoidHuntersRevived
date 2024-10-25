@@ -15,7 +15,6 @@ using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
-using VoidHuntersRevived.Domain.Entities.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities
@@ -26,7 +25,6 @@ namespace VoidHuntersRevived.Domain.Entities
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
-        private readonly EntityService _entities;
         private readonly ActionSequenceGroup<OnDespawnSequenceGroupEnum, VhId, IEntityTemplate, EntityId, GroupIndex> _onDespawnEngineInvokers;
         private readonly ActionSequenceGroup<OnSpawnSequenceGroupEnum, VhId, IEntityTemplate, EntityId, GroupIndex> _onSpawnEngineInvokers;
         private EntitiesDB _entitiesDB;
@@ -44,14 +42,12 @@ namespace VoidHuntersRevived.Domain.Entities
             IEntityTemplateFragmentService entityTemplateService,
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityFactory factory,
-            IEntityFunctions functions,
-            EntityService entityService
+            IEntityFunctions functions
         )
         {
             _uniqueNumberProvider = uniqueNumberProvider;
             _factory = factory;
             _functions = functions;
-            _entities = entityService;
             _entitiesDB = null!;
 
             _onDespawnEngineInvokers = new(false);

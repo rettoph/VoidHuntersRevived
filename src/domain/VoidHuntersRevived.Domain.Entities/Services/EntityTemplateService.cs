@@ -25,8 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityTemplateFragmentService entityTemplateFragmentService,
             Lazy<IComponentSerializerService> componentSerializerService,
-            EnginesRoot enginesRoot,
-            EntityService entityService)
+            EnginesRoot enginesRoot)
         {
             _uniqueNumberProvider = uniqueNumberProvider;
             _entityTemplateFragmentService = entityTemplateFragmentService;
@@ -46,8 +45,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                             _entityTemplateFragmentService,
                             _uniqueNumberProvider,
                             factory,
-                            functions,
-                            entityService
+                            functions
                         );
                     });
         }

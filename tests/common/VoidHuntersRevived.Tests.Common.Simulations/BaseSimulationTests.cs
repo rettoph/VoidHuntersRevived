@@ -119,11 +119,11 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             EnginesRoot enginesRoot = new(entitiesSubmissionScheduler);
 
             EntityServiceBuilder entityService = new();
-            entityService.EntityTemplateService.Setup(x => x.GetAll(), this.GetEntityTemplates(builder));
-            entityService.EntityTypeProviderService.UniqueNumberProviderService.SetInstance(new UniqueNumberProvider());
-            entityService.EntityTypeProviderService.EnginesRoot.SetInstance(enginesRoot);
+            entityService.EntityTemplateService.EntityTemplateFragmentService.Setup(x => x.GetAll(), () => this.GetEntityTemplateFragments(builder).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.ToArray()));
+            entityService.EntityTemplateService.UniqueNumberProviderService.SetInstance(new UniqueNumberProvider());
+            entityService.EntityTemplateService.EnginesRoot.SetInstance(enginesRoot);
             entityService.EntityQueryService.SetInstance(new EntityQueryService());
-            entityService.EntitySpawnService.SetInstance(new EntitySpawnService(entityService.EntityQueryService.GetInstance(), entityService.EntityTypeProviderService.GetInstance(), entityService.GetInstance(), builder.Logger.GetInstance()));
+            entityService.EntitySpawnService.SetInstance(new EntitySpawnService(entityService.EntityQueryService.GetInstance(), entityService.EntityTemplateService.GetInstance(), entityService.GetInstance(), builder.Logger.GetInstance()));
 
             // Configure strategy
             builder.TickBuffer.SetInstance(_tickBuffer);
@@ -134,7 +134,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                 .Setup(settings => settings.GetValue(Settings.StepsPerTick), () => StepsPerTick);
 
             builder.EngineServiceBuilder.Engines.AddRange([
-                entityService.EntityTypeProviderService.GetInstance(),
+                entityService.EntityTemplateService.GetInstance(),
                 entityService.GetInstance(),
                 entityService.EntityQueryService.GetInstance(),
                 entityService.EntitySpawnService.GetInstance(),
@@ -144,7 +144,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             builder.EngineServiceBuilder.Engines.AddRange(this.GetEngines(builder));
         }
 
-        protected abstract IEnumerable<EntityTemplate> GetEntityTemplates(IStrategyBuilder builder);
+        protected abstract IEnumerable<EntityTemplateFragment> GetEntityTemplateFragments(IStrategyBuilder builder);
 
         protected abstract IEnumerable<IEngine> GetEngines(IStrategyBuilder builder);
 

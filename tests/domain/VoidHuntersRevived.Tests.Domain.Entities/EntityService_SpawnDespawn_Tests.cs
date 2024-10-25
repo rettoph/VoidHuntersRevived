@@ -1,4 +1,5 @@
 using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -9,17 +10,17 @@ using VoidHuntersRevived.Tests.Common.Simulations;
 using VoidHuntersRevived.Tests.Common.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Domain.Entities.Components;
 using VoidHuntersRevived.Tests.Domain.Entities.Engines;
-using VoidHuntersRevived.Tests.Domain.Entities.EntityTypes;
 using VoidHuntersRevived.Tests.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {
     public class EntityService_SpawnDespawn_Tests : BaseSimulationTests<EntityService_SpawnDespawn_Tests>
     {
+        public static readonly Key<IEntityTemplate> TestEntityTemplateKey = Key<IEntityTemplate>.GetByName("TestEntityTemplate");
+
         private readonly LockstepStrategy_Client _lockstep;
         private readonly PredictiveStrategy _predictive;
 
-        protected EntityTemplate[] EntityTemplates => [new TestEntityTemplate()];
 
         public EntityService_SpawnDespawn_Tests() : base([typeof(ClientLockstepStrategyBuilder), typeof(PredictiveStrategyBuilder)])
         {
@@ -78,9 +79,15 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             Assert.Equal(1, totals[_lockstep]);
         }
 
-        protected override IEnumerable<EntityTemplate> GetEntityTemplates(IStrategyBuilder builder)
+        protected override IEnumerable<EntityTemplateFragment> GetEntityTemplateFragments(IStrategyBuilder builder)
         {
-            return this.EntityTemplates;
+            yield return new EntityTemplateFragment()
+            {
+                Key = TestEntityTemplateKey,
+                Components = [
+                    new TestComponent()
+                ]
+            };
         }
 
         protected override IEnumerable<IEngine> GetEngines(IStrategyBuilder builder)
@@ -90,12 +97,12 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
 
         private TestSpawnInput GenerateTestSpawnInput(int id)
         {
-            return new TestSpawnInput() { EntityId = HashBuilder<TestEntityTemplate, int>.Instance.Calculate(id), EntityType = EntityTemplates[0] };
+            return new TestSpawnInput() { EntityId = HashBuilder<TestSpawnInput, int>.Instance.Calculate(id), EntityTemplateKey = TestEntityTemplateKey };
         }
 
         private TestDepawnInput GenerateTestDepawnInput(int id)
         {
-            return new TestDepawnInput() { EntityId = HashBuilder<TestEntityTemplate, int>.Instance.Calculate(id) };
+            return new TestDepawnInput() { EntityId = HashBuilder<TestDepawnInput, int>.Instance.Calculate(id) };
         }
     }
 }
