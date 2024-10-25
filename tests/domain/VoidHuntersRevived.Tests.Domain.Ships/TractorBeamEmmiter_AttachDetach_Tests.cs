@@ -89,7 +89,6 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     }
                     else
                     {
-
                         if (socketService.TryGetSocket(new SocketVhId(chainVhIds[i - 1], 0), out NodeSocket nodeSocket))
                         {
                             socketService.Spawn(sourceId, nodeSocket, chainVhIds[i], TestSquareEntityTemplateKey);

@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 sourceId: sourceId,
                 options: new DeserializationOptions
                 {
-                    Seed = HashBuilder<SocketService, SocketVhId>.Instance.Calculate(socketVhId),
+                    Seed = HashBuilder<SocketService, VhId, SocketVhId>.Instance.Calculate(sourceId, socketVhId),
                     Owner = nodeSocket.Node.TreeId.VhId
                 },
                 data: nodes,
