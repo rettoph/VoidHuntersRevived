@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Resources.Common;
 using Microsoft.Xna.Framework;
+using Moq;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
@@ -119,7 +120,8 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             EnginesRoot enginesRoot = new(entitiesSubmissionScheduler);
 
             EntityServiceBuilder entityService = new();
-            entityService.EntityTemplateService.EntityTemplateFragmentService.Setup(x => x.GetAll(), () => this.GetEntityTemplateFragments(builder).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.ToArray()));
+            entityService.EntityTemplateService.EntityTemplateFragmentService.Setup(x => x.GetAll(), this.GetEntityTemplateFragmentsDictionary);
+            entityService.EntityTemplateService.EntityTemplateFragmentService.Setup<EntityTemplateFragment[], Key<IEntityTemplate>>(x => x.GetByKey(It.IsAny<Key<IEntityTemplate>>()), this.GetEntityTemplateFragmentsByKey);
             entityService.EntityTemplateService.UniqueNumberProviderService.SetInstance(new UniqueNumberProvider());
             entityService.EntityTemplateService.EnginesRoot.SetInstance(enginesRoot);
             entityService.EntityQueryService.SetInstance(new EntityQueryService());
@@ -144,7 +146,19 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             builder.EngineServiceBuilder.Engines.AddRange(this.GetEngines(builder));
         }
 
-        protected abstract IEnumerable<EntityTemplateFragment> GetEntityTemplateFragments(IStrategyBuilder builder);
+        private IReadOnlyDictionary<Key<IEntityTemplate>, EntityTemplateFragment[]> GetEntityTemplateFragmentsDictionary()
+        {
+            return this.GetEntityTemplateFragments()
+                .GroupBy(x => x.Key)
+                .ToDictionary(x => x.Key, x => x.ToArray());
+        }
+
+        private EntityTemplateFragment[] GetEntityTemplateFragmentsByKey(Key<IEntityTemplate> key)
+        {
+            return this.GetEntityTemplateFragments().Where(x => x.Key == key).ToArray();
+        }
+
+        protected abstract IEnumerable<EntityTemplateFragment> GetEntityTemplateFragments();
 
         protected abstract IEnumerable<IEngine> GetEngines(IStrategyBuilder builder);
 

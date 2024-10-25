@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             Assert.Equal(1, totals[_lockstep]);
         }
 
-        protected override IEnumerable<EntityTemplateFragment> GetEntityTemplateFragments(IStrategyBuilder builder)
+        protected override IEnumerable<EntityTemplateFragment> GetEntityTemplateFragments()
         {
             yield return new EntityTemplateFragment()
             {
