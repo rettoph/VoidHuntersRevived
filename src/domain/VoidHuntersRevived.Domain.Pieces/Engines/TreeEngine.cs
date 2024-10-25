@@ -4,6 +4,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
@@ -27,6 +28,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;
 
+        [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
             ref Location location = ref _entityQueryService.QueryByGroupIndex<Location>(groupIndex);
@@ -35,6 +37,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             this.TransformNodes(ref location, ref filter);
         }
 
+        [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - Despawning Tree {TreeId}, HeadId = {HeadId}", nameof(TreeEngine), nameof(OnDespawn), id.VhId, component.HeadId.VhId);

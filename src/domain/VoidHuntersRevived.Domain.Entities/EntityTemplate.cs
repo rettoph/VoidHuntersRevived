@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Extensions.System;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Common.Utilities;
 using Svelto.DataStructures;
 using Svelto.ECS;
@@ -26,8 +27,8 @@ namespace VoidHuntersRevived.Domain.Entities
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly EntityService _entities;
-        private readonly FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
-        private readonly FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
+        private readonly ActionSequenceGroup<OnDespawnSequenceGroupEnum, VhId, IEntityTemplate, EntityId, GroupIndex> _onDespawnEngineInvokers;
+        private readonly ActionSequenceGroup<OnSpawnSequenceGroupEnum, VhId, IEntityTemplate, EntityId, GroupIndex> _onSpawnEngineInvokers;
         private EntitiesDB _entitiesDB;
         private FasterList<ComponentSerializer> _serializers;
 
@@ -53,8 +54,8 @@ namespace VoidHuntersRevived.Domain.Entities
             _entities = entityService;
             _entitiesDB = null!;
 
-            _onDespawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
-            _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
+            _onDespawnEngineInvokers = new(false);
+            _onSpawnEngineInvokers = new(false);
             _serializers = null!;
 
             _group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{key.Name}_{nameof(_group)}");
@@ -76,18 +77,17 @@ namespace VoidHuntersRevived.Domain.Entities
 
             // Generate despawn engine invokers
             // Responsible for calling IOnSpawnEngine & IOnDespawnEngine engines
-            foreach (Type componentType in Components.Keys)
-            {
-                if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engineService, out var invoker))
-                {
-                    _onDespawnEngineInvokers.Add(invoker);
-                }
+            List<ComponentEngineInvoker> onDespawnEngineInvokers = [];
+            List<ComponentEngineInvoker> onSpawnEngineInvokers = [];
 
-                if (ComponentEngineInvoker.Create(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), componentType, engineService, out invoker))
-                {
-                    _onSpawnEngineInvokers.Add(invoker);
-                }
+            foreach (Type componentType in this.Components.Keys)
+            {
+                onDespawnEngineInvokers.AddRange(ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engineService, _entitiesDB));
+                onSpawnEngineInvokers.AddRange(ComponentEngineInvoker.Create(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), componentType, engineService, _entitiesDB));
             }
+
+            _onDespawnEngineInvokers.Add(onDespawnEngineInvokers);
+            _onSpawnEngineInvokers.Add(onSpawnEngineInvokers);
         }
 
         public void Dispose()
@@ -112,20 +112,12 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public void SoftSpawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
-            // Call all OnSpawn engines
-            for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
-            {
-                _onSpawnEngineInvokers[i].Invoke(sourceEventId, this, _entitiesDB, id, groupIndex);
-            }
+            _onSpawnEngineInvokers.Invoke(sourceEventId, this, id, groupIndex);
         }
 
         public void SoftDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
         {
-            // Call all OnDespawn engines
-            for (int i = 0; i < _onDespawnEngineInvokers.count; i++)
-            {
-                _onDespawnEngineInvokers[i].Invoke(sourceEventId, this, _entitiesDB, id, groupIndex);
-            }
+            _onDespawnEngineInvokers.Invoke(sourceEventId, this, id, groupIndex);
         }
 
         public void HardDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)

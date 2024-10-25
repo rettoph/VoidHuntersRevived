@@ -4,6 +4,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
@@ -24,6 +25,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly ISocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
 
+        [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Sockets sockets, in GroupIndex groupIndex)
         {
             for (int i = 0; i < sockets.Items.count; i++)

@@ -1,8 +1,10 @@
-﻿using Guppy.Core.Common.Collections;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Collections;
 using Guppy.Core.Network.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
@@ -21,6 +23,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         private readonly INetScope<IStrategy> _netScope = netScope;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
+        [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref UserId userId, in GroupIndex groupIndex)
         {
             this.Strategy.Publish(sourceEventId, new SetUserShipUserId()
@@ -30,6 +33,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             });
         }
 
+        [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref UserId userId, in GroupIndex groupIndex)
         {
             this.Strategy.Publish(sourceEventId, new SetUserShipUserId()

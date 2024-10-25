@@ -5,6 +5,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -30,6 +31,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private static readonly Fix64 Buffer = (Fix64)0.01m;
         private static readonly Fix64 BufferPi = Fix64.Pi - Buffer;
 
+        [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
         {
             Node node = _entityQueryService.QueryByGroupIndex<Node>(in groupIndex);
@@ -43,6 +45,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             filter.Add(id, groupIndex);
         }
 
+        [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
         {
             Node node = _entityQueryService.QueryByGroupIndex<Node>(in groupIndex);
