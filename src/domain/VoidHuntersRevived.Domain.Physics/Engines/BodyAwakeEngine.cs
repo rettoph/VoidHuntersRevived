@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Serilog;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -11,7 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     [AutoLoad]
-    internal sealed class BodyAwakeEngine : StrategyEngine, IOnStepEngine
+    public sealed class BodyAwakeEngine : StrategyEngine, IOnStepEngine
     {
         public string name { get; } = nameof(BodyAwakeEngine);
 

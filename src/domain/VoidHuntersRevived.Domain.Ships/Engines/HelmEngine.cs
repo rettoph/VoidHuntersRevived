@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
-    internal sealed class HelmEngine(
+    public sealed class HelmEngine(
         IEntityQueryService entityQueryService) : StrategyEngine,
         IEventEngine<Helm_SetDirection>
     {

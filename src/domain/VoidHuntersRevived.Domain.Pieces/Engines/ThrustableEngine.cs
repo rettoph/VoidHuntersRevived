@@ -19,7 +19,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal class ThrustableEngine(IEntityQueryService entityQueryService, ISpace space) : StrategyEngine,
+    public class ThrustableEngine(IEntityQueryService entityQueryService, ISpace space) : StrategyEngine,
         IOnSpawnEngine<Thrustable>,
         IOnDespawnEngine<Thrustable>,
         IEventEngine<Tree_Clean>,

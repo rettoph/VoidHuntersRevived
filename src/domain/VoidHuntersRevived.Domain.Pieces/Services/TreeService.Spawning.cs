@@ -12,7 +12,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal partial class TreeService
+    public partial class TreeService
     {
         public EntityId Spawn(VhId sourceId, VhId vhid, Team team, Key<IEntityTemplate> treeTemplateKey, Key<IEntityTemplate> headNodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {

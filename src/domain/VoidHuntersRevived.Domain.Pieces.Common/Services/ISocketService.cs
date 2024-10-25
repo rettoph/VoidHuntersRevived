@@ -10,14 +10,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Services
     public interface ISocketService
     {
         NodeSocket GetSocket(NodeSocketId socketId);
-        bool TryGetSocket(SocketVhId socketVhId, out NodeSocket nodeSocketNode);
+        bool TryGetSocket(SocketVhId socketVhId, out NodeSocket nodeSocket);
 
         ref EntityFilterCollection GetCouplingFilter(NodeSocketId socketId);
         ref EntityFilterCollection GetCouplingFilter(EntityId nodeId, byte socketIndex);
 
         bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket);
 
-        EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, VhId nodeVhId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializer = null);
-        EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, EntityData nodes, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(VhId sourceId, NodeSocket targetSocketNode, VhId vhid, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(VhId sourceId, NodeSocket targetSocketNode, EntityData nodes, EntityInitializerDelegate? initializer = null);
     }
 }

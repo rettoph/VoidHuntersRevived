@@ -11,7 +11,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Services
 {
-    internal class TeamService(
+    public class TeamService(
         IEntityTemplateService entityTemplateService,
         IEntityQueryService entityQueryService,
         IPrivateEntitySpawnService privateEntitySpawnService) : StrategyEngine, ITeamService, IOnInitializeEngine

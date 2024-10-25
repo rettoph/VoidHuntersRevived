@@ -21,7 +21,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class NodeEngine(
+    public sealed class NodeEngine(
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
         ISocketService socketService,

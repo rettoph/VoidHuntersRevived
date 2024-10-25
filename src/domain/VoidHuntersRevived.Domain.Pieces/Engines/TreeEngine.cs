@@ -14,7 +14,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class TreeEngine(
+    public sealed class TreeEngine(
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
         ILogger logger) : StrategyEngine,

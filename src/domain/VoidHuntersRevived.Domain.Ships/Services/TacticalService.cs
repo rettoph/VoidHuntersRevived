@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Ships.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
-    internal class TacticalService(IEntityQueryService entityQueryService) : ITacticalService
+    public class TacticalService(IEntityQueryService entityQueryService) : ITacticalService
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 

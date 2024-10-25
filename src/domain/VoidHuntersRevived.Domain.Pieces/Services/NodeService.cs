@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal sealed class NodeService(IEntityQueryService entityQueryService) : INodeService
+    public sealed class NodeService(IEntityQueryService entityQueryService) : INodeService
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 

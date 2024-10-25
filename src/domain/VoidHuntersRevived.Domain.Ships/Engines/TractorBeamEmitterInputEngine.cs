@@ -10,7 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
-    internal sealed class TractorBeamEmitterInputEngine(
+    public sealed class TractorBeamEmitterInputEngine(
         ITractorBeamEmitterService tractorBeamEmitterService,
         IEntityQueryService entityQueryService,
         ILogger logger) : StrategyEngine,

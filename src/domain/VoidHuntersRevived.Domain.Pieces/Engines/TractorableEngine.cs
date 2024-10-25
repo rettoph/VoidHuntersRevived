@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     [AutoLoad]
-    internal sealed class TractorableEngine(
+    public sealed class TractorableEngine(
         ITractorBeamEmitterService tractorBeamEmitterService,
         ITacticalService tacticalService,
         IEntityQueryService entityQueryService,

@@ -12,15 +12,15 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal partial class SocketService : ISocketService
+    public partial class SocketService : ISocketService
     {
-        public EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, VhId nodeVhId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, NodeSocket targetNodeSocket, VhId vhid, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
-            Team team = _entityQueryService.QueryById<Team>(nodeSocket.Node.TreeId);
-            SocketVhId socketVhId = nodeSocket.Id.VhId;
-            VhId treeId = nodeSocket.Node.TreeId.VhId;
+            Team team = _entityQueryService.QueryById<Team>(targetNodeSocket.Node.TreeId);
+            SocketVhId socketVhId = targetNodeSocket.Id.VhId;
+            VhId treeId = targetNodeSocket.Node.TreeId.VhId;
 
-            return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, nodeVhId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, vhid, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
                 initializer.Init(team);
                 initializer.Init(new Node(id, entities.Query.GetId(treeId)));

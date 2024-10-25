@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal sealed partial class BlueprintService(IEnumerable<Blueprint> blueprints, IResourceService resources) : IBlueprintService
+    public sealed partial class BlueprintService(IEnumerable<Blueprint> blueprints, IResourceService resources) : IBlueprintService
     {
         private readonly Dictionary<Id<Blueprint>, Blueprint> _blueprints = resources.GetAll<Blueprint>().Select(x => x.Value).Concat(blueprints).ToDictionary(x => x.Id, x => x);
 

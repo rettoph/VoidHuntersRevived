@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Serilog;
+﻿using Serilog;
 using Svelto.ECS;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -13,7 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    internal sealed partial class SocketService(
+    public sealed partial class SocketService(
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
         IEntitySerializationService entitySerializationService,
@@ -35,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             ref Node node = ref _entityQueryService.QueryById<Node>(socketId.NodeId, out GroupIndex groupIndex);
             var (sockets, _) = _entityQueryService.QueryEntities<Sockets>(groupIndex.GroupID);
 
-            NodeSocket nodeSocket = new NodeSocket(node, socketId, sockets[groupIndex.Index].Items[socketId.Index]);
+            NodeSocket nodeSocket = new(node, socketId, sockets[groupIndex.Index].Items[socketId.Index]);
 
             return nodeSocket;
         }
@@ -82,7 +81,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 for (int i = 0; i < indeces.count; i++)
                 {
                     uint index = indeces[i];
-                    NodeSockets nodeSockets = new NodeSockets(index, nodes, sockets);
+                    NodeSockets nodeSockets = new(index, nodes, sockets);
                     if (statuses[index].IsSpawned
                         && this.TryGetClosestOpenSocketOnNode(worldPosition, ref nodeSockets, out Fix64 closestOpenSocketOnNodeDistance, out NodeSocket closestOpenSocketOnNode)
                         && closestOpenSocketOnNodeDistance < closestOpenSocketDistance)
@@ -111,7 +110,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             {
                 NodeSocket nodeSocket = nodeSockets[j];
 
-                var filter = this.GetCouplingFilter(nodeSockets.Node.Id, (byte)j);
+                var filter = this.GetCouplingFilter(nodeSockets.Node.Id, j);
                 int count = 0;
                 foreach (var (indices, groupId) in filter)
                 {

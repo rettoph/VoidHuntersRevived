@@ -12,7 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
     [AutoLoad]
-    internal sealed class TacticalEngine(
+    public sealed class TacticalEngine(
         IEntityQueryService entityQueryService) : StrategyEngine,
         IEventEngine<Tactical_SetTarget>,
         IOnStepEngine

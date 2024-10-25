@@ -8,7 +8,7 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Events;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Engines;
 using VoidHuntersRevived.Domain.Entities.Services;
@@ -127,6 +127,10 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             entityService.EntityQueryService.SetInstance(new EntityQueryService());
             entityService.EntitySpawnService.SetInstance(new EntitySpawnService(entityService.EntityQueryService.GetInstance(), entityService.EntityTemplateService.GetInstance(), entityService.GetInstance(), builder.Logger.GetInstance()));
 
+            EntityWriter writer = new(entityService.EntityTemplateService.GetInstance(), entityService.EntityQueryService.GetInstance(), builder.Logger.GetInstance());
+            EntityReader reader = new(entityService.EntityTemplateService.GetInstance(), entityService.EntityQueryService.GetInstance(), entityService.EntitySpawnService.GetInstance(), builder.Logger.GetInstance());
+            entityService.EntitySerializationService.SetInstance(new EntitySerializationService(writer, reader));
+
             // Configure strategy
             builder.TickBuffer.SetInstance(_tickBuffer);
             builder.EngineServiceBuilder.EntitiesSubmissionScheduler.SetInstance(entitiesSubmissionScheduler);
@@ -140,6 +144,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                 entityService.GetInstance(),
                 entityService.EntityQueryService.GetInstance(),
                 entityService.EntitySpawnService.GetInstance(),
+                entityService.EntitySerializationService.GetInstance(),
                 new EntitySubmissionEngine(entitiesSubmissionScheduler),
             ]);
 
@@ -164,7 +169,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
 
         protected virtual VhId GenerateSourceId()
         {
-            return HashBuilder<SpawnEntity, int>.Instance.Calculate(_sourceIdGeneratorIndex++);
+            return HashBuilder<BaseSimulationTests<TSelf>, int>.Instance.Calculate(_sourceIdGeneratorIndex++);
         }
 
         protected Dictionary<IStrategy, int> CalculateTotalEntities<T>()
