@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
 
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
         {
             if (tractorable.TractorBeamEmitter == default)
             {
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             _logger.Verbose("{ClassName}::{MethodName} - Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(OnSpawn), id.VhId.Value, tractorable.TractorBeamEmitter.VhId.Value);
         }
 
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Tractorable tractorable, in GroupIndex groupIndex)
         {
             if (tractorable.TractorBeamEmitter == default)
             {

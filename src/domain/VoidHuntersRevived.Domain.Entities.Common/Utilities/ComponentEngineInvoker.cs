@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
     internal abstract class ComponentEngineInvoker
     {
-        public abstract void Invoke(VhId sourceEventId, IEntityTemplate type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex);
+        public abstract void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex);
 
         public static bool Create(Type componentEngineInvokerType, Type engineType, Type componentType, IEnumerable<IEngine> engines, [MaybeNullWhen(false)] out ComponentEngineInvoker invoker)
         {
@@ -43,14 +43,14 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
     internal class OnSpawnEngineInvoker<T>(IEnumerable<IEngine> engines) : ComponentEngineInvoker
         where T : unmanaged, IEntityComponent
     {
-        private FasterList<IOnSpawnEngine<T>> _engines = new FasterList<IOnSpawnEngine<T>>(engines.OfType<IOnSpawnEngine<T>>().ToList());
+        private readonly FasterList<IOnSpawnEngine<T>> _engines = new(engines.OfType<IOnSpawnEngine<T>>().ToList());
 
-        public override void Invoke(VhId sourceEventId, IEntityTemplate type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
+        public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {
             ref T component = ref entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
             for (int i = 0; i < _engines.count; i++)
             {
-                _engines[i].OnSpawn(sourceEventId, type, id, ref component, in groupIndex);
+                _engines[i].OnSpawn(sourceEventId, entityTemplate, id, ref component, in groupIndex);
             }
         }
     }
@@ -58,14 +58,14 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
     internal class OnDespawnEngineInvoker<T>(IEnumerable<IEngine> engines) : ComponentEngineInvoker
         where T : unmanaged, IEntityComponent
     {
-        private FasterList<IOnDespawnEngine<T>> _engines = new FasterList<IOnDespawnEngine<T>>(engines.OfType<IOnDespawnEngine<T>>().ToList());
+        private readonly FasterList<IOnDespawnEngine<T>> _engines = new(engines.OfType<IOnDespawnEngine<T>>().ToList());
 
-        public override void Invoke(VhId sourceEventId, IEntityTemplate type, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
+        public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, EntitiesDB entitiesDB, EntityId id, GroupIndex groupIndex)
         {
             ref T component = ref entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
             for (int i = 0; i < _engines.count; i++)
             {
-                _engines[i].OnDespawn(sourceEventId, type, id, ref component, in groupIndex);
+                _engines[i].OnDespawn(sourceEventId, entityTemplate, id, ref component, in groupIndex);
             }
         }
     }

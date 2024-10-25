@@ -94,9 +94,19 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             return _builders.ContainsKey(typeof(T));
         }
 
+        public bool Has(Type type)
+        {
+            return _builders.ContainsKey(type);
+        }
+
         public IComponentBuilder[] ToArray()
         {
             return _builders.Values.ToArray();
+        }
+
+        public Dictionary<Type, IEntityComponent> ToComponentDictionary()
+        {
+            return _values;
         }
 
         public static implicit operator IComponentBuilder[](ComponentBuilderDictionary dictionary)

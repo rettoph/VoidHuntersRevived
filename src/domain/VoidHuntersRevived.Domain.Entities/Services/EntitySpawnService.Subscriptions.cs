@@ -4,7 +4,6 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Events;
-using VoidHuntersRevived.Domain.Entities.Common.Factories;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -57,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 {
                     IsPrivate = data.IsPrivate,
                     VhId = data.VhId,
-                    TypeKey = data.TypeKey
+                    TemplateKey = data.TemplateKey
                 }
             });
         }
@@ -96,7 +95,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 {
                     IsPrivate = data.IsPrivate,
                     VhId = data.VhId,
-                    TypeKey = data.TypeKey,
+                    TemplateKey = data.TemplateKey,
                     Initializer = data.Initializer
                 }
             });
@@ -106,16 +105,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             ref EntityId id = ref _entityQueryService.AddId(data.VhId);
 
-            EntityInitializer initializer = _entityTemplateProviderService.GetByKey(data.TypeKey).HardSpawnInstanceEntity(eventId, data.VhId, out id);
+            EntityInitializer initializer = _entityTemplateService.GetByKey(data.TemplateKey).HardSpawnInstanceEntity(eventId, data.VhId, out id);
         }
 
         public void Process(VhId eventId, HardSpawnEntity<EntityInitializerDelegate> data)
         {
             ref EntityId id = ref _entityQueryService.AddId(data.VhId);
 
-            IEntityTemplateFactory provider = _entityTemplateProviderService.GetByKey(data.TypeKey);
-            EntityInitializer initializer = provider.HardSpawnInstanceEntity(eventId, data.VhId, out id);
-            data.Initializer.Invoke(_entityService, provider.Template, id, ref initializer);
+            IEntityTemplate template = _entityTemplateService.GetByKey(data.TemplateKey);
+            EntityInitializer initializer = template.HardSpawnInstanceEntity(eventId, data.VhId, out id);
+            data.Initializer.Invoke(_entityService, template, id, ref initializer);
         }
 
         public void Process(VhId eventId, SoftSpawnEntity data)
@@ -133,8 +132,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            Key<IEntityTemplate> typeKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Value.Key;
-            _entityTemplateProviderService.GetByKey(typeKey).SoftSpawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
+            Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
+            _entityTemplateService.GetByKey(templateKey).SoftSpawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
             status.Value = EntityStatusEnum.SoftSpawned;
         }
 
@@ -257,8 +256,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            Key<IEntityTemplate> typeKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Value.Key;
-            _entityTemplateProviderService.GetByKey(typeKey).SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
+            Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
+            _entityTemplateService.GetByKey(templateKey).SoftDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
             status.Value = EntityStatusEnum.SoftDespawned;
         }
 
@@ -278,8 +277,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            Key<IEntityTemplate> typeKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Value.Key;
-            IEntityTemplateFactory descriptorEngine = _entityTemplateProviderService.GetByKey(typeKey);
+            Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
+            IEntityTemplate descriptorEngine = _entityTemplateService.GetByKey(templateKey);
 
             if (status.Value < EntityStatusEnum.SoftDespawned)
             { // Ensure an entity gets soft despawned if it hasn't been already

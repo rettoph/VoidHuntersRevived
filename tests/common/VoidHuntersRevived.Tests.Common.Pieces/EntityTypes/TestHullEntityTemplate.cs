@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Tests.Common.Pieces.EntityTypes
 {
     public abstract class TestHullEntityTemplate : HullEntityTemplate
     {
-        public TestHullEntityTemplate(string name) : base(Key<IEntityTemplate>.GetByName(name))
+        public TestHullEntityTemplate(string name) : base(Key<EntityTemplate>.GetByName(name))
         {
         }
 

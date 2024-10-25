@@ -1,9 +1,0 @@
-[
-  {
-    "type": "EntityTemplate",
-    "values": {
-      "Team.Zero": "Teams\\team.00.json",
-      "Team.One": "Teams\\team.01.json"
-    }
-  }
-]

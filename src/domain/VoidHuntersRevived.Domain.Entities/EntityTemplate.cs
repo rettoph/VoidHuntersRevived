@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Utilities;
+﻿using Guppy.Core.Common.Extensions.System;
+using Guppy.Core.Common.Utilities;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -8,7 +9,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Descriptors;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
-using VoidHuntersRevived.Domain.Entities.Common.Factories;
+using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -16,38 +17,36 @@ using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
-namespace VoidHuntersRevived.Domain.Entities.Factories
+namespace VoidHuntersRevived.Domain.Entities
 {
-    internal sealed class EntityTemplateFactory : IEntityTemplateFactory, IDisposable
+    internal sealed class EntityTemplate : IEntityTemplate, IDisposable
     {
-        private readonly UnmanagedReference<IEntityTemplate> _typeRef;
+        private readonly UnmanagedReference<EntityTemplateFragment> _typeRef;
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly EntityService _entities;
         private readonly FasterList<ComponentEngineInvoker> _onDespawnEngineInvokers;
         private readonly FasterList<ComponentEngineInvoker> _onSpawnEngineInvokers;
-        private readonly EntityInitializerDelegate _initializer;
         private EntitiesDB _entitiesDB;
         private FasterList<ComponentSerializer> _serializers;
 
         private DynamicEntityDescriptor<VoidHuntersEntityDescriptor> _descriptor;
         private readonly ExclusiveGroupStruct _group;
 
-        public IEntityTemplate Template { get; }
+        public ComponentBuilderDictionary Components { get; }
 
-        public EntityTemplateFactory(
-            IEntityTemplate type,
-            IEntityTemplateService entityTemplateService,
+        public Key<IEntityTemplate> Key { get; }
+
+        public EntityTemplate(
+            Key<IEntityTemplate> key,
+            IEntityTemplateFragmentService entityTemplateService,
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityFactory factory,
             IEntityFunctions functions,
             EntityService entityService
         )
         {
-            Template = type;
-
-            _typeRef = new UnmanagedReference<IEntityTemplate>(Template);
             _uniqueNumberProvider = uniqueNumberProvider;
             _factory = factory;
             _functions = functions;
@@ -58,10 +57,11 @@ namespace VoidHuntersRevived.Domain.Entities.Factories
             _onSpawnEngineInvokers = new FasterList<ComponentEngineInvoker>();
             _serializers = null!;
 
-            _initializer = Template.Initializer ?? DefaultInitializer;
+            _group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{key.Name}_{nameof(_group)}");
+            _descriptor = BuildDescriptor(key, entityTemplateService, out var components);
 
-            _descriptor = new DynamicEntityDescriptor<VoidHuntersEntityDescriptor>(Template.Components);
-            _group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{Template.Key}_{nameof(_group)}");
+            this.Key = key;
+            this.Components = components;
         }
 
         public void Initialize(
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Entities.Factories
 
             // Generate despawn engine invokers
             // Responsible for calling IOnSpawnEngine & IOnDespawnEngine engines
-            foreach (Type componentType in Template.Components.Keys)
+            foreach (Type componentType in Components.Keys)
             {
                 if (ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engineService, out var invoker))
                 {
@@ -107,9 +107,6 @@ namespace VoidHuntersRevived.Domain.Entities.Factories
             initializer.Init(id);
             initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
 
-            // Run custom instance initializer
-            _initializer!(_entities, Template, id, ref initializer);
-
             return initializer;
         }
 
@@ -118,7 +115,7 @@ namespace VoidHuntersRevived.Domain.Entities.Factories
             // Call all OnSpawn engines
             for (int i = 0; i < _onSpawnEngineInvokers.count; i++)
             {
-                _onSpawnEngineInvokers[i].Invoke(sourceEventId, Template, _entitiesDB, id, groupIndex);
+                _onSpawnEngineInvokers[i].Invoke(sourceEventId, this, _entitiesDB, id, groupIndex);
             }
         }
 
@@ -127,7 +124,7 @@ namespace VoidHuntersRevived.Domain.Entities.Factories
             // Call all OnDespawn engines
             for (int i = 0; i < _onDespawnEngineInvokers.count; i++)
             {
-                _onDespawnEngineInvokers[i].Invoke(sourceEventId, Template, _entitiesDB, id, groupIndex);
+                _onDespawnEngineInvokers[i].Invoke(sourceEventId, this, _entitiesDB, id, groupIndex);
             }
         }
 
@@ -159,17 +156,17 @@ namespace VoidHuntersRevived.Domain.Entities.Factories
                 .Distinct();
         }
 
-        private static void DefaultInitializer(IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer)
+        private static void DefaultInitializer(IEntityService entities, EntityTemplateFragment entityTemplate, EntityId id, ref EntityInitializer initializer)
         {
             // throw new NotImplementedException();
         }
 
-        private static void DefaultDisposer(IEntityTemplate entityTemplate)
+        private static void DefaultDisposer(EntityTemplateFragment entityTemplate)
         {
             // throw new NotImplementedException();
         }
 
-        private static IEnumerable<IEntityTemplate> GetImplementedTypes(IEntityTemplate entityTemplate, IEntityTemplateService entityTemplateService, HashSet<IEntityTemplate>? result = null)
+        private static IEnumerable<EntityTemplateFragment> GetImplementedTypes(EntityTemplateFragment entityTemplate, IEntityTemplateFragmentService entityTemplateService, HashSet<EntityTemplateFragment>? result = null)
         {
             result ??= [];
 
@@ -178,9 +175,9 @@ namespace VoidHuntersRevived.Domain.Entities.Factories
                 return result;
             }
 
-            // foreach (Key<IEntityTemplate> includedKey in entityTemplate.Include)
+            // foreach (Key<EntityTemplate> includedKey in entityTemplate.Include)
             // {
-            //     IEntityTemplate includedType = entityTemplateService.GetByKey(includedKey);
+            //     EntityTemplate includedType = entityTemplateService.GetByKey(includedKey);
             // 
             //     EntityTemplateProvider.GetImplementedTypes(includedType, entityTemplateService, result);
             // }
@@ -191,6 +188,80 @@ namespace VoidHuntersRevived.Domain.Entities.Factories
             }
 
             return result;
+        }
+
+        private static DynamicEntityDescriptor<VoidHuntersEntityDescriptor> BuildDescriptor(
+            Key<IEntityTemplate> key,
+            IEntityTemplateFragmentService entityTemplateService,
+            out ComponentBuilderDictionary components)
+        {
+            components = new();
+            HashSet<Type> requiredComponents = [];
+            Queue<Key<IEntityTemplate>> enqueuedFragments = [];
+            HashSet<Key<IEntityTemplate>> populatedTemplateKeys = [];
+
+            // Register default components...
+            components.Set(new EntityId());
+            components.Set(new EntityStatus());
+            components.Set(new Common.Components.EntityTemplate(key));
+
+            enqueuedFragments.Enqueue(key);
+            while (enqueuedFragments.TryDequeue(out var enqueuedTemplate) == true)
+            {
+                PopulateComponentCollections(
+                    enqueuedTemplate,
+                    entityTemplateService,
+                    ref components,
+                    ref requiredComponents,
+                    ref enqueuedFragments,
+                    ref populatedTemplateKeys);
+            }
+
+            // Verify all required components exists...
+            foreach (Type requiredComponent in requiredComponents)
+            {
+                if (components.Has(requiredComponent) == false)
+                {
+                    throw new EntityTemplateException(key, $"Error creating {nameof(EntityTemplate)}, missing required component. Template = '{key.Name}', Component = '{requiredComponent.GetFormattedName()}'");
+                }
+            }
+
+            return new DynamicEntityDescriptor<VoidHuntersEntityDescriptor>(components);
+        }
+
+        private static void PopulateComponentCollections(
+            Key<IEntityTemplate> key,
+            IEntityTemplateFragmentService entityTemplateFragmentService,
+            ref ComponentBuilderDictionary components,
+            ref HashSet<Type> requiredComponents,
+            ref Queue<Key<IEntityTemplate>> enqueuedTemplates,
+            ref HashSet<Key<IEntityTemplate>> populatedTemplates)
+        {
+            if (populatedTemplates.Add(key) == false)
+            {
+                return;
+            }
+
+            foreach (EntityTemplateFragment fragment in entityTemplateFragmentService.GetByKey(key))
+            {
+                foreach (IEntityComponent component in fragment.Components)
+                {
+                    if (components.Has(component.GetType()) == false)
+                    {
+                        components.Set(component);
+                    }
+                }
+
+                foreach (Type requiredComponent in fragment.RequiredComponents)
+                {
+                    requiredComponents.Add(requiredComponent);
+                }
+
+                if (fragment.Inherit is not null)
+                {
+                    enqueuedTemplates.Enqueue(fragment.Inherit.Value);
+                }
+            }
         }
     }
 }

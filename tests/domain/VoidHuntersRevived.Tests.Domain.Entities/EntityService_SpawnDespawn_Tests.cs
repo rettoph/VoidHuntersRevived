@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         private readonly LockstepStrategy_Client _lockstep;
         private readonly PredictiveStrategy _predictive;
 
-        protected IEntityTemplate[] EntityTemplates => [new TestEntityTemplate()];
+        protected EntityTemplate[] EntityTemplates => [new TestEntityTemplate()];
 
         public EntityService_SpawnDespawn_Tests() : base([typeof(ClientLockstepStrategyBuilder), typeof(PredictiveStrategyBuilder)])
         {
@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             Assert.Equal(1, totals[_lockstep]);
         }
 
-        protected override IEnumerable<IEntityTemplate> GetEntityTemplates(IStrategyBuilder builder)
+        protected override IEnumerable<EntityTemplate> GetEntityTemplates(IStrategyBuilder builder)
         {
             return this.EntityTemplates;
         }

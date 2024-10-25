@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 
         public override string Name => nameof(PrimitiveType);
 
-        protected override bool TryResolve(Resource<IPrimitiveType> resource, DirectoryLocation root, string input, out IPrimitiveType value)
+        protected override bool TryResolve(ResourceKey<IPrimitiveType> resource, DirectoryLocation root, string input, out IPrimitiveType value)
         {
             IFile<IPrimitiveType> primitive = _files.Get<IPrimitiveType>(
                 new FileLocation(root, input),

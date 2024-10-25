@@ -1,7 +1,6 @@
 {
-  "Key": "Piece.Hull.Triangle",
-  "Type": "HullEntityTemplate",
-  "Include": [ "Piece.Base.Hull" ],
+  "Key": "Entity.Piece.Hull.Triangle",
+  "Inherit": "Entity.Piece.Hull.Base",
   "Components": {
     "Rigid": {
       "Template": "Body.Hull.Triangle"

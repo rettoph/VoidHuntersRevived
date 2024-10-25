@@ -1,13 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Pieces.Common.EntityTemplates;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
-using VoidHuntersRevived.Domain.Ships.Common.Descriptors;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
@@ -18,12 +12,12 @@ namespace VoidHuntersRevived.Game.Core.Engines
     internal sealed class SimulationEngine(
         ITreeService treeService,
         ITeamService teamService,
-        IEntityTemplateService entityTemplateService,
+        IEntityTemplateFragmentService entityTemplateService,
         IBlueprintService blueprintService) : StrategyEngine, IEventEngine<Simulation_Begin>
     {
         private readonly ITreeService _treeService = treeService;
         private readonly ITeamService _teamService = teamService;
-        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
+        private readonly IEntityTemplateFragmentService _entityTemplateService = entityTemplateService;
         private readonly IBlueprintService _blueprintService = blueprintService;
 
         public void Process(VhId eventId, Simulation_Begin data)
@@ -35,24 +29,24 @@ namespace VoidHuntersRevived.Game.Core.Engines
             //    _trees.Spawn(eventId.Create(int.MaxValue), Teams.TeamZero, EntityTemplates.Chain, EntityTemplates.Pieces.HullTriangle);
             //}
 
-            int i = 0;
-            int radius = 2;
-            int step = 2;
-            FixVector2 offset = new(0, 0);
-            PieceEntityTemplate[] pieceTypes = _entityTemplateService.GetAll<PieceEntityTemplate>();
-            for (int x = -radius; x < radius; x += step)
-            {
-                for (int y = -radius; y < radius; y += step)
-                {
-                    _treeService.Spawn(eventId, eventId.Create(i++), _teamService.GetDefaultTeamComponent(), ChainEntityTemplate.ChainEntityTemplateKey, pieceTypes[i % pieceTypes.Length].Key, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
-                    {
-                        initializer.Init(new Location()
-                        {
-                            Position = offset + new FixVector2((Fix64)x, (Fix64)y)
-                        });
-                    });
-                }
-            }
+            // int i = 0;
+            // int radius = 2;
+            // int step = 2;
+            // FixVector2 offset = new(0, 0);
+            // PieceEntityTemplate[] pieceTypes = _entityTemplateService.GetAll<PieceEntityTemplate>();
+            // for (int x = -radius; x < radius; x += step)
+            // {
+            //     for (int y = -radius; y < radius; y += step)
+            //     {
+            //         _treeService.Spawn(eventId, eventId.Create(i++), _teamService.GetDefaultTeamComponent(), ChainEntityTemplate.ChainEntityTemplateKey, pieceTypes[i % pieceTypes.Length].Key, (IEntityService entities, EntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+            //         {
+            //             initializer.Init(new Location()
+            //             {
+            //                 Position = offset + new FixVector2((Fix64)x, (Fix64)y)
+            //             });
+            //         });
+            //     }
+            // }
 
             //_trees.Spawn(eventId.Create(2), EntityTemplates.UserShip, EntityTemplates.Pieces.HullSquare);
         }

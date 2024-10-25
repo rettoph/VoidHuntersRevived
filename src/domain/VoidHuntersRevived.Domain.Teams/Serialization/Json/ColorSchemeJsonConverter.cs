@@ -13,8 +13,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 
         public override ColorScheme Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Resource<Color> primary = default!;
-            Resource<Color> secondary = default!;
+            ResourceKey<Color> primary = default!;
+            ResourceKey<Color> secondary = default!;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -25,12 +25,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 {
                     case nameof(ColorScheme.Primary):
                         string primaryKey = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
-                        primary = Resource<Color>.Get(primaryKey);
+                        primary = ResourceKey<Color>.Get(primaryKey);
                         reader.Read();
                         break;
                     case nameof(ColorScheme.Secondary):
                         string secondaryKey = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
-                        secondary = Resource<Color>.Get(secondaryKey);
+                        secondary = ResourceKey<Color>.Get(secondaryKey);
                         reader.Read();
                         break;
                 }
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new ColorScheme(_resources.GetValue(primary), _resources.GetValue(secondary));
+            return new ColorScheme(_resources.Get(primary), _resources.Get(secondary));
         }
 
         public override void Write(Utf8JsonWriter writer, ColorScheme value, JsonSerializerOptions options)

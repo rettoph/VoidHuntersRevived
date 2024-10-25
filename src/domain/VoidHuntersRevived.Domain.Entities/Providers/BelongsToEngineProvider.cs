@@ -10,11 +10,11 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 {
     [AutoLoad]
     internal class BelongsToEngineProvider(
-        IEntityTemplateService entityTemplateService,
+        IEntityTemplateFragmentService entityTemplateService,
         IEntityQueryService entityQueryService,
         ILogger logger) : IEngineProvider
     {
-        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
+        private readonly IEntityTemplateFragmentService _entityTemplateService = entityTemplateService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
 

@@ -6,6 +6,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Engines
     public interface IOnDespawnEngine<T>
         where T : unmanaged, IEntityComponent
     {
-        void OnDespawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref T component, in GroupIndex groupIndex);
+        void OnDespawn(VhId sourceEventId, IEntityTemplate entityTemplate, EntityId id, ref T component, in GroupIndex groupIndex);
     }
 }

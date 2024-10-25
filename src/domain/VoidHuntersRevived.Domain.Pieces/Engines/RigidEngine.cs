@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Rigid component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Rigid component, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(RigidEngine), nameof(OnSpawn), id.VhId);
 
@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Rigid component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Rigid component, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(RigidEngine), nameof(OnDespawn), id.VhId);
 

@@ -11,11 +11,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Events
         public bool IsPredictable => true;
 
         public required VhId VhId { get; init; }
-        public required Key<IEntityTemplate> TypeKey { get; init; }
+        public required Key<IEntityTemplate> TemplateKey { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<SpawnEntity, VhId, VhId, VhId>.Instance.Calculate(in source, this.VhId, this.TypeKey.Id);
+            return HashBuilder<SpawnEntity, VhId, VhId, VhId>.Instance.Calculate(in source, this.VhId, this.TemplateKey.Id);
         }
     }
 

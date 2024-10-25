@@ -144,7 +144,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             builder.EngineServiceBuilder.Engines.AddRange(this.GetEngines(builder));
         }
 
-        protected abstract IEnumerable<IEntityTemplate> GetEntityTemplates(IStrategyBuilder builder);
+        protected abstract IEnumerable<EntityTemplate> GetEntityTemplates(IStrategyBuilder builder);
 
         protected abstract IEnumerable<IEngine> GetEngines(IStrategyBuilder builder);
 

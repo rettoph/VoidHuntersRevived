@@ -4,15 +4,15 @@ using VoidHuntersRevived.Tests.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities.EntityTypes
 {
-    public class TestEntityTemplate : BaseEntityTemplate
+    public class TestEntityTemplate : EntityTemplate
     {
-        public static readonly Key<IEntityTemplate> TestEntityTypeKey = Key<IEntityTemplate>.GetByName(nameof(TestEntityTemplate));
+        public static readonly Key<EntityTemplate> TestEntityTypeKey = Key<EntityTemplate>.GetByName(nameof(TestEntityTemplate));
 
-        public TestEntityTemplate() : base(TestEntityTypeKey)
+        public TestEntityTemplate() : base()
         {
-            this.WithComponents([
+            this.Components = [
                 new TestComponent()
-            ]);
+            ];
         }
     }
 }

@@ -1,19 +1,20 @@
 ﻿using Serilog;
 using Svelto.DataStructures;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
     public sealed class EntityWriter(
-        IEntityTemplateFactoryService entityTemplateService,
+        IEntityTemplateService entityTemplateService,
         IEntityQueryService entityQueryService,
         ILogger logger) : BinaryWriter(new MemoryStream())
     {
-        private readonly Stack<EntityId> _nested = new Stack<EntityId>();
+        private readonly Stack<EntityId> _nested = new();
         private readonly List<long> _positions = [];
-        private readonly IEntityTemplateFactoryService _entityTemplateService = entityTemplateService;
+        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
 
@@ -95,13 +96,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
         private void InternalSerialize(EntityId id, SerializationOptions options)
         {
-            Key<IEntityTemplate> typeKey = _entityQueryService.QueryById<Components.EntityTemplate>(id, out GroupIndex groupIndex).Value.Key;
+            Key<IEntityTemplate> templateKey = _entityQueryService.QueryById<EntityTemplate>(id, out GroupIndex groupIndex).Key;
 
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to serialize {EntityId} of type {EntityTemplate}", nameof(EntityWriter), nameof(InternalSerialize), id.VhId, typeKey);
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to serialize {EntityId} of type {EntityTemplate}", nameof(EntityWriter), nameof(InternalSerialize), id.VhId, templateKey);
 
             this.Write(id.VhId);
-            this.Write(typeKey.Id);
-            _entityTemplateService.GetByKey(typeKey).SerializeInstanceEntity(this, in id, in groupIndex, in options);
+            this.Write(templateKey.Id);
+            _entityTemplateService.GetByKey(templateKey).SerializeInstanceEntity(this, in id, in groupIndex, in options);
         }
     }
 }

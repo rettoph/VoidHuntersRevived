@@ -1,31 +1,34 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Options;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public interface IEntityTemplate
+    /// <summary>
+    /// Represents the conglomerate of an entity type functions, including spawning, despawning, initialization, and serialization.
+    /// </summary>
+    public interface IEntityTemplate : IDisposable
     {
         Key<IEntityTemplate> Key { get; }
-
         ComponentBuilderDictionary Components { get; }
-        HashSet<Type> RequiredComponents { get; }
-        EntityInitializerDelegate? Initializer { get; }
 
-        IEntityTemplate WithComponent(IEntityComponent component);
+        void Initialize(
+            EntitiesDB entitiesDB,
+            IEngineService engineService,
+            IComponentSerializerService componentSerializerService);
 
-        IEntityTemplate WithComponent<TComponent>(TComponent component)
-            where TComponent : unmanaged, IEntityComponent;
+        EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id);
+        void SoftSpawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
-        IEntityTemplate WithComponents(IEnumerable<IEntityComponent> components);
+        void SoftDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
+        void HardDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
-        IEntityTemplate RequireComponent(Type component);
-
-        IEntityTemplate RequireComponent<TComponent>()
-            where TComponent : unmanaged, IEntityComponent;
-
-        IEntityTemplate RequireComponents(IEnumerable<Type> components);
-
-        void Verify();
+        void SerializeInstanceEntity(EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options);
+        void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 }

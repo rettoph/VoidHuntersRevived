@@ -8,19 +8,19 @@ using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
-    internal sealed class EntityTemplateConfigurationResolverConverter(
-        IPolymorphicJsonSerializerService<IEntityTemplate> entityTemplateTypeService) : JsonConverter<EntityTemplateConfiguration>
+    internal sealed class EntityTemplateConverter(
+        IPolymorphicJsonSerializerService<IEntityComponent> entityComponentSerializationService
+    ) : JsonConverter<EntityTemplateFragment>
     {
-        private readonly IPolymorphicJsonSerializerService<IEntityTemplate> _entityTemplateTypeService = entityTemplateTypeService;
+        private readonly IPolymorphicJsonSerializerService<IEntityComponent> _entityComponentSerializationService = entityComponentSerializationService;
 
-        public override EntityTemplateConfiguration? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override EntityTemplateFragment? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             Key<IEntityTemplate>? key = null;
-            Type? type = null;
             EntityTemplateFlags flags = EntityTemplateFlags.None;
-            Key<IEntityTemplate>[] include = Array.Empty<Key<IEntityTemplate>>();
+            Key<IEntityTemplate>? inherit = null;
             Dictionary<Type, IEntityComponent> components = [];
-            Dictionary<Type, IEntityComponent> typeEntityComponents = [];
+            List<Type> requiredComponents = [];
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -29,23 +29,24 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(EntityTemplateConfiguration.Key):
+                    case nameof(EntityTemplateFragment.Key):
                         key = JsonSerializer.Deserialize<Key<IEntityTemplate>>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(EntityTemplateConfiguration.Type):
-                        type = _entityTemplateTypeService.GetType(reader.ReadString());
-                        break;
-                    case nameof(EntityTemplateConfiguration.Flags):
+                    case nameof(EntityTemplateFragment.Flags):
                         flags = JsonSerializer.Deserialize<EntityTemplateFlags>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(EntityTemplateConfiguration.Include):
-                        include = JsonSerializer.Deserialize<Key<IEntityTemplate>[]>(ref reader, options) ?? throw new NotImplementedException();
+                    case nameof(EntityTemplateFragment.Inherit):
+                        inherit = JsonSerializer.Deserialize<Key<IEntityTemplate>>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(EntityTemplateConfiguration.Components):
+                    case nameof(EntityTemplateFragment.Components):
                         components = JsonSerializer.Deserialize<Dictionary<Type, IEntityComponent>>(ref reader, options) ?? throw new NotImplementedException();
+                        reader.Read();
+                        break;
+                    case nameof(EntityTemplateFragment.RequiredComponents):
+                        requiredComponents.AddRange((JsonSerializer.Deserialize<string[]>(ref reader, options) ?? []).Select(_entityComponentSerializationService.GetType));
                         reader.Read();
                         break;
                     default:
@@ -57,22 +58,22 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 
             if (key is null)
             {
-                throw new InvalidDataException();
+                throw new NotImplementedException();
             }
 
-            EntityTemplateConfiguration entityTemplateConfiguration = new()
+            EntityTemplateFragment template = new()
             {
                 Key = key.Value,
-                Type = type,
                 Flags = flags,
-                Components = components,
-                Include = include,
+                Inherit = inherit,
+                Components = components.Values.ToArray(),
+                RequiredComponents = requiredComponents.ToArray()
             };
 
-            return entityTemplateConfiguration;
+            return template;
         }
 
-        public override void Write(Utf8JsonWriter writer, EntityTemplateConfiguration value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, EntityTemplateFragment value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

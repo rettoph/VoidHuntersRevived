@@ -1,6 +1,6 @@
 {
-  "Key": "Team.One",
-  "Type": "TeamEntityTemplate",
+  "Key": "Entity.Team.Team01",
+  "Inherit": "Entity.Team.TeamEntityTemplate",
   "Components": {
     "Team": {
       "Name": "String.TeamOneName"

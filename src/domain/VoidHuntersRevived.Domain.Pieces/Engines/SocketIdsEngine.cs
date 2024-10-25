@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly ISocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
 
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Sockets sockets, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Sockets sockets, in GroupIndex groupIndex)
         {
             for (int i = 0; i < sockets.Items.count; i++)
             {

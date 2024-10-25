@@ -40,10 +40,14 @@
 	  <None Remove="Content\Common\Bodies\body.hull.square.json" />
 	  <None Remove="Content\Common\Bodies\body.hull.triangle.json" />
 	  <None Remove="Content\Common\Bodies\body.thruster.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Content\Common\Entities\" />
+	  <None Remove="Content\Common\entities.json" />
+	  <None Remove="Content\Common\Entities\entity.piece.hull.base.json" />
+	  <None Remove="Content\Common\Entities\entity.piece.hull.square.json" />
+	  <None Remove="Content\Common\Entities\entity.piece.hull.triangle.json" />
+	  <None Remove="Content\Common\Entities\entity.piece.thruster.base.json" />
+	  <None Remove="Content\Common\Entities\entity.piece.thruster.json" />
+	  <None Remove="Content\Common\Entities\entity.team.team00.json" />
+	  <None Remove="Content\Common\Entities\entity.team.team01.json" />
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' == 'Windows_NT' ">

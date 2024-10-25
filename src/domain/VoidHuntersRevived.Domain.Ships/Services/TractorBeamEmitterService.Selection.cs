@@ -1,17 +1,16 @@
 ﻿using Svelto.ECS;
 using System.Diagnostics;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Physics.Common.Extensions.FixedPoint;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
-using VoidHuntersRevived.Domain.Ships.Common.Descriptors;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -74,7 +73,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             this.Deselect(sourceId, tractorBeamEmitterId, attachToSocketVhId);
         }
 
-        private Queue<(EntityId id, EntityId headId, Location location)> _deselecteds = new Queue<(EntityId id, EntityId head, Location location)>();
+        private readonly Queue<(EntityId id, EntityId headId, Location location)> _deselecteds = new();
         public void Deselect(VhId sourceId, EntityId tractorBeamEmitterId, SocketVhId? attachToSocketVhId)
         {
             ref var filter = ref this.GetTractorableFilter(tractorBeamEmitterId);
@@ -126,7 +125,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     sourceId: eventId,
                     vhid: eventId.Create(1),
                     belongsToTeam: _teamService.GetDefaultTeamComponent(),
-                    treeTypeKey: ChainEntityTemplate.ChainEntityTemplateKey,
+                    treeTemplateKey: Resources.EntityTemplates.Ship.ChainEntityTemplate,
                     nodes: data.TargetData,
                     initializer: (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
                     {
@@ -163,7 +162,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         sourceId: eventId,
                         vhid: eventId.Create(2),
                         belongsToTeam: _teamService.GetDefaultTeamComponent(),
-                        treeTypeKey: ChainEntityTemplate.ChainEntityTemplateKey,
+                        treeTemplateKey: Resources.EntityTemplates.Ship.ChainEntityTemplate,
                         nodes: data.TargetData,
                         initializer: (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
                         {

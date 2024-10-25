@@ -77,15 +77,15 @@ namespace VoidHuntersRevived.Common
             return HashCode.Combine(Id);
         }
 
-        public static implicit operator Key<T>(Resource<T> resource)
+        public static implicit operator Key<T>(ResourceKey<T> resource)
 
         {
             return Key<T>.GetByName(resource.Name);
         }
 
-        public static implicit operator Resource<T>(Key<T> key)
+        public static implicit operator ResourceKey<T>(Key<T> key)
         {
-            return Resource<T>.Get(key.Name);
+            return ResourceKey<T>.Get(key.Name);
         }
     }
 }

@@ -15,11 +15,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     internal partial class TreeService
     {
-        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityTemplate> treeTypeKey, Key<IEntityTemplate> headNodeTypeKey, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityTemplate> treeTemplateKey, Key<IEntityTemplate> headNodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
-            return _entitySpawnService.Spawn(sourceId, treeTypeKey, vhid, (IEntityService entities, IEntityTemplate treeType, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, treeTemplateKey, vhid, (IEntityService entities, IEntityTemplate treeTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
-                EntityId headId = entities.Spawn.Spawn(sourceId, headNodeTypeKey, vhid.Create(1), (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+                EntityId headId = entities.Spawn.Spawn(sourceId, headNodeTemplateKey, vhid.Create(1), (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
                 {
                     initializer.Init(belongsToTeam);
                     initializer.Init(new Node(id, entities.Query.GetId(vhid)));
@@ -27,13 +27,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
                 initializer.Init(belongsToTeam);
                 initializer.Init(new Tree(headId));
-                initializerDelegate?.Invoke(entities, treeType, id, ref initializer);
+                initializerDelegate?.Invoke(entities, treeTemplate, id, ref initializer);
             });
         }
 
-        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityTemplate> treeTypeKey, EntityData nodes, EntityInitializerDelegate initializerDelegate)
+        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityTemplate> treeTemplateKey, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
-            return _entitySpawnService.Spawn(sourceId, treeTypeKey, vhid, (IEntityService entities, IEntityTemplate treeType, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, treeTemplateKey, vhid, (IEntityService entities, IEntityTemplate treeTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
                 EntityId headId = entities.Serialization.Deserialize(
                     sourceId: sourceId,
@@ -50,19 +50,19 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
                 initializer.Init(belongsToTeam);
                 initializer.Init<Tree>(new Tree(headId));
-                initializerDelegate(entities, treeType, id, ref initializer);
+                initializerDelegate(entities, treeTemplate, id, ref initializer);
             });
         }
 
-        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityTemplate> treeTypeKey, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, VhId vhid, BelongsTo<Team, TeamMember> belongsToTeam, Key<IEntityTemplate> treeTemplateKey, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
         {
-            return _entitySpawnService.Spawn(sourceId, treeTypeKey, vhid, (IEntityService entities, IEntityTemplate treeType, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, treeTemplateKey, vhid, (IEntityService entities, IEntityTemplate treeTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
                 EntityId headId = entities.Spawn.Spawn(sourceId, vhid, belongsToTeam, blueprint);
 
                 initializer.Init(belongsToTeam);
                 initializer.Init(new Tree(headId));
-                initializerDelegate?.Invoke(entities, treeType, id, ref initializer);
+                initializerDelegate?.Invoke(entities, treeTemplate, id, ref initializer);
             });
         }
     }

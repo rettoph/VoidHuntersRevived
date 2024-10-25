@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
     {
         public override Team Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Resource<string> name = default!;
+            ResourceKey<string> name = default!;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 {
                     case nameof(Team.Name):
                         string nameKey = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
-                        name = Resource<string>.Get(nameKey);
+                        name = ResourceKey<string>.Get(nameKey);
                         reader.Read();
                         break;
                 }

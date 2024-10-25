@@ -5,7 +5,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
 {
     public interface IBlueprintPiece
     {
-        Key<IEntityTemplate> PieceTypeKey { get; }
+        Key<IEntityTemplate> PieceTemplateKey { get; }
 
         IBlueprintPiece[][] Children { get; }
     }

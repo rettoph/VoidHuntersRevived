@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Serilog;
+﻿using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Events;
@@ -10,12 +9,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public partial class EntitySpawnService(
         EntityQueryService entityQueryingService,
-        IEntityTemplateFactoryService entityTemplateProviderService,
+        IEntityTemplateService entityTemplateService,
         IEntityService entityService,
         ILogger logger) : StrategyEngine, IEntitySpawnService, IPrivateEntitySpawnService
     {
         private readonly EntityQueryService _entityQueryService = entityQueryingService;
-        private readonly IEntityTemplateFactoryService _entityTemplateProviderService = entityTemplateProviderService;
+        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly IEntityService _entityService = entityService;
         private readonly ILogger _logger = logger;
 
@@ -24,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
                 IsPrivate = false,
-                TypeKey = entityTemplateKey,
+                TemplateKey = entityTemplateKey,
                 VhId = vhid
             });
 
@@ -36,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
                 IsPrivate = false,
-                TypeKey = entityTemplateKey,
+                TemplateKey = entityTemplateKey,
                 VhId = vhid,
                 Initializer = initializer
             });
@@ -58,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
                 IsPrivate = true,
-                TypeKey = entityTemplateKey,
+                TemplateKey = entityTemplateKey,
                 VhId = vhid
             });
 
@@ -70,7 +69,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
                 IsPrivate = true,
-                TypeKey = entityTemplateKey,
+                TemplateKey = entityTemplateKey,
                 VhId = vhid,
                 Initializer = initializer
             });

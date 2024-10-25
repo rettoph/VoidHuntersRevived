@@ -26,8 +26,8 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
             builder.RegisterType<ComponentSerializerService>().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
 
+            builder.RegisterType<EntityTemplateFragmentService>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<EntityTemplateService>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
-            builder.RegisterType<EntityTemplateFactoryService>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<EntitiesSubmissionScheduler>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<EnginesRoot>().InstancePerLifetimeScope();
@@ -39,14 +39,14 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
 
             builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            builder.RegisterType<EntityTemplateConfigurationResolverConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<EntityTemplateConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<ResourceComponentConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<DictionaryPolymorphicConverter<IEntityComponent>>().As<JsonConverter>().SingleInstance();
 
             builder.Configure<LoggerConfiguration>((scope, config) =>
             {
                 config.Destructure.AsScalar(typeof(Id<IEntityComponent>));
-                config.Destructure.AsScalar(typeof(Id<IEntityTemplate>));
+                config.Destructure.AsScalar(typeof(Id<EntityTemplateFragment>));
             });
         }
     }

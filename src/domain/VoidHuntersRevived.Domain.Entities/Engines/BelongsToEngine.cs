@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Extensions.System;
+﻿using Guppy.Core.Common.Extensions.System;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -26,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
 
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref BelongsTo<TOwner, TItems> belongsTo, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref BelongsTo<TOwner, TItems> belongsTo, in GroupIndex groupIndex)
         {
             if (belongsTo.OwnerVhId == default)
             {

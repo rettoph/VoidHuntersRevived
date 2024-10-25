@@ -1,7 +1,6 @@
 {
-  "Key": "Piece.Thruster",
-  "Type": "ThrusterEntityTemplate",
-  "Include": [ "Piece.Base.Thruster" ],
+  "Key": "Entity.Piece.Thruster",
+  "Inherit": "Entity.Piece.Thruster.Base",
   "Components": {
     "Rigid": {
       "Template": "Body.Thruster"

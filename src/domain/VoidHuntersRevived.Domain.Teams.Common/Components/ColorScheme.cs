@@ -6,9 +6,9 @@ using Svelto.ECS;
 namespace VoidHuntersRevived.Domain.Teams.Common.Components
 {
     [PolymorphicJsonType<IEntityComponent>(nameof(ColorScheme))]
-    public struct ColorScheme(ResourceValue<Color> primary, ResourceValue<Color> secondary) : IEntityComponent
+    public struct ColorScheme(Resource<Color> primary, Resource<Color> secondary) : IEntityComponent
     {
-        public readonly ResourceValue<Color> Primary = primary;
-        public readonly ResourceValue<Color> Secondary = secondary;
+        public readonly Resource<Color> Primary = primary;
+        public readonly Resource<Color> Secondary = secondary;
     }
 }

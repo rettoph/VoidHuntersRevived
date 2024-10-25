@@ -5,8 +5,7 @@
     "en-US": [
       "colors.json",
       "strings.json",
-      "teams.json",
-      "pieces.json",
+      "entities.json",
       "blueprints.json",
       "primitives.json",
       "spritefonts.json",

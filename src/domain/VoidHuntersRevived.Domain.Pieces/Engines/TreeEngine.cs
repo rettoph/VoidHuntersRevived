@@ -22,12 +22,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IOnStepEngine
     {
 
-        private HashSet<EGID> _removedNodes = [];
+        private readonly HashSet<EGID> _removedNodes = [];
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;
 
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Tree component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
             ref Location location = ref _entityQueryService.QueryByGroupIndex<Location>(groupIndex);
             ref var filter = ref _entityQueryService.GetFilter<Node>(id, Tree.NodeFilterContextId);
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             this.TransformNodes(ref location, ref filter);
         }
 
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Tree component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Tree component, in GroupIndex groupIndex)
         {
             _logger.Verbose("{ClassName}::{MethodName} - Despawning Tree {TreeId}, HeadId = {HeadId}", nameof(TreeEngine), nameof(OnDespawn), id.VhId, component.HeadId.VhId);
             _entitySpawnService.Despawn(sourceEventId, component.HeadId);

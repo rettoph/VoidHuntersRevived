@@ -9,14 +9,14 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
     public class EntityReader(
-        IEntityTemplateFactoryService entityTemplateProviderService,
+        IEntityTemplateService entityTemplateProviderService,
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
         ILogger logger) : BinaryReader(new MemoryStream())
     {
-        private static unsafe long EntityHeaderSize = sizeof(VhId) + sizeof(Id<IEntityTemplate>);
+        private static readonly unsafe long EntityHeaderSize = sizeof(VhId) + sizeof(Id<EntityTemplateFragment>);
 
-        private readonly IEntityTemplateFactoryService _entityTemplateProviderService = entityTemplateProviderService;
+        private readonly IEntityTemplateService _entityTemplateService = entityTemplateProviderService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;
@@ -81,7 +81,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             where T : unmanaged
         {
             int count = this.ReadInt32();
-            NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)count, Allocator.Persistent);
+            NativeDynamicArrayCast<T> native = new((uint)count, Allocator.Persistent);
 
             for (int i = 0; i < count; i++)
             {
@@ -138,7 +138,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             _entitySpawnService.Spawn(sourceId, entityTemplateKey, vhid, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
-                _entityTemplateProviderService.GetByKey(entityTemplateKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
+                _entityTemplateService.GetByKey(entityTemplateKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
 
                 initializerDelegate(entities, entityTemplate, id, ref initializer);
             });
@@ -157,7 +157,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             _entitySpawnService.Spawn(sourceId, entityTemplateKey, vhid, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
                 this.Load(data, position + EntityReader.EntityHeaderSize);
-                _entityTemplateProviderService.GetByKey(entityTemplateKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
+                _entityTemplateService.GetByKey(entityTemplateKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
 
                 rootInitializerDelegate(entities, entityTemplate, id, ref initializer);
                 initializerDelegate(entities, entityTemplate, id, ref initializer);

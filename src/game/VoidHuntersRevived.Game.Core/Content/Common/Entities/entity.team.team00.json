@@ -1,6 +1,6 @@
 {
-  "Key": "Team.Zero",
-  "Type": "DefaultTeamEntityTemplate",
+  "Key": "Entity.Team.Team00",
+  "Inherit": "Entity.Team.DefaultTeamEntityTemplate",
   "Components": {
     "Team": {
       "Name": "String.TeamZeroName"

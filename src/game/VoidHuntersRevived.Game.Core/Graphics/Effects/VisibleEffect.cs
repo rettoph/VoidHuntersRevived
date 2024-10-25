@@ -2,6 +2,7 @@
 using Guppy.Game.Graphics.Common.Effects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using VoidHuntersRevived.Domain.Common;
 
 namespace VoidHuntersRevived.Game.Core.Graphics.Effects
 {
@@ -10,7 +11,7 @@ namespace VoidHuntersRevived.Game.Core.Graphics.Effects
         IResourceService resourceService
     ) : Effect(
         graphicsDevice,
-        resourceService.GetValue(Resources.EffectCodes.Visible).Value.Data),
+        resourceService.Get(Resources.EffectCodes.Visible).Value.Data),
             IWorldViewProjectionEffect
     {
         public Matrix WorldViewProjection

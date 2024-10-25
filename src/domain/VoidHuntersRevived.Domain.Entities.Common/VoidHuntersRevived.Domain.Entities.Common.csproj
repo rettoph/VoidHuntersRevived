@@ -9,9 +9,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\Svelto.ECS\com.sebaslab.svelto.ecs\Svelto.ECS.csproj" />
-	  <ProjectReference Include="..\..\common\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
-	  <ProjectReference Include="..\VoidHuntersRevived.Domain.Common\VoidHuntersRevived.Domain.Common.csproj" />
-	  <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations.Common\VoidHuntersRevived.Domain.Simulations.Common.csproj" />
+    <ProjectReference Include="..\..\common\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
+	<ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations.Common\VoidHuntersRevived.Domain.Simulations.Common.csproj" />
   </ItemGroup>
 
 </Project>

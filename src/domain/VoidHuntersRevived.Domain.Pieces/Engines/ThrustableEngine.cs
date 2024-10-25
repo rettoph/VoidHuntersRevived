@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private static readonly Fix64 Buffer = (Fix64)0.01m;
         private static readonly Fix64 BufferPi = Fix64.Pi - Buffer;
 
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
         {
             Node node = _entityQueryService.QueryByGroupIndex<Node>(in groupIndex);
 
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             filter.Add(id, groupIndex);
         }
 
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate type, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
         {
             Node node = _entityQueryService.QueryByGroupIndex<Node>(in groupIndex);
 

@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
         public override Rigid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
 
-            ResourceValue<IBodyTemplate> template = default;
+            Resource<IBodyTemplate> template = default;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 switch (propertyName)
                 {
                     case nameof(Rigid.Template):
-                        template = JsonSerializer.Deserialize<ResourceValue<IBodyTemplate>>(ref reader, options);
+                        template = JsonSerializer.Deserialize<Resource<IBodyTemplate>>(ref reader, options);
                         reader.Read();
                         break;
                 }

@@ -4,9 +4,9 @@ using VoidHuntersRevived.Domain.Pieces.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces
 {
-    public class BlueprintPiece(Key<IEntityTemplate> pieceTypeKey, IBlueprintPiece[][] children) : IBlueprintPiece
+    public class BlueprintPiece(Key<IEntityTemplate> pieceTemplateKey, IBlueprintPiece[][] children) : IBlueprintPiece
     {
-        public Key<IEntityTemplate> PieceTypeKey { get; } = pieceTypeKey;
+        public Key<IEntityTemplate> PieceTemplateKey { get; } = pieceTemplateKey;
         public IBlueprintPiece[][] Children { get; } = children;
     }
 }

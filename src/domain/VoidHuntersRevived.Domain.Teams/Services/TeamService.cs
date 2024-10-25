@@ -7,7 +7,6 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
-using VoidHuntersRevived.Domain.Teams.Common.EntityTemplates;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Services
@@ -27,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         private BelongsTo<Team, TeamMember> _defaultTeamComponent;
         private Dictionary<Id<Team>, BelongsTo<Team, TeamMember>> _teamComponents = [];
 
-        private readonly IEntityTemplateService _entityTemplatesService = entityTemplateService;
+        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IPrivateEntitySpawnService _privateEntitySpawnService = privateEntitySpawnService;
 
@@ -51,24 +50,25 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         {
             // Spawn default team entity...
             int teamIndex = 0;
-            DefaultTeamEntityTemplate defaultTeamType = _entityTemplatesService.GetAll<DefaultTeamEntityTemplate>().Single();
+            IEntityTemplate defaultTeamTemplate = _entityTemplateService.WithComponent<DefaultTeam>().Single();
             EntityId defaultTeamId = _privateEntitySpawnService.Spawn(
-                sourceId: HashBuilder<DefaultTeamEntityTemplate, int>.Instance.Calculate(teamIndex),
-                entityTemplateKey: defaultTeamType.Key,
-                vhid: HashBuilder<TeamEntityTemplate, int>.Instance.Calculate(teamIndex));
+                sourceId: HashBuilder<DefaultTeam, int>.Instance.Calculate(teamIndex),
+                entityTemplateKey: defaultTeamTemplate.Key,
+                vhid: HashBuilder<DefaultTeam, int>.Instance.Calculate(teamIndex));
             defaultTeamComponent = new BelongsTo<Team, TeamMember>(defaultTeamId.VhId);
 
             // Spawn additional team entities...
             teamComponents = [];
-            TeamEntityTemplate[] teamEntityTemplates = _entityTemplatesService.GetAll<TeamEntityTemplate>();
+            IEntityTemplate[] teamEntityTemplates = _entityTemplateService.WithComponent<Team>()
+                .Except([defaultTeamTemplate]).ToArray();
 
             foreach (IEntityTemplate teamEntityTemplate in teamEntityTemplates)
             {
                 teamIndex++;
                 EntityId teamId = _privateEntitySpawnService.Spawn(
-                    sourceId: HashBuilder<DefaultTeamEntityTemplate, int>.Instance.Calculate(teamIndex),
+                    sourceId: HashBuilder<Team, int>.Instance.Calculate(teamIndex),
                     entityTemplateKey: teamEntityTemplate.Key,
-                    vhid: HashBuilder<TeamEntityTemplate, int>.Instance.Calculate(teamIndex));
+                    vhid: HashBuilder<Team, int>.Instance.Calculate(teamIndex));
 
                 teamComponents.Add(teamEntityTemplate.Components.Get<Team>().Id, new BelongsTo<Team, TeamMember>(teamId.VhId));
             }

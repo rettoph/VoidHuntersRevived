@@ -1,7 +1,6 @@
 {
-  "Key": "Piece.Hull.Square",
-  "Type": "HullEntityTemplate",
-  "Include": [ "Piece.Base.Hull" ],
+  "Key": "Entity.Piece.Hull.Square",
+  "Inherit": "Entity.Piece.Hull.Base",
   "Components": {
     "Rigid": {
       "Template": "Body.Hull.Square"

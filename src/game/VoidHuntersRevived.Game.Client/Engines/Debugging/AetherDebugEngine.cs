@@ -13,10 +13,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
+using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Game.Core;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
@@ -35,8 +35,8 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         private bool _debugViewEnabled;
         private bool _aetherExplorerEnabled;
         private string _filter;
-        private readonly ResourceValue<ImStyle> _buttonRedStyle;
-        private readonly ResourceValue<ImStyle> _buttonGreenStyle;
+        private readonly Resource<ImStyle> _buttonRedStyle;
+        private readonly Resource<ImStyle> _buttonGreenStyle;
 
         public AetherDebugEngine(
             IStrategy strategy,
@@ -55,11 +55,11 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
             _world = world;
             _debug = new DebugView(world);
             _camera = camera;
-            _debug.LoadContent(graphics, resourceService.GetValue(Resources.SpriteFonts.Default));
+            _debug.LoadContent(graphics, resourceService.Get(Resources.SpriteFonts.Default));
             _filter = string.Empty;
 
-            _buttonRedStyle = resourceService.GetValue(Resources.ImGuiStyles.ButtonRed);
-            _buttonGreenStyle = resourceService.GetValue(Resources.ImGuiStyles.ButtonGreen);
+            _buttonRedStyle = resourceService.Get(Resources.ImGuiStyles.ButtonRed);
+            _buttonGreenStyle = resourceService.Get(Resources.ImGuiStyles.ButtonGreen);
         }
 
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.Draw)]
@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
             _imgui.KeyValue("Contacts", _world.ContactCount.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
 
 
-            ResourceValue<ImStyle> buttonStyle = _debugViewEnabled ? _buttonRedStyle : _buttonRedStyle;
+            Resource<ImStyle> buttonStyle = _debugViewEnabled ? _buttonRedStyle : _buttonRedStyle;
 
             using (_imgui.Apply(buttonStyle))
             {

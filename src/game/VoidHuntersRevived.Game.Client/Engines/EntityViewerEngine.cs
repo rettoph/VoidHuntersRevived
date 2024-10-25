@@ -111,7 +111,7 @@
     //
     //    }
     //
-    //    private TextFilterResult RenderEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityTemplate type, EntityStatus status, uint nativeId)
+    //    private TextFilterResult RenderEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, EntityTemplate type, EntityStatus status, uint nativeId)
     //    {
     //        using (_imgui.ApplyID($"{nameof(EntityId)}_{entityId.VhId.Value}"))
     //        {
@@ -186,7 +186,7 @@
     //        return TextFilterResult.NotMatched;
     //    }
     //
-    //    private TextFilterResult FilterEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, IEntityTemplate type)
+    //    private TextFilterResult FilterEntityData(EntityId entityId, VoidHuntersEntityDescriptor descriptor, EntityTemplate type)
     //    {
     //        _entityQueryService.QueryById<EntityId>(entityId, out GroupIndex groupIndex);
     //        TextFilterResult result = this.BasicFilter($"{entityId.VhId}{descriptor.Name}{type.Key}");

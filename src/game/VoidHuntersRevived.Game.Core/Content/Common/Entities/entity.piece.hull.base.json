@@ -1,6 +1,6 @@
 {
-  "Key": "Piece.Base.Hull",
-  "Type": "HullEntityTemplate",
+  "Key": "Entity.Piece.Hull.Base",
+  "Inherit": "Entity.Piece.HullEntityTemplate",
   "Flags": "Partial",
   "Components": {
     "ColorScheme": {

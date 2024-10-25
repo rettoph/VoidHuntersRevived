@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
 {
     public class PrimitiveService(IResourceService resourceService) : IPrimitiveService
     {
-        private readonly IPrimitive[] _primitives = resourceService.GetValues<IPrimitiveType>().SelectMany(x => x.Value.Primitives).ToArray();
+        private readonly IPrimitive[] _primitives = resourceService.GetAll<IPrimitiveType>().SelectMany(x => x.Value.Primitives).ToArray();
 
         public IEnumerable<IPrimitive> GetAll() => _primitives;
 
@@ -27,11 +27,11 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
 
         public PrimitiveService(IResourceService resourceService)
         {
-            _grouped = resourceService.GetValues<IPrimitiveType>()
+            _grouped = resourceService.GetAll<IPrimitiveType>()
                 .SelectMany(t => t.Value.Primitives.Select(p => (type: t, primitive: p)))
                 .Where(x => x.primitive is Primitive<TVertex>)
                 .ToDictionary(
-                    keySelector: x => new PrimitiveTypeSequenceGroup(x.type.Resource, x.primitive.SequenceGroup),
+                    keySelector: x => new PrimitiveTypeSequenceGroup(x.type.Key, x.primitive.SequenceGroup),
                     elementSelector: x => (IPrimitive<TVertex>)x.primitive);
 
             _all = [.. _grouped.Values];

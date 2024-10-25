@@ -4,15 +4,15 @@ using Svelto.ECS;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Components
 {
-    public readonly struct ResourceComponent<T>(ResourceValue<T> value) : IEntityComponent
+    public readonly struct ResourceComponent<T>(Resource<T> value) : IEntityComponent
         where T : notnull
     {
-        private readonly ResourceValue<T> _value = value;
+        private readonly Resource<T> _value = value;
 
-        public Resource<T> Resource => _value.Resource;
+        public ResourceKey<T> Resource => _value.Key;
         public T Value => _value.Value;
 
-        public ResourceComponent(string name, IResourceService resourceService) : this(resourceService.GetValue(Resource<T>.Get(name)))
+        public ResourceComponent(string name, IResourceService resourceService) : this(resourceService.Get(ResourceKey<T>.Get(name)))
         {
         }
     }

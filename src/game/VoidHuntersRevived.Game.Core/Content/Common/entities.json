@@ -1,0 +1,14 @@
+[
+  {
+    "type": "EntityTemplate",
+    "values": {
+      "Entity.Team.Team00": "Entities\\entity.team.team00.json",
+      "Entity.Team.Team01": "Entities\\entity.team.team01.json",
+      "Entity.Piece.Hull.Base": "Entities\\entity.piece.hull.base.json",
+      "Entity.Piece.Hull.Square": "Entities\\entity.piece.hull.square.json",
+      "Entity.Piece.Hull.Triangle": "Entities\\entity.piece.hull.triangle.json",
+      "Entity.Piece.Thruster.Base": "Entities\\entity.piece.thruster.base.json",
+      "Entity.Piece.Thruster": "Entities\\entity.piece.thruster.json"
+    }
+  }
+]

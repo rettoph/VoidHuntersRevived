@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common;
+﻿using Svelto.ECS;
+using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
@@ -6,11 +7,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
     {
         IEntityTemplate GetByKey(Key<IEntityTemplate> key);
 
-        IEnumerable<IEntityTemplate> GetAll();
-
-        T[] GetAll<T>()
-            where T : IEntityTemplate;
-
-        Type[] GetAllDistinctComponentTypes();
+        IEnumerable<IEntityTemplate> WithComponent<TComponent>()
+            where TComponent : unmanaged, IEntityComponent;
     }
 }

@@ -8,15 +8,15 @@ using VoidHuntersRevived.Domain.Entities.Common;
 namespace VoidHuntersRevived.Domain.Entities.ResourceTypes
 {
     [AutoLoad]
-    internal class EntityTemplateConfigurationResourceType(IFileService files) : SimpleResourceType<EntityTemplateConfiguration>
+    internal class EntityTemplateFragmentResourceType(IFileService files) : SimpleResourceType<EntityTemplateFragment>
     {
         private readonly IFileService _files = files;
 
         public override string Name => "EntityTemplate";
 
-        protected override bool TryResolve(Resource<EntityTemplateConfiguration> resource, DirectoryLocation root, string input, out EntityTemplateConfiguration value)
+        protected override bool TryResolve(ResourceKey<EntityTemplateFragment> resource, DirectoryLocation root, string input, out EntityTemplateFragment value)
         {
-            IFile<EntityTemplateConfiguration> type = _files.Get<EntityTemplateConfiguration>(
+            IFile<EntityTemplateFragment> type = _files.Get<EntityTemplateFragment>(
                 new FileLocation(root, input),
                 true);
 
