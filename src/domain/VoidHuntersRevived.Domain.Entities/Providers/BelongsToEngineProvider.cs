@@ -22,21 +22,23 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
         {
             foreach (Type componentType in _entityTemplateService.GetAllDistinctComponentTypes())
             {
-                if (componentType.IsConstructedGenericType == false)
+                foreach (Type interfaceType in componentType.GetInterfaces())
                 {
-                    continue;
+                    if (interfaceType.IsConstructedGenericType == false)
+                    {
+                        continue;
+                    }
+
+                    if (interfaceType.GetGenericTypeDefinition() != typeof(IBelongsTo<,>))
+                    {
+                        continue;
+                    }
+
+                    Type belongsToEngineType = typeof(BelongsToEngine<,>).MakeGenericType(componentType, interfaceType.GenericTypeArguments[0]);
+                    IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, new object[] { _entityQueryService, _logger }) ?? throw new NotImplementedException();
+
+                    yield return belongsToEngine;
                 }
-
-                if (componentType.GetGenericTypeDefinition() != typeof(BelongsTo<,>))
-                {
-                    continue;
-                }
-
-
-                Type belongsToEngineType = typeof(BelongsToEngine<,>).MakeGenericType(componentType.GenericTypeArguments);
-                IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, new object[] { _entityQueryService, _logger }) ?? throw new NotImplementedException();
-
-                yield return belongsToEngine;
             }
         }
     }

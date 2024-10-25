@@ -5,7 +5,6 @@ using Guppy.Engine.Common.Loaders;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -34,9 +33,6 @@ namespace VoidHuntersRevived.Game.Core.Loaders
             {
                 Key = Resources.EntityTemplates.Team.TeamEntityTemplate,
                 Flags = EntityTemplateFlags.Partial,
-                Components = [
-                    new HasMany<TeamMember, Team>()
-                ],
                 RequiredComponents = [
                     typeof(Team),
                     typeof(ColorScheme)
@@ -48,8 +44,7 @@ namespace VoidHuntersRevived.Game.Core.Loaders
                 Key = Resources.EntityTemplates.Team.DefaultTeamEntityTemplate,
                 Flags = EntityTemplateFlags.Partial,
                 Components = [
-                    new DefaultTeam(),
-                    new HasMany<TeamMember, Team>()
+                    new DefaultTeam()
                 ],
                 RequiredComponents = [
                     typeof(Team)
@@ -61,8 +56,7 @@ namespace VoidHuntersRevived.Game.Core.Loaders
                 Key = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
                 Flags = EntityTemplateFlags.Partial,
                 Components = [
-                    new TeamMember(),
-                    new BelongsTo<Team, TeamMember>()
+                    new TeamMember()
                 ]
             });
         }
@@ -94,7 +88,6 @@ namespace VoidHuntersRevived.Game.Core.Loaders
                 Inherit = Resources.EntityTemplates.Physics.BodyEntityTemplate,
                 Components = [
                     new Tree(),
-                    new HasMany<Node, Tree>()
                 ]
             });
 
@@ -107,7 +100,6 @@ namespace VoidHuntersRevived.Game.Core.Loaders
                     Plug.Default,
                     new Coupling(),
                     new Node(),
-                    new BelongsTo<Tree, Node>(),
                     new VertexVisible()
                 ],
                 RequiredComponents = [

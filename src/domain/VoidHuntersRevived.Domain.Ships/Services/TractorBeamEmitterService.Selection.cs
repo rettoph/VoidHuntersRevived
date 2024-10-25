@@ -124,7 +124,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 EntityId cloneId = _treeService.Spawn(
                     sourceId: eventId,
                     vhid: eventId.Create(1),
-                    belongsToTeam: _teamService.GetDefaultTeamComponent(),
+                    team: _teamService.GetDefaultTeam(),
                     treeTemplateKey: Resources.EntityTemplates.Ship.ChainEntityTemplate,
                     nodes: data.TargetData,
                     initializer: (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
@@ -161,7 +161,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     EntityId cloneId = _treeService.Spawn(
                         sourceId: eventId,
                         vhid: eventId.Create(2),
-                        belongsToTeam: _teamService.GetDefaultTeamComponent(),
+                        team: _teamService.GetDefaultTeam(),
                         treeTemplateKey: Resources.EntityTemplates.Ship.ChainEntityTemplate,
                         nodes: data.TargetData,
                         initializer: (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>

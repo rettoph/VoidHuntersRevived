@@ -1,6 +1,7 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
@@ -215,6 +216,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
             where T : unmanaged, IEntityComponent;
 
         ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
+            where T : unmanaged, IEntityComponent;
+
+        ref EntityFilterCollection GetFilter<T>(FilterVhId<T> filterId)
             where T : unmanaged, IEntityComponent;
     }
 }

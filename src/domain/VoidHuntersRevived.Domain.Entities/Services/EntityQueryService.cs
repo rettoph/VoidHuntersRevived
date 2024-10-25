@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Svelto.DataStructures;
+﻿using Svelto.DataStructures;
 using Svelto.ECS;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -7,6 +6,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -409,6 +409,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T : unmanaged, IEntityComponent
         {
             ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(filterId);
+
+            return ref filter;
+        }
+
+        public ref EntityFilterCollection GetFilter<T>(FilterVhId<T> filterId)
+            where T : unmanaged, IEntityComponent
+        {
+            ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(filterId.CombinedFilterId);
 
             return ref filter;
         }

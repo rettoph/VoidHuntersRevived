@@ -1,24 +1,29 @@
 ﻿using Microsoft.Xna.Framework;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
-    public struct Node(EntityId id, EntityId treeId) : IEntityComponent
+    public struct Node(EntityId id, EntityId treeId) : IEntityComponent, IBelongsTo<Tree, Node>
     {
         private bool _dirtyTransformation = true;
         private bool _dirtyXnaTransformation = true;
-        private Location _localLocation = new Location();
+        private Location _localLocation = new();
         private FixMatrix _worldTransformation = FixMatrix.Identity;
         private FixMatrix _transformation;
         private Matrix _xnaTransformation;
 
         public readonly EntityId Id = id;
         public readonly EntityId TreeId = treeId;
+
+        public readonly FilterVhId<Node> TreeFilterId = new(treeId);
+        FilterVhId<Node> IBelongsTo<Tree, Node>.OwnerFilterId => this.TreeFilterId;
 
         public Location LocalLocation => _localLocation;
         public FixMatrix Transformation
@@ -51,6 +56,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
                 return _xnaTransformation;
             }
         }
+
+
 
         public void WorldTransform(FixMatrix world)
         {

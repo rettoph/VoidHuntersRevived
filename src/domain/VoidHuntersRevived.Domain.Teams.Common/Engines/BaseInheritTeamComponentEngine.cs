@@ -17,20 +17,20 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<TComponent> entities, ExclusiveGroupStruct groupID)
         {
-            if (_entityQueryService.HasAll<EntityTemplate, BelongsTo<Team, TeamMember>>(groupID, out var components) == false)
+            if (_entityQueryService.HasAll<EntityTemplate, TeamMember>(groupID, out var components) == false)
             {
                 return;
             }
 
             var (instanceComponents, _) = entities;
-            var (_, belongsToTeams, _) = components;
+            var (_, teamMembers, _) = components;
 
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
                 ref TComponent instanceComponent = ref instanceComponents[i];
 
-                ref BelongsTo<Team, TeamMember> belongsToTeam = ref belongsToTeams[i];
-                if (_entityQueryService.TryQueryByVhId<TComponent>(belongsToTeam.OwnerVhId, out TComponent teamComponent) && teamComponent.IsDefault() == false)
+                ref TeamMember teamMember = ref teamMembers[i];
+                if (_entityQueryService.TryQueryByVhId<TComponent>(teamMember.OwnerFilterId.VhId, out TComponent teamComponent) && teamComponent.IsDefault() == false)
                 {
                     instanceComponent = teamComponent;
                     continue;

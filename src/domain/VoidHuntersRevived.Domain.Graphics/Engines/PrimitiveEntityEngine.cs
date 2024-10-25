@@ -37,17 +37,17 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
             }
         }
 
-        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Common.Components.PrimitiveComponent<TVertex>> entities, ExclusiveGroupStruct groupID)
+        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<PrimitiveComponent<TVertex>> entities, ExclusiveGroupStruct groupID)
         {
             var (primitives, nativeIds, _) = entities;
-            var (belongsToTeams, _, count) = this.entitiesDB.QueryEntities<BelongsTo<Team, TeamMember>>(groupID);
+            var (teamMembers, _, count) = this.entitiesDB.QueryEntities<TeamMember>(groupID);
 
             if (count == 0)
             {
                 // Non team-entity. Do not attempt to copy sequence group from team
                 for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
                 {
-                    Common.Components.PrimitiveComponent<TVertex> primitive = primitives[i];
+                    PrimitiveComponent<TVertex> primitive = primitives[i];
 
                     _primitiveService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
                         .GetFilter<TVertex>(this.entitiesDB)
@@ -60,10 +60,10 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
             // Team entity. Check the team to see if it has a maching primitive sequence group
             for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
             {
-                ref Common.Components.PrimitiveComponent<TVertex> primitive = ref primitives[i];
+                ref PrimitiveComponent<TVertex> primitive = ref primitives[i];
 
-                ref BelongsTo<Team, TeamMember> belongsToTeam = ref belongsToTeams[i];
-                if (_entityQueryService.TryQueryByVhId<PrimitiveSequenceGroup<TVertex>>(belongsToTeam.OwnerVhId, out PrimitiveSequenceGroup<TVertex> teamSequenceGroup) && teamSequenceGroup.IsDefault() == false)
+                ref TeamMember teamMember = ref teamMembers[i];
+                if (_entityQueryService.TryQueryByVhId<PrimitiveSequenceGroup<TVertex>>(teamMember.OwnerFilterId.VhId, out PrimitiveSequenceGroup<TVertex> teamSequenceGroup) && teamSequenceGroup.IsDefault() == false)
                 {
                     primitive = new Common.Components.PrimitiveComponent<TVertex>(primitive.Type, teamSequenceGroup.Value);
                 }
