@@ -3,23 +3,16 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
-    public readonly struct FilterVhId<T>
+    public readonly struct FilterVhId<T>(EntityId id, FilterContextID? context = null)
         where T : unmanaged, IEntityComponent
     {
-        private static readonly int _filterId;
         private static class FilterContext<TFilter, TId>
         {
             public static readonly FilterContextID Value = FilterContextID.GetNewContextID();
         }
 
-        public readonly VhId VhId;
-        public readonly CombinedFilterID CombinedFilterId;
-
-        public FilterVhId(EntityId id, FilterContextID? context = null)
-        {
-            this.VhId = id.VhId;
-            this.CombinedFilterId = new CombinedFilterID(unchecked((int)id.EGID.entityID), context ?? FilterContext<T, EntityId>.Value);
-        }
+        public readonly VhId VhId = id.VhId;
+        public readonly CombinedFilterID CombinedFilterId = new(unchecked((int)id.EGID.entityID), context ?? FilterContext<T, EntityId>.Value);
 
         public static FilterContextID GetFilterContext<TId>()
         {

@@ -269,3 +269,4 @@ __pycache__/
 /scripts/remote-debug.config.json
 /scripts/.vscode
 /scripts/remote-debug.cache.json
+/nuget.config
