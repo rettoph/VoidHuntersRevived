@@ -2,6 +2,7 @@ using Guppy.Core.Resources.Common;
 using Guppy.Tests.Common;
 using Serilog;
 using Svelto.ECS;
+using System.Collections;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -19,6 +20,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Engines;
 using VoidHuntersRevived.Domain.Pieces.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Engines;
 using VoidHuntersRevived.Domain.Ships.Services;
@@ -30,6 +32,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 using VoidHuntersRevived.Domain.Teams.Services;
 using VoidHuntersRevived.Tests.Common.Simulations;
+using VoidHuntersRevived.Tests.Common.Simulations.Extensions;
 using VoidHuntersRevived.Tests.Common.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Domain.Ships;
 
@@ -71,38 +74,43 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 HashBuilder<VhId, int>.Instance.Calculate(2),
             ];
 
-            // Spawn 3 test squares in all strategies...
-            for (int i = 0; i < chainVhIds.Length; i++)
+            IEnumerator<int> SetupStrategy(IStrategy strategy)
             {
-                sourceId = this.GenerateSourceId();
-                foreach (IStrategy strategy in this.simulation.Strategies)
-                {
-                    ITeamService teamService = strategy.Engines.Get<ITeamService>();
-                    ITreeService treeService = strategy.Engines.Get<ITreeService>();
-                    ISocketService socketService = strategy.Engines.Get<ISocketService>();
+                ITeamService teamService = strategy.Engines.Get<ITeamService>();
+                ITreeService treeService = strategy.Engines.Get<ITreeService>();
+                ISocketService socketService = strategy.Engines.Get<ISocketService>();
 
-                    Team team = teamService.GetOpenTeam();
+                Team team = teamService.GetOpenTeam();
 
-                    if (i == 0)
-                    {
-                        treeService.Spawn(sourceId, chainVhIds[i], team, Resources.EntityTemplates.Ship.UserShipEntityTemplate, TestSquareEntityTemplateKey);
-                    }
-                    else
-                    {
-                        if (socketService.TryGetSocket(new SocketVhId(chainVhIds[i - 1], 0), out NodeSocket nodeSocket))
-                        {
-                            socketService.Spawn(sourceId, nodeSocket, chainVhIds[i], TestSquareEntityTemplateKey);
-                        }
-                        else
-                        { // This shouldnt happen...
-                            throw new NotImplementedException();
-                        }
-                    }
-                }
+                EntityId shipId = treeService.Spawn(chainVhIds[0], chainVhIds[0], team, Resources.EntityTemplates.Ship.UserShipEntityTemplate, TestSquareEntityTemplateKey);
 
-                this.Update(simulatedRealtimeIntervalInMilliseconds, 100);
+                yield return 0;
+                // this.Update(strategy, simulatedRealtimeIntervalInMilliseconds, 10);
+                // yield return 1;
+                // 
+                // EntityId bridgeId = treeService.GetHead(shipId).Id;
+                // if (socketService.TryGetSocket(new SocketVhId(bridgeId.VhId, 0), out NodeSocket nodeSocket) == false)
+                // {
+                //     throw new NotImplementedException();
+                // }
+                // EntityId squareId = socketService.Spawn(chainVhIds[1], nodeSocket, chainVhIds[1], TestSquareEntityTemplateKey);
+                // 
+                // yield return 2;
+                // this.Update(strategy, simulatedRealtimeIntervalInMilliseconds, 10);
+                // yield return 3;
+                // 
+                // if (socketService.TryGetSocket(new SocketVhId(squareId.VhId, 0), out nodeSocket) == false)
+                // {
+                //     throw new NotImplementedException();
+                // }
+                // squareId = socketService.Spawn(chainVhIds[2], nodeSocket, chainVhIds[2], TestSquareEntityTemplateKey);
+                // 
+                // yield return 2;
+                // this.Update(strategy, simulatedRealtimeIntervalInMilliseconds, 10);
+                // yield return 3;
             }
 
+            this.simulation.Run(SetupStrategy);
             this.Update(simulatedRealtimeIntervalInMilliseconds, 100);
 
 
@@ -113,6 +121,18 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
             // Chain '0' is the ship. Cache the id now
             EntityId shipId = _readEntityQueryService.GetId(chainVhIds[0]);
+            if (_readTractorBeamEmitterService.Query(shipId, FixVector2.Zero, out Node targetNode) == false)
+            {
+                throw new NotImplementedException();
+            }
+
+            this.simulation.Input(
+                sourceId: this.GenerateSourceId(),
+                data: new Input_TractorBeamEmitter_Select()
+                {
+                    ShipVhId = shipId.VhId,
+                    TargetVhId = targetNode.Id.VhId
+                });
         }
 
         protected override IEnumerable<IEngine> GetEngines(IStrategyBuilder builder)
@@ -239,12 +259,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     new TeamMember(),
                     new Location(),
                     new Enabled(),
-                    new Awake(true),
                     new Tree(),
-                    new PhysicsBubble() {
-                        Enabled = false,
-                        Radius = default
-                    },
                     new Helm(),
                     new Tactical(),
                     new TractorBeamEmitter()

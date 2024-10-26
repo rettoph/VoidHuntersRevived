@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         private readonly TickBuffer _tickBuffer;
         private readonly ISimulation _simulation;
         private readonly List<EventDto> _inputs;
-        private readonly GameTime _gameTime;
+        private readonly Dictionary<IStrategy, GameTime> _gameTimes;
         private readonly ILockstepStrategy _lockstep;
         private readonly PredictiveStrategy[] _predictives;
 
@@ -45,13 +45,14 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             _sourceIdGeneratorIndex = 0;
 
             _inputs = [];
-            _gameTime = new GameTime(TimeSpan.Zero, TimeSpan.Zero);
             _tickBuffer = new TickBuffer();
             _simulation = new SimulationBuilder(
                 id: VhId.Empty,
                 strategiesBuilder: new StrategiesBuilder(
                     strategyBuilderTypes: strategyBuilderTypes,
                     configuration: this.ConfigureStrategy)).Build();
+
+            _gameTimes = _simulation.Strategies.ToDictionary(x => x, x => new GameTime(TimeSpan.Zero, TimeSpan.Zero));
 
             _lockstep = _simulation.Strategies.OfType<ILockstepStrategy>().Single();
             _predictives = _simulation.Strategies.OfType<PredictiveStrategy>().ToArray();
@@ -62,6 +63,28 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             _simulation.Dispose();
         }
 
+        protected TSelf Input<T>(IStrategy strategy, VhId sourceId, T input, bool verified)
+            where T : IInputData
+        {
+            if(strategy is PredictiveStrategy)
+            {
+                strategy.Input(sourceId, input);
+                return (TSelf)this;
+            }
+
+            if (verified == false)
+            { // Simulate the "discarding" of a lockstep event - as if the server rejected the event.
+                return (TSelf)this;
+            }
+
+            _inputs.Add(new EventDto()
+            {
+                SourceId = sourceId,
+                Data = input
+            });
+
+            return (TSelf)this;
+        }
         protected TSelf Input<T>(T input, bool verified)
             where T : IInputData
         {
@@ -97,17 +120,27 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return (TSelf)this;
         }
 
-        protected TSelf Update(int interval, int count)
+        protected TSelf Update(IStrategy strategy, int interval, int count)
         {
             for (int i = 0; i < count; i++)
             {
-                if (_lockstep.StepsSinceTick == _lockstep.StepsPerTick)
+                if(strategy is ILockstepStrategy lockstep && lockstep.StepsSinceTick == lockstep.StepsPerTick)
                 {
                     this.tickBuffer.TryEnqueue(Tick.Create(_lockstep.CurrentTick.Id + 1, _inputs.ToArray()));
-                    _inputs.Clear();
                 }
 
-                this.simulation.Update(_gameTime.Step(interval));
+                strategy.Update(_gameTimes[strategy].Step(interval));
+            }
+                
+
+            return (TSelf)this;
+        }
+
+        protected TSelf Update(int interval, int count)
+        {
+            foreach(IStrategy strategy in _simulation.Strategies)
+            {
+                this.Update(strategy, interval, count);
             }
 
             return (TSelf)this;
