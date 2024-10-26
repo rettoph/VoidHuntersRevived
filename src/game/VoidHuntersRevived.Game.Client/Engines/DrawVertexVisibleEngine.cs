@@ -4,6 +4,9 @@ using Guppy.Game.Graphics.Common.Attributes;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
@@ -18,11 +21,34 @@ namespace VoidHuntersRevived.Game.Client.Engines
     public class DrawVertexVisibleEngine(
         IEntityQueryService entityQueryService,
         ICamera2D camera,
-        GraphicsDevice graphics) : StrategyEngine, IOnStepEngine
+        GraphicsDevice graphics) : StrategyEngine, IOnStepEngine, IOnSpawnEngine<VertexVisible>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ICamera2D _camera = camera;
         private readonly GraphicsDevice _graphics = graphics;
+
+        /// <summary>
+        /// Copy Initial Svelto data to vertex on spawn
+        /// </summary>
+        /// <param name="sourceEventId"></param>
+        /// <param name="entityTemplate"></param>
+        /// <param name="id"></param>
+        /// <param name="component"></param>
+        /// <param name="groupIndex"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group05)]
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, EntityId id, ref VertexVisible component, in GroupIndex groupIndex)
+        {
+            var (vertices, colorSchemes, nodes, _, _) = _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Node>(groupIndex.GroupID);
+
+            ref VertexVisible vertex = ref vertices[groupIndex.Index];
+            ref ColorScheme colorScheme = ref colorSchemes[groupIndex.Index];
+            ref Node node = ref nodes[groupIndex.Index];
+
+            vertex.LocalTransformation = node.XnaTransformation;
+            vertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
+            vertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
+        }
 
         /// <summary>
         /// Copy Svelto entity data to vertex

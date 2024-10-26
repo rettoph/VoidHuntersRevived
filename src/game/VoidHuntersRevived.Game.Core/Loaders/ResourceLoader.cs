@@ -105,7 +105,7 @@ namespace VoidHuntersRevived.Game.Core.Loaders
                 RequiredComponents = [
                     typeof(Rigid),
                     typeof(ColorScheme),
-                    typeof(PrimitiveComponent<VertexVisible>)
+                    typeof(Primitive<VertexVisible>)
                 ]
             });
 
