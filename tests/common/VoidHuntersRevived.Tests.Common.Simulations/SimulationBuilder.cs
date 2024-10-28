@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             SettingValue<Fix64> stepInterval,
             SettingValue<int> stepsPerTick,
             IEnumerable<EntityTemplateFragment> entityTemplateFragments,
-            Func<IEnumerable<IEngine>> engines)
+            Func<IEnumerable<IEngine>>? engines = null)
         {
             this.Id = id;
 

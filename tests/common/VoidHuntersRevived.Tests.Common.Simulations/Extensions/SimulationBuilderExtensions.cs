@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Extensions
             SettingValue<Fix64> stepInterval,
             SettingValue<int> stepsPerTick,
             IEnumerable<EntityTemplateFragment> entityTemplateFragments,
-            Func<IEnumerable<IEngine>> engines)
+            Func<IEnumerable<IEngine>>? engines)
         {
             return builder.AddConfiguration(services =>
             {
@@ -85,7 +85,10 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Extensions
                     entitySubmissionEngine
                 ]);
 
-                services.AddRange(engines());
+                if (engines is not null)
+                {
+                    services.AddRange(engines());
+                }
 
                 services.AddEntityServices(entityTemplateFragments);
             });
