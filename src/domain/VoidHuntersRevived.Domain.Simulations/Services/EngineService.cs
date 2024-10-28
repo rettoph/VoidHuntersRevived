@@ -2,7 +2,6 @@
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Services;
 using Svelto.ECS;
-using Svelto.ECS.Schedulers;
 using System.Collections;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -14,14 +13,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         IFiltered<IEngine> engines,
         IBrokerService brokers,
         Lazy<IFiltered<IEngineProvider>> engineProviders,
-        EnginesRoot enginesRoot,
-        EntitiesSubmissionScheduler scheduler) : IEngineService
+        EnginesRoot enginesRoot) : IEngineService
     {
         private readonly IBrokerService _brokers = brokers;
         private readonly EnginesRoot _enginesRoot = enginesRoot;
-        private readonly EntitiesSubmissionScheduler _scheduler = scheduler;
         private readonly Lazy<IFiltered<IEngineProvider>> _engineProviders = engineProviders;
-        private List<IEngine> _engines = engines.ToList();
+        private readonly List<IEngine> _engines = engines.ToList();
 
         public EnginesRoot Root => _enginesRoot;
 

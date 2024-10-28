@@ -1,25 +1,17 @@
 ﻿using Guppy.Core.Resources.Common;
-using Microsoft.Xna.Framework;
-using Moq;
 using Svelto.ECS;
-using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Engines;
-using VoidHuntersRevived.Domain.Entities.Services;
-using VoidHuntersRevived.Domain.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
-using VoidHuntersRevived.Tests.Common.Entities.Services;
 using VoidHuntersRevived.Tests.Common.Extensions;
-using VoidHuntersRevived.Tests.Common.Simulations.Strategies;
+using VoidHuntersRevived.Tests.Common.Simulations.Extensions;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations
 {
@@ -30,31 +22,28 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         public virtual SettingValue<Fix64> StepInterval => new(Settings.StepInterval, (Fix64)20 / (Fix64)1000);
 
         private int _sourceIdGeneratorIndex;
-        private readonly TickBuffer _tickBuffer;
-        private readonly ISimulation _simulation;
+        private readonly SimulationMocker _simulation;
         private readonly List<EventDto> _inputs;
-        private readonly GameTime _gameTime;
-        private readonly ILockstepStrategy _lockstep;
-        private readonly PredictiveStrategy[] _predictives;
 
-        protected TickBuffer tickBuffer => _tickBuffer;
-        protected ISimulation simulation => _simulation;
+        private readonly IStrategyMocker<ILockstepStrategy> _lockstep;
+        private readonly IStrategyMocker<PredictiveStrategy>[] _predictives;
+        protected SimulationMocker simulation => _simulation;
 
-        public BaseSimulationTests(IEnumerable<Type> strategyBuilderTypes)
+        public BaseSimulationTests()
         {
             _sourceIdGeneratorIndex = 0;
 
             _inputs = [];
-            _gameTime = new GameTime(TimeSpan.Zero, TimeSpan.Zero);
-            _tickBuffer = new TickBuffer();
             _simulation = new SimulationBuilder(
                 id: VhId.Empty,
-                strategiesBuilder: new StrategiesBuilder(
-                    strategyBuilderTypes: strategyBuilderTypes,
-                    configuration: this.ConfigureStrategy)).Build();
+                stepInterval: StepInterval,
+                stepsPerTick: StepsPerTick,
+                entityTemplateFragments: this.GetEntityTemplateFragments(),
+                engines: this.GetEngines
+            ).AddPredictiveStrategy().AddLockstepClientStrategy().Build();
 
-            _lockstep = _simulation.Strategies.OfType<ILockstepStrategy>().Single();
-            _predictives = _simulation.Strategies.OfType<PredictiveStrategy>().ToArray();
+            _lockstep = _simulation.Strategies.OfType<IStrategyMocker<ILockstepStrategy>>().Single();
+            _predictives = _simulation.Strategies.OfType<IStrategyMocker<PredictiveStrategy>>().ToArray();
         }
 
         public void Dispose()
@@ -67,9 +56,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         {
             VhId sourceId = this.GenerateSourceId();
 
-            foreach (PredictiveStrategy predictive in _predictives)
+            foreach (IStrategyMocker<PredictiveStrategy> predictive in _predictives)
             {
-                predictive.Input(sourceId, input);
+                predictive.Instance.Input(sourceId, input);
             }
 
             if (verified == false)
@@ -101,54 +90,16 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         {
             for (int i = 0; i < count; i++)
             {
-                if (_lockstep.StepsSinceTick == _lockstep.StepsPerTick)
+                if (_lockstep.Instance.StepsSinceTick == _lockstep.Instance.StepsPerTick)
                 {
-                    this.tickBuffer.TryEnqueue(Tick.Create(_lockstep.CurrentTick.Id + 1, _inputs.ToArray()));
+                    _lockstep.Services.Get<TickBuffer>().TryEnqueue(Tick.Create(_lockstep.Instance.CurrentTick.Id + 1, _inputs.ToArray()));
                     _inputs.Clear();
                 }
 
-                this.simulation.Update(_gameTime.Step(interval));
+                this.simulation.Instance.Update(_simulation.GameTime.Step(interval));
             }
 
             return (TSelf)this;
-        }
-
-        protected virtual void ConfigureStrategy(IStrategyBuilder builder)
-        {
-            // Setup mocks
-            EntitiesSubmissionScheduler entitiesSubmissionScheduler = new();
-            EnginesRoot enginesRoot = new(entitiesSubmissionScheduler);
-
-            EntityServiceBuilder entityService = new();
-            entityService.EntityTemplateService.EntityTemplateFragmentService.Setup(x => x.GetAll(), this.GetEntityTemplateFragmentsDictionary);
-            entityService.EntityTemplateService.EntityTemplateFragmentService.Setup<EntityTemplateFragment[], Key<IEntityTemplate>>(x => x.GetByKey(It.IsAny<Key<IEntityTemplate>>()), this.GetEntityTemplateFragmentsByKey);
-            entityService.EntityTemplateService.UniqueNumberProviderService.SetInstance(new UniqueNumberProvider());
-            entityService.EntityTemplateService.EnginesRoot.SetInstance(enginesRoot);
-            entityService.EntityQueryService.SetInstance(new EntityQueryService());
-            entityService.EntitySpawnService.SetInstance(new EntitySpawnService(entityService.EntityQueryService.GetInstance(), entityService.EntityTemplateService.GetInstance(), entityService.GetInstance(), builder.Logger.GetInstance()));
-
-            EntityWriter writer = new(entityService.EntityTemplateService.GetInstance(), entityService.EntityQueryService.GetInstance(), builder.Logger.GetInstance());
-            EntityReader reader = new(entityService.EntityTemplateService.GetInstance(), entityService.EntityQueryService.GetInstance(), entityService.EntitySpawnService.GetInstance(), builder.Logger.GetInstance());
-            entityService.EntitySerializationService.SetInstance(new EntitySerializationService(writer, reader));
-
-            // Configure strategy
-            builder.TickBuffer.SetInstance(_tickBuffer);
-            builder.EngineServiceBuilder.EntitiesSubmissionScheduler.SetInstance(entitiesSubmissionScheduler);
-            builder.EngineServiceBuilder.EnginesRoot.SetInstance(enginesRoot);
-            builder.SettingService
-                .Setup(settings => settings.GetValue(Settings.StepInterval), () => StepInterval)
-                .Setup(settings => settings.GetValue(Settings.StepsPerTick), () => StepsPerTick);
-
-            builder.EngineServiceBuilder.Engines.AddRange([
-                entityService.EntityTemplateService.GetInstance(),
-                entityService.GetInstance(),
-                entityService.EntityQueryService.GetInstance(),
-                entityService.EntitySpawnService.GetInstance(),
-                entityService.EntitySerializationService.GetInstance(),
-                new EntitySubmissionEngine(entitiesSubmissionScheduler),
-            ]);
-
-            builder.EngineServiceBuilder.Engines.AddRange(this.GetEngines(builder));
         }
 
         private IReadOnlyDictionary<Key<IEntityTemplate>, EntityTemplateFragment[]> GetEntityTemplateFragmentsDictionary()
@@ -165,7 +116,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
 
         protected abstract IEnumerable<EntityTemplateFragment> GetEntityTemplateFragments();
 
-        protected abstract IEnumerable<IEngine> GetEngines(IStrategyBuilder builder);
+        protected abstract IEnumerable<IEngine> GetEngines();
 
         protected virtual VhId GenerateSourceId()
         {
@@ -175,7 +126,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         protected Dictionary<IStrategy, int> CalculateTotalEntities<T>()
             where T : unmanaged, IEntityComponent
         {
-            return _simulation.Strategies.ToDictionary(x => x, x => x.Engines.Get<IEntityQueryService>().CalculateTotal<T>());
+            return _simulation.Strategies.ToDictionary(x => x.Instance, x => x.Services.Get<IEntityQueryService>().CalculateTotal<T>());
         }
     }
 }

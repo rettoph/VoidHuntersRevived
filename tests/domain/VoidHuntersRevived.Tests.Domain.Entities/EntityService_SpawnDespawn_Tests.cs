@@ -7,7 +7,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Tests.Common.Simulations;
-using VoidHuntersRevived.Tests.Common.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Domain.Entities.Components;
 using VoidHuntersRevived.Tests.Domain.Entities.Engines;
 using VoidHuntersRevived.Tests.Domain.Entities.Events;
@@ -22,10 +21,10 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         private readonly PredictiveStrategy _predictive;
 
 
-        public EntityService_SpawnDespawn_Tests() : base([typeof(ClientLockstepStrategyBuilder), typeof(PredictiveStrategyBuilder)])
+        public EntityService_SpawnDespawn_Tests() : base()
         {
-            _predictive = (PredictiveStrategy?)this.simulation[StrategyTypeEnum.Predictive] ?? throw new NotImplementedException();
-            _lockstep = (LockstepStrategy_Client?)this.simulation[StrategyTypeEnum.Lockstep] ?? throw new NotImplementedException();
+            _predictive = (PredictiveStrategy?)this.simulation.Instance[StrategyTypeEnum.Predictive] ?? throw new NotImplementedException();
+            _lockstep = (LockstepStrategy_Client?)this.simulation.Instance[StrategyTypeEnum.Lockstep] ?? throw new NotImplementedException();
         }
 
         [Theory]
@@ -90,7 +89,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             };
         }
 
-        protected override IEnumerable<IEngine> GetEngines(IStrategyBuilder builder)
+        protected override IEnumerable<IEngine> GetEngines()
         {
             return [new TestInputEngine()];
         }
