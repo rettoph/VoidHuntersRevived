@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VoidHuntersRevived.Domain.Simulations.Common;
+﻿using VoidHuntersRevived.Domain.Simulations.Common;
 
-namespace VoidHuntersRevived.Tests.Common.Simulations.Extensions
+namespace VoidHuntersRevived.Tests.Registration.Simulations.Extensions
 {
     public static class ISimulationExtensions
     {

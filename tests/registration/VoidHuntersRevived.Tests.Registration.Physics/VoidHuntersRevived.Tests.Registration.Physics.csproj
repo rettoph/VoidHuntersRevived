@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libraries\Aether.Physics2D\Physics2D\Aether.Physics2D.NETSTANDARD2_0.csproj" />
+    <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Physics\VoidHuntersRevived.Domain.Physics.csproj" />
+    <ProjectReference Include="..\..\common\VoidHuntersRevived.Tests.Common.Simulations\VoidHuntersRevived.Tests.Common.Simulations.csproj" />
+    <ProjectReference Include="..\..\common\VoidHuntersRevived.Tests.Common\VoidHuntersRevived.Tests.Common.csproj" />
+  </ItemGroup>
+
+</Project>

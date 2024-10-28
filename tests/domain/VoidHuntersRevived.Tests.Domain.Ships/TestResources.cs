@@ -20,8 +20,8 @@ namespace VoidHuntersRevived.Tests.Domain.Ships
                 Centeroid = new FixVector2(0.5, 0.5),
                 Shapes = [
                     new Polygon(
-                        (Fix64)0.5d,
-                        [
+                        density: (Fix64)0.5d,
+                        vertices: [
                                 new FixVector2(0, 0),
                                 new FixVector2(1, 0),
                                 new FixVector2(1, 1),

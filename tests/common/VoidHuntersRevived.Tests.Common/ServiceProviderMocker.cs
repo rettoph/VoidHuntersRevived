@@ -1,51 +1,27 @@
-﻿using Guppy.Tests.Common;
+﻿using Moq;
 
 namespace VoidHuntersRevived.Tests.Common
 {
     public class ServiceProviderMocker
     {
-        private readonly List<object> _services = [];
+        private readonly IServiceResolver[] _resolvers;
 
-        public void Add(object service)
+        internal ServiceProviderMocker(IServiceResolver[] resolvers)
         {
-            _services.Add(service);
-        }
-
-        public void AddRange(IEnumerable<object> services)
-        {
-            _services.AddRange(services);
-        }
-
-        public T GetInstance<T>()
-            where T : class
-        {
-            return _services.OfType<T>().First();
+            _resolvers = resolvers;
         }
 
         public T Get<T>()
             where T : class
         {
-            T? result = _services.OfType<T>().FirstOrDefault();
-            if (result is not null)
+            IServiceResolver<T>? resolver = _resolvers.OfType<IServiceResolver<T>>().FirstOrDefault();
+            if (resolver is not null)
             {
-                return result;
+                return resolver.GetInstance(this);
             }
 
-            IServiceBuilder<T>? builder = _services.OfType<IServiceBuilder<T>>().FirstOrDefault();
-            if (builder is not null)
-            {
-                result = builder.Build(this);
-                _services.Add(result);
-                return result;
-            }
-
-            Mocker<T>? mocker = _services.OfType<Mocker<T>>().FirstOrDefault();
-            if (mocker is not null)
-            {
-                return mocker.GetInstance();
-            }
-
-            return this.GetMocker<T>();
+            Mock<T> mock = new();
+            return mock.Object;
         }
 
         public Lazy<T> GetLazy<T>()
@@ -55,21 +31,9 @@ namespace VoidHuntersRevived.Tests.Common
         }
 
         public IEnumerable<T> GetAll<T>()
-        {
-            return _services.OfType<T>();
-        }
-
-        public Mocker<T> GetMocker<T>()
             where T : class
         {
-            Mocker<T>? result = _services.OfType<Mocker<T>>().FirstOrDefault();
-            if (result is null)
-            {
-                result = new Mocker<T>();
-                _services.Add(result);
-            }
-
-            return result;
+            return _resolvers.OfType<IServiceResolver<T>>().Select(x => x.GetInstance(this));
         }
     }
 }

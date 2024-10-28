@@ -22,7 +22,13 @@
     <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Pieces\VoidHuntersRevived.Domain.Pieces.csproj" />
     <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Ships\VoidHuntersRevived.Domain.Ships.csproj" />
     <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Teams\VoidHuntersRevived.Domain.Teams.csproj" />
+    <ProjectReference Include="..\..\common\VoidHuntersRevived.Tests.Common.Physics\VoidHuntersRevived.Tests.Common.Physics.csproj" />
     <ProjectReference Include="..\..\common\VoidHuntersRevived.Tests.Common.Simulations\VoidHuntersRevived.Tests.Common.Simulations.csproj" />
+    <ProjectReference Include="..\..\registration\VoidHuntersRevived.Tests.Registration.Physics\VoidHuntersRevived.Tests.Registration.Physics.csproj" />
+    <ProjectReference Include="..\..\registration\VoidHuntersRevived.Tests.Registration.Pieces\VoidHuntersRevived.Tests.Registration.Pieces.csproj" />
+    <ProjectReference Include="..\..\registration\VoidHuntersRevived.Tests.Registration.Ships\VoidHuntersRevived.Tests.Registration.Ships.csproj" />
+    <ProjectReference Include="..\..\registration\VoidHuntersRevived.Tests.Registration.Simulations\VoidHuntersRevived.Tests.Registration.Simulations.csproj" />
+    <ProjectReference Include="..\..\registration\VoidHuntersRevived.Tests.Registration.Teams\VoidHuntersRevived.Tests.Registration.Teams.csproj" />
   </ItemGroup>
 
   <ItemGroup>

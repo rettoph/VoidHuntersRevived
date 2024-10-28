@@ -8,12 +8,12 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public partial class EntitySpawnService(
-        EntityQueryService entityQueryingService,
+        EntityQueryService entityQueryService,
         IEntityTemplateService entityTemplateService,
         IEntityService entityService,
         ILogger logger) : StrategyEngine, IEntitySpawnService, IPrivateEntitySpawnService
     {
-        private readonly EntityQueryService _entityQueryService = entityQueryingService;
+        private readonly EntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly IEntityService _entityService = entityService;
         private readonly ILogger _logger = logger;

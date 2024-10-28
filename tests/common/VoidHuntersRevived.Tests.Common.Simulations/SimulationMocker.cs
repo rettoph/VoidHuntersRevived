@@ -1,6 +1,7 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Tests.Common.Providers;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations
 {
@@ -27,9 +28,12 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
 
         public SimulationMocker Update(int interval, int count)
         {
-            foreach (IStrategyMocker strategy in this.Strategies)
+            for (int i = 0; i < count; i++)
             {
-                strategy.Update(interval, count);
+                foreach (IStrategyMocker strategy in this.Strategies)
+                {
+                    strategy.Update(interval, 1);
+                }
             }
 
             return this;
@@ -72,9 +76,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return this.Strategies.ToDictionary(x => x, x => x.CalculateTotalEntities<T>());
         }
 
-        public void Coroutine(int interval, Func<IStrategyMocker, IEnumerator<int>> coroutine)
+        public SimulationMocker RunCoroutine(int interval, VhId coroutineId, Func<VhIdProvider, IStrategyMocker, IEnumerator<int>> coroutine)
         {
-            var coroutines = this.Strategies.Select(x => (strategy: x, coroutines: coroutine(x))).ToArray();
+            var coroutines = this.Strategies.Select(x => (strategy: x, coroutines: coroutine(new VhIdProvider(coroutineId), x))).ToArray();
 
             bool running = false;
             do
@@ -82,9 +86,14 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                 running = false;
                 foreach ((IStrategyMocker _strategy, IEnumerator<int> _coroutines) in coroutines)
                 {
-                    running |= _coroutines.MoveNext();
-                    int count = _coroutines.Current;
-                    _strategy.Update(interval, count);
+                    bool result = _coroutines.MoveNext();
+                    if (result == true)
+                    {
+                        int count = _coroutines.Current;
+                        _strategy.Update(interval, count);
+                    }
+
+                    running |= result;
                 }
             } while (running == true);
 
@@ -92,6 +101,18 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             {
                 coroutines[i].coroutines.Dispose();
             }
+
+            return this;
+        }
+
+        public SimulationMocker RunCoroutine(VhId coroutineId, Action<VhIdProvider, IStrategyMocker> coroutine)
+        {
+            foreach (IStrategyMocker strategy in this.Strategies)
+            {
+                coroutine(new VhIdProvider(coroutineId), strategy);
+            }
+
+            return this;
         }
     }
 }

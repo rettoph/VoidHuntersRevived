@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Pieces.Common\VoidHuntersRevived.Domain.Pieces.Common.csproj" />
-    <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Pieces\VoidHuntersRevived.Domain.Pieces.csproj" />
+    <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Ships\VoidHuntersRevived.Domain.Ships.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Tests.Common.Simulations\VoidHuntersRevived.Tests.Common.Simulations.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Tests.Common\VoidHuntersRevived.Tests.Common.csproj" />
   </ItemGroup>

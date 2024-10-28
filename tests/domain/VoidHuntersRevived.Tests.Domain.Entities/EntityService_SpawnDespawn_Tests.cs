@@ -7,10 +7,10 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Tests.Common.Simulations;
-using VoidHuntersRevived.Tests.Common.Simulations.Extensions;
 using VoidHuntersRevived.Tests.Domain.Entities.Components;
 using VoidHuntersRevived.Tests.Domain.Entities.Engines;
 using VoidHuntersRevived.Tests.Domain.Entities.Events;
+using VoidHuntersRevived.Tests.Registration.Simulations.Extensions;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {
@@ -41,9 +41,10 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                         ]
                     }
                 ],
-                engines: () => [
-                    new TestInputEngine()
-                ]
+                configuration: services =>
+                {
+                    services.RegisterFactory(services => new TestInputEngine());
+                }
             ).AddPredictiveStrategy().AddLockstepClientStrategy().Build();
 
             _predictive = _simulation.Get<PredictiveStrategy>();

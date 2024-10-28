@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
     public interface IStrategyMocker
     {
         IStrategy Instance { get; }
-        ServiceProviderMocker Services { get; }
+        ServiceProviderMocker Provider { get; }
 
         void Update(int interval, int count);
         void Input(IInputData data, bool verified);
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         private readonly List<EventDto> _inputs = [];
 
         public TStrategy Instance { get; } = instance;
-        public ServiceProviderMocker Services { get; } = services;
+        public ServiceProviderMocker Provider { get; } = services;
 
         IStrategy IStrategyMocker.Instance => this.Instance;
 
@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                 {
                     if (lockstep.StepsSinceTick == lockstep.StepsPerTick)
                     {
-                        TickBuffer ticks = this.Services.Get<TickBuffer>();
+                        TickBuffer ticks = this.Provider.Get<TickBuffer>();
 
                         ticks.TryEnqueue(Tick.Create(lockstep.CurrentTick.Id + 1, _inputs.ToArray()));
                         _inputs.Clear();
@@ -93,7 +93,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         public int CalculateTotalEntities<T>()
             where T : unmanaged, IEntityComponent
         {
-            return this.Services.Get<IEntityQueryService>().CalculateTotal<T>();
+            return this.Provider.Get<IEntityQueryService>().CalculateTotal<T>();
         }
 
     }

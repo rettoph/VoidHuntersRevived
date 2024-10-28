@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 namespace VoidHuntersRevived.Domain.Ships.Common.Serialization.Components
 {
     [AutoLoad]
-    internal class UserIdComponentSerializer : RawComponentSerializer<UserId>
+    public class UserIdComponentSerializer : RawComponentSerializer<UserId>
     {
     }
 }

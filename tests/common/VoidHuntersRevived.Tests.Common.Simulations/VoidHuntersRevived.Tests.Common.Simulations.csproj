@@ -7,12 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="xunit.assert" Version="2.9.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\Guppy\tests\Guppy.Tests.Common\Guppy.Tests.Common.csproj" />
     <ProjectReference Include="..\..\..\src\common\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
     <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
     <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Simulations.Common\VoidHuntersRevived.Domain.Simulations.Common.csproj" />
     <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Simulations\VoidHuntersRevived.Domain.Simulations.csproj" />
     <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain\VoidHuntersRevived.Domain.csproj" />
+    <ProjectReference Include="..\..\registration\VoidHuntersRevived.Tests.Registration.Entities\VoidHuntersRevived.Tests.Registration.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Tests.Common.Entities\VoidHuntersRevived.Tests.Common.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Tests.Common\VoidHuntersRevived.Tests.Common.csproj" />
   </ItemGroup>
