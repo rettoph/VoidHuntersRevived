@@ -57,7 +57,8 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             {
                 for (int i = 0; i < count; i++)
                 {
-                    if (statuses[i].IsSpawned)
+                    EntityStatus status = statuses[i];
+                    if (status.IsSpawned)
                     {
                         ref Enabled enabled = ref enableds[i];
                         Location location = locations[i];

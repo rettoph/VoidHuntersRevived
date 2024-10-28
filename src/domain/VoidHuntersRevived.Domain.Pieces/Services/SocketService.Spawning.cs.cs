@@ -16,13 +16,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         public EntityId Spawn(VhId sourceId, NodeSocket targetNodeSocket, VhId vhid, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
-            Team team = _entityQueryService.QueryById<Team>(targetNodeSocket.Node.TreeId);
+            TeamMember teamMember = _entityQueryService.QueryById<TeamMember>(targetNodeSocket.Node.TreeId);
             SocketVhId socketVhId = targetNodeSocket.Id.VhId;
             VhId treeId = targetNodeSocket.Node.TreeId.VhId;
 
             return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, vhid, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
-                initializer.Init(team);
+                initializer.Init(teamMember);
                 initializer.Init(new Node(id, entities.Query.GetId(treeId)));
                 initializer.Init<Coupling>(new Coupling(
                     socketId: new NodeSocketId(

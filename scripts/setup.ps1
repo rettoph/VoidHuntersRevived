@@ -10,7 +10,8 @@ git submodule update --init --recursive
  # 'nuget.config' might be automatically imported via
  # file hierarchy
  #
-
+ #>
+ 
 $SolutionDirectory = "$($PSScriptRoot)/.." | Resolve-Path
 $GuppyNugetDirectory = "$($SolutionDirectory)/libraries/Guppy/.nuget" | Resolve-Path
 
@@ -22,4 +23,3 @@ $GuppyNugetDirectory = "$($SolutionDirectory)/libraries/Guppy/.nuget" | Resolve-
   </packageSources>
 </configuration>
 '@ -f $GuppyNugetDirectory | Out-File -FilePath "$($SolutionDirectory)/nuget.config"
-#>

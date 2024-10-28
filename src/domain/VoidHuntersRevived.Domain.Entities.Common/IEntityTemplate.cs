@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
     /// <summary>
     /// Represents the conglomerate of an entity type functions, including spawning, despawning, initialization, and serialization.
     /// </summary>
-    public interface IEntityTemplate : IDisposable
+    public interface IEntityTemplate
     {
         Key<IEntityTemplate> Key { get; }
         ComponentBuilderDictionary Components { get; }

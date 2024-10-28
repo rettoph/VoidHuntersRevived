@@ -19,9 +19,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities
 {
-    internal sealed class EntityTemplate : IEntityTemplate, IDisposable
+    internal sealed class EntityTemplate : IEntityTemplate
     {
-        private readonly UnmanagedReference<EntityTemplateFragment> _typeRef;
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
@@ -86,11 +85,6 @@ namespace VoidHuntersRevived.Domain.Entities
             _onSpawnEngineInvokers.Add(onSpawnEngineInvokers);
         }
 
-        public void Dispose()
-        {
-            _typeRef.Dispose(false);
-        }
-
         #region Instance Entity Methods
         public EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id)
         {
@@ -142,40 +136,6 @@ namespace VoidHuntersRevived.Domain.Entities
         {
             return _descriptor.componentsToBuild.Select(x => x.GetEntityComponentType())
                 .Distinct();
-        }
-
-        private static void DefaultInitializer(IEntityService entities, EntityTemplateFragment entityTemplate, EntityId id, ref EntityInitializer initializer)
-        {
-            // throw new NotImplementedException();
-        }
-
-        private static void DefaultDisposer(EntityTemplateFragment entityTemplate)
-        {
-            // throw new NotImplementedException();
-        }
-
-        private static IEnumerable<EntityTemplateFragment> GetImplementedTypes(EntityTemplateFragment entityTemplate, IEntityTemplateFragmentService entityTemplateService, HashSet<EntityTemplateFragment>? result = null)
-        {
-            result ??= [];
-
-            if (result.Contains(entityTemplate) == true)
-            {
-                return result;
-            }
-
-            // foreach (Key<EntityTemplate> includedKey in entityTemplate.Include)
-            // {
-            //     EntityTemplate includedType = entityTemplateService.GetByKey(includedKey);
-            // 
-            //     EntityTemplateProvider.GetImplementedTypes(includedType, entityTemplateService, result);
-            // }
-
-            if (result.Add(entityTemplate) == false)
-            {
-                return result;
-            }
-
-            return result;
         }
 
         private static DynamicEntityDescriptor<VoidHuntersEntityDescriptor> BuildDescriptor(
