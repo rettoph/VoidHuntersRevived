@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
         }
 
         [Fact]
-        public void Test1()
+        public void SpamSelectDeselectWithAttach_Tests()
         {
             VhId shipVhId = VhId.NewId();
 
@@ -116,9 +116,9 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             EntityId bridgeId = _predictive.Provider.Get<ITreeService>().GetHead(shipId).Id;
 
             // Begin Tests
-            VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(Test1)));
+            VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 100; i++)
             {
                 // "Select" piece, detaching it from the ship
                 bool result = _readTractorbeamEmitterService.Query(shipId, FixVector2.Zero, out Node targetNode);
@@ -137,10 +137,21 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 }, true).Update(1, 2);
             }
 
-            _simulation.Update(16, 1000);
+            // Ensure the piece is dropped
+            _simulation
+                .Update(16, 1000)
+                .Input(
+                    sourceId: sourceIdProvider.Next(),
+                    data: new Input_TractorBeamEmitter_Deselect()
+                    {
+                        ShipVhId = shipVhId,
+                        AttachToSocketVhId = new SocketVhId(bridgeId.VhId, 0)
+                    },
+                    verified: true)
+                .Update(16, 1000);
 
             // Verify state
-            _simulation.AssertBodyCount(2).AssertEntityCount<Tree>(2).AssertEntityCount<Node>(2);
+            _simulation.AssertBodyCount(1).AssertEntityCount<Tree>(1).AssertEntityCount<Node>(2);
         }
 
         private EntityTemplateFragment[] GetEntityTemplateFragments()
