@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         IStrategy Instance { get; }
         ServiceProviderMocker Provider { get; }
 
-        void Update(int interval, int count);
+        void Update(TimeSpan interval, int count);
         void Input(IInputData data, bool verified);
         void Input(VhId sourceId, IInputData data, bool verified);
 
@@ -70,7 +70,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             this.Input(HashBuilder<IStrategyMocker, int>.Instance.Calculate(_sourceIdGeneratorIndex++), data, verified);
         }
 
-        public void Update(int interval, int count)
+        public void Update(TimeSpan interval, int count)
         {
             for (int i = 0; i < count; i++)
             {

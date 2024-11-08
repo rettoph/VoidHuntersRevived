@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common
         public VhId Id { get; }
         IReadOnlyCollection<IStrategy> Strategies { get; }
 
-        IStrategy this[StrategyTypeEnum type] { get; }
+        IEnumerable<IStrategy> this[StrategyTypeEnum type] { get; }
 
         void Draw(GameTime gameTime);
 

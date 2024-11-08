@@ -26,7 +26,14 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return this.Strategies.OfType<IStrategyMocker<T>>();
         }
 
-        public SimulationMocker Update(int interval, int count)
+        public T GetService<TStrategy, T>()
+            where TStrategy : IStrategy
+            where T : class
+        {
+            return this.Get<TStrategy>().Provider.Get<T>();
+        }
+
+        public SimulationMocker Update(TimeSpan interval, int count)
         {
             for (int i = 0; i < count; i++)
             {
@@ -76,7 +83,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return this.Strategies.ToDictionary(x => x, x => x.CalculateTotalEntities<T>());
         }
 
-        public SimulationMocker RunCoroutine(int interval, VhId coroutineId, Func<VhIdProvider, IStrategyMocker, IEnumerator<int>> coroutine)
+        public SimulationMocker RunCoroutine(TimeSpan interval, VhId coroutineId, Func<VhIdProvider, IStrategyMocker, IEnumerator<int>> coroutine)
         {
             var coroutines = this.Strategies.Select(x => (strategy: x, coroutines: coroutine(new VhIdProvider(coroutineId), x))).ToArray();
 

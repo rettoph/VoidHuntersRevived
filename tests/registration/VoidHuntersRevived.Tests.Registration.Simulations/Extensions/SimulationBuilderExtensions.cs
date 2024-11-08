@@ -12,14 +12,19 @@ namespace VoidHuntersRevived.Tests.Registration.Simulations.Extensions
 {
     public static class SimulationBuilderExtensions
     {
-        public static SimulationBuilder AddPredictiveStrategy(this SimulationBuilder builder)
+        public static SimulationBuilder AddPredictiveStrategy(this SimulationBuilder builder, int count = 1)
         {
-            return builder.AddStrategy(services =>
+            for (int i = 0; i < count; i++)
             {
-                return new PredictiveStrategy(
-                    services.GetLazy<IEngineService>(),
-                    services.GetLazy<ILogger>());
-            });
+                builder.AddStrategy(services =>
+                {
+                    return new PredictiveStrategy(
+                        services.GetLazy<IEngineService>(),
+                        services.GetLazy<ILogger>());
+                });
+            }
+
+            return builder;
         }
 
         public static SimulationBuilder AddLockstepClientStrategy(this SimulationBuilder builder)

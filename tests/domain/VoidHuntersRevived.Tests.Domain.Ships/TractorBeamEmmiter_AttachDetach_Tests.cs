@@ -13,7 +13,6 @@ using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
@@ -32,45 +31,39 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 {
     public class TractorBeamEmmiter_AttachDetach_Tests
     {
-        public virtual SettingValue<int> StepsPerTick => new(Settings.StepsPerTick, 3);
-        public virtual SettingValue<Fix64> StepInterval => new(Settings.StepInterval, (Fix64)20 / (Fix64)1000);
+        public static SettingValue<int> StepsPerTick => new(Settings.StepsPerTick, 3);
+        public static SettingValue<Fix64> StepInterval => new(Settings.StepInterval, (Fix64)20 / (Fix64)1000);
 
         private static readonly Key<IEntityTemplate> TestSquareEntityTemplateKey = Key<IEntityTemplate>.GetByName(nameof(TestSquareEntityTemplateKey));
 
-        private readonly SimulationMocker _simulation;
-        private readonly IStrategyMocker<LockstepStrategy_Client> _lockstep;
-        private readonly IStrategyMocker<PredictiveStrategy> _predictive;
-
-        private readonly ITractorBeamEmitterService _readTractorbeamEmitterService;
-        private readonly IEntityQueryService _readEntityQueryService;
-
-        public TractorBeamEmmiter_AttachDetach_Tests() : base()
+        private static SimulationMocker CreateSimulationMocker()
         {
             var builder = new SimulationBuilder(
                 id: VhId.Empty,
                 stepInterval: StepInterval,
                 stepsPerTick: StepsPerTick,
-                entityTemplateFragments: this.GetEntityTemplateFragments()
+                entityTemplateFragments: GetEntityTemplateFragments()
             );
 
-            builder.AddPredictiveStrategy()
+            var simulation = builder.AddPredictiveStrategy()
                  .AddLockstepClientStrategy()
                  .AddTeamsConfiguration()
                  .AddPhysicsConfiguration()
                  .AddPiecesConfiguration()
-                 .AddShipsConfiguration();
+                 .AddShipsConfiguration()
+                 .Build();
 
-            _simulation = builder.Build();
-            _predictive = _simulation.Get<PredictiveStrategy>();
-            _lockstep = _simulation.Get<LockstepStrategy_Client>();
-
-            _readTractorbeamEmitterService = _predictive.Provider.Get<ITractorBeamEmitterService>();
-            _readEntityQueryService = _predictive.Provider.Get<IEntityQueryService>();
+            return simulation;
         }
 
         [Fact]
         public void SpamSelectDeselectWithAttach_Tests()
         {
+            var simulation = CreateSimulationMocker();
+            var readTractorbeamEmitterService = simulation.GetService<PredictiveStrategy, ITractorBeamEmitterService>();
+            var readEntityQueryService = simulation.GetService<PredictiveStrategy, IEntityQueryService>();
+            var readTreeService = simulation.GetService<PredictiveStrategy, ITreeService>();
+
             VhId shipVhId = VhId.NewId();
 
             IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
@@ -108,38 +101,42 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             }
 
             // Setup test (create ship with piece attached)
-            _simulation.RunCoroutine(
-                interval: 16,
+            simulation.RunCoroutine(
+                interval: TimeSpan.FromMilliseconds(16),
                 coroutineId: VhId.HashString(nameof(SetupStrategy)),
                 coroutine: SetupStrategy);
-            EntityId shipId = _readEntityQueryService.GetId(shipVhId);
-            EntityId bridgeId = _predictive.Provider.Get<ITreeService>().GetHead(shipId).Id;
+            EntityId shipId = readEntityQueryService.GetId(shipVhId);
+            EntityId bridgeId = readTreeService.GetHead(shipId).Id;
 
             // Begin Tests
             VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
 
             for (int i = 0; i < 100; i++)
             {
-                // "Select" piece, detaching it from the ship
-                bool result = _readTractorbeamEmitterService.Query(shipId, FixVector2.Zero, out Node targetNode);
+                bool verified = i % 2 == 0;
+
+                // Query for the available piece
+                bool result = readTractorbeamEmitterService.Query(shipId, FixVector2.Zero, out Node targetNode);
                 Assert.True(result);
-                _simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
+
+                // "Select" piece, detaching it from the ship
+                simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
                 {
                     ShipVhId = shipVhId,
                     TargetVhId = targetNode.Id.VhId
-                }, true).Update(1, 2);
+                }, verified).Update(TimeSpan.FromMilliseconds(1), 2);
 
                 // "Deselect" the piece, attaching it back onto the ship
-                _simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
+                simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
                 {
                     ShipVhId = shipVhId,
                     AttachToSocketVhId = new SocketVhId(bridgeId.VhId, 0)
-                }, true).Update(1, 2);
+                }, verified).Update(TimeSpan.FromMilliseconds(1), 2);
             }
 
             // Ensure the piece is dropped
-            _simulation
-                .Update(16, 1000)
+            simulation
+                .Update(TimeSpan.FromMilliseconds(16), 1000)
                 .Input(
                     sourceId: sourceIdProvider.Next(),
                     data: new Input_TractorBeamEmitter_Deselect()
@@ -148,13 +145,13 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                         AttachToSocketVhId = new SocketVhId(bridgeId.VhId, 0)
                     },
                     verified: true)
-                .Update(16, 1000);
+                .Update(TimeSpan.FromMilliseconds(16), 1000);
 
             // Verify state
-            _simulation.AssertBodyCount(1).AssertEntityCount<Tree>(1).AssertEntityCount<Node>(2);
+            simulation.AssertBodyCount(1).AssertEntityCount<Tree>(1).AssertEntityCount<Node>(2);
         }
 
-        private EntityTemplateFragment[] GetEntityTemplateFragments()
+        private static EntityTemplateFragment[] GetEntityTemplateFragments()
         {
             return [
                 new EntityTemplateFragment()

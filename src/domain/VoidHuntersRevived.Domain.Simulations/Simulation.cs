@@ -8,19 +8,17 @@ namespace VoidHuntersRevived.Domain.Simulations
 {
     public sealed class Simulation : ISimulation
     {
-        private readonly Dictionary<StrategyTypeEnum, IStrategy> _strategyTypes;
         private readonly List<IStrategy> _strategies;
 
         public VhId Id { get; }
 
-        public IStrategy this[StrategyTypeEnum type] => _strategyTypes[type];
+        public IEnumerable<IStrategy> this[StrategyTypeEnum type] => _strategies.Where(x => x.Type == type);
 
         public IReadOnlyCollection<IStrategy> Strategies { get; }
 
         public Simulation(VhId id, IEnumerable<IStrategy> strategies)
         {
             _strategies = strategies.ToList();
-            _strategyTypes = _strategies.ToDictionary(x => x.Type, x => x);
 
             this.Id = id;
             this.Strategies = new ReadOnlyCollection<IStrategy>(_strategies);
@@ -59,9 +57,10 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             foreach (StrategyTypeEnum strategyType in strategies)
             {
-                if (_strategyTypes.TryGetValue(strategyType, out IStrategy? strategy))
+                IStrategy? result = _strategies.FirstOrDefault(x => x.Type == strategyType);
+                if (result is not null)
                 {
-                    return strategy;
+                    return result;
                 }
             }
 

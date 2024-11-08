@@ -12,9 +12,9 @@ namespace VoidHuntersRevived.Tests.Common.Extensions
             return gameTime;
         }
 
-        public static GameTime Step(this GameTime gameTime, int milliseconds)
+        public static GameTime Step(this GameTime gameTime, TimeSpan interval)
         {
-            gameTime.ElapsedGameTime = TimeSpan.FromMilliseconds(milliseconds);
+            gameTime.ElapsedGameTime = interval;
             gameTime.TotalGameTime += gameTime.ElapsedGameTime;
             return gameTime;
         }
