@@ -18,11 +18,11 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     /// 
     /// Instances of this engine are automatically created within the <see cref="Providers.BelongsToEngineProvider"/>
     /// </summary>
-    /// <typeparam name="TOwner"></typeparam>
+    /// <typeparam name="TParent"></typeparam>
     /// <typeparam name="TItems"></typeparam>
-    internal sealed class BelongsToEngine<TBelongsTo, TOwner>(IEntityQueryService entityQueryService, ILogger logger) : StrategyEngine, IOnSpawnEngine<TBelongsTo>
-        where TBelongsTo : unmanaged, IBelongsTo<TOwner, TBelongsTo>
-        where TOwner : unmanaged, IHasMany<TBelongsTo>
+    internal sealed class BelongsToEngine<TBelongsTo, TParent>(IEntityQueryService entityQueryService, ILogger logger) : StrategyEngine, IOnSpawnEngine<TBelongsTo>
+        where TBelongsTo : unmanaged, IBelongsTo<TParent, TBelongsTo>
+        where TParent : unmanaged, IHasMany<TBelongsTo>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
@@ -30,13 +30,13 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref TBelongsTo belongsTo, in GroupIndex groupIndex)
         {
-            if (belongsTo.OwnerFilterId == default)
+            if (belongsTo.ParentFilterId == default)
             {
-                _logger.Warning("{0}::{1} - Empty OwnerId", typeof(BelongsToEngine<TBelongsTo, TOwner>).GetFormattedName(), nameof(BelongsToEngine<TBelongsTo, TOwner>.OnSpawn));
+                _logger.Warning("{0}::{1} - Empty {2}", typeof(BelongsToEngine<TBelongsTo, TParent>).GetFormattedName(), nameof(BelongsToEngine<TBelongsTo, TParent>.OnSpawn), nameof(belongsTo.ParentFilterId));
                 return;
             }
 
-            _entityQueryService.GetFilter(belongsTo.OwnerFilterId).Add(id, groupIndex);
+            _entityQueryService.GetFilter(belongsTo.ParentFilterId).Add(id, groupIndex);
         }
     }
 }

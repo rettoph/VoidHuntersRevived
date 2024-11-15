@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
         public readonly EntityId TreeId = treeId;
 
         public readonly FilterVhId<Node> TreeFilterId = new(treeId);
-        FilterVhId<Node> IBelongsTo<Tree, Node>.OwnerFilterId => this.TreeFilterId;
+        FilterVhId<Node> IBelongsTo<Tree, Node>.ParentFilterId => this.TreeFilterId;
 
         public Location LocalLocation => _localLocation;
         public FixMatrix Transformation
