@@ -1,169 +1,69 @@
-﻿using Serilog;
-using Svelto.Common;
-using Svelto.DataStructures;
-using Svelto.ECS;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Options;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
+﻿using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    public class EntityReader(
-        IEntityTemplateService entityTemplateProviderService,
-        IEntityQueryService entityQueryService,
-        IEntitySpawnService entitySpawnService,
-        ILogger logger) : BinaryReader(new MemoryStream())
+    public ref struct EntityReader
     {
-        private static readonly unsafe long EntityHeaderSize = sizeof(VhId) + sizeof(Id<EntityTemplateFragment>);
+        private readonly byte[] _data;
+        private int _position;
+        private readonly VhId _seed;
 
-        private readonly IEntityTemplateService _entityTemplateService = entityTemplateProviderService;
-        private readonly IEntityQueryService _entityQueryService = entityQueryService;
-        private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
-        private readonly ILogger _logger = logger;
+        public int Position => _position;
+        public int Length => _data.Length;
+        public bool DataAvailable => _position < _data.Length;
 
-        private EntityData _loaded = EntityData.Default;
-
-        public void Load(EntityData data, long position)
+        public EntityReader(
+            VhId seed,
+            byte[] data,
+            int position)
         {
-            if (_loaded.Id.Value == data.Id.Value)
-            {
-                this.BaseStream.Position = position;
-                return;
-            }
-
-            this.BaseStream.Position = 0;
-            this.BaseStream.Write(data.Bytes, 0, data.Bytes.Length);
-            this.BaseStream.Flush();
-
-            this.BaseStream.Position = position;
-
-            _loaded = data;
+            _seed = seed;
+            _data = data;
+            _position = position;
         }
 
-        /// <summary>
-        /// Read and seed a VhId value
-        /// </summary>
-        /// <returns></returns>
-        public VhId ReadVhId(VhId seed)
+        public VhId ReadVhId()
         {
-            return seed.Create(this.ReadStruct<VhId>());
+            VhId raw = this.Read<VhId>();
+            return _seed.Create(raw);
         }
 
-        /// <summary>
-        /// Read and return a bool
-        /// </summary>
-        /// <returns></returns>
-        public bool ReadIf()
+        public byte ReadByte()
         {
-            return this.ReadBoolean();
+            return _data[_position++];
         }
 
-        /// <summary>
-        /// Read a raw value directly from the memor stream
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public unsafe T ReadStruct<T>()
+        public bool ReadBoolean()
+        {
+            return this.Read<bool>();
+        }
+
+        public int ReadInt32()
+        {
+            return this.Read<int>();
+        }
+
+        public uint ReadUInt32()
+        {
+            return this.Read<uint>();
+        }
+
+        public unsafe T Read<T>()
             where T : unmanaged
         {
-            Span<byte> bytes = stackalloc byte[sizeof(T)];
-            this.Read(bytes);
-
-            fixed (byte* pbytes = &bytes[0])
+            fixed (byte* pByte = &_data[_position])
             {
-                T* value = (T*)&pbytes[0];
+                _position += sizeof(T);
 
-                return value[0];
+                T* pT = (T*)pByte;
+
+                return pT[0];
             }
         }
 
-        public NativeDynamicArrayCast<T> ReadNativeDynamicArray<T>(Func<DeserializationOptions, EntityReader, T> reader, in DeserializationOptions options)
-            where T : unmanaged
+        public void Skip(int bytes)
         {
-            int count = this.ReadInt32();
-            NativeDynamicArrayCast<T> native = new((uint)count, Allocator.Persistent);
-
-            for (int i = 0; i < count; i++)
-            {
-                native.Set(i, reader(options, this));
-            }
-
-            return native;
-        }
-
-        public NativeDynamicArrayCast<T> ReadNativeDynamicArray<T>()
-            where T : unmanaged
-        {
-            return this.ReadNativeDynamicArray<T>(DefaultNativeDynamicArrayItemReader<T>, default);
-        }
-
-        private static T DefaultNativeDynamicArrayItemReader<T>(DeserializationOptions options, EntityReader reader)
-            where T : unmanaged
-        {
-            return reader.ReadStruct<T>();
-        }
-
-        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, EntityInitializerDelegate initializer)
-        {
-            VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializer);
-
-            for (uint i = 0; i < data.Positions.Length; i++)
-            {
-                this.InternalDeserialize(sourceId, data, data.Positions[i], options, initializer);
-            }
-
-            return _entityQueryService.GetId(vhid);
-        }
-
-        internal EntityId Deserialize(VhId sourceId, EntityData data, DeserializationOptions options, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
-        {
-            VhId vhid = this.InternalDeserialize(sourceId, data, 0, options, initializer, rootInitializer);
-
-            for (uint i = 0; i < data.Positions.Length; i++)
-            {
-                this.InternalDeserialize(sourceId, data, data.Positions[i], options, initializer);
-            }
-
-            return _entityQueryService.GetId(vhid);
-        }
-
-        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, EntityInitializerDelegate initializerDelegate)
-        {
-            this.Load(data, position);
-            VhId vhid = this.ReadVhId(options.Seed);
-            Key<IEntityTemplate> entityTemplateKey = Key<IEntityTemplate>.GetById(this.ReadStruct<VhId>());
-
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityTemplate} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, entityTemplateKey, options.Seed.Value);
-
-            _entitySpawnService.Spawn(sourceId, entityTemplateKey, vhid, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
-            {
-                this.Load(data, position + EntityReader.EntityHeaderSize);
-                _entityTemplateService.GetByKey(entityTemplateKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
-
-                initializerDelegate(entities, entityTemplate, id, ref initializer);
-            });
-
-            return vhid;
-        }
-
-        private VhId InternalDeserialize(VhId sourceId, EntityData data, long position, DeserializationOptions options, EntityInitializerDelegate initializerDelegate, EntityInitializerDelegate rootInitializerDelegate)
-        {
-            this.Load(data, position);
-            VhId vhid = this.ReadVhId(options.Seed);
-            Key<IEntityTemplate> entityTemplateKey = Key<IEntityTemplate>.GetById(this.ReadStruct<VhId>());
-
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityTemplate} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), vhid.Value, entityTemplateKey, options.Seed.Value);
-
-            _entitySpawnService.Spawn(sourceId, entityTemplateKey, vhid, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
-            {
-                this.Load(data, position + EntityReader.EntityHeaderSize);
-                _entityTemplateService.GetByKey(entityTemplateKey).DeserializeInstanceEntity(in sourceId, in options, this, ref initializer, in id);
-
-                rootInitializerDelegate(entities, entityTemplate, id, ref initializer);
-                initializerDelegate(entities, entityTemplate, id, ref initializer);
-            });
-
-            return vhid;
+            _position += bytes;
         }
     }
 }

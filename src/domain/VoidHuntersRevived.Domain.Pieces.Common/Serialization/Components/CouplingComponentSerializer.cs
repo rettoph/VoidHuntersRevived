@@ -13,11 +13,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
-        protected override Coupling Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
+        protected override Coupling Read(in DeserializationOptions options, ref EntityReader reader, in EntityId id)
         {
-            if (reader.ReadIf())
+            if (reader.ReadBoolean() == true)
             {
-                VhId nodeVhId = reader.ReadVhId(options.Seed);
+                VhId nodeVhId = reader.ReadVhId();
                 byte index = reader.ReadByte();
 
                 if (_entityQueryService.TryGetId(nodeVhId, out EntityId nodeId))
@@ -30,14 +30,17 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
                 }
                 else
                 {
-
+                    // Currently this can happen organically if we serialize a partial tree
+                    // The new root will serialize with the owner info but when deserializing
+                    // with a new seed the 'old' owner wont exist. Can this be fixed?
+                    // TODO: Do nothing? Throw? This needs to be refactored somehow
                 }
             }
 
             return default;
         }
 
-        protected override void Write(EntityWriter writer, in EntityId id, in Coupling instance, in SerializationOptions options)
+        protected override void Write(ref EntityWriter writer, in EntityId id, in Coupling instance, in SerializationOptions options)
         {
             if (writer.WriteIf(instance.SocketId != NodeSocketId.Empty))
             {

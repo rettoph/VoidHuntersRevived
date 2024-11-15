@@ -16,8 +16,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             Type = type;
         }
 
-        public abstract void Serialize(EntityWriter writer, in EntityId id, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options);
-        public abstract void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id);
+        public abstract void Serialize(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options);
+        public abstract void Deserialize(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 
     public abstract class ComponentSerializer<TComponent> : ComponentSerializer
@@ -27,31 +27,31 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         {
         }
 
-        public override void Serialize(EntityWriter writer, in EntityId id, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options)
+        public override void Serialize(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options)
         {
             var (components, _) = entitiesDB.QueryEntities<TComponent>(groupIndex.GroupID);
             ref var component = ref components[groupIndex.Index];
 
-            this.Write(writer, id, component, in options);
+            this.Write(ref writer, id, component, in options);
         }
-        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
-            initializer.Init<TComponent>(this.Read(in options, reader, in id));
+            initializer.Init<TComponent>(this.Read(in options, ref reader, in id));
         }
 
-        protected abstract void Write(EntityWriter writer, in EntityId entityId, in TComponent instance, in SerializationOptions options);
-        protected abstract TComponent Read(in DeserializationOptions options, EntityReader reader, in EntityId id);
+        protected abstract void Write(ref EntityWriter writer, in EntityId entityId, in TComponent instance, in SerializationOptions options);
+        protected abstract TComponent Read(in DeserializationOptions options, ref EntityReader reader, in EntityId id);
     }
 
     public abstract class NotImplementedComponentSerializer<TComponent> : ComponentSerializer<TComponent>
         where TComponent : unmanaged, IEntityComponent
     {
-        protected override TComponent Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
+        protected override TComponent Read(in DeserializationOptions options, ref EntityReader reader, in EntityId id)
         {
             throw new NotImplementedException();
         }
 
-        protected override void Write(EntityWriter writer, in EntityId id, in TComponent instance, in SerializationOptions options)
+        protected override void Write(ref EntityWriter writer, in EntityId id, in TComponent instance, in SerializationOptions options)
         {
             throw new NotImplementedException();
         }
@@ -60,24 +60,14 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
     public abstract class RawComponentSerializer<TComponent> : ComponentSerializer<TComponent>
         where TComponent : unmanaged, IEntityComponent
     {
-        protected unsafe override TComponent Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
+        protected override unsafe TComponent Read(in DeserializationOptions options, ref EntityReader reader, in EntityId id)
         {
-            Span<byte> span = stackalloc byte[sizeof(TComponent)];
-            reader.Read(span);
-            fixed (byte* pBytes = &span[0])
-            {
-                TComponent* components = (TComponent*)&pBytes[0];
-                return components[0];
-            }
+            return reader.Read<TComponent>();
         }
 
-        protected unsafe override void Write(EntityWriter writer, in EntityId id, in TComponent instance, in SerializationOptions options)
+        protected override unsafe void Write(ref EntityWriter writer, in EntityId id, in TComponent instance, in SerializationOptions options)
         {
-            TComponent bytes = instance;
-            byte* pBytes = (byte*)&bytes;
-            var span = new ReadOnlySpan<byte>(pBytes, sizeof(TComponent));
-
-            writer.Write(span);
+            writer.Write(instance);
         }
     }
 }

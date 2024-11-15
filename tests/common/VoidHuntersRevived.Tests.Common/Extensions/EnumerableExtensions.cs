@@ -9,5 +9,10 @@ namespace VoidHuntersRevived.Tests.Common.Extensions
         {
             return new MockFiltered<T>(items);
         }
+
+        public static byte[] ToByteArray<T>(this IEnumerable<T> items, Func<T, byte[]> converter)
+        {
+            return items.SelectMany(converter).ToArray();
+        }
     }
 }

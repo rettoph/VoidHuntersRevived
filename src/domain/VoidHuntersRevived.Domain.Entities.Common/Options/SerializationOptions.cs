@@ -2,9 +2,9 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Options
 {
-    public struct SerializationOptions
+    public readonly struct SerializationOptions
     {
-        public static SerializationOptions Default = new SerializationOptions()
+        public static SerializationOptions Default { get; } = new SerializationOptions()
         {
             Recursion = Recursion.All
         };

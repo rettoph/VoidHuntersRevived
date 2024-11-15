@@ -2,9 +2,9 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Options
 {
-    public unsafe struct DeserializationOptions
+    public readonly struct DeserializationOptions
     {
-        public VhId Seed { get; init; }
-        public VhId Owner { get; init; }
+        public required VhId Seed { get; init; }
+        public required VhId Owner { get; init; }
     }
 }

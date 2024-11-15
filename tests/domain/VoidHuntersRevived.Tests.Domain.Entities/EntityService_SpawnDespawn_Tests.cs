@@ -57,13 +57,15 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         [InlineData(1000, 50, 5)]
         public void EntityService_SpawnDespawn_PredictiveSynchronizesWithLockstep(int range, int segment, int simulatedRealtimeIntervalInMilliseconds)
         {
+            TimeSpan simulatedRealtimeInterval = TimeSpan.FromMilliseconds(simulatedRealtimeIntervalInMilliseconds);
+
             Dictionary<IStrategyMocker, int> totals = _simulation.CalculateTotalEntities<TestComponent>();
             Assert.Equal(0, totals[_predictive]);
             Assert.Equal(0, totals[_lockstep]);
 
             // "Predict" 10 initial entities to be discarded
             _simulation.InputMany(this.GenerateTestSpawnInput, segment, 0, false)
-                .Update(simulatedRealtimeIntervalInMilliseconds, 4);
+                .Update(simulatedRealtimeInterval, 4);
 
             // Ensure the prediction was made in the predictive strategy but not on the lockstep strategy
             totals = _simulation.CalculateTotalEntities<TestComponent>();
@@ -76,16 +78,16 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                 {
                     bool verified = y == (segment / 2);
 
-                    _simulation.Update(simulatedRealtimeIntervalInMilliseconds, 1)
+                    _simulation.Update(simulatedRealtimeInterval, 1)
                         .Input(this.GenerateTestDepawnInput(y), verified)
                         .Input(this.GenerateTestSpawnInput(y + range), verified);
                 }
 
-                _simulation.Update(simulatedRealtimeIntervalInMilliseconds, 10);
+                _simulation.Update(simulatedRealtimeInterval, 10);
             }
 
             // Simulate long lapse of time - giving the predictive strategy time to catch up and revert as needed
-            _simulation.Update(simulatedRealtimeIntervalInMilliseconds, 1000);
+            _simulation.Update(simulatedRealtimeInterval, 1000);
 
 
             // Ensure an equal number of entities exist in both strategies

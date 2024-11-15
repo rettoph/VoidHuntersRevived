@@ -1,6 +1,5 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.System;
-using Guppy.Core.Common.Utilities;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -115,19 +114,19 @@ namespace VoidHuntersRevived.Domain.Entities
             _functions.RemoveEntity<VoidHuntersEntityDescriptor>(id.EGID);
         }
 
-        public void SerializeInstanceEntity(EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options)
+        public void SerializeInstanceEntity(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options)
         {
             foreach (ComponentSerializer serializer in _serializers)
             {
-                serializer.Serialize(writer, in id, in groupIndex, _entitiesDB, in options);
+                serializer.Serialize(ref writer, in id, in groupIndex, _entitiesDB, in options);
             }
         }
 
-        public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
             foreach (ComponentSerializer serializer in _serializers)
             {
-                serializer.Deserialize(in sourceId, in options, reader, ref initializer, in id);
+                serializer.Deserialize(in sourceId, in options, ref reader, ref initializer, in id);
             }
         }
         #endregion

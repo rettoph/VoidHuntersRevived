@@ -2,19 +2,25 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    public class EntityData
+    public readonly struct EntityData
     {
-        public static EntityData Default = new EntityData(default, Array.Empty<long>(), Array.Empty<byte>());
+        private readonly byte[] _data;
+        private readonly int[] _indices;
 
         public readonly VhId Id;
-        public readonly long[] Positions;
-        public readonly byte[] Bytes;
+        public int IndexCount => _indices.Length;
 
-        internal EntityData(VhId id, long[] positions, byte[] bytes)
+        public EntityData(VhId id, byte[] data, int[] indices)
         {
-            Id = id;
-            Positions = positions;
-            Bytes = bytes;
+            _data = data;
+            _indices = indices;
+
+            this.Id = id;
+        }
+
+        public EntityReader GetReader(VhId seed, int index, int offset = 0)
+        {
+            return new EntityReader(seed, _data, _indices[index] + offset);
         }
     }
 }

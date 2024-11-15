@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ISocketService _socketService = socketService;
 
-        protected override void Write(EntityWriter writer, in EntityId id, in Sockets instance, in SerializationOptions options)
+        protected override void Write(ref EntityWriter writer, in EntityId id, in Sockets instance, in SerializationOptions options)
         {
             if (options.Recursion == Recursion.None)
             {
@@ -26,11 +26,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
 
             for (int i = 0; i < instance.Items.count; i++)
             {
-                this.WriteSocketCouplings(writer, id, (byte)i, options);
+                this.WriteSocketCouplings(ref writer, in id, (byte)i, options);
             }
         }
 
-        private void WriteSocketCouplings(EntityWriter writer, EntityId nodeId, byte socketIndex, SerializationOptions options)
+        private void WriteSocketCouplings(ref EntityWriter writer, in EntityId nodeId, byte socketIndex, SerializationOptions options)
         {
             ref var filter = ref _socketService.GetCouplingFilter(nodeId, socketIndex);
 
@@ -45,13 +45,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
             }
         }
 
-        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
             // No deserialization needed
             // base.Deserialize(sourceId, options, reader, ref initializer, id);
         }
 
-        protected override Sockets Read(in DeserializationOptions options, EntityReader reader, in EntityId id)
+        protected override Sockets Read(in DeserializationOptions options, ref EntityReader reader, in EntityId id)
         {
             throw new NotImplementedException();
         }

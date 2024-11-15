@@ -39,20 +39,11 @@ namespace VoidHuntersRevived.Tests.Registration.Entities.Extensions
                 provider.Get<IEntityService>(),
                 provider.Get<ILogger>()));
 
-            services.RegisterFactory<EntityWriter>(provider => new(
-                provider.Get<IEntityTemplateService>(),
-                provider.Get<IEntityQueryService>(),
-                provider.Get<ILogger>()));
-
-            services.RegisterFactory<EntityReader>(provider => new(
+            services.RegisterFactory<EntitySerializationService>(provider => new(
                 provider.Get<IEntityTemplateService>(),
                 provider.Get<IEntityQueryService>(),
                 provider.Get<IEntitySpawnService>(),
                 provider.Get<ILogger>()));
-
-            services.RegisterFactory<EntitySerializationService>(provider => new(
-                provider.Get<EntityWriter>(),
-                provider.Get<EntityReader>()));
 
             services.RegisterFactory<ComponentSerializerService>(provider => new(
                 provider.GetAll<ComponentSerializer>().ToFiltered()));

@@ -1,65 +1,28 @@
-﻿using Serilog;
-using Svelto.DataStructures;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Options;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
-
-namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
+﻿namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    public sealed class EntityWriter(
-        IEntityTemplateService entityTemplateService,
-        IEntityQueryService entityQueryService,
-        ILogger logger) : BinaryWriter(new MemoryStream())
+    public readonly ref struct EntityWriter(List<byte> data, Stack<EntityId> nested)
     {
-        private readonly Stack<EntityId> _nested = new();
-        private readonly List<long> _positions = [];
-        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
-        private readonly IEntityQueryService _entityQueryService = entityQueryService;
-        private readonly ILogger _logger = logger;
+        private readonly List<byte> _data = data;
+        private readonly Stack<EntityId> _nested = nested;
 
-        public unsafe void WriteStruct<T>(T value)
+        public unsafe void Write<T>(T value)
             where T : unmanaged
         {
             byte* pBytes = (byte*)&value;
             var span = new ReadOnlySpan<byte>(pBytes, sizeof(T));
 
-            this.Write(span);
-        }
-
-        public void Write(VhId vhid)
-        {
-            this.WriteStruct(vhid);
-        }
-
-        public bool WriteIf(bool value)
-        {
-            this.Write(value);
-
-            return value;
-        }
-
-        public void WriteNativeDynamicArray<T>(NativeDynamicArrayCast<T> native, Action<EntityWriter, T, SerializationOptions> writer, in SerializationOptions options)
-            where T : unmanaged
-        {
-            this.Write(native.count);
-
-            for (int i = 0; i < native.count; i++)
+            foreach (byte b in span)
             {
-                writer(this, native[i], options);
+                _data.Add(b);
             }
         }
 
-        public void WriteNativeDynamicArray<T>(NativeDynamicArrayCast<T> native)
-            where T : unmanaged
+        public unsafe void Write(byte* data, int count)
         {
-            this.WriteNativeDynamicArray<T>(native, DefaultNativeDynamicArrayItemWriter<T>, SerializationOptions.Default);
-        }
-
-        private static void DefaultNativeDynamicArrayItemWriter<T>(EntityWriter writer, T item, SerializationOptions options)
-            where T : unmanaged
-        {
-            writer.WriteStruct<T>(item);
+            for (int i = 0; i < count; i++)
+            {
+                _data.Add(data[i]);
+            }
         }
 
         public void Push(EntityId id)
@@ -67,42 +30,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             _nested.Push(id);
         }
 
-        internal EntityData Serialize(EntityId id, SerializationOptions options)
+        public bool WriteIf(bool condition)
         {
-            _nested.Clear();
-            _positions.Clear();
-            this.BaseStream.Position = 0;
+            this.Write(condition);
 
-            this.InternalSerialize(id, options);
-            while (_nested.TryPop(out EntityId nestedId))
-            {
-                _positions.Add(this.BaseStream.Position);
-                this.InternalSerialize(nestedId, options);
-            }
-
-            long[] positions = Array.Empty<long>();
-            if (_positions.Count > 0)
-            {
-                positions = _positions.ToArray();
-            }
-
-            byte[] bytes = new byte[this.BaseStream.Position];
-
-            this.BaseStream.Position = 0;
-            this.BaseStream.Read(bytes, 0, bytes.Length);
-
-            return new EntityData(id.VhId, positions, bytes);
-        }
-
-        private void InternalSerialize(EntityId id, SerializationOptions options)
-        {
-            Key<IEntityTemplate> templateKey = _entityQueryService.QueryById<EntityTemplate>(id, out GroupIndex groupIndex).Key;
-
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to serialize {EntityId} of type {EntityTemplate}", nameof(EntityWriter), nameof(InternalSerialize), id.VhId, templateKey);
-
-            this.Write(id.VhId);
-            this.Write(templateKey.Id);
-            _entityTemplateService.GetByKey(templateKey).SerializeInstanceEntity(this, in id, in groupIndex, in options);
+            return condition;
         }
     }
 }
