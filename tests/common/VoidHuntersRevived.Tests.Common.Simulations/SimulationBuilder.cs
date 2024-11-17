@@ -1,5 +1,9 @@
-﻿using Guppy.Core.Resources.Common;
+﻿using Guppy.Core.Common.Providers;
+using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Tests.Common;
+using Moq;
+using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
@@ -37,6 +41,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                 services.RegisterMocker<ISettingService>()
                     .Setup(settings => settings.GetValue(Settings.StepInterval), () => stepInterval)
                     .Setup(settings => settings.GetValue(Settings.StepsPerTick), () => stepsPerTick);
+
+                services.RegisterMocker<ILoggerProvider>()
+                    .Setup(loggers => loggers.Get(It.IsAny<Type>()), () => new Mocker<ILogger>().GetInstance());
 
                 UniqueNumberProvider uniqueNumberProvider = new();
                 EntitiesSubmissionScheduler entitiesSubmissionScheduler = new();

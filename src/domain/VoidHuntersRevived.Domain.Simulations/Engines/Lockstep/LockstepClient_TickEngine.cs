@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     [AutoLoad]
     [PeerFilter(PeerType.Client)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    [LoggerContext("TickEngine")]
+    [ServiceLoggerContext("TickEngine")]
     internal class LockstepClient_TickEngine(ILogger logger, TickBuffer ticks) : StrategyEngine,
         ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<INetIncomingMessage<TickHistoryStart>>,

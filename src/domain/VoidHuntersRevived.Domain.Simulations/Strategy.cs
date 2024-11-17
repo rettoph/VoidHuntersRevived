@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly ActionSequenceGroup<OnDrawSequenceGroup, GameTime> _drawActions;
         private readonly ActionSequenceGroup<OnStepSequenceGroup, Step> _stepActions;
 
-        protected ILogger logger => _logger ??= _loggerProvider.Value.Get();
+        protected ILogger logger => _logger ??= _loggerProvider.Value.Get(this.GetType());
 
         public readonly StrategyTypeEnum Type;
         public ISimulation Simulation { get; private set; } = null!;
@@ -35,8 +35,8 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Strategy(
             StrategyTypeEnum type,
-            Lazy<ILoggerProvider> loggerProvider,
-            Lazy<IEngineService> engineService)
+            Lazy<IEngineService> engineService,
+            Lazy<ILoggerProvider> loggerProvider)
         {
             _engineService = engineService;
             _loggerProvider = loggerProvider;

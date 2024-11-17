@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Common.Providers;
+using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Resources.Common.Services;
-using Serilog;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Tests.Registration.Simulations.Extensions
                 {
                     return new PredictiveStrategy(
                         services.GetLazy<IEngineService>(),
-                        services.GetLazy<ILogger>());
+                        services.GetLazy<ILoggerProvider>());
                 });
             }
 
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Tests.Registration.Simulations.Extensions
                     services.Get<TickBuffer>(),
                     services.Get<ISettingService>(),
                     services.GetLazy<IEngineService>(),
-                    services.GetLazy<ILogger>());
+                    services.GetLazy<ILoggerProvider>());
             });
         }
 
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Tests.Registration.Simulations.Extensions
                     services.Get<IBus>(),
                     services.Get<ISettingService>(),
                     services.GetLazy<IEngineService>(),
-                    services.GetLazy<ILogger>());
+                    services.GetLazy<ILoggerProvider>());
             });
         }
     }

@@ -18,8 +18,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     public sealed class LockstepStrategy_Server(
         IBus bus,
         ISettingService settings,
-        Lazy<ILoggerProvider> loggerProvider,
-        Lazy<IEngineService> engineService) : LockstepStrategy(settings, loggerProvider, engineService),
+        Lazy<IEngineService> engineService,
+        Lazy<ILoggerProvider> loggerProvider) : LockstepStrategy(settings, engineService, loggerProvider),
         ISubscriber<INetIncomingMessage<EventDto>>
     {
         private readonly IBus _bus = bus;
