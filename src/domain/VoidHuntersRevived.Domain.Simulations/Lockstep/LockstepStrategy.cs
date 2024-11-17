@@ -1,10 +1,10 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Providers;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Graphics.Common.Constants;
 using Microsoft.Xna.Framework;
-using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -52,8 +52,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         internal LockstepStrategy(
             ISettingService settings,
-            Lazy<IEngineService> engineService,
-            Lazy<ILogger> logger) : base(StrategyTypeEnum.Lockstep, engineService, logger)
+            Lazy<ILoggerProvider> loggerProvider,
+            Lazy<IEngineService> engineService) : base(StrategyTypeEnum.Lockstep, loggerProvider, engineService)
         {
             _tickActions = new ActionSequenceGroup<OnTickSequenceGroup, Tick>(false);
             _history = [];

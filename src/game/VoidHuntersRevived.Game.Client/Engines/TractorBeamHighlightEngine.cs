@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             // }
             // catch (Exception e)
             // {
-            //     _logger.Warning(e, "{ClassName}::{MethodName} - Exception while attempting to render {TargetNodeVhId}. This may be caused by frame step desync and should self correct.", nameof(TractorBeamHighlightEngine), nameof(Step), targetNode.Id.VhId.Value);
+            //     _logger.Warning(e, "Exception while attempting to render {TargetNodeVhId}. This may be caused by frame step desync and should self correct.", targetNode.Id.VhId.Value);
             // }
             // _visibleRenderingService.End();
         }

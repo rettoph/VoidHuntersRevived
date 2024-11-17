@@ -1,8 +1,8 @@
 ﻿using Guppy.Core.Common.Collections;
+using Guppy.Core.Common.Providers;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Graphics.Common.Constants;
 using Microsoft.Xna.Framework;
-using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -18,8 +18,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     [SetSceneConfiguration<bool>(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, true)]
     public sealed class PredictiveStrategy(
-        Lazy<IEngineService> engineService,
-        Lazy<ILogger> logger) : Strategy(StrategyTypeEnum.Predictive, engineService, logger)
+        Lazy<ILoggerProvider> loggerProvider,
+        Lazy<IEngineService> engineService) : Strategy(StrategyTypeEnum.Predictive, loggerProvider, engineService)
     {
         private static readonly Pool<PredictedEvent> PredictionPool = new(ushort.MaxValue);
         private ILockstepStrategy _lockstep = null!;
@@ -95,19 +95,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             if (!@event.Data.IsPredictable)
             {
-                this.logger.Verbose("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", nameof(PredictiveStrategy), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value, @event.Data.IsPredictable);
+                this.logger.Verbose("Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", @event.Data.GetType().Name, @event.Id.Value, @event.Data.IsPredictable);
                 return;
             }
 
             ref PredictedEvent? predictiveEvent = ref _predictedEvents.GetOrEnqueue(@event.Id, out bool exists);
             if (exists == true)
             {
-                this.logger.Error("{ClassName}::{MethodName} - Unable to predict {EventName}, {EventId}; duplicate event?", nameof(PredictiveStrategy), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
+                this.logger.Error("Unable to predict {EventName}, {EventId}; duplicate event?", @event.Data.GetType().Name, @event.Id.Value);
                 return;
             }
 
             predictiveEvent = this.GetPredictionEvent(@event);
-            this.logger.Verbose("{ClassName}::{MethodName} - Predicting event {EventName}, {EventId}", nameof(PredictiveStrategy), nameof(Publish), @event.Data.GetType().Name, @event.Id.Value);
+            this.logger.Verbose("Predicting event {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
 
             if (@event.Data.IsPrivate)
             { // Private events may as well be immidiately confirmed, right? They will never get verified
@@ -123,12 +123,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 if (confirmedEvent.Data is EndOfTick endOfTick)
                 {
-                    this.logger.Verbose("{ClassName}::{MethodName} - End of Tick {TickId}", nameof(PredictiveStrategy), nameof(Confirm), endOfTick.TickId);
+                    this.logger.Verbose("End of Tick {TickId}", endOfTick.TickId);
 
                     break;
                 }
 
-                this.logger.Verbose("{ClassName}::{MethodName} - Confirming Event {EventName}, {EventId}", nameof(PredictiveStrategy), nameof(Confirm), confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
+                this.logger.Verbose("Confirming Event {EventName}, {EventId}", confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
 
                 if (_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published) == false)
                 {

@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Extensions.System;
+using Guppy.Core.Common.Providers;
 using Serilog;
 using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
@@ -13,7 +14,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
         public abstract void Publish(EventDto @event);
         public abstract void Revert(EventDto @event);
 
-        public static void PopulatePublishers(IEngineService engines, ILogger logger, Dictionary<Type, EventPublisher> publishers)
+        public static void PopulatePublishers(
+            IEngineService engines,
+            ILoggerProvider loggerProvider,
+            Dictionary<Type, EventPublisher> publishers)
         {
             Dictionary<Type, List<IEventEngine>> subscriptions = [];
             foreach (IEventEngine system in engines.OfType<IEventEngine>())
@@ -32,16 +36,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
             foreach ((Type type, List<IEventEngine> subscribers) in subscriptions)
             {
                 Type publisherType = typeof(EventPublisher<>).MakeGenericType(type);
-                EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, new object[] { logger, subscribers })!;
+                EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, new object[] { loggerProvider.Get(publisherType), subscribers })!;
                 publishers.Add(type, publisher);
             }
         }
 
-        public static Dictionary<Type, EventPublisher> BuildPublishers(IEngineService engines, ILogger logger)
+        public static Dictionary<Type, EventPublisher> BuildPublishers(IEngineService engines, ILoggerProvider loggerProvider)
         {
             Dictionary<Type, EventPublisher> publishers = [];
 
-            EventPublisher.PopulatePublishers(engines, logger, publishers);
+            EventPublisher.PopulatePublishers(engines, loggerProvider, publishers);
 
             return publishers;
         }
@@ -60,7 +64,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
         private void Publish(in VhId id, T data)
         {
-            _logger.Verbose("{ClassName}::{MethodName} - Publishing Event {EventId} {EventType}", nameof(EventPublisher), nameof(Publish), id.Value, typeof(T).Name);
+            _logger.Verbose("Publishing Event {EventId} {EventType}", id.Value, typeof(T).Name);
 
             foreach (IEventEngine<T> subscriber in _subscribers)
             {
@@ -80,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
                 return;
             }
 
-            _logger.Verbose("{ClassName}::{MethodName} - Reverting Event {EventId} {EventType}", nameof(EventPublisher), nameof(Revert), id.Value, typeof(T).Name);
+            _logger.Verbose("Reverting Event {EventId} {EventType}", id.Value, typeof(T).Name);
             foreach (IRevertEventEngine<T> reverter in _reverters)
             {
                 reverter.Revert(id, data);

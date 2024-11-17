@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             filter.Add(in id, in groupIndex);
 
             _tacticalService.AddUse(tractorable.TractorBeamEmitter);
-            _logger.Verbose("{ClassName}::{MethodName} - Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(OnSpawn), id.VhId.Value, tractorable.TractorBeamEmitter.VhId.Value);
+            _logger.Verbose("Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", id.VhId.Value, tractorable.TractorBeamEmitter.VhId.Value);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             filter.Remove(id);
 
             _tacticalService.RemoveUse(tractorable.TractorBeamEmitter);
-            _logger.Verbose("{ClassName}::{MethodName} - Removed tractorable {TractorableId} from emitter {TractorBeamEmitterId}", nameof(TractorableEngine), nameof(OnDespawn), id, tractorable.TractorBeamEmitter.VhId.Value);
+            _logger.Verbose("Removed tractorable {TractorableId} from emitter {TractorBeamEmitterId}", id, tractorable.TractorBeamEmitter.VhId.Value);
         }
     }
 }

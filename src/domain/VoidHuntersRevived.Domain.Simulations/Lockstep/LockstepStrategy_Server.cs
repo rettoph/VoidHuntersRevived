@@ -1,10 +1,10 @@
-﻿using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Common.Providers;
+using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
-using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -18,8 +18,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     public sealed class LockstepStrategy_Server(
         IBus bus,
         ISettingService settings,
-        Lazy<IEngineService> engineService,
-        Lazy<ILogger> logger) : LockstepStrategy(settings, engineService, logger),
+        Lazy<ILoggerProvider> loggerProvider,
+        Lazy<IEngineService> engineService) : LockstepStrategy(settings, loggerProvider, engineService),
         ISubscriber<INetIncomingMessage<EventDto>>
     {
         private readonly IBus _bus = bus;

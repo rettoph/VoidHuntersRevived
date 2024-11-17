@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Node node, in GroupIndex groupIndex)
         {
-            _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnSpawn), id.VhId);
+            _logger.Verbose("EntityId = {EntityId}", id.VhId);
 
             ref var filter = ref _entityQueryService.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
             filter.Add(id, groupIndex);
@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Node node, in GroupIndex groupIndex)
         {
-            _logger.Verbose("{ClassName}::{MethodName} - EntityId = {EntityId}", nameof(NodeEngine), nameof(OnDespawn), id.VhId);
+            _logger.Verbose("EntityId = {EntityId}", id.VhId);
 
             ref var filter = ref _entityQueryService.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
             filter.Remove(id.EGID);
@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void SetLocalTransformation(ref Node node, in GroupIndex groupIndex, in Location treeLocation)
         {
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(NodeEngine), nameof(SetLocalTransformation), nameof(Node.LocalLocation), nameof(Node), node.Id.VhId.Value);
+            _logger.Verbose("Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(Node.LocalLocation), nameof(Node), node.Id.VhId.Value);
 
             node.WorldTransform(treeLocation.Transformation);
 
@@ -114,7 +114,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 node.SetLocationTransformation(FixMatrix.Identity);
 
                 var id = _entityQueryService.QueryByGroupIndex<EntityId>(groupIndex);
-                _logger.Error(ex, "{ClassName}::{MethodName} - There was a fatal error attempting to set node transformation for node {NodeId}.", nameof(NodeEngine), nameof(SetLocalTransformation), id.VhId.Value);
+                _logger.Error(ex, "There was a fatal error attempting to set node transformation for node {NodeId}.", id.VhId.Value);
                 _entitySpawnService.Despawn(NameSpace<NodeEngine>.Instance, id);
             }
         }

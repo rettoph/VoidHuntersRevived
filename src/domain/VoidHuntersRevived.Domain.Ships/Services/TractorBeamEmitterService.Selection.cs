@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 ref Node node = ref _entityQueryService.QueryByGroupIndex<Node>(nodeGroupIndex);
                 if (_entityQueryService.IsSpawned(node.TreeId))
                 {
-                    _logger.Verbose("{ClassName}::{MethodName} - Selecting {NodeId} with TractorBeamEmitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, tractorBeamEmitterId.VhId);
+                    _logger.Verbose("Selecting {NodeId} with TractorBeamEmitter {TractorBeamEmitterId}", nodeId.VhId, tractorBeamEmitterId.VhId);
 
                     this.Strategy.Publish(
                         sourceId: NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId),
@@ -44,23 +44,23 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
                     if (_nodeService.IsHead(in node))
                     {
-                        _logger.Verbose("{ClassName}::{MethodName} - Despawning Node {NodeVhId} Tree {TreeId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, node.TreeId.VhId);
+                        _logger.Verbose("Despawning Node {NodeVhId} Tree {TreeId}", nodeId.VhId, node.TreeId.VhId);
                         _entitySpawnService.Despawn(sourceId, node.TreeId);
                     }
                     else
                     {
-                        _logger.Verbose("{ClassName}::{MethodName} - Despawning Node {NodeVhId}", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId);
+                        _logger.Verbose("Despawning Node {NodeVhId}", nodeId.VhId);
                         _entitySpawnService.Despawn(sourceId, nodeId);
                     }
                 }
                 else
                 {
-                    _logger.Warning("{ClassName}::{MethodName} - Node {NodeId} Tree {TreeId} does not exist", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId, node.TreeId.VhId);
+                    _logger.Warning("Node {NodeId} Tree {TreeId} does not exist", nodeId.VhId, node.TreeId.VhId);
                 }
             }
             else
             {
-                _logger.Warning("{ClassName}::{MethodName} - Node {NodeId} does not exist", nameof(TractorBeamEmitterService), nameof(Select), nodeId.VhId);
+                _logger.Warning("Node {NodeId} does not exist", nodeId.VhId);
             }
         }
 
@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
                     if (statuses[index].IsDespawned)
                     {
-                        _logger.Warning("{ClassName}::{MethodName} - Unable to deselect {TractorableId}, despawned. Multiple deselect calls in a single frame?", nameof(TractorBeamEmitterService), nameof(Deselect), entityIds[index].VhId.Value);
+                        _logger.Warning("Unable to deselect {TractorableId}, despawned. Multiple deselect calls in a single frame?", entityIds[index].VhId.Value);
                         continue;
                     }
 
@@ -101,7 +101,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             VhId nextSourceId = NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId);
             while (_deselecteds.TryDequeue(out (EntityId id, EntityId headId, Location location) deselected))
             {
-                _logger.Verbose("{ClassName}::{MethodName} - Attempting to deselect {TreeId} with emitter {TractorBeamEmitterId}", nameof(TractorBeamEmitterService), nameof(Deselect), deselected.id.VhId.Value, tractorBeamEmitterId.VhId);
+                _logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterId}", deselected.id.VhId.Value, tractorBeamEmitterId.VhId);
                 this.Strategy.Publish(new EventDto()
                 {
                     SourceId = nextSourceId,

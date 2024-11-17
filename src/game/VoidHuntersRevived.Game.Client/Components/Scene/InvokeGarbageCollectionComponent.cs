@@ -29,18 +29,18 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
                     return;
                 }
 
-                _logger.Warning("{ClassName}::{MethodName} - Too soon, try again later.", nameof(InvokeGarbageCollectionComponent), nameof(Process));
+                _logger.Warning("Too soon, try again later.");
 
                 return;
             }
 
             long preAllocatedBytes = GC.GetTotalMemory(true);
-            _logger.Debug("{ClassName}::{MethodName} - Invoking garbage collection.", nameof(InvokeGarbageCollectionComponent), nameof(Process));
+            _logger.Debug("Invoking garbage collection.");
             GC.Collect();
             GC.WaitForPendingFinalizers();
             long postAllocatedBytes = GC.GetTotalMemory(true);
 
-            _logger.Debug("{ClassName}::{MethodName} - Done. Cleared {Memory}", nameof(InvokeGarbageCollectionComponent), nameof(Process), BytesToString(preAllocatedBytes - postAllocatedBytes));
+            _logger.Debug("Done. Cleared {Memory}", BytesToString(preAllocatedBytes - postAllocatedBytes));
 
             _lastInvocation = DateTime.Now;
         }

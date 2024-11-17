@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Presentation.Core.Loaders
             {
                 IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
 
-                string template = "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} {SourceContext} - {Message:lj}{NewLine}{Exception}";
+                string template = "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} - {Message:lj}{NewLine}{Exception}";
                 if (strategy.HasValue)
                 {
                     IStateService states = scope.Resolve<IStateService>();

@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public NodeSocket GetSocket(NodeSocketId socketId)
         {
-            _logger.Verbose("{ClassName}::{MethodName} - Locating {NodeId}:{SocketIndex} - Node EGID {EntityId}:{GroupId}", nameof(SocketService), nameof(GetSocket), socketId.NodeId.VhId.Value, socketId.Index, socketId.NodeId.EGID.entityID, socketId.NodeId.EGID.groupID);
+            _logger.Verbose("Locating {NodeId}:{SocketIndex} - Node EGID {EntityId}:{GroupId}", socketId.NodeId.VhId.Value, socketId.Index, socketId.NodeId.EGID.entityID, socketId.NodeId.EGID.groupID);
 
             ref Node node = ref _entityQueryService.QueryById<Node>(socketId.NodeId, out GroupIndex groupIndex);
             var (sockets, _) = _entityQueryService.QueryEntities<Sockets>(groupIndex.GroupID);

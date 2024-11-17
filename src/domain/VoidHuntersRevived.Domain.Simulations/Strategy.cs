@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Providers;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
 using Serilog;
@@ -14,14 +15,15 @@ namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Strategy : Scene, IStrategy, IDisposable
     {
-        private readonly Lazy<ILogger> _logger;
+        private ILogger? _logger;
+        private readonly Lazy<ILoggerProvider> _loggerProvider;
         private readonly Lazy<IEngineService> _engineService;
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
         private readonly ActionSequenceGroup<OnDrawSequenceGroup, GameTime> _drawActions;
         private readonly ActionSequenceGroup<OnStepSequenceGroup, Step> _stepActions;
 
-        protected ILogger logger => _logger.Value;
+        protected ILogger logger => _logger ??= _loggerProvider.Value.Get();
 
         public readonly StrategyTypeEnum Type;
         public ISimulation Simulation { get; private set; } = null!;
@@ -33,11 +35,11 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Strategy(
             StrategyTypeEnum type,
-            Lazy<IEngineService> engineService,
-            Lazy<ILogger> logger)
+            Lazy<ILoggerProvider> loggerProvider,
+            Lazy<IEngineService> engineService)
         {
             _engineService = engineService;
-            _logger = logger;
+            _loggerProvider = loggerProvider;
             _enqueued = new Queue<EventDto>();
             _publishers = [];
             _stepActions = new ActionSequenceGroup<OnStepSequenceGroup, Step>(false);
@@ -57,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             this.Engines.Initialize(this);
 
-            EventPublisher.PopulatePublishers(this.Engines, this.logger, _publishers);
+            EventPublisher.PopulatePublishers(this.Engines, _loggerProvider.Value, _publishers);
 
             _drawActions.Add(this.Engines);
 

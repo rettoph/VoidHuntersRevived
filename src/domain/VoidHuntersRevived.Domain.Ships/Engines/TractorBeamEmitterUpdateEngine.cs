@@ -61,13 +61,13 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
                     if (statuses[index].IsDespawned == true)
                     {
-                        _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsDespawned = {IsDespawned}.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId, statuses[index].IsDespawned);
+                        _logger.Warning("TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsDespawned = {IsDespawned}.", tractorBeamEmitterId.VhId, tractorableId.VhId, statuses[index].IsDespawned);
                         continue;
                     }
 
                     if (enableds[index] == false)
                     {
-                        _logger.Warning("{ClassName}::{MethodName} - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = {Enabled}.", nameof(TractorBeamEmitterUpdateEngine), nameof(UpdateTractorBeamEmitterTractorables), tractorBeamEmitterId.VhId, tractorableId.VhId, enableds[index].Value);
+                        _logger.Warning("TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = {Enabled}.", tractorBeamEmitterId.VhId, tractorableId.VhId, enableds[index].Value);
                         _tractorBeamEmitterService.Deselect(
                             sourceId: HashBuilder<TractorBeamEmitterUpdateEngine, VhId>.Instance.Calculate(tractorableId.VhId),
                             tractorBeamEmitterId: tractorBeamEmitterId,

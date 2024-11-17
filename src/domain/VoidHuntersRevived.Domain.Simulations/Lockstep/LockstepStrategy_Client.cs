@@ -1,9 +1,9 @@
-﻿using Guppy.Core.Network.Common;
+﻿using Guppy.Core.Common.Providers;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
-using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -17,8 +17,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         INetScope<IStrategy> netScope,
         TickBuffer ticks,
         ISettingService settings,
-        Lazy<IEngineService> engineService,
-        Lazy<ILogger> logger) : LockstepStrategy(settings, engineService, logger),
+        Lazy<ILoggerProvider> loggerProvider,
+        Lazy<IEngineService> engineService) : LockstepStrategy(settings, loggerProvider, engineService),
         IDisposable
     {
         private readonly INetScope<IStrategy> _netScope = netScope;

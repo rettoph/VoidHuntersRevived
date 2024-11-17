@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             writer.Write(id.VhId);
             writer.Write(templateKey.Id);
 
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to serialize {EntityId} of type {EntityTemplate}", nameof(EntityWriter), nameof(InternalSerialize), id.VhId, templateKey);
+            _logger.Verbose("Preparing to serialize {EntityId} of type {EntityTemplate}", id.VhId, templateKey);
 
             _entityTemplateService.GetByKey(templateKey).SerializeInstanceEntity(ref writer, in id, in groupIndex, in options);
         }
@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             VhId entityVhId = reader.ReadVhId();
             Key<IEntityTemplate> entityTemplateKey = Key<IEntityTemplate>.GetById(reader.Read<VhId>());
 
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to deserialize {EntityId} of type {EntityTemplate} with seed {seed}", nameof(EntityReader), nameof(InternalDeserialize), entityVhId.Value, entityTemplateKey, options.Seed.Value);
+            _logger.Verbose("Preparing to deserialize {EntityId} of type {EntityTemplate} with seed {seed}", entityVhId.Value, entityTemplateKey, options.Seed.Value);
 
             return _entitySpawnService.Spawn(sourceId, entityTemplateKey, entityVhId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
