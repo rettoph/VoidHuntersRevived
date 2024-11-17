@@ -25,13 +25,13 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         {
             if (!_entityQueryService.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId))
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - ShipVhId {ShipId} not found.", nameof(TractorBeamEmitterInputEngine), nameof(Process), nameof(Input_TractorBeamEmitter_Select), data.ShipVhId.Value);
+                _logger.Warning("ShipVhId {ShipId} not found.", data.ShipVhId.Value);
                 return;
             }
 
             if (!_entityQueryService.TryGetId(data.TargetVhId, out EntityId targetNodeId))
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - TargetVhId {TargetId} not found.", nameof(TractorBeamEmitterInputEngine), nameof(Process), nameof(Input_TractorBeamEmitter_Select), data.TargetVhId.Value);
+                _logger.Warning("TargetVhId {TargetId} not found.", data.TargetVhId.Value);
                 return;
             }
 
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         {
             if (!_entityQueryService.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId))
             {
-                _logger.Warning("{ClassName}::{MethodName}<{GenericTypeName}> - ShipVhId {ShipId} not found.", nameof(TractorBeamEmitterInputEngine), nameof(Process), nameof(Input_TractorBeamEmitter_Deselect), data.ShipVhId.Value);
+                _logger.Warning("ShipVhId {ShipId} not found.", data.ShipVhId.Value);
                 return;
             }
 

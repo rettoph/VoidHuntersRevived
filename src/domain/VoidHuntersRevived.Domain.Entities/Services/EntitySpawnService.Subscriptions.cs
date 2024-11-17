@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         public void Process(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityId = {EntityId}", nameof(EntitySpawnService), nameof(Process), nameof(SpawnEntity), data.VhId);
+            _logger.Verbose("EntityId = {EntityId}", data.VhId);
 
             if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == true)
             {
@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityId = {EntityId}", nameof(EntitySpawnService), nameof(Process), nameof(SpawnEntity), data.VhId);
+            _logger.Verbose("EntityId = {EntityId}", data.VhId);
 
             if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == true)
             {
@@ -149,7 +149,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void InternalRevert(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), data.VhId);
+            _logger.Verbose("EntityVhId = {EntityVhId}", data.VhId);
 
             if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == false)
             {
@@ -200,7 +200,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, DespawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntitySpawnService), nameof(Process), nameof(DespawnEntity), data.VhId);
+            _logger.Verbose("EntityVhId = {EntityVhId}", data.VhId);
 
             if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == false)
             {
@@ -293,7 +293,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, DespawnEntity data)
         {
-            _logger.Verbose("{ClassName}::{MethodName}<{GenericType}> - EntityVhId = {EntityVhId}", nameof(EntitySpawnService), nameof(Revert), nameof(DespawnEntity), data.VhId);
+            _logger.Verbose("EntityVhId = {EntityVhId}", data.VhId);
 
             if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == false)
             {

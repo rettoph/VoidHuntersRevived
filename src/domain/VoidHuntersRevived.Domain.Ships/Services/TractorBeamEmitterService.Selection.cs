@@ -143,7 +143,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "{ClassName}::{MethodName}<{GenericTypeName}> - Exception thrown", nameof(TractorBeamEmitterService), nameof(Process), nameof(TractorBeamEmitter_Select));
+                _logger.Error(ex, "Exception thrown");
                 throw new SimulationOutOfSyncException(ex.Message, ex);
             }
         }
@@ -176,7 +176,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "{ClassName}::{MethodName}<{GenericTypeName}> - Exception thrown", nameof(TractorBeamEmitterService), nameof(Process), nameof(TractorBeamEmitter_Select));
+                _logger.Error(ex, "Exception thrown");
                 throw new SimulationOutOfSyncException(ex.Message, ex);
             }
         }
