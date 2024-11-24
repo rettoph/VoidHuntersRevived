@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Common.Providers;
+﻿using Guppy.Core.Network.Common.Providers;
 using Guppy.Core.Network.Common.Serialization;
 using Guppy.Core.Network.Common.Services;
 using LiteNetLib.Utils;
@@ -9,7 +8,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 {
-    [AutoLoad]
     internal sealed class TickNetSerializer : NetSerializer<Tick>
     {
         private INetSerializerService _serializers = default!;

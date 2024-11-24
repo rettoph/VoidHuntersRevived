@@ -1,12 +1,10 @@
-﻿using Guppy.Core.Common.Attributes;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
+﻿using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
-    [AutoLoad]
     public sealed class BodyCollisionEngine : StrategyEngine
     {
         private readonly IEntityQueryService _entityQueryService;

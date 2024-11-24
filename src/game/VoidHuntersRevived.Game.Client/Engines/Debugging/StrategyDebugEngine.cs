@@ -9,7 +9,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
-    [AutoLoad]
     [StrategyFilter<Strategy>]
     internal class StrategyDebugEngine(IImGui imgui) : StrategyEngine<Strategy>, IOnDebugEngine
     {

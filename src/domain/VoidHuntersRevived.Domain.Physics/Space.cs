@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Serilog;
+﻿using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
@@ -10,7 +9,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
-    [AutoLoad]
     public class Space : StrategyEngine, ISpace
     {
         private readonly Dictionary<VhId, Body> _bodies;
@@ -44,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Physics
             if (_bodies.TryGetValue(id.VhId, out Body? cached) == false)
             {
                 _logger.Verbose("Enabling {Id}", id.VhId);
-                Body body = new Body(this, id);
+                Body body = new(this, id);
                 _bodies.Add(id.VhId, body);
                 this.OnBodyAwakeChanged(body);
                 this.OnBodyEnabled(body);

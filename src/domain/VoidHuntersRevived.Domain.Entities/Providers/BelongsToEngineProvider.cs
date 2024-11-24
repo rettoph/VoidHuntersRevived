@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Serilog;
+﻿using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
@@ -8,7 +7,6 @@ using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Providers
 {
-    [AutoLoad]
     internal class BelongsToEngineProvider(
         IEntityTemplateFragmentService entityTemplateService,
         IEntityQueryService entityQueryService,

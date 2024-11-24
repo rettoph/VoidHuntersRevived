@@ -2,12 +2,10 @@
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.ResourceTypes;
-using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Domain.Pieces.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
-    [AutoLoad]
     internal class BlueprintResourceType(IFileService files) : SimpleResourceType<Blueprint>
     {
         private readonly IFileService _files = files;

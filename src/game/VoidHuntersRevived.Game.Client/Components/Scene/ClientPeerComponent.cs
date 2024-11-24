@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    [AutoLoad]
     [SceneFilter<MultiplayerGameScene>]
     internal class ClientPeerComponent(IClientPeer client) : ISceneComponent<IScene>, IUpdatableComponent
     {

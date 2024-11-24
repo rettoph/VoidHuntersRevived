@@ -1,12 +1,9 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    [Service<ComponentSerializer>(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public abstract class ComponentSerializer
     {
         public readonly Type Type;

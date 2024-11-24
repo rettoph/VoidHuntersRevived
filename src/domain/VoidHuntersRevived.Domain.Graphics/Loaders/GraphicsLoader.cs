@@ -1,12 +1,18 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Json.Converters;
 using Guppy.Engine.Common.Loaders;
 using System.Text.Json.Serialization;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
+using VoidHuntersRevived.Domain.Graphics.Engines;
+using VoidHuntersRevived.Domain.Graphics.Providers;
 using VoidHuntersRevived.Domain.Graphics.Serialization.Json;
 using VoidHuntersRevived.Domain.Graphics.Services;
+using VoidHuntersRevived.Domain.Pieces.ResourceTypes;
+using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Graphics.Loaders
 {
@@ -22,6 +28,11 @@ namespace VoidHuntersRevived.Domain.Graphics.Loaders
             builder.RegisterType<PrimitiveSequenceGroupConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<PrimitiveTypeConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<PolymorphicConverter<IPrimitiveType>>().As<JsonConverter>().SingleInstance();
+
+            builder.RegisterResourceType<PrimitiveTypeResourceType>();
+
+            builder.RegisterType<PrimitiveEntityEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
+            builder.RegisterEngine<DrawPrimitivesEngine>();
         }
     }
 }

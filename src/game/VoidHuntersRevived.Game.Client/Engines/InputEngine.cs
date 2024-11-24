@@ -25,7 +25,6 @@ using VoidHuntersRevived.Game.Core.Events;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [AutoLoad]
     [PeerFilter(PeerType.Client)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal class InputEngine(

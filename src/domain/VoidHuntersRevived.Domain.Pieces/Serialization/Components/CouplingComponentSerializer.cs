@@ -1,14 +1,13 @@
-﻿using Guppy.Core.Common.Attributes;
-using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 
-namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
+namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
 {
-    [AutoLoad]
     public sealed class CouplingComponentSerializer(IEntityQueryService entityQueryService) : ComponentSerializer<Coupling>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;

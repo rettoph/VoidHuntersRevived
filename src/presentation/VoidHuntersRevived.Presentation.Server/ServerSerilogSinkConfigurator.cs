@@ -1,11 +1,9 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common;
+﻿using Guppy.Game.Common;
 using Serilog;
 using VoidHuntersRevived.Presentation.Core;
 
 namespace VoidHuntersRevived.Presentation.Client
 {
-    [AutoLoad]
     internal sealed class ServerSerilogSinkConfigurator(ITerminal terminal) : ISerilogSinkConfigurator
     {
         private readonly ITerminal _terminal = terminal;

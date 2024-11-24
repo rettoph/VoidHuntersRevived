@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Serilog;
+﻿using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -9,7 +8,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
-    [AutoLoad]
     public sealed class TractorBeamEmitterInputEngine(
         ITractorBeamEmitterService tractorBeamEmitterService,
         IEntityQueryService entityQueryService,

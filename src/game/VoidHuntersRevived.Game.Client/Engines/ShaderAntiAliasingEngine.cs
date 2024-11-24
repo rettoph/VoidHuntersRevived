@@ -9,7 +9,6 @@ using VoidHuntersRevived.Game.Core.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [AutoLoad]
     [GraphicsEnabled]
     internal class ShaderAntiAliasingEngine : StrategyEngine, IDisposable
     {

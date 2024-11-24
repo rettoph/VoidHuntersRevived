@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Providers;
@@ -9,7 +8,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    [AutoLoad]
     internal sealed class StrategyTypeStateProvider : BaseStateProvider
     {
         public readonly Lazy<IOptional<IStrategy>>? _strategy;

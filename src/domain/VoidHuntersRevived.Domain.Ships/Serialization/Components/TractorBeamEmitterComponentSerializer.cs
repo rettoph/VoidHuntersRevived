@@ -1,10 +1,8 @@
-﻿using Guppy.Core.Common.Attributes;
-using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+﻿using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 
-namespace VoidHuntersRevived.Domain.Ships.Common.Serialization.Components
+namespace VoidHuntersRevived.Domain.Ships.Serialization.Components
 {
-    [AutoLoad]
     public sealed class TractorBeamEmitterComponentSerializer : NotImplementedComponentSerializer<TractorBeamEmitter>
     {
     }

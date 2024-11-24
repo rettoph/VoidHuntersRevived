@@ -11,7 +11,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
-    [AutoLoad]
     [GraphicsEnabled]
     public class DrawPrimitivesEngine(
         IPrimitiveService primitiveService,

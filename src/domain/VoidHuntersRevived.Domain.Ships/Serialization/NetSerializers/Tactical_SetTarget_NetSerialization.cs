@@ -1,11 +1,9 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Common.Serialization;
+﻿using Guppy.Core.Network.Common.Serialization;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 
 namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
 {
-    [AutoLoad]
     internal sealed class Tactical_SetTarget_NetSerialization : NetSerializer<Tactical_SetTarget>
     {
         public override Tactical_SetTarget Deserialize(NetDataReader reader)

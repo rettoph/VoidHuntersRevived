@@ -7,7 +7,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Core.Components.Scene
 {
-    [AutoLoad]
     [SceneFilter<VoidHuntersGameScene>]
     internal class SimulationFrameComponent(ISimulationService simulationService) : ISceneComponent, IDrawableComponent, IUpdatableComponent
     {

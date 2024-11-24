@@ -16,7 +16,6 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [AutoLoad]
     [GraphicsEnabled]
     public class DrawVertexVisibleEngine(
         IEntityQueryService entityQueryService,

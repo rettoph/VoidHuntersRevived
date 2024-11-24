@@ -20,7 +20,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
-    [AutoLoad]
     public sealed class TractorBeamEmitterUpdateEngine(
         IEntityQueryService entityQueryService,
         ISpace space,

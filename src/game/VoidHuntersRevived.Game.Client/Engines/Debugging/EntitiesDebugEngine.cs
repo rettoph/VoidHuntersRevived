@@ -10,7 +10,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
-    [AutoLoad]
     internal class EntitiesDebugEngine(IImGui imgui, IEntityQueryService entityQueryService) : StrategyEngine, IOnDebugEngine
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;

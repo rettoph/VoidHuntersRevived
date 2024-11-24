@@ -65,6 +65,7 @@ namespace VoidHuntersRevived.Presentation.Client
                 var engine = new GameEngine(VoidHuntersContextBuilder.ClientContext, builder =>
                 {
                     builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window).RegisterCoreNetworkServices();
+                    builder.RegisterType<ClientSerilogSinkConfigurator>().As<ISerilogSinkConfigurator>().InstancePerLifetimeScope();
                 }).Start();
 
                 if (_internalServer)

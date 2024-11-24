@@ -1,16 +1,14 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Messaging.Common;
 using Guppy.Game.Common.Components;
 using Serilog;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    [AutoLoad]
     internal class InvokeGarbageCollectionComponent(ILogger logger) : ISceneComponent,
         ISubscriber<Input_Invoke_Garbage_Collection>
     {
-        private ILogger _logger = logger;
+        private readonly ILogger _logger = logger;
         private DateTime _lastInvocation;
         private DateTime _lastWarning;
 
@@ -45,7 +43,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
             _lastInvocation = DateTime.Now;
         }
 
-        static string BytesToString(long byteCount)
+        private static string BytesToString(long byteCount)
         {
             string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" }; //Longs run out around EB
             if (byteCount == 0)

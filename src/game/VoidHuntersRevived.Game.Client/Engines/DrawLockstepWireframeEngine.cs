@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Messaging.Common;
 using Serilog;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
@@ -9,7 +8,6 @@ using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal sealed class DrawLockstepWireframeEngine(
         ILogger logger,

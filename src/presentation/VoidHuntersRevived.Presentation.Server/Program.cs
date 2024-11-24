@@ -9,11 +9,13 @@ using Guppy.Game.Helpers;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Game.Server;
+using VoidHuntersRevived.Presentation.Client;
 using VoidHuntersRevived.Presentation.Core;
 
 var engine = new GameEngine(VoidHuntersContextBuilder.ServerContext, builder =>
 {
     builder.RegisterConsoleGameServices().RegisterCoreNetworkServices();
+    builder.RegisterType<ServerSerilogSinkConfigurator>().As<ISerilogSinkConfigurator>().InstancePerLifetimeScope();
 }).Start();
 
 AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>

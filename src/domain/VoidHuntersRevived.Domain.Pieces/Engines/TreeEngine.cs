@@ -13,7 +13,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
-    [AutoLoad]
     public sealed class TreeEngine(
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,

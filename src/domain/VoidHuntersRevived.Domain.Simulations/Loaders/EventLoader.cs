@@ -3,6 +3,7 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Loaders;
 using LiteNetLib;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers;
 
 namespace VoidHuntersRevived.Domain.Simulations.Loaders
 {
@@ -11,7 +12,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.AddNetMessageType<EventDto>(DeliveryMethod.ReliableUnordered, 0);
+            services.RegisterNetMessageType<EventDto>(DeliveryMethod.ReliableUnordered, 0);
+
+            services.RegisterNetSerializer<EventDtoNetSerializer>();
+            services.RegisterNetSerializer<Simulation_Begin_NetSerializer>();
+            services.RegisterNetSerializer<UserJoinedNetSerializer>();
         }
     }
 }

@@ -16,7 +16,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [AutoLoad]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     [PeerFilter(PeerType.Client)]
     internal sealed class CameraEngine : StrategyEngine, IOnDrawEngine,

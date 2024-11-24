@@ -8,7 +8,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
-    [AutoLoad]
     public class BodyLocationPredictiveSynchronizationEngine(ISpace space) : StrategyEngine, IPredictiveSynchronizationEngine
     {
         private readonly ISpace _predictiveSpace = space;

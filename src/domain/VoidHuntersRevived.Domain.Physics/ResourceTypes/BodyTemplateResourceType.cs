@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Files.Common;
+﻿using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.ResourceTypes;
@@ -7,7 +6,6 @@ using VoidHuntersRevived.Domain.Physics.Common;
 
 namespace VoidHuntersRevived.Domain.Physics.ResourceTypes
 {
-    [AutoLoad]
     public class BodyTemplateResourceType(IFileService files) : SimpleResourceType<IBodyTemplate>
     {
         private readonly IFileService _files = files;

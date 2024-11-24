@@ -6,7 +6,9 @@ using Serilog;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
+using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
+using VoidHuntersRevived.Domain.Teams.Engines;
 using VoidHuntersRevived.Domain.Teams.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Loaders
@@ -20,6 +22,8 @@ namespace VoidHuntersRevived.Domain.Teams.Loaders
             builder.RegisterType<ColorSchemeJsonConverter>().As<JsonConverter>().SingleInstance();
 
             builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterEngine<ColorSchemeEngine>();
 
             builder.Configure<LoggerConfiguration>((scope, config) =>
             {

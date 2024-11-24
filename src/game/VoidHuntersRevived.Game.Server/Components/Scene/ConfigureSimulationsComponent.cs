@@ -9,7 +9,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Server.Guppy
 {
-    [AutoLoad]
     [SceneFilter<ServerGameScene>]
     internal class ConfigureSimulationsComponent(ISimulationService simulationService) : ISceneComponent<IScene>
     {

@@ -4,7 +4,6 @@ using Guppy.Core.Network.Common.Attributes;
 using Guppy.Core.Network.Common.Enums;
 using Serilog;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -15,7 +14,6 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
-    [AutoLoad]
     [PeerFilter(PeerType.Server)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal class LockstepServer_TickEngine(ILogger logger, INetScope<IStrategy> scope) : StrategyEngine<ILockstepStrategy>,

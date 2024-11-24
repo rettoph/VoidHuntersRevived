@@ -9,7 +9,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    [AutoLoad]
     [SceneFilter<LocalGameScene>]
     internal class ConfigureSimulationsComponent(ISimulationService simulationService) : ISceneComponent<IScene>
     {

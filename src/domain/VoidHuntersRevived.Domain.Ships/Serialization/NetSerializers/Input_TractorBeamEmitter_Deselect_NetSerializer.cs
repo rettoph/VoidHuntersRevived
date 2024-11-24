@@ -1,12 +1,10 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Common.Serialization;
+﻿using Guppy.Core.Network.Common.Serialization;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 
 namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
 {
-    [AutoLoad]
     internal class Input_TractorBeamEmitter_Deselect_NetSerializer : NetSerializer<Input_TractorBeamEmitter_Deselect>
     {
         public override Input_TractorBeamEmitter_Deselect Deserialize(NetDataReader reader)

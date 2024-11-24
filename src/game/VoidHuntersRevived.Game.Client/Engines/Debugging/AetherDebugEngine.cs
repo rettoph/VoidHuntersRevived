@@ -20,7 +20,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
-    [AutoLoad]
     internal class AetherDebugEngine : StrategyEngine, IOnDrawEngine, IImGuiComponent, IOnDebugEngine
     {
         public string? Group => typeof(World).Name;

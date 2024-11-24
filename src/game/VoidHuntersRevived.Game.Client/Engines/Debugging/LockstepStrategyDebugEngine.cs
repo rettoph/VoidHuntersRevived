@@ -12,7 +12,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
-    [AutoLoad]
     [StrategyFilter<ILockstepStrategy>]
     internal class LockstepStrategyDebugEngine(
         IImGui imgui,

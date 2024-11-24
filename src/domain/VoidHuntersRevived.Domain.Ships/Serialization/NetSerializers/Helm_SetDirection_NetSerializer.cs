@@ -1,12 +1,10 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Common.Serialization;
+﻿using Guppy.Core.Network.Common.Serialization;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 
 namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
 {
-    [AutoLoad]
     internal sealed class Helm_SetDirection_NetSerializer : NetSerializer<Helm_SetDirection>
     {
         public override Helm_SetDirection Deserialize(NetDataReader reader)

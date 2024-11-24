@@ -10,7 +10,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
-    [AutoLoad]
     public sealed class BodyLocationEngine : StrategyEngine, IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService;

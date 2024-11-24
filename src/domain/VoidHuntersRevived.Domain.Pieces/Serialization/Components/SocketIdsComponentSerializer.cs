@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
@@ -9,9 +8,8 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
-namespace VoidHuntersRevived.Domain.Pieces.Common.Serialization.Components
+namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
 {
-    [AutoLoad]
     public class SocketIdsComponentSerializer(IEntityQueryService entityQueryService, ISocketService socketService) : ComponentSerializer<Sockets>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;

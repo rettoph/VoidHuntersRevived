@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Common;
+﻿using Guppy.Core.Network.Common;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -17,7 +16,6 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Game.Core.Engines
 {
-    [AutoLoad]
     internal sealed class UserEngine(
         ITreeService treeService,
         ITeamService teamService,

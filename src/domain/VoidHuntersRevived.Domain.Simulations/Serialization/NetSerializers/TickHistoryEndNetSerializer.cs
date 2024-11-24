@@ -1,11 +1,9 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Common.Serialization;
+﻿using Guppy.Core.Network.Common.Serialization;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 {
-    [AutoLoad]
     internal sealed class TickHistoryEndNetSerializer : NetSerializer<TickHistoryEnd>
     {
         public override TickHistoryEnd Deserialize(NetDataReader reader)

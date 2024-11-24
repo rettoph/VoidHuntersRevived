@@ -9,7 +9,6 @@ using VoidHuntersRevived.Domain.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
-    [AutoLoad]
     [StrategyFilter<LockstepStrategy_Server>]
     internal class LockstepStrategy_ServerDebugEngine(IImGui imgui) : StrategyEngine<LockstepStrategy_Server>, IOnDebugEngine
     {

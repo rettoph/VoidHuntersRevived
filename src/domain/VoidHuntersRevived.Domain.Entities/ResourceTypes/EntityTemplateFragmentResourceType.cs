@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Files.Common;
+﻿using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.ResourceTypes;
@@ -7,7 +6,6 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.ResourceTypes
 {
-    [AutoLoad]
     internal class EntityTemplateFragmentResourceType(IFileService files) : SimpleResourceType<EntityTemplateFragment>
     {
         private readonly IFileService _files = files;

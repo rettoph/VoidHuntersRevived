@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
@@ -8,7 +7,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Ships.Engines
 {
-    [AutoLoad]
     public sealed class HelmEngine(
         IEntityQueryService entityQueryService) : StrategyEngine,
         IEventEngine<Helm_SetDirection>

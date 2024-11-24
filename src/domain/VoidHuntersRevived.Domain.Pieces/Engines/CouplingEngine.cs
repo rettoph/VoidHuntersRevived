@@ -11,7 +11,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
-    [AutoLoad]
     public sealed class CouplingEngine(ISocketService socketService, ILogger logger) : StrategyEngine,
         IOnSpawnEngine<Coupling>,
         IOnDespawnEngine<Coupling>

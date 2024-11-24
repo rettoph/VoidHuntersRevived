@@ -13,7 +13,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [AutoLoad]
     [GraphicsEnabled]
     internal class TractorBeamHighlightEngine(
         ICamera2D camera,

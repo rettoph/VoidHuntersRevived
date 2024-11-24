@@ -10,7 +10,6 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    [AutoLoad]
     [SceneFilter<IStrategy>]
     internal class ImGuiEngineComponent : ISceneComponent<IStrategy>, IImGuiComponent
     {

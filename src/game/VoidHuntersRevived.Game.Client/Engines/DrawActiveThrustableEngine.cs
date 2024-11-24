@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Graphics.Common;
+﻿using Guppy.Game.Graphics.Common;
 using Guppy.Game.Graphics.Common.Attributes;
 using Serilog;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -7,7 +6,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [AutoLoad]
     [GraphicsEnabled]
     internal sealed class DrawActiveThrustableEngine(
         ILogger logger,

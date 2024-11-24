@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Events;
 namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 {
     [AutoLoad]
-    internal sealed class UserJoinedNetSerialization : NetSerializer<UserJoined>
+    internal sealed class UserJoinedNetSerializer : NetSerializer<UserJoined>
     {
         private INetSerializer<UserDto> _userDtoSerializer = null!;
 
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 
         public override UserJoined Deserialize(NetDataReader reader)
         {
-            UserJoined instance = new UserJoined()
+            UserJoined instance = new()
             {
                 UserDto = _userDtoSerializer.Deserialize(reader)
             };

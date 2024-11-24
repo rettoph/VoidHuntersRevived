@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -9,7 +8,6 @@ using VoidHuntersRevived.Domain.Graphics.Engines;
 
 namespace VoidHuntersRevived.Domain.Graphics.Providers
 {
-    [AutoLoad]
     public class PrimitiveEntityEngineProvider(
         IPrimitiveService primitiveService,
         IEntityTemplateFragmentService entityTemplateService,

@@ -13,7 +13,6 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
-    [AutoLoad]
     [SceneFilter<ServerGameScene>]
     internal class ServerPeerComponent(IServerPeer server, INetScope<IStrategy> scope) : ISceneComponent<IScene>, IUpdatableComponent
     {

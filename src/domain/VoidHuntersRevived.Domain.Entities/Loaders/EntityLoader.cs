@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Converters;
 using Guppy.Engine.Common.Loaders;
 using Serilog;
@@ -8,8 +9,11 @@ using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Engines;
+using VoidHuntersRevived.Domain.Entities.Providers;
+using VoidHuntersRevived.Domain.Entities.ResourceTypes;
 using VoidHuntersRevived.Domain.Entities.Serialization.Json;
 using VoidHuntersRevived.Domain.Entities.Services;
 
@@ -38,6 +42,10 @@ namespace VoidHuntersRevived.Domain.Entities.Loaders
             builder.RegisterType<EntityTemplateConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<ResourceComponentConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<DictionaryPolymorphicConverter<IEntityComponent>>().As<JsonConverter>().SingleInstance();
+
+            builder.RegisterResourceType<EntityTemplateFragmentResourceType>();
+
+            builder.RegisterType<BelongsToEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
 
             builder.Configure<LoggerConfiguration>((scope, config) =>
             {

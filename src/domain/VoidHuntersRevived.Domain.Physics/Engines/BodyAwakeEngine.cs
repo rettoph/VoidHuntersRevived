@@ -9,7 +9,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
-    [AutoLoad]
     public sealed class BodyAwakeEngine : StrategyEngine, IOnStepEngine
     {
         public string name { get; } = nameof(BodyAwakeEngine);
