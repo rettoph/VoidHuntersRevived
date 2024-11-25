@@ -1,8 +1,5 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
-using Guppy.Core.Network.Common.Attributes;
-using Guppy.Core.Network.Common.Enums;
 using Serilog;
 using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -13,10 +10,9 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
-    [PeerFilter(PeerType.Client)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    [ServiceLoggerContext("TickEngine")]
     internal class LockstepClient_TickEngine(ILogger logger, TickBuffer ticks) : StrategyEngine,
+        IClientEngine,
         ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<INetIncomingMessage<TickHistoryStart>>,
         ISubscriber<INetIncomingMessage<TickHistoryItem>>,

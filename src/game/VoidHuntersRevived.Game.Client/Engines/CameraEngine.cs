@@ -1,6 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Common.Attributes;
-using Guppy.Core.Network.Common.Enums;
 using Guppy.Game.Graphics.Common;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Messages;
@@ -17,8 +15,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    [PeerFilter(PeerType.Client)]
-    internal sealed class CameraEngine : StrategyEngine, IOnDrawEngine,
+    internal sealed class CameraEngine : StrategyEngine,
+        IClientEngine,
+        IOnDrawEngine,
         IInputSubscriber<CursorScroll>
     {
         private readonly ICamera2D _camera;

@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
         public static void PopulatePublishers(
             IEngineService engines,
-            ILoggerProvider loggerProvider,
+            ILoggerService loggerProvider,
             Dictionary<Type, EventPublisher> publishers)
         {
             Dictionary<Type, List<IEventEngine>> subscriptions = [];
@@ -36,16 +36,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
             foreach ((Type type, List<IEventEngine> subscribers) in subscriptions)
             {
                 Type publisherType = typeof(EventPublisher<>).MakeGenericType(type);
-                EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, new object[] { loggerProvider.Get(publisherType), subscribers })!;
+                EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, new object[] { loggerProvider.GetOrCreate(publisherType), subscribers })!;
                 publishers.Add(type, publisher);
             }
         }
 
-        public static Dictionary<Type, EventPublisher> BuildPublishers(IEngineService engines, ILoggerProvider loggerProvider)
+        public static Dictionary<Type, EventPublisher> BuildPublishers(IEngineService engines, ILoggerService loggerService)
         {
             Dictionary<Type, EventPublisher> publishers = [];
 
-            EventPublisher.PopulatePublishers(engines, loggerProvider, publishers);
+            EventPublisher.PopulatePublishers(engines, loggerService, publishers);
 
             return publishers;
         }

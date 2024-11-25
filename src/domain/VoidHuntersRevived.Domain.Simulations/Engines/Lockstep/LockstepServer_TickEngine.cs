@@ -1,7 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Network.Common;
-using Guppy.Core.Network.Common.Attributes;
-using Guppy.Core.Network.Common.Enums;
 using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -14,9 +12,9 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
-    [PeerFilter(PeerType.Server)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal class LockstepServer_TickEngine(ILogger logger, INetScope<IStrategy> scope) : StrategyEngine<ILockstepStrategy>,
+        IServerEngine,
         IOnTickEngine,
         IEventEngine<UserJoined>
     {

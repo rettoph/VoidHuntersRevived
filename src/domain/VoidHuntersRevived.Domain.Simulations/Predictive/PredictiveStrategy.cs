@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     [SetSceneConfiguration<bool>(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, true)]
     public sealed class PredictiveStrategy(
         Lazy<IEngineService> engineService,
-        Lazy<ILoggerProvider> loggerProvider) : Strategy(StrategyTypeEnum.Predictive, engineService, loggerProvider)
+        Lazy<ILoggerService> loggerService) : Strategy(StrategyTypeEnum.Predictive, engineService, loggerService)
     {
         private static readonly Pool<PredictedEvent> PredictionPool = new(ushort.MaxValue);
         private ILockstepStrategy _lockstep = null!;

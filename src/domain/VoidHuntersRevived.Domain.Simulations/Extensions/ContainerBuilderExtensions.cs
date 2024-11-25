@@ -1,9 +1,11 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.StateMachine.Common.Providers;
 using LiteNetLib;
 using VoidHuntersRevived.Domain.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
@@ -46,6 +48,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                 builder.RegisterNetSerializer<UserJoinedNetSerializer>();
 
                 builder.RegisterType<StrategyTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
+
+                builder.RegisterPeerTypeFilter<IClientEngine>(PeerType.Client);
+                builder.RegisterPeerTypeFilter<IServerEngine>(PeerType.Server);
             });
         }
     }

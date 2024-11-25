@@ -42,8 +42,8 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                     .Setup(settings => settings.GetValue(Settings.StepInterval), () => stepInterval)
                     .Setup(settings => settings.GetValue(Settings.StepsPerTick), () => stepsPerTick);
 
-                services.RegisterMocker<ILoggerProvider>()
-                    .Setup(loggers => loggers.Get(It.IsAny<Type>()), () => new Mocker<ILogger>().GetInstance());
+                services.RegisterMocker<ILoggerService>()
+                    .Setup(loggers => loggers.GetOrCreate(It.IsAny<Type>()), () => new Mocker<ILogger>().GetInstance());
 
                 UniqueNumberProvider uniqueNumberProvider = new();
                 EntitiesSubmissionScheduler entitiesSubmissionScheduler = new();

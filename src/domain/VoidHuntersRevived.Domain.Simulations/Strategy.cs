@@ -16,14 +16,14 @@ namespace VoidHuntersRevived.Domain.Simulations
     public abstract partial class Strategy : Scene, IStrategy, IDisposable
     {
         private ILogger? _logger;
-        private readonly Lazy<ILoggerProvider> _loggerProvider;
+        private readonly Lazy<ILoggerService> _loggerService;
         private readonly Lazy<IEngineService> _engineService;
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
         private readonly ActionSequenceGroup<OnDrawSequenceGroup, GameTime> _drawActions;
         private readonly ActionSequenceGroup<OnStepSequenceGroup, Step> _stepActions;
 
-        protected ILogger logger => _logger ??= _loggerProvider.Value.Get(this.GetType());
+        protected ILogger logger => _logger ??= _loggerService.Value.GetOrCreate(this.GetType());
 
         public readonly StrategyTypeEnum Type;
         public ISimulation Simulation { get; private set; } = null!;
@@ -36,10 +36,10 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected Strategy(
             StrategyTypeEnum type,
             Lazy<IEngineService> engineService,
-            Lazy<ILoggerProvider> loggerProvider)
+            Lazy<ILoggerService> loggerService)
         {
             _engineService = engineService;
-            _loggerProvider = loggerProvider;
+            _loggerService = loggerService;
             _enqueued = new Queue<EventDto>();
             _publishers = [];
             _stepActions = new ActionSequenceGroup<OnStepSequenceGroup, Step>(false);
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             this.Engines.Initialize(this);
 
-            EventPublisher.PopulatePublishers(this.Engines, _loggerProvider.Value, _publishers);
+            EventPublisher.PopulatePublishers(this.Engines, _loggerService.Value, _publishers);
 
             _drawActions.Add(this.Engines);
 

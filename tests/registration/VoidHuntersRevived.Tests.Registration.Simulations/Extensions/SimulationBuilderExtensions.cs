@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Tests.Registration.Simulations.Extensions
                 {
                     return new PredictiveStrategy(
                         services.GetLazy<IEngineService>(),
-                        services.GetLazy<ILoggerProvider>());
+                        services.GetLazy<ILoggerService>());
                 });
             }
 
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Tests.Registration.Simulations.Extensions
                     services.Get<TickBuffer>(),
                     services.Get<ISettingService>(),
                     services.GetLazy<IEngineService>(),
-                    services.GetLazy<ILoggerProvider>());
+                    services.GetLazy<ILoggerService>());
             });
         }
 
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Tests.Registration.Simulations.Extensions
                     services.Get<IBus>(),
                     services.Get<ISettingService>(),
                     services.GetLazy<IEngineService>(),
-                    services.GetLazy<ILoggerProvider>());
+                    services.GetLazy<ILoggerService>());
             });
         }
     }

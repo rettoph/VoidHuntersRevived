@@ -1,24 +1,23 @@
 ﻿using Guppy.Core.Common.Providers;
 using Guppy.Core.Network.Common;
-using Guppy.Core.Network.Common.Attributes;
-using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
-    [PeerFilter(PeerType.Client)]
     public sealed class LockstepStrategy_Client(
         INetScope<IStrategy> netScope,
         TickBuffer ticks,
         ISettingService settings,
         Lazy<IEngineService> engineService,
-        Lazy<ILoggerProvider> loggerProvider) : LockstepStrategy(settings, engineService, loggerProvider),
+        Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, engineService, loggerService),
+        IClientEngine,
         IDisposable
     {
         private readonly INetScope<IStrategy> _netScope = netScope;

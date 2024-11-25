@@ -1,6 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Common.Attributes;
-using Guppy.Core.Network.Common.Enums;
 using Guppy.Game.Graphics.Common;
 using Guppy.Game.Input.Common;
 using Microsoft.Xna.Framework;
@@ -25,11 +23,11 @@ using VoidHuntersRevived.Game.Core.Events;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [PeerFilter(PeerType.Client)]
     [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal class InputEngine(
         ICamera2D camera
     ) : StrategyEngine,
+        IClientEngine,
         IOnInitializeEngine<IStrategy>,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
