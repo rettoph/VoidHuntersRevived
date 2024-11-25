@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Converters;
@@ -18,7 +17,6 @@ using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Modules
 {
-    [AutoLoad]
     public sealed class EntityModule : Module
     {
         protected override void Load(ContainerBuilder builder)

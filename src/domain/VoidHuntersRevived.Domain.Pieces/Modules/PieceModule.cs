@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Serialization.Json;
@@ -20,7 +19,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Pieces.Modules
 {
-    [AutoLoad]
     public sealed class PieceModule : Module
     {
         protected override void Load(ContainerBuilder builder)

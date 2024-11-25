@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Enums;
 using Microsoft.Xna.Framework.Input;
@@ -10,7 +9,6 @@ using VoidHuntersRevived.Game.Core.Events;
 
 namespace VoidHuntersRevived.Game.Client.Modules
 {
-    [AutoLoad]
     internal sealed class InputModule : Module
     {
         protected override void Load(ContainerBuilder builder)

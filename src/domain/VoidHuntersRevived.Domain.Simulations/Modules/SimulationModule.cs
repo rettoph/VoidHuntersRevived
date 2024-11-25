@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.StateMachine.Common.Providers;
 using LiteNetLib;
 using System.Runtime.CompilerServices;
@@ -17,7 +16,6 @@ using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Modules
 {
-    [AutoLoad]
     public sealed class SimulationModule : Module
     {
         protected override void Load(ContainerBuilder builder)

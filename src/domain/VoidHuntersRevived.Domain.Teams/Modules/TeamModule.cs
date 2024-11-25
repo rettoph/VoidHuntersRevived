@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Serilog;
 using System.Text.Json.Serialization;
@@ -12,7 +11,6 @@ using VoidHuntersRevived.Domain.Teams.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Modules
 {
-    [AutoLoad]
     public sealed class TeamModule : Module
     {
         protected override void Load(ContainerBuilder builder)

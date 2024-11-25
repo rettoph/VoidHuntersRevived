@@ -1,12 +1,10 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Domain.Graphics.Common.Extensions.Autofac;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Game.Core.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Core.Modules
 {
-    [AutoLoad]
     internal sealed class ContentModule : Module
     {
         protected override void Load(ContainerBuilder builder)

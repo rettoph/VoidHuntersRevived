@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
@@ -15,7 +14,6 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Game.Core.Modules
 {
-    [AutoLoad]
     public class ResourceModule : Module
     {
         protected override void Load(ContainerBuilder builder)

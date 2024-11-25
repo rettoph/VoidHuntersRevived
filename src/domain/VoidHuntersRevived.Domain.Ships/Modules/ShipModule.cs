@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Ships.Engines;
 using VoidHuntersRevived.Domain.Ships.Serialization.Components;
@@ -9,7 +8,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Ships.Modules
 {
-    [AutoLoad]
     public sealed class ShipModule : Module
     {
         protected override void Load(ContainerBuilder builder)

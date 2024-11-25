@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Game;
 using Guppy.Game.MonoGame.Common.Extensions;
@@ -11,7 +10,6 @@ using VoidHuntersRevived.Game.Client.Engines.Debugging;
 
 namespace VoidHuntersRevived.Game.Client.Modules
 {
-    [AutoLoad]
     internal sealed class MainModule : Module
     {
         protected override void Load(ContainerBuilder builder)

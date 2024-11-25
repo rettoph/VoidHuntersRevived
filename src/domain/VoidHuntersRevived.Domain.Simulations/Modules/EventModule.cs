@@ -1,12 +1,10 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using LiteNetLib;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers;
 
 namespace VoidHuntersRevived.Domain.Simulations.Modules
 {
-    [AutoLoad]
     internal sealed class EventModule : Module
     {
         protected override void Load(ContainerBuilder builder)

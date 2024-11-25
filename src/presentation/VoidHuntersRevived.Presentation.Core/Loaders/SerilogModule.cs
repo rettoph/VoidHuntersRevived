@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Enums;
@@ -15,7 +14,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Presentation.Core.Modules
 {
-    [AutoLoad]
     internal sealed class SerilogModule : Module
     {
         protected override void Load(ContainerBuilder builder)
