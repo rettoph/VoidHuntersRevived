@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Entities.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Modules
 {
-    internal class SveltoModule(IAssemblyService assemblies) : Module
+    internal class DisposableEngineModule(IAssemblyService assemblies) : Module
     {
         private readonly IAssemblyService _assemblies = assemblies;
 

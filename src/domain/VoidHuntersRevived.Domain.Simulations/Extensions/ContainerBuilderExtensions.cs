@@ -1,0 +1,52 @@
+﻿using Autofac;
+using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.StateMachine.Common.Providers;
+using LiteNetLib;
+using VoidHuntersRevived.Domain.Serialization.NetSerializers;
+using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Engines.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Messages;
+using VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers;
+using VoidHuntersRevived.Domain.Simulations.Services;
+
+namespace VoidHuntersRevived.Domain.Simulations.Extensions
+{
+    public static class ContainerBuilderExtensions
+    {
+        public static ContainerBuilder RegisterDomainSimulationServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterDomainSimulationServices), builder =>
+            {
+                builder.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
+                builder.RegisterType<EngineService>().As<IEngineService>().InstancePerLifetimeScope();
+
+                builder.RegisterType<TickBuffer>().InstancePerLifetimeScope();
+
+                builder.RegisterNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
+                builder.RegisterNetMessageType<TickHistoryStart>(DeliveryMethod.ReliableOrdered, 0);
+                builder.RegisterNetMessageType<TickHistoryItem>(DeliveryMethod.ReliableOrdered, 0);
+                builder.RegisterNetMessageType<TickHistoryEnd>(DeliveryMethod.ReliableOrdered, 0);
+
+                builder.RegisterEngine<LockstepClient_TickEngine>();
+                builder.RegisterEngine<LockstepServer_TickEngine>();
+                builder.RegisterEngine<LockstepServer_UserEngine>();
+
+                builder.RegisterNetMessageType<EventDto>(DeliveryMethod.ReliableUnordered, 0);
+
+                builder.RegisterNetSerializer<TickHistoryEndNetSerializer>();
+                builder.RegisterNetSerializer<TickHistoryItemNetSerializer>();
+                builder.RegisterNetSerializer<TickHistoryStartNetSerializer>();
+                builder.RegisterNetSerializer<TickNetSerializer>();
+                builder.RegisterNetSerializer<EventDtoNetSerializer>();
+                builder.RegisterNetSerializer<Simulation_Begin_NetSerializer>();
+                builder.RegisterNetSerializer<UserJoinedNetSerializer>();
+
+                builder.RegisterType<StrategyTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
+            });
+        }
+    }
+}

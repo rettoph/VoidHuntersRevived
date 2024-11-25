@@ -7,14 +7,23 @@ using Guppy.Game.Common.Extensions;
 using Guppy.Game.Console.Extensions;
 using Guppy.Game.Helpers;
 using VoidHuntersRevived.Domain.Common.Constants;
+using VoidHuntersRevived.Domain.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Game.Core.Extensions;
 using VoidHuntersRevived.Game.Server;
+using VoidHuntersRevived.Game.Server.Extensions;
 using VoidHuntersRevived.Presentation.Client;
 using VoidHuntersRevived.Presentation.Core;
+using VoidHuntersRevived.Presentation.Core.Extensions;
 
 var engine = new GameEngine(VoidHuntersContextBuilder.ServerContext, builder =>
 {
-    builder.RegisterConsoleGameServices().RegisterCoreNetworkServices();
+    builder.RegisterConsoleGameServices().RegisterCoreNetworkServices()
+        .RegisterDomainServices()
+        .RegisterGameCoreServices()
+        .RegisterGameServerServices()
+        .RegisterPresentationCoreServices();
+
     builder.RegisterType<ServerSerilogSinkConfigurator>().As<ISerilogSinkConfigurator>().InstancePerLifetimeScope();
 }).Start();
 

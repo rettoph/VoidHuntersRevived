@@ -8,10 +8,15 @@ using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Domain.Common.Constants;
+using VoidHuntersRevived.Domain.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Game.Client;
+using VoidHuntersRevived.Game.Client.Extensions;
+using VoidHuntersRevived.Game.Core.Extensions;
 using VoidHuntersRevived.Game.Server;
+using VoidHuntersRevived.Game.Server.Extensions;
 using VoidHuntersRevived.Presentation.Core;
+using VoidHuntersRevived.Presentation.Core.Extensions;
 
 namespace VoidHuntersRevived.Presentation.Client
 {
@@ -64,7 +69,14 @@ namespace VoidHuntersRevived.Presentation.Client
             {
                 var engine = new GameEngine(VoidHuntersContextBuilder.ClientContext, builder =>
                 {
-                    builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window).RegisterCoreNetworkServices();
+                    builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window)
+                        .RegisterCoreNetworkServices()
+                        .RegisterDomainServices()
+                        .RegisterGameCoreServices()
+                        .RegisterGameServerServices()
+                        .RegisterGameClientServices()
+                        .RegisterPresentationCoreServices();
+
                     builder.RegisterType<ClientSerilogSinkConfigurator>().As<ISerilogSinkConfigurator>().InstancePerLifetimeScope();
                 }).Start();
 
