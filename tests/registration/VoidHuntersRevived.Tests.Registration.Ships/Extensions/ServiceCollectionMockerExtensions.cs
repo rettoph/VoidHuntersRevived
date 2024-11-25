@@ -2,9 +2,9 @@
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
-using VoidHuntersRevived.Domain.Ships.Common.Serialization.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Engines;
+using VoidHuntersRevived.Domain.Ships.Serialization.Components;
 using VoidHuntersRevived.Domain.Ships.Services;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 using VoidHuntersRevived.Tests.Common;

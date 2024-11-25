@@ -4,8 +4,8 @@ using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics;
 using VoidHuntersRevived.Domain.Physics.Common;
-using VoidHuntersRevived.Domain.Physics.Common.Serialization.Components;
 using VoidHuntersRevived.Domain.Physics.Engines;
+using VoidHuntersRevived.Domain.Physics.Serialization.Components;
 using VoidHuntersRevived.Tests.Common;
 
 namespace VoidHuntersRevived.Tests.Registration.Physics.Extensions
