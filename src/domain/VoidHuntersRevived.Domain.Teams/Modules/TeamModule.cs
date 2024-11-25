@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Engine.Common.Loaders;
 using Serilog;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -11,13 +10,15 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Engines;
 using VoidHuntersRevived.Domain.Teams.Services;
 
-namespace VoidHuntersRevived.Domain.Teams.Loaders
+namespace VoidHuntersRevived.Domain.Teams.Modules
 {
     [AutoLoad]
-    public sealed class TeamLoader : IServiceLoader
+    public sealed class TeamModule : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<TeamJsonConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<ColorSchemeJsonConverter>().As<JsonConverter>().SingleInstance();
 

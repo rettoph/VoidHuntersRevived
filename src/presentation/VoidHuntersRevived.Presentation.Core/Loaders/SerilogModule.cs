@@ -9,19 +9,20 @@ using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Services;
-using Guppy.Engine.Common.Loaders;
 using Serilog;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
-namespace VoidHuntersRevived.Presentation.Core.Loaders
+namespace VoidHuntersRevived.Presentation.Core.Modules
 {
     [AutoLoad]
-    internal sealed class SerilogLoader : IServiceLoader
+    internal sealed class SerilogModule : Module
     {
-        public void ConfigureServices(ContainerBuilder services)
+        protected override void Load(ContainerBuilder builder)
         {
-            services.Configure<LoggerConfiguration>((scope, config) =>
+            base.Load(builder);
+
+            builder.Configure<LoggerConfiguration>((scope, config) =>
             {
                 IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
 

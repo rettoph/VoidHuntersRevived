@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.StateMachine.Common.Providers;
-using Guppy.Engine.Common.Loaders;
 using LiteNetLib;
 using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Domain.Serialization.NetSerializers;
@@ -16,13 +15,15 @@ using VoidHuntersRevived.Domain.Simulations.Services;
 
 [assembly: InternalsVisibleTo("VoidHuntersRevived.Domain.Client")]
 
-namespace VoidHuntersRevived.Domain.Simulations.Loaders
+namespace VoidHuntersRevived.Domain.Simulations.Modules
 {
     [AutoLoad]
-    public sealed class SimulationLoader : IServiceLoader
+    public sealed class SimulationModule : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
             builder.RegisterType<EngineService>().As<IEngineService>().InstancePerLifetimeScope();
 

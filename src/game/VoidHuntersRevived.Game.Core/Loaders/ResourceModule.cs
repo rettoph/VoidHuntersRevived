@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
-using Guppy.Engine.Common.Loaders;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -14,13 +13,15 @@ using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
-namespace VoidHuntersRevived.Game.Core.Loaders
+namespace VoidHuntersRevived.Game.Core.Modules
 {
     [AutoLoad]
-    public class ResourceLoader : IServiceLoader
+    public class ResourceModule : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             this.RegisterTeamEntityTemplates(builder);
             this.RegisterPhysicsEntityTemplates(builder);
             this.RegisterPiecesEntityTemplates(builder);

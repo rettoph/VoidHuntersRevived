@@ -1,8 +1,6 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Json.Converters;
-using Guppy.Engine.Common.Loaders;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Graphics.Common;
@@ -14,13 +12,14 @@ using VoidHuntersRevived.Domain.Graphics.Services;
 using VoidHuntersRevived.Domain.Pieces.ResourceTypes;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
-namespace VoidHuntersRevived.Domain.Graphics.Loaders
+namespace VoidHuntersRevived.Domain.Graphics.Modules
 {
-    [AutoLoad]
-    public sealed class GraphicsLoader : IServiceLoader
+    public sealed class GraphicsLoader : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<PrimitiveService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterGeneric(typeof(PrimitiveService<>)).As(typeof(IPrimitiveService<>)).SingleInstance();
 

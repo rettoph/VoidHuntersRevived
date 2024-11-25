@@ -3,18 +3,19 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
-using Guppy.Engine.Common.Loaders;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Game.Core.Components.Scene;
 using VoidHuntersRevived.Game.Core.Engines;
 
-namespace VoidHuntersRevived.Game.Core.Loaders
+namespace VoidHuntersRevived.Game.Core.Modules
 {
     [AutoLoad]
-    public class GameLoader : IServiceLoader
+    public class GameModule : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<SimulationFrameComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterEngine<SimulationEngine>();

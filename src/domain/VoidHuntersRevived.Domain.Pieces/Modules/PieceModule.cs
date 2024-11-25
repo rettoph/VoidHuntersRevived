@@ -3,7 +3,6 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Serialization.Json;
-using Guppy.Engine.Common.Loaders;
 using Serilog;
 using Svelto.ECS;
 using System.Text.Json.Serialization;
@@ -19,13 +18,15 @@ using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Pieces.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
-namespace VoidHuntersRevived.Domain.Pieces.Loaders
+namespace VoidHuntersRevived.Domain.Pieces.Modules
 {
     [AutoLoad]
-    public sealed class PieceLoader : IServiceLoader
+    public sealed class PieceModule : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<NodeService>().AsImplementedInterfaces().InstancePerLifetimeScope();

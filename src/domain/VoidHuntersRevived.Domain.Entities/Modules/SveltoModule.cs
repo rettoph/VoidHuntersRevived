@@ -1,25 +1,26 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Services;
-using Guppy.Engine.Common.Loaders;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Engines;
 
-namespace VoidHuntersRevived.Domain.Entities.Loaders
+namespace VoidHuntersRevived.Domain.Entities.Modules
 {
     [AutoLoad]
-    internal class SveltoLoader(IAssemblyService assemblies) : IServiceLoader
+    internal class SveltoModule(IAssemblyService assemblies) : Module
     {
         private readonly IAssemblyService _assemblies = assemblies;
 
-        public void ConfigureServices(ContainerBuilder services)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             // Auto register an engine to dispose of instances as needed
             foreach (Type disposableComponent in _assemblies.GetTypes<IEntityComponent>())
             {
                 if (disposableComponent.IsAssignableTo<IDisposable>())
                 {
-                    services.RegisterType(typeof(DisposableEngine<>).MakeGenericType(disposableComponent))
+                    builder.RegisterType(typeof(DisposableEngine<>).MakeGenericType(disposableComponent))
                         .As<IEngine>()
                         .InstancePerLifetimeScope();
                 }

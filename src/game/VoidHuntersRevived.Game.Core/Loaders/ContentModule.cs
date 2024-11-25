@@ -1,17 +1,18 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common.Loaders;
 using VoidHuntersRevived.Domain.Graphics.Common.Extensions.Autofac;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Game.Core.Graphics.Effects;
 
-namespace VoidHuntersRevived.Game.Core.Loaders
+namespace VoidHuntersRevived.Game.Core.Modules
 {
     [AutoLoad]
-    internal sealed class ContentLoader : IServiceLoader
+    internal sealed class ContentModule : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<ShaderAntiAliasingEffect>().SingleInstance();
             builder.RegisterType<VisibleEffect>().AsImplementedInterfaces().AsSelf().SingleInstance();
 

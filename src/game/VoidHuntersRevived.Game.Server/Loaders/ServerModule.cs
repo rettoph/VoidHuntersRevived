@@ -1,16 +1,17 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common.Loaders;
 using VoidHuntersRevived.Game.Server.Components.Scene;
 using VoidHuntersRevived.Game.Server.Guppy;
 
-namespace VoidHuntersRevived.Game.Server.Loaders
+namespace VoidHuntersRevived.Game.Server.Modules
 {
     [AutoLoad]
-    public class ServerLoader : IServiceLoader
+    public class ServerModule : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ServerPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }

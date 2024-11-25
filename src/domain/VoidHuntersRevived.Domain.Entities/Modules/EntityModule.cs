@@ -3,7 +3,6 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Converters;
-using Guppy.Engine.Common.Loaders;
 using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
@@ -17,13 +16,15 @@ using VoidHuntersRevived.Domain.Entities.ResourceTypes;
 using VoidHuntersRevived.Domain.Entities.Serialization.Json;
 using VoidHuntersRevived.Domain.Entities.Services;
 
-namespace VoidHuntersRevived.Domain.Entities.Loaders
+namespace VoidHuntersRevived.Domain.Entities.Modules
 {
     [AutoLoad]
-    public sealed class EntityLoader : IServiceLoader
+    public sealed class EntityModule : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<ComponentSerializerService>().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<EntityTemplateFragmentService>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();

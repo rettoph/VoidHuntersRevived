@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common.Loaders;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Ships.Engines;
 using VoidHuntersRevived.Domain.Ships.Serialization.Components;
@@ -8,13 +7,15 @@ using VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Ships.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
-namespace VoidHuntersRevived.Domain.Ships.Loaders
+namespace VoidHuntersRevived.Domain.Ships.Modules
 {
     [AutoLoad]
-    public sealed class ShipLoader : IServiceLoader
+    public sealed class ShipModule : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<TractorBeamEmitterService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<TacticalService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<UserShipService>().AsImplementedInterfaces().InstancePerLifetimeScope();

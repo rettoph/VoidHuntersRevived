@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Engine.Common.Loaders;
 using Guppy.Game;
 using Guppy.Game.MonoGame.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -10,13 +9,15 @@ using VoidHuntersRevived.Game.Client.Components.Scene;
 using VoidHuntersRevived.Game.Client.Engines;
 using VoidHuntersRevived.Game.Client.Engines.Debugging;
 
-namespace VoidHuntersRevived.Game.Client.Loaders
+namespace VoidHuntersRevived.Game.Client.Modules
 {
     [AutoLoad]
-    internal sealed class MainLoader : IServiceLoader
+    internal sealed class MainModule : Module
     {
-        public void ConfigureServices(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<ClientPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DebugEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
