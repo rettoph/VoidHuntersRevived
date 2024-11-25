@@ -10,6 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
@@ -19,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     [SetSceneConfiguration<bool>(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, true)]
     public sealed class PredictiveStrategy(
         Lazy<IEngineService> engineService,
-        Lazy<ILoggerService> loggerService) : Strategy(StrategyTypeEnum.Predictive, engineService, loggerService)
+        Lazy<ILoggerService> loggerService) : Strategy(StrategyTypeEnum.Predictive, engineService, loggerService), IPredictiveStrategy
     {
         private static readonly Pool<PredictedEvent> PredictionPool = new(ushort.MaxValue);
         private ILockstepStrategy _lockstep = null!;

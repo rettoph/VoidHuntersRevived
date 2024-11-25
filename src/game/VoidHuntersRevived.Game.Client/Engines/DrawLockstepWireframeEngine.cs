@@ -1,17 +1,15 @@
 ﻿using Guppy.Core.Messaging.Common;
 using Serilog;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal sealed class DrawLockstepWireframeEngine(
         ILogger logger,
-        IEntityQueryService entityQueryService) : StrategyEngine,
+        IEntityQueryService entityQueryService) : StrategyEngine<ILockstepStrategy>,
         ISubscriber<Input_Toggle_LockstepWireframe>
     {
         private readonly short[] _indexBuffer = new short[3];

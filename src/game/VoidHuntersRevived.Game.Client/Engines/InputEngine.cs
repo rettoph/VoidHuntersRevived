@@ -14,7 +14,6 @@ using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
@@ -23,10 +22,9 @@ using VoidHuntersRevived.Game.Core.Events;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [StrategyFilter(StrategyTypeEnum.Lockstep)]
     internal class InputEngine(
         ICamera2D camera
-    ) : StrategyEngine,
+    ) : StrategyEngine<ILockstepStrategy>,
         IClientEngine,
         IOnInitializeEngine<IStrategy>,
         IInputSubscriber<Input_Helm_SetDirection>,

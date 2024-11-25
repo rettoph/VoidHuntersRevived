@@ -5,15 +5,14 @@ using Guppy.Core.Network.Common.Identity.Enums;
 using Guppy.Core.Network.Common.Services;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
-    [StrategyFilter(StrategyTypeEnum.Lockstep)]
-    internal class LockstepServer_UserEngine(INetScope<IStrategy> scope) : StrategyEngine,
+    internal class LockstepServer_UserEngine(INetScope<IStrategy> scope) : StrategyEngine<ILockstepStrategy>,
         IServerEngine,
         IOnInitializeEngine
     {

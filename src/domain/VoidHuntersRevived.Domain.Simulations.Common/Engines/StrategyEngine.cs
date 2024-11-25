@@ -1,11 +1,9 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
-    [StrategyFilter<IStrategy>]
     public abstract class StrategyEngine<TStrategy> : IEngine
         where TStrategy : IStrategy
     {

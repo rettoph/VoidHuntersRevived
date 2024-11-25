@@ -3,13 +3,11 @@ using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Extensions;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Domain.Simulations.Common.Attributes;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
-    [StrategyFilter<LockstepStrategy_Server>]
     internal class LockstepStrategy_ServerDebugEngine(IImGui imgui) : StrategyEngine<LockstepStrategy_Server>, IOnDebugEngine
     {
         private readonly IImGui _imgui = imgui;

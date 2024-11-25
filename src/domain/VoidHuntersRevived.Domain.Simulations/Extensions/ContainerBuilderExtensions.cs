@@ -9,6 +9,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Engines.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
@@ -53,6 +54,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                 builder.RegisterPeerTypeFilter<IClientEngine>(PeerType.Client);
                 builder.RegisterPeerTypeFilter<IServerEngine>(PeerType.Server);
                 builder.RegisterGraphicsEnabledFilter<IGraphicsEngine>(true);
+                builder.RegisterStrategyFilter<IPredictiveSynchronizationEngine, IPredictiveStrategy>();
             });
         }
     }
