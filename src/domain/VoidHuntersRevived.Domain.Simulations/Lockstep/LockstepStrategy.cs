@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -18,7 +17,6 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
-    [SceneFilter<IVoidHuntersGameScene>()]
     [SetSceneConfiguration<bool>(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, false)]
     public abstract class LockstepStrategy : Strategy, ILockstepStrategy
     {

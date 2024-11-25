@@ -4,8 +4,6 @@ using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common;
-using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
@@ -13,14 +11,13 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
-    [SceneFilter<ServerGameScene>]
-    internal class ServerPeerComponent(IServerPeer server, INetScope<IStrategy> scope) : ISceneComponent<IScene>, IUpdatableComponent
+    internal class ServerPeerComponent(IServerPeer server, INetScope<IStrategy> scope) : ISceneComponent<ServerGameScene>, IUpdatableComponent
     {
         private readonly IServerPeer _server = server;
         private readonly INetScope<IStrategy> _scope = scope;
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Setup)]
-        public void Initialize(IScene scene)
+        public void Initialize(ServerGameScene scene)
         {
             _server.Start(1337, Claim.Public("username", "System"));
             _server.Users.OnUserConnected += HandleUserConnected;

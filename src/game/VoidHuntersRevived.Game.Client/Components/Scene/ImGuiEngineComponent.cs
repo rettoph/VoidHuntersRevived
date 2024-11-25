@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
@@ -10,7 +9,6 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    [SceneFilter<IStrategy>]
     internal class ImGuiEngineComponent : ISceneComponent<IStrategy>, IImGuiComponent
     {
         private readonly ActionSequenceGroup<ImGuiSequenceGroup, GameTime> _imGuiActions = new(true);
