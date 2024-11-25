@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Graphics.Common.Attributes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
@@ -16,7 +15,6 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
-    [GraphicsEnabled]
     public sealed class PrimitiveEntityEngine<TVertex>(
         IPrimitiveService<TVertex> primitiveService,
         IEntityQueryService entityQueryService

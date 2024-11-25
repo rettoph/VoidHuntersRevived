@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Graphics.Common.Attributes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,8 +8,7 @@ using VoidHuntersRevived.Game.Core.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [GraphicsEnabled]
-    internal class ShaderAntiAliasingEngine : StrategyEngine, IDisposable
+    internal class ShaderAntiAliasingEngine : StrategyEngine, IDisposable, IGraphicsEngine
     {
         private readonly GraphicsDevice _graphics;
         private readonly SpriteBatch _spriteBatch;

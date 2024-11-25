@@ -1,6 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Game.Graphics.Common;
-using Guppy.Game.Graphics.Common.Attributes;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -16,11 +15,13 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [GraphicsEnabled]
     public class DrawVertexVisibleEngine(
         IEntityQueryService entityQueryService,
         ICamera2D camera,
-        GraphicsDevice graphics) : StrategyEngine, IOnStepEngine, IOnSpawnEngine<VertexVisible>
+        GraphicsDevice graphics) : StrategyEngine,
+            IGraphicsEngine,
+            IOnStepEngine,
+            IOnSpawnEngine<VertexVisible>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ICamera2D _camera = camera;

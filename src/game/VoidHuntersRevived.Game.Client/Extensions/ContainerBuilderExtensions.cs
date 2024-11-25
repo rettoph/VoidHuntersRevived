@@ -36,7 +36,6 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                 builder.RegisterEngine<LockstepStrategy_ServerDebugEngine>();
                 builder.RegisterEngine<LockstepStrategyDebugEngine>();
                 builder.RegisterEngine<StrategyDebugEngine>();
-                builder.RegisterEngine<DrawActiveThrustableEngine>();
                 builder.RegisterEngine<DrawLockstepWireframeEngine>();
                 builder.RegisterEngine<DrawVertexVisibleEngine>();
                 builder.RegisterEngine<InputEngine>();

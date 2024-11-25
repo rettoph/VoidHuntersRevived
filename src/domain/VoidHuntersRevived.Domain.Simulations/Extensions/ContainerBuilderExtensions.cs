@@ -2,6 +2,7 @@
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.StateMachine.Common.Providers;
+using Guppy.Game.Graphics.Common.Extensions;
 using LiteNetLib;
 using VoidHuntersRevived.Domain.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -51,6 +52,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 
                 builder.RegisterPeerTypeFilter<IClientEngine>(PeerType.Client);
                 builder.RegisterPeerTypeFilter<IServerEngine>(PeerType.Server);
+                builder.RegisterGraphicsEnabledFilter<IGraphicsEngine>(true);
             });
         }
     }

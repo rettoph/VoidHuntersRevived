@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Game.Graphics.Common;
-using Guppy.Game.Graphics.Common.Attributes;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
@@ -11,7 +10,6 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Graphics.Engines
 {
-    [GraphicsEnabled]
     public class DrawPrimitivesEngine(
         IPrimitiveService primitiveService,
         ICamera2D camera

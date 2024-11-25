@@ -1,6 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Game.Graphics.Common;
-using Guppy.Game.Graphics.Common.Attributes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Serilog;
@@ -13,14 +12,14 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    [GraphicsEnabled]
     internal class TractorBeamHighlightEngine(
         ICamera2D camera,
         IEntityQueryService entityQueryService,
         ISocketService socketService,
         ITractorBeamEmitterService tractorBeamEmitterService,
         IUserShipService userShipService,
-        ILogger logger) : StrategyEngine, IOnDrawEngine
+        ILogger logger) : StrategyEngine,
+        IOnDrawEngine
     {
         private readonly ILogger _logger = logger;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
