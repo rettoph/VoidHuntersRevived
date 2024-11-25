@@ -1,14 +1,12 @@
-﻿using Guppy.Core.Serialization.Common.Attributes;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
-    [PolymorphicJsonType<IEntityComponent>(nameof(Plug))]
-    public struct Plug : IEntityComponent, IPieceComponent
+    public readonly struct Plug : IEntityComponent, IPieceComponent
     {
-        public static readonly Plug Default = new Plug()
+        public static readonly Plug Default = new()
         {
             Location = new Location(FixVector2.UnitX / (Fix64)2, Fix64.PiOver2)
         };

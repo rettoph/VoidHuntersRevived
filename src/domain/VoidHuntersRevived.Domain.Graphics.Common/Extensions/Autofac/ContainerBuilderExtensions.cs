@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Core.Resources.Serialization.Json;
+using Guppy.Core.Serialization.Common.Extensions;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Extensions.Autofac
@@ -11,8 +11,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Extensions.Autofac
             where TVertexStatic : unmanaged, IVertexType
             where TEffect : Effect
         {
-            var polymorphicMap = new PolymorphicJsonType<IPrimitiveType<TVertexInstance, TVertexStatic, TEffect>, IPrimitiveType>(name);
-            builder.RegisterInstance<PolymorphicJsonType>(polymorphicMap).SingleInstance();
+            builder.RegisterPolymorphicJsonType<IPrimitiveType<TVertexInstance, TVertexStatic, TEffect>, IPrimitiveType>(name);
         }
     }
 }

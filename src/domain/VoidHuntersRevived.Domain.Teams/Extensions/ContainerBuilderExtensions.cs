@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Serialization.Common.Extensions;
 using Serilog;
+using Svelto.ECS;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
@@ -19,6 +21,9 @@ namespace VoidHuntersRevived.Domain.Teams.Extensions
             {
                 builder.RegisterType<TeamJsonConverter>().As<JsonConverter>().SingleInstance();
                 builder.RegisterType<ColorSchemeJsonConverter>().As<JsonConverter>().SingleInstance();
+
+                builder.RegisterPolymorphicJsonType<ColorScheme, IEntityComponent>(nameof(ColorScheme));
+                builder.RegisterPolymorphicJsonType<Team, IEntityComponent>(nameof(Team));
 
                 builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 

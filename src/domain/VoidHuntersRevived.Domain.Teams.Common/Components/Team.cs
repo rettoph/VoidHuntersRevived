@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Resources.Common;
-using Guppy.Core.Serialization.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
@@ -7,7 +6,6 @@ using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Teams.Common.Components
 {
-    [PolymorphicJsonType<IEntityComponent>(nameof(Team))]
     public readonly struct Team : IEntityComponent, IHasMany<TeamMember>
     {
         public readonly Id<Team> Id;

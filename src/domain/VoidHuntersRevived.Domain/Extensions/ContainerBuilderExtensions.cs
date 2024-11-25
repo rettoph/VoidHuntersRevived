@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Serialization.Json;
+using Guppy.Core.Serialization.Common.Extensions;
 using Serilog;
 using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Domain.Extensions
                 builder.RegisterType<NativeDynamicArrayCastJsonConverter>().As<JsonConverter>().SingleInstance();
                 builder.RegisterType<KeyConverter>().As<JsonConverter>().SingleInstance();
 
-                builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<Fix64, object>(nameof(Fix64))).SingleInstance();
+                builder.RegisterPolymorphicJsonType<Fix64, object>(nameof(Fix64));
             });
         }
     }

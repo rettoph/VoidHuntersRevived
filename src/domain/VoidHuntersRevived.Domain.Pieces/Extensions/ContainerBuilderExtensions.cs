@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Serialization.Json;
+using Guppy.Core.Serialization.Common.Extensions;
 using Serilog;
 using Svelto.ECS;
 using System.Text.Json.Serialization;
@@ -9,6 +9,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
+using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Pieces.Engines;
 using VoidHuntersRevived.Domain.Pieces.ResourceTypes;
@@ -39,6 +40,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
                 builder.RegisterType<PlugJsonConverter>().As<JsonConverter>().SingleInstance();
                 builder.RegisterType<ThrustableJsonConverter>().As<JsonConverter>().SingleInstance();
 
+                builder.RegisterPolymorphicJsonType<Plug, IEntityComponent>(nameof(Plug));
+                builder.RegisterPolymorphicJsonType<Rigid, IEntityComponent>(nameof(Rigid));
+                builder.RegisterPolymorphicJsonType<Sockets, IEntityComponent>(nameof(Sockets));
+                builder.RegisterPolymorphicJsonType<Thrustable, IEntityComponent>(nameof(Thrustable));
+                builder.RegisterPolymorphicJsonType<Primitive<VertexVisible>, IEntityComponent>("Primitive.Visible");
+                builder.RegisterPolymorphicJsonType<PrimitiveSequenceGroup<VertexVisible>, IEntityComponent>("PrimitiveSequenceGroup.Visible");
+
                 builder.RegisterEngine<CouplingEngine>();
                 builder.RegisterEngine<NodeEngine>();
                 builder.RegisterEngine<RigidEngine>();
@@ -46,9 +54,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
                 builder.RegisterEngine<ThrustableEngine>();
                 builder.RegisterEngine<TractorableEngine>();
                 builder.RegisterEngine<TreeEngine>();
-
-                builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<Primitive<VertexVisible>, IEntityComponent>("Primitive.Visible")).SingleInstance();
-                builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<PrimitiveSequenceGroup<VertexVisible>, IEntityComponent>("PrimitiveSequenceGroup.Visible")).SingleInstance();
 
                 builder.RegisterComponentSerializer<CouplingComponentSerializer>();
                 builder.RegisterComponentSerializer<NodeComponentSerializer>();

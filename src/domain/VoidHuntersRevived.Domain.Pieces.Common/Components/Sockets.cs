@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Serialization.Common.Attributes;
-using Svelto.Common;
+﻿using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Extensions.Svelto;
@@ -10,8 +9,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
-    [PolymorphicJsonType<IEntityComponent>(nameof(Sockets))]
-    public struct Sockets : IEntityComponent, IDisposable, IPieceComponent, ICloneableComponent<Sockets>
+    public readonly struct Sockets : IEntityComponent, IDisposable, IPieceComponent, ICloneableComponent<Sockets>
     {
         public required NativeDynamicArrayCast<Socket> Items { get; init; }
 
@@ -29,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
         {
             PolygonHelper.VertexAngle[] vertexAngles = PolygonHelper.CalculateVertexAngles(sides).ToArray();
 
-            NativeDynamicArrayCast<Socket> items = new NativeDynamicArrayCast<Socket>((uint)sides - 1, Allocator.Persistent);
+            NativeDynamicArrayCast<Socket> items = new((uint)sides - 1, Allocator.Persistent);
 
             for (int i = 1; i < vertexAngles.Length; i++)
             {
