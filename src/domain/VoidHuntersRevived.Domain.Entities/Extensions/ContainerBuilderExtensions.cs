@@ -2,10 +2,10 @@
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Converters;
+using Guppy.Core.Serialization.Common.Extensions;
 using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
-using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -38,9 +38,9 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
                 builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                builder.RegisterType<EntityTemplateConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<ResourceComponentConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<DictionaryPolymorphicConverter<IEntityComponent>>().As<JsonConverter>().SingleInstance();
+                builder.RegisterJsonConverter<EntityTemplateConverter>();
+                builder.RegisterJsonConverter<ResourceComponentConverter>();
+                builder.RegisterJsonConverter<DictionaryPolymorphicConverter<IEntityComponent>>();
 
                 builder.RegisterResourceType<EntityTemplateFragmentResourceType>();
 

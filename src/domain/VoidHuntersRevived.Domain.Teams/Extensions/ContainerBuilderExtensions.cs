@@ -19,8 +19,8 @@ namespace VoidHuntersRevived.Domain.Teams.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainTeamsServices), builder =>
             {
-                builder.RegisterType<TeamJsonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<ColorSchemeJsonConverter>().As<JsonConverter>().SingleInstance();
+                builder.RegisterJsonConverter<TeamJsonConverter>();
+                builder.RegisterJsonConverter<ColorSchemeJsonConverter>();
 
                 builder.RegisterPolymorphicJsonType<ColorScheme, IEntityComponent>(nameof(ColorScheme));
                 builder.RegisterPolymorphicJsonType<Team, IEntityComponent>(nameof(Team));

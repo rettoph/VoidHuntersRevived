@@ -31,14 +31,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
                 builder.RegisterType<NodeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
                 builder.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                builder.RegisterType<BlueprintConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<BlueprintPieceConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<RigidJsonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<ShapeJsonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<SocketsJsonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<LocationJsonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<PlugJsonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<ThrustableJsonConverter>().As<JsonConverter>().SingleInstance();
+                builder.RegisterJsonConverter<BlueprintConverter>();
+                builder.RegisterJsonConverter<BlueprintPieceConverter>();
+                builder.RegisterJsonConverter<RigidJsonConverter>();
+                builder.RegisterJsonConverter<ShapeJsonConverter>();
+                builder.RegisterJsonConverter<SocketsJsonConverter>();
+                builder.RegisterJsonConverter<LocationJsonConverter>();
+                builder.RegisterJsonConverter<PlugJsonConverter>();
+                builder.RegisterJsonConverter<ThrustableJsonConverter>();
 
                 builder.RegisterPolymorphicJsonType<Plug, IEntityComponent>(nameof(Plug));
                 builder.RegisterPolymorphicJsonType<Rigid, IEntityComponent>(nameof(Rigid));

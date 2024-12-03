@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
-using System.Text.Json.Serialization;
+using Guppy.Core.Serialization.Common.Extensions;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Physics.Engines;
@@ -31,8 +31,8 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
                 builder.RegisterEngine<SpaceEngine>();
                 builder.RegisterEngine<Space>();
 
-                builder.RegisterType<PolygonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<BodyTemplateConverter>().As<JsonConverter>().SingleInstance();
+                builder.RegisterJsonConverter<PolygonConverter>();
+                builder.RegisterJsonConverter<BodyTemplateConverter>();
 
                 builder.RegisterComponentSerializer<AwakeComponentSerializer>();
                 builder.RegisterComponentSerializer<CollisionComponentSerializer>();

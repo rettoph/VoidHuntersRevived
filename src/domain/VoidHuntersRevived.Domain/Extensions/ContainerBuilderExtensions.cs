@@ -39,11 +39,11 @@ namespace VoidHuntersRevived.Domain.Extensions
 
                 builder.RegisterType<UniqueNumberProvider>().As<IUniqueNumberProvider>().InstancePerLifetimeScope();
 
-                builder.RegisterType<Fix64Converter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<FixPolarConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<FixVector2Converter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<NativeDynamicArrayCastJsonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<KeyConverter>().As<JsonConverter>().SingleInstance();
+                builder.RegisterJsonConverter<Fix64Converter>();
+                builder.RegisterJsonConverter<FixPolarConverter>();
+                builder.RegisterJsonConverter<FixVector2Converter>();
+                builder.RegisterJsonConverter<NativeDynamicArrayCastJsonConverter>();
+                builder.RegisterJsonConverter<KeyConverter>();
 
                 builder.RegisterPolymorphicJsonType<Fix64, object>(nameof(Fix64));
             });

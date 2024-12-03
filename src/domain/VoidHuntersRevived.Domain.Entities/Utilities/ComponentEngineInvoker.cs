@@ -4,12 +4,13 @@ using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Interfaces;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
-namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
+namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
-    internal abstract class ComponentEngineInvoker
+    public abstract class ComponentEngineInvoker
     {
         public abstract void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, EntityId id, GroupIndex groupIndex);
 
@@ -44,7 +45,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         }
     }
 
-    internal class OnSpawnEngineInvoker<T>(IOnSpawnEngine<T> engine, EntitiesDB entitiesDB) : ComponentEngineInvoker, IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>
+    public class OnSpawnEngineInvoker<T>(IOnSpawnEngine<T> engine, EntitiesDB entitiesDB) : ComponentEngineInvoker, IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>
         where T : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
@@ -60,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         }
     }
 
-    internal class OnDespawnEngineInvoker<T>(IOnDespawnEngine<T> engine, EntitiesDB entitiesDB) : ComponentEngineInvoker, IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>
+    public class OnDespawnEngineInvoker<T>(IOnDespawnEngine<T> engine, EntitiesDB entitiesDB) : ComponentEngineInvoker, IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>
         where T : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;

@@ -4,7 +4,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Ships.Common.Events
 {
-    internal class SetUserShipUserId : IEventData
+    public class SetUserShipUserId : IEventData
     {
         public bool IsPredictable => true;
 
