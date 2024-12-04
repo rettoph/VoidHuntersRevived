@@ -1,16 +1,18 @@
+using Autofac;
 using Guppy.Core.Resources.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Tests.Common.Simulations;
 using VoidHuntersRevived.Tests.Domain.Entities.Components;
 using VoidHuntersRevived.Tests.Domain.Entities.Engines;
 using VoidHuntersRevived.Tests.Domain.Entities.Events;
-using VoidHuntersRevived.Tests.Registration.Simulations.Extensions;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {
@@ -25,27 +27,30 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         private readonly IStrategyMocker<LockstepStrategy_Client> _lockstep;
         private readonly IStrategyMocker<PredictiveStrategy> _predictive;
 
-
         public EntityService_SpawnDespawn_Tests() : base()
         {
-            _simulation = _simulation = new SimulationBuilder(
-                id: VhId.Empty,
-                stepInterval: StepInterval,
-                stepsPerTick: StepsPerTick,
-                entityTemplateFragments: [
-                    new EntityTemplateFragment()
-                    {
-                        Key = TestEntityTemplateKey,
-                        Components = [
-                            new TestComponent()
-                        ]
-                    }
-                ],
-                configuration: services =>
+            _simulation = new SimulationBuilder(
+                    id: VhId.Empty,
+                    stepInterval: StepInterval,
+                    stepsPerTick: StepsPerTick,
+                    entityTemplateFragments: [
+                        new EntityTemplateFragment()
+                        {
+                            Key = TestEntityTemplateKey,
+                            Components = [
+                                new TestComponent()
+                            ]
+                        }
+                    ]
+                )
+                .AddStrategy<PredictiveStrategy>()
+                .AddStrategy<LockstepStrategy_Client>()
+                .Register(builder =>
                 {
-                    services.RegisterFactory(services => new TestInputEngine());
-                }
-            ).AddPredictiveStrategy().AddLockstepClientStrategy().Build();
+                    builder.RegisterEngine<TestInputEngine>();
+                    builder.RegisterInstance(Enumerable.Empty<IComponentSerializer>());
+                })
+                .Build();
 
             _predictive = _simulation.Get<PredictiveStrategy>();
             _lockstep = _simulation.Get<LockstepStrategy_Client>();

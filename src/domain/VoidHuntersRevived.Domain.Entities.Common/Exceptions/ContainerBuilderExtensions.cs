@@ -6,9 +6,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Exceptions
     public static class ContainerBuilderExtensions
     {
         public static ContainerBuilder RegisterComponentSerializer<T>(this ContainerBuilder builder)
-            where T : ComponentSerializer
+            where T : IComponentSerializer
         {
-            builder.RegisterType<T>().As<ComponentSerializer>().InstancePerLifetimeScope();
+            builder.RegisterType<T>().As<IComponentSerializer>().InstancePerLifetimeScope();
 
 
             return builder;

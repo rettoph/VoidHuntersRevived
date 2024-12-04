@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Domain.Physics.Common;
+﻿using Autofac;
+using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Tests.Common.Simulations;
 using Xunit;
 
@@ -8,7 +9,7 @@ namespace VoidHuntersRevived.Tests.Common.Physics.Extensions
     {
         public static IStrategyMocker AssertBodyCount(this IStrategyMocker strategy, int count)
         {
-            Assert.Equal(count, strategy.Provider.Get<ISpace>().BodyCount);
+            Assert.Equal(count, strategy.Scope.Resolve<ISpace>().BodyCount);
 
             return strategy;
         }

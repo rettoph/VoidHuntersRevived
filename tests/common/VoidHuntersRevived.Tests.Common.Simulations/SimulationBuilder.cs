@@ -1,29 +1,28 @@
-﻿using Guppy.Core.Common.Providers;
+﻿using Autofac;
+using Autofac.Extras.Moq;
+using Guppy.Core.Common.Providers;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Tests.Common;
+using Guppy.Tests.Common.Extensions;
 using Moq;
 using Serilog;
-using Svelto.ECS;
-using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Engines;
-using VoidHuntersRevived.Domain.Providers;
+using VoidHuntersRevived.Domain.Entities.Extensions;
+using VoidHuntersRevived.Domain.Extensions;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
-using VoidHuntersRevived.Tests.Common.Simulations.Services;
-using VoidHuntersRevived.Tests.Registration.Entities.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Extensions;
+using VoidHuntersRevived.Tests.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations
 {
-    public class SimulationBuilder : BaseInstanceBuilder<SimulationMocker>
+    public class SimulationBuilder : AutoMocker<SimulationBuilder, SimulationMocker>
     {
-        private readonly List<Func<ServiceProviderMocker, IStrategyMocker>> _strategies = [];
-        private readonly List<Action<ServiceCollectionMocker>> _configurations = [];
+        private readonly List<Func<IContainer, IStrategyMocker>> _strategies = [];
 
         public VhId Id;
 
@@ -31,75 +30,48 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             VhId id,
             SettingValue<Fix64> stepInterval,
             SettingValue<int> stepsPerTick,
-            IEnumerable<EntityTemplateFragment> entityTemplateFragments,
-            Action<ServiceCollectionMocker>? configuration = null)
+            IEnumerable<EntityTemplateFragment> entityTemplateFragments)
         {
             this.Id = id;
 
-            this.AddConfiguration(services =>
+            this.Register(builder =>
             {
-                services.RegisterMocker<ISettingService>()
+                builder
+                    .RegisterDomainCoreServices()
+                    .RegisterDomainEntityServices()
+                    .RegisterDomainSimulationServices();
+
+                builder.RegisterMock<ISettingService>();
+                builder.RegisterMock<ILogLevelService>();
+                builder.RegisterMock<ILoggerService>();
+
+                EntityTemplateFragmentServiceMocker templateFragmentService = new();
+                templateFragmentService.AddFragments(entityTemplateFragments);
+                builder.RegisterMocker(templateFragmentService);
+            });
+
+            this.Mock(mocker =>
+            {
+                mocker.Mocker<ISettingService>()
                     .Setup(settings => settings.GetValue(Settings.StepInterval), () => stepInterval)
                     .Setup(settings => settings.GetValue(Settings.StepsPerTick), () => stepsPerTick);
 
-                services.RegisterMocker<ILoggerService>()
+                mocker.Mocker<ILoggerService>()
                     .Setup(loggers => loggers.GetOrCreate(It.IsAny<Type>()), () => new Mocker<ILogger>().GetInstance());
-
-                UniqueNumberProvider uniqueNumberProvider = new();
-                EntitiesSubmissionScheduler entitiesSubmissionScheduler = new();
-                EnginesRoot enginesRoot = new(entitiesSubmissionScheduler);
-                TickBuffer tickBuffer = new();
-                EngineServiceBuilder enginesServiceBuilder = new();
-                EntitySubmissionEngine entitySubmissionEngine = new(entitiesSubmissionScheduler);
-
-                services.RegisterFactory<UniqueNumberProvider>(provider => new());
-
-                services.RegisterFactory<EntitiesSubmissionScheduler>(provider => new());
-
-                services.RegisterFactory<EnginesRoot>(provider => new(
-                    provider.Get<EntitiesSubmissionScheduler>()));
-
-                services.RegisterFactory<TickBuffer>(provider => new());
-
-                services.RegisterBuilder(new EngineServiceBuilder());
-
-                services.RegisterFactory<EntitySubmissionEngine>(provider => new(
-                    provider.Get<EntitiesSubmissionScheduler>()));
-
-                services.RegisterEntityServices(entityTemplateFragments);
-
-                configuration?.Invoke(services);
             });
         }
 
-        public SimulationBuilder AddStrategy<TStrategy>(Func<ServiceProviderMocker, TStrategy> builder)
+        public SimulationBuilder AddStrategy<TStrategy>()
             where TStrategy : IStrategy
         {
-            _strategies.Add(services => new StrategyMocker<TStrategy>(builder(services), services));
+            _strategies.Add(container => new StrategyMocker<TStrategy>(container));
 
             return this;
         }
 
-        public SimulationBuilder AddConfiguration(Action<ServiceCollectionMocker> configuration)
+        public override SimulationMocker Build()
         {
-            _configurations.Add(configuration);
-
-            return this;
-        }
-
-        protected override SimulationMocker build()
-        {
-            IStrategyMocker[] strategies = _strategies.Select(builder =>
-            {
-                var services = new ServiceCollectionMocker();
-
-                foreach (var conf in _configurations)
-                    conf(services);
-
-                ServiceProviderMocker provider = services.Build();
-
-                return builder(provider);
-            }).ToArray();
+            IStrategyMocker[] strategies = _strategies.Select(factory => factory(this.AutoMock.Container)).ToArray();
 
             SimulationMocker simulation = new(
                 instance: new Simulation(this.Id, strategies.Select(x => x.Instance).ToArray()),

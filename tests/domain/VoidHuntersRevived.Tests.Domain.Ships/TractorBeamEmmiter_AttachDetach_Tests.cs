@@ -1,3 +1,4 @@
+using Autofac;
 using Guppy.Core.Resources.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -6,26 +7,26 @@ using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Physics.Extensions;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Constants;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
+using VoidHuntersRevived.Domain.Pieces.Extensions;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
+using VoidHuntersRevived.Domain.Ships.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
+using VoidHuntersRevived.Domain.Teams.Extensions;
 using VoidHuntersRevived.Tests.Common.Physics.Extensions;
 using VoidHuntersRevived.Tests.Common.Providers;
 using VoidHuntersRevived.Tests.Common.Simulations;
 using VoidHuntersRevived.Tests.Common.Simulations.Extensions;
 using VoidHuntersRevived.Tests.Domain.Ships;
-using VoidHuntersRevived.Tests.Registration.Physics.Extensions;
-using VoidHuntersRevived.Tests.Registration.Pieces.Extensions;
-using VoidHuntersRevived.Tests.Registration.Ships.Extensions;
-using VoidHuntersRevived.Tests.Registration.Simulations.Extensions;
-using VoidHuntersRevived.Tests.Registration.Teams.Extensions;
 
 namespace VoidHuntersRevived.Tests.Domain.Pieces
 {
@@ -38,39 +39,41 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
         private static SimulationMocker CreateSimulationMocker()
         {
-            var builder = new SimulationBuilder(
-                id: VhId.Empty,
-                stepInterval: StepInterval,
-                stepsPerTick: StepsPerTick,
-                entityTemplateFragments: GetEntityTemplateFragments()
-            );
+            return new SimulationBuilder(
+                    id: VhId.Empty,
+                    stepInterval: StepInterval,
+                    stepsPerTick: StepsPerTick,
+                    entityTemplateFragments: GetEntityTemplateFragments()
+                )
+                .AddStrategy<PredictiveStrategy>()
+                .AddStrategy<LockstepStrategy_Client>()
+                .Register(builder =>
+                {
+                    builder.RegisterDomainTeamsServices();
+                    builder.RegisterDomainPhysicsServices();
+                    builder.RegisterDomainPiecesServices();
+                    builder.RegisterDomainShipsServices();
 
-            var simulation = builder.AddPredictiveStrategy()
-                 .AddLockstepClientStrategy()
-                 .AddTeamsConfiguration()
-                 .AddPhysicsConfiguration()
-                 .AddPiecesConfiguration()
-                 .AddShipsConfiguration()
-                 .Build();
-
-            return simulation;
+                    builder.RegisterInstance(Enumerable.Empty<Blueprint>());
+                })
+                .Build();
         }
 
         [Fact]
         public void SpamSelectDeselectWithAttach_Tests()
         {
             var simulation = CreateSimulationMocker();
-            var readTractorbeamEmitterService = simulation.GetService<PredictiveStrategy, ITractorBeamEmitterService>();
-            var readEntityQueryService = simulation.GetService<PredictiveStrategy, IEntityQueryService>();
-            var readTreeService = simulation.GetService<PredictiveStrategy, ITreeService>();
+            var readTractorbeamEmitterService = simulation.Resolve<PredictiveStrategy, ITractorBeamEmitterService>();
+            var readEntityQueryService = simulation.Resolve<PredictiveStrategy, IEntityQueryService>();
+            var readTreeService = simulation.Resolve<PredictiveStrategy, ITreeService>();
 
             VhId shipVhId = VhId.NewId();
 
             IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
             {
-                ITeamService teamService = strategy.Provider.Get<ITeamService>();
-                ITreeService treeService = strategy.Provider.Get<ITreeService>();
-                ISocketService socketService = strategy.Provider.Get<ISocketService>();
+                ITeamService teamService = strategy.Scope.Resolve<ITeamService>();
+                ITreeService treeService = strategy.Scope.Resolve<ITreeService>();
+                ISocketService socketService = strategy.Scope.Resolve<ISocketService>();
 
                 // Spawn a test ship
                 Team team = teamService.GetOpenTeam();

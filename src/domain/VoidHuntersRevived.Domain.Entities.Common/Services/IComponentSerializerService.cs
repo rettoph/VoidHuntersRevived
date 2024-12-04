@@ -6,15 +6,15 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IComponentSerializerService
     {
-        ComponentSerializer GetComponentSerializerByType(Type componentType);
+        IComponentSerializer GetComponentSerializerByType(Type componentType);
 
-        IEnumerable<ComponentSerializer> GetComponentSerializersByTypes(IEnumerable<Type> componentTypes);
+        IEnumerable<IComponentSerializer> GetComponentSerializersByTypes(IEnumerable<Type> componentTypes);
 
-        FasterList<ComponentSerializer> GetComponentSerializersByDescriptor(IEntityDescriptor descriptor)
+        FasterList<IComponentSerializer> GetComponentSerializersByDescriptor(IEntityDescriptor descriptor)
         {
             IEnumerable<Type> componentTypes = descriptor.componentsToBuild.Select(x => x.GetEntityComponentType());
-            ComponentSerializer[] instanceEntityComponentSerializers = this.GetComponentSerializersByTypes(componentTypes).ToArray();
-            return new FasterList<ComponentSerializer>(instanceEntityComponentSerializers);
+            IComponentSerializer[] instanceEntityComponentSerializers = this.GetComponentSerializersByTypes(componentTypes).ToArray();
+            return new FasterList<IComponentSerializer>(instanceEntityComponentSerializers);
         }
     }
 }

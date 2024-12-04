@@ -2,7 +2,6 @@
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Extensions;
 using Serilog;
-using System.Text.Json.Serialization;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common.Providers;
@@ -24,7 +23,9 @@ namespace VoidHuntersRevived.Domain.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainServices), builder =>
             {
-                builder.RegisterDomainEntityServices()
+                builder
+                    .RegisterDomainCoreServices()
+                    .RegisterDomainEntityServices()
                     .RegisterDomainSimulationServices()
                     .RegisterDomainPhysicsServices()
                     .RegisterDomainPiecesServices()
@@ -32,21 +33,28 @@ namespace VoidHuntersRevived.Domain.Extensions
                     .RegisterDomainTeamsServices()
                     .RegisterDomainGraphicsServices();
 
-                builder.Configure<LoggerConfiguration>((scope, config) =>
-                {
-                    config.Destructure.AsScalar<VhId>();
-                });
 
-                builder.RegisterType<UniqueNumberProvider>().As<IUniqueNumberProvider>().InstancePerLifetimeScope();
-
-                builder.RegisterJsonConverter<Fix64Converter>();
-                builder.RegisterJsonConverter<FixPolarConverter>();
-                builder.RegisterJsonConverter<FixVector2Converter>();
-                builder.RegisterJsonConverter<NativeDynamicArrayCastJsonConverter>();
-                builder.RegisterJsonConverter<KeyConverter>();
-
-                builder.RegisterPolymorphicJsonType<Fix64, object>(nameof(Fix64));
             });
+        }
+
+        public static ContainerBuilder RegisterDomainCoreServices(this ContainerBuilder builder)
+        {
+            builder.Configure<LoggerConfiguration>((scope, config) =>
+            {
+                config.Destructure.AsScalar<VhId>();
+            });
+
+            builder.RegisterType<UniqueNumberProvider>().As<IUniqueNumberProvider>().InstancePerLifetimeScope();
+
+            builder.RegisterJsonConverter<Fix64Converter>();
+            builder.RegisterJsonConverter<FixPolarConverter>();
+            builder.RegisterJsonConverter<FixVector2Converter>();
+            builder.RegisterJsonConverter<NativeDynamicArrayCastJsonConverter>();
+            builder.RegisterJsonConverter<KeyConverter>();
+
+            builder.RegisterPolymorphicJsonType<Fix64, object>(nameof(Fix64));
+
+            return builder;
         }
     }
 }

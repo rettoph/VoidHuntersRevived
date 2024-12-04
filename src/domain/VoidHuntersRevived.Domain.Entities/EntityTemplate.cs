@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Entities
         private readonly ActionSequenceGroup<OnDespawnSequenceGroupEnum, VhId, IEntityTemplate, EntityId, GroupIndex> _onDespawnEngineInvokers;
         private readonly ActionSequenceGroup<OnSpawnSequenceGroupEnum, VhId, IEntityTemplate, EntityId, GroupIndex> _onSpawnEngineInvokers;
         private EntitiesDB _entitiesDB;
-        private FasterList<ComponentSerializer> _serializers;
+        private FasterList<IComponentSerializer> _serializers;
 
         private DynamicEntityDescriptor<VoidHuntersEntityDescriptor> _descriptor;
         private readonly ExclusiveGroupStruct _group;
@@ -117,7 +117,7 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public void SerializeInstanceEntity(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options)
         {
-            foreach (ComponentSerializer serializer in _serializers)
+            foreach (IComponentSerializer serializer in _serializers)
             {
                 serializer.Serialize(ref writer, in id, in groupIndex, _entitiesDB, in options);
             }
@@ -125,7 +125,7 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
-            foreach (ComponentSerializer serializer in _serializers)
+            foreach (IComponentSerializer serializer in _serializers)
             {
                 serializer.Deserialize(in sourceId, in options, ref reader, ref initializer, in id);
             }

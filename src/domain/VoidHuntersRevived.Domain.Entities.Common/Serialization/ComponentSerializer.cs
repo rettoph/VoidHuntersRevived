@@ -4,34 +4,23 @@ using VoidHuntersRevived.Domain.Entities.Common.Options;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    public abstract class ComponentSerializer
-    {
-        public readonly Type Type;
-
-        internal ComponentSerializer(Type type)
-        {
-            Type = type;
-        }
-
-        public abstract void Serialize(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options);
-        public abstract void Deserialize(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id);
-    }
-
-    public abstract class ComponentSerializer<TComponent> : ComponentSerializer
+    public abstract class ComponentSerializer<TComponent> : IComponentSerializer
         where TComponent : unmanaged, IEntityComponent
     {
-        public ComponentSerializer() : base(typeof(TComponent))
+        public Type Type => typeof(TComponent);
+
+        public ComponentSerializer()
         {
         }
 
-        public override void Serialize(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options)
+        public virtual void Serialize(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, EntitiesDB entitiesDB, in SerializationOptions options)
         {
             var (components, _) = entitiesDB.QueryEntities<TComponent>(groupIndex.GroupID);
             ref var component = ref components[groupIndex.Index];
 
             this.Write(ref writer, id, component, in options);
         }
-        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public virtual void Deserialize(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id)
         {
             initializer.Init<TComponent>(this.Read(in options, ref reader, in id));
         }

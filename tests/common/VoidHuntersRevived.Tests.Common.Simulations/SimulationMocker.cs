@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using Autofac;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Tests.Common.Providers;
@@ -13,6 +14,10 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         public void Dispose()
         {
             this.Instance.Dispose();
+            foreach (IStrategyMocker strategy in this.Strategies)
+            {
+                strategy.Dispose();
+            }
         }
 
         public IStrategyMocker<T> Get<T>()
@@ -26,11 +31,11 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return this.Strategies.OfType<IStrategyMocker<T>>();
         }
 
-        public T GetService<TStrategy, T>()
+        public T Resolve<TStrategy, T>()
             where TStrategy : IStrategy
             where T : class
         {
-            return this.Get<TStrategy>().Provider.Get<T>();
+            return this.Get<TStrategy>().Scope.Resolve<T>();
         }
 
         public SimulationMocker Update(TimeSpan interval, int count)
