@@ -12,6 +12,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 
         public Key<IEntityTemplate>? Inherit { get; init; } = null;
 
+        public Type? GroupTag { get; init; } = null;
+
         public IEntityComponent[] Components { get; init; } = [];
 
         public Type[] RequiredComponents { get; init; } = [];

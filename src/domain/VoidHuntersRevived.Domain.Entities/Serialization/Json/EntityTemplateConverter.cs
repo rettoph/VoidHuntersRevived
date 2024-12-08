@@ -19,6 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             Key<IEntityTemplate>? key = null;
             EntityTemplateFlags flags = EntityTemplateFlags.None;
             Key<IEntityTemplate>? inherit = null;
+            Type? groupTag = null;
             Dictionary<Type, IEntityComponent> components = [];
             List<Type> requiredComponents = [];
 
@@ -39,6 +40,10 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                         break;
                     case nameof(EntityTemplateFragment.Inherit):
                         inherit = JsonSerializer.Deserialize<Key<IEntityTemplate>>(ref reader, options);
+                        reader.Read();
+                        break;
+                    case nameof(EntityTemplateFragment.GroupTag):
+                        groupTag = JsonSerializer.Deserialize<Type?>(ref reader, options);
                         reader.Read();
                         break;
                     case nameof(EntityTemplateFragment.Components):
@@ -66,6 +71,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                 Key = key.Value,
                 Flags = flags,
                 Inherit = inherit,
+                GroupTag = groupTag,
                 Components = components.Values.ToArray(),
                 RequiredComponents = requiredComponents.ToArray()
             };
