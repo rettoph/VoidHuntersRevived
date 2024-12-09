@@ -4,7 +4,6 @@ using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Extensions;
 using Serilog;
 using Svelto.ECS;
-using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;

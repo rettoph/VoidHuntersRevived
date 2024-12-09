@@ -46,8 +46,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            var groups = _entityQueryService.FindGroups<Tree, Location, Enabled, Awake>();
-            foreach (var ((ids, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityId, Location, Enabled, Awake>(groups))
+            foreach (var ((ids, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityId, Location, Enabled, Awake>())
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
