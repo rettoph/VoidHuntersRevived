@@ -50,6 +50,11 @@ namespace VoidHuntersRevived.Domain.Common
             public static readonly ResourceKey<ImStyle> ButtonRed = ResourceKey<ImStyle>.Get($"{nameof(ImStyle)}.{nameof(ButtonRed)}");
         }
 
+        public static class EntityTags
+        {
+            public static EntityTag Piece = EntityTag.GetByName(nameof(Piece));
+        }
+
         public static class EntityTemplates
         {
             public static class Team

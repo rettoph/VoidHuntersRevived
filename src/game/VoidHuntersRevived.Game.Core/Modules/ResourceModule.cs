@@ -93,6 +93,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Piece.PieceEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Piece.PieceEntityTemplate,
+                Tag = Resources.EntityTags.Piece,
                 Flags = EntityTemplateFlags.Partial,
                 Inherit = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
                 Components = [

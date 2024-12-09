@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities
         private FasterList<IComponentSerializer> _serializers;
 
         private DynamicEntityDescriptor<VoidHuntersEntityDescriptor> _descriptor;
-        private readonly ExclusiveGroupStruct _group;
+        private readonly EntityGroup _group;
 
         public ComponentBuilderDictionary Components { get; }
 
@@ -53,8 +53,7 @@ namespace VoidHuntersRevived.Domain.Entities
             _onSpawnEngineInvokers = new(false);
             _serializers = null!;
 
-            _group = ExclusiveGroupStructHelper.GetOrCreateExclusiveStruct($"{key.Name}_{nameof(_group)}");
-            _descriptor = BuildDescriptor(key, entityTemplateService, out var components);
+            _descriptor = BuildDescriptor(key, entityTemplateService, out var components, out _group);
 
             this.Key = key;
             this.Components = components;
@@ -89,7 +88,7 @@ namespace VoidHuntersRevived.Domain.Entities
         public EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id)
         {
             // Create a new EGID for the entity
-            EGID egid = new(_uniqueNumberProvider.GetUInt32(), _group);
+            EGID egid = new(_uniqueNumberProvider.GetUInt32(), _group.Value);
             id = new EntityId(egid, vhid);
 
             // Invoke Svelto factory and initialize instance with common component values
@@ -141,9 +140,11 @@ namespace VoidHuntersRevived.Domain.Entities
         private static DynamicEntityDescriptor<VoidHuntersEntityDescriptor> BuildDescriptor(
             Key<IEntityTemplate> key,
             IEntityTemplateFragmentService entityTemplateService,
-            out ComponentBuilderDictionary components)
+            out ComponentBuilderDictionary components,
+            out EntityGroup group)
         {
             components = new();
+            HashSet<EntityTag> tags = [EntityTag.GetByKey(key)];
             HashSet<Type> requiredComponents = [];
             Queue<Key<IEntityTemplate>> enqueuedFragments = [];
             HashSet<Key<IEntityTemplate>> populatedTemplateKeys = [];
@@ -159,6 +160,7 @@ namespace VoidHuntersRevived.Domain.Entities
                 PopulateComponentCollections(
                     enqueuedTemplate,
                     entityTemplateService,
+                    ref tags,
                     ref components,
                     ref requiredComponents,
                     ref enqueuedFragments,
@@ -174,12 +176,14 @@ namespace VoidHuntersRevived.Domain.Entities
                 }
             }
 
+            group = EntityGroup.Create(key.Name, components.Keys);
             return new DynamicEntityDescriptor<VoidHuntersEntityDescriptor>(components);
         }
 
         private static void PopulateComponentCollections(
             Key<IEntityTemplate> key,
             IEntityTemplateFragmentService entityTemplateFragmentService,
+            ref HashSet<EntityTag> tags,
             ref ComponentBuilderDictionary components,
             ref HashSet<Type> requiredComponents,
             ref Queue<Key<IEntityTemplate>> enqueuedTemplates,
@@ -209,6 +213,8 @@ namespace VoidHuntersRevived.Domain.Entities
                 {
                     enqueuedTemplates.Enqueue(fragment.Inherit.Value);
                 }
+
+                tags.Add(EntityTag.GetByKey(key));
             }
         }
     }

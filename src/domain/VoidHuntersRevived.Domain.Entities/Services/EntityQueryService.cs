@@ -232,16 +232,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public GroupsEnumerable<T1> QueryEntities<T1>()
             where T1 : unmanaged, IEntityComponent
         {
-            var groups = this.entitiesDB.FindGroups<T1>();
-            return this.entitiesDB.QueryEntities<T1>(groups);
+            return this.entitiesDB.QueryEntities<T1>(EntityGroupList<T1>.Values);
         }
 
         public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
         {
-            var groups = this.entitiesDB.FindGroups<T1, T2>();
-            return this.entitiesDB.QueryEntities<T1, T2>(groups);
+            return this.entitiesDB.QueryEntities<T1, T2>(EntityGroupList<T1, T2>.Values);
         }
 
         public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>()
@@ -249,8 +247,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
         {
-            var groups = this.entitiesDB.FindGroups<T1, T2, T3>();
-            return this.entitiesDB.QueryEntities<T1, T2, T3>(groups);
+            return this.entitiesDB.QueryEntities<T1, T2, T3>(EntityGroupList<T1, T2, T3>.Values);
         }
 
         public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>()
@@ -259,8 +256,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent
         {
-            var groups = this.entitiesDB.FindGroups<T1, T2, T3, T4>();
-            return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groups);
+            return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(EntityGroupList<T1, T2, T3, T4>.Values);
         }
 
         public GroupsEnumerable<T1> QueryEntities<T1>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
@@ -296,14 +292,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1>()
             where T1 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.FindGroups<T1>();
+            return EntityGroupList<T1>.Values;
         }
 
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.FindGroups<T1, T2>();
+            return EntityGroupList<T1, T2>.Values;
         }
 
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3>()
@@ -311,7 +307,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.FindGroups<T1, T2, T3>();
+            return EntityGroupList<T1, T2, T3>.Values;
         }
 
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3, T4>()
@@ -320,16 +316,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.FindGroups<T1, T2, T3, T4>();
+            return EntityGroupList<T1, T2, T3, T4>.Values;
         }
 
         public int CalculateTotal<T>()
             where T : unmanaged, IEntityComponent
         {
-            var groups = this.FindGroups<T>();
             int total = 0;
 
-            foreach (var ((_, count), _) in this.QueryEntities<T>(groups))
+            foreach (var ((_, count), _) in this.QueryEntities<T>(EntityGroupList<T>.Values))
             {
                 total += count;
             }
