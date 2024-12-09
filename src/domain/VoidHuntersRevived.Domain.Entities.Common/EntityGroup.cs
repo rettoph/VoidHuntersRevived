@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 
             foreach (EntityGroupList entityGroupList in EntityGroupList.GetAll())
             {
-                if (entityGroupList.Contains(this.ComponentTypes) == true)
+                if (this.Contains(entityGroupList.ComponentTypes) == true)
                 {
                     entityGroupList._values.Add(this.Value);
                 }

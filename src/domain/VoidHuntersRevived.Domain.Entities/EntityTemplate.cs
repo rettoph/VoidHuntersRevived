@@ -144,7 +144,6 @@ namespace VoidHuntersRevived.Domain.Entities
             out EntityGroup group)
         {
             components = new();
-            HashSet<EntityTag> tags = [EntityTag.GetByKey(key)];
             HashSet<Type> requiredComponents = [];
             Queue<Key<IEntityTemplate>> enqueuedFragments = [];
             HashSet<Key<IEntityTemplate>> populatedTemplateKeys = [];
@@ -160,7 +159,6 @@ namespace VoidHuntersRevived.Domain.Entities
                 PopulateComponentCollections(
                     enqueuedTemplate,
                     entityTemplateService,
-                    ref tags,
                     ref components,
                     ref requiredComponents,
                     ref enqueuedFragments,
@@ -183,7 +181,6 @@ namespace VoidHuntersRevived.Domain.Entities
         private static void PopulateComponentCollections(
             Key<IEntityTemplate> key,
             IEntityTemplateFragmentService entityTemplateFragmentService,
-            ref HashSet<EntityTag> tags,
             ref ComponentBuilderDictionary components,
             ref HashSet<Type> requiredComponents,
             ref Queue<Key<IEntityTemplate>> enqueuedTemplates,
@@ -213,8 +210,6 @@ namespace VoidHuntersRevived.Domain.Entities
                 {
                     enqueuedTemplates.Enqueue(fragment.Inherit.Value);
                 }
-
-                tags.Add(EntityTag.GetByKey(key));
             }
         }
     }
