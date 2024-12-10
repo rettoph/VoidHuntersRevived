@@ -31,9 +31,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private static readonly Fix64 BufferPi = Fix64.Pi - Buffer;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Thrustable> thrustable)
         {
-            Node node = _entityQueryService.QueryByGroupIndex<Node>(in groupIndex);
+            Node node = _entityQueryService.QueryByGroupIndex<Node>(thrustable.GroupIndex);
 
             if (_entityQueryService.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
             {
@@ -41,13 +41,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
 
             ref var filter = ref _entityQueryService.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
-            filter.Add(id, groupIndex);
+            filter.Add(thrustable.LocalId, thrustable.Index);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Thrustable component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Thrustable> thrustable)
         {
-            Node node = _entityQueryService.QueryByGroupIndex<Node>(in groupIndex);
+            Node node = _entityQueryService.QueryByGroupIndex<Node>(thrustable.GroupIndex);
 
             if (_entityQueryService.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
             {
@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
 
             ref var filter = ref _entityQueryService.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
-            filter.Remove(id);
+            filter.Remove(thrustable.LocalId);
         }
 
         public void Process(VhId eventId, Tree_Clean data)

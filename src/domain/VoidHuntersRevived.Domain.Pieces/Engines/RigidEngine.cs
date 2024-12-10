@@ -59,32 +59,32 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         }
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group05)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Rigid component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Rigid> rigid)
         {
-            _logger.Verbose("EntityId = {EntityId}", id.VhId);
+            _logger.Verbose("EntityId = {EntityId}", rigid.GlobalId);
 
-            Node node = _entityQueryService.QueryByGroupIndex<Node>(groupIndex);
+            Node node = _entityQueryService.QueryByGroupIndex<Node>(rigid.GroupIndex);
 
             if (_entityQueryService.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
             {
                 if (enabled)
                 {
                     IBody body = _space.GetBody(node.TreeId);
-                    this.CreateFixtures(body, node, component);
+                    this.CreateFixtures(body, node, rigid.Value);
                 }
             }
             else
             {
-                _logger.Warning("Unable to create fixtures for node {NodeId} on tree {TreeId}.", id.VhId, node.TreeId.VhId);
+                _logger.Warning("Unable to create fixtures for node {NodeId} on tree {TreeId}.", rigid.GlobalId, node.TreeId.VhId);
             }
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group05)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Rigid component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Rigid> rigid)
         {
-            _logger.Verbose("EntityId = {EntityId}", id.VhId);
+            _logger.Verbose("EntityId = {EntityId}", rigid.GlobalId);
 
-            Node node = _entityQueryService.QueryByGroupIndex<Node>(groupIndex);
+            Node node = _entityQueryService.QueryByGroupIndex<Node>(rigid.GroupIndex);
 
             if (_entityQueryService.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
             {
@@ -92,18 +92,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 {
                     if (_space.TryGetBody(node.TreeId, out IBody? body) == true)
                     {
-                        this.DestroyFixtures(body, node, component);
+                        this.DestroyFixtures(body, node, rigid.Value);
                     }
                     else
                     {
-                        _logger.Warning("Unable to destroy fixtures for node {NodeId} on tree {TreeId}. Body not found.", id.VhId, node.TreeId.VhId);
+                        _logger.Warning("Unable to destroy fixtures for node {NodeId} on tree {TreeId}. Body not found.", rigid.GlobalId, node.TreeId.VhId);
                     }
                 }
 
             }
             else
             {
-                _logger.Warning("Unable to destroy fixtures for node {NodeId} on tree {TreeId}. Tree not found.", id.VhId, node.TreeId.VhId);
+                _logger.Warning("Unable to destroy fixtures for node {NodeId} on tree {TreeId}. Tree not found.", rigid.GlobalId, node.TreeId.VhId);
             }
         }
 

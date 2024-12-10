@@ -114,15 +114,15 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Enabled component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Enabled> enabled)
         {
-            if (component.Value == false)
+            if (enabled.Value.Value == false)
             {
                 return;
             }
 
-            _space.DisableBody(id);
-            component.Value = false;
+            _space.DisableBody(enabled.EntityId);
+            enabled.Value.Value = false;
         }
     }
 }

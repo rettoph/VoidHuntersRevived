@@ -24,6 +24,11 @@ namespace Svelto.ECS
             filter.Add(id.Value.entityID, groupIndex.GroupID, groupIndex.Index);
         }
 
+        public static void Add(this EntityFilterCollection filter, in LocalEntityId id, in uint index)
+        {
+            filter.Add(id.Value.entityID, id.Value.groupID, index);
+        }
+
         public static void Remove(this EntityFilterCollection filter, in LocalEntityId id)
         {
             filter.Remove(id.Value);

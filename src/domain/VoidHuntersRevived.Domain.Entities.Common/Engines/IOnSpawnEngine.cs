@@ -9,6 +9,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Engines
         where T : unmanaged, IEntityComponent
     {
         [RequireSequenceGroup<OnSpawnSequenceGroupEnum>]
-        void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, EntityId id, ref T component, in GroupIndex groupIndex);
+        void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, ref Entity<T> entity);
     }
 }

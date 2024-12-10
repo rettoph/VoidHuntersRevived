@@ -37,13 +37,13 @@ namespace VoidHuntersRevived.Game.Client.Engines
         /// <param name="groupIndex"></param>
         /// <exception cref="NotImplementedException"></exception>
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group05)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, EntityId id, ref VertexVisible component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, ref Entity<VertexVisible> vertexVisible)
         {
-            var (vertices, colorSchemes, nodes, _, _) = _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Node>(groupIndex.GroupID);
+            var (vertices, colorSchemes, nodes, _, _) = _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Node>(vertexVisible.Group);
 
-            ref VertexVisible vertex = ref vertices[groupIndex.Index];
-            ref ColorScheme colorScheme = ref colorSchemes[groupIndex.Index];
-            ref Node node = ref nodes[groupIndex.Index];
+            ref VertexVisible vertex = ref vertices[vertexVisible.Index];
+            ref ColorScheme colorScheme = ref colorSchemes[vertexVisible.Index];
+            ref Node node = ref nodes[vertexVisible.Index];
 
             vertex.LocalTransformation = node.XnaTransformation;
             vertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;

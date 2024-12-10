@@ -57,7 +57,11 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, EntityId id, GroupIndex groupIndex)
         {
             ref T component = ref _entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
-            _engine.OnSpawn(sourceEventId, entityTemplate, id, ref component, in groupIndex);
+            LocalEntityId localId = new(id.EGID);
+            GlobalEntityId globalId = new(id.VhId);
+            Entity<T> entity = new(groupIndex.Index, localId, globalId, ref component);
+
+            _engine.OnSpawn(sourceEventId, entityTemplate, ref entity);
         }
     }
 
@@ -73,7 +77,11 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, EntityId id, GroupIndex groupIndex)
         {
             ref T component = ref _entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
-            _engine.OnDespawn(sourceEventId, entityTemplate, id, ref component, in groupIndex);
+            LocalEntityId localId = new(id.EGID);
+            GlobalEntityId globalId = new(id.VhId);
+            Entity<T> entity = new(groupIndex.Index, localId, globalId, ref component);
+
+            _engine.OnDespawn(sourceEventId, entityTemplate, ref entity);
         }
     }
 }

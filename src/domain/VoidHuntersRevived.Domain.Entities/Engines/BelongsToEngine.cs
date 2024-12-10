@@ -28,15 +28,15 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref TBelongsTo belongsTo, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<TBelongsTo> belongsTo)
         {
-            if (belongsTo.ParentFilterId == default)
+            if (belongsTo.Value.ParentFilterId == default)
             {
-                _logger.Warning("{0}::{1} - Empty {2}", typeof(BelongsToEngine<TBelongsTo, TParent>).GetFormattedName(), nameof(BelongsToEngine<TBelongsTo, TParent>.OnSpawn), nameof(belongsTo.ParentFilterId));
+                _logger.Warning("{0}::{1} - Empty {2}", typeof(BelongsToEngine<TBelongsTo, TParent>).GetFormattedName(), nameof(BelongsToEngine<TBelongsTo, TParent>.OnSpawn), nameof(belongsTo.Value.ParentFilterId));
                 return;
             }
 
-            _entityQueryService.GetFilter(belongsTo.ParentFilterId).Add(id, groupIndex);
+            _entityQueryService.GetFilter(belongsTo.Value.ParentFilterId).Add(in belongsTo.LocalId, in belongsTo.Index);
         }
     }
 }

@@ -1,27 +1,22 @@
-﻿using Svelto.DataStructures;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public readonly struct Entity<T>(
-        ExclusiveGroupStruct group,
+    public readonly ref struct Entity<T>(
         uint index,
-        NB<LocalEntityId> localEntityIds,
-        NB<GlobalEntityId> globalEntityIds,
-        NB<T> values
+        LocalEntityId localId,
+        GlobalEntityId globalId,
+        ref T value
     )
         where T : unmanaged, IEntityComponent
     {
-        private readonly NB<LocalEntityId> _localEntityIds = localEntityIds;
-        private readonly NB<GlobalEntityId> _globalEntityIds = globalEntityIds;
-        private readonly NB<T> _values = values;
-
-        public readonly ExclusiveGroupStruct Group = group;
         public readonly uint Index = index;
+        public readonly LocalEntityId LocalId = localId;
+        public readonly GlobalEntityId GlobalId = globalId;
+        public readonly ref T Value = ref value;
 
-        public LocalEntityId LocalId => _localEntityIds[this.Index];
-        public GlobalEntityId GlobalId => _globalEntityIds[this.Index];
-        public T Value => _values[this.Index];
+        public EntityId EntityId => new(this.LocalId.Value, this.GlobalId.Value);
+        public ExclusiveGroupStruct Group => this.LocalId.Value.groupID;
         public GroupIndex GroupIndex => new(this.Group, this.Index);
     }
 }

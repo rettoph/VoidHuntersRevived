@@ -234,6 +234,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         ref EntityFilterCollection GetFilter<T>(EntityId id, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent;
 
+        ref EntityFilterCollection GetFilter<T>(LocalEntityId id, FilterContextID filterContext)
+            where T : unmanaged, IEntityComponent;
+
         ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
             where T : unmanaged, IEntityComponent;
 

@@ -19,27 +19,27 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Coupling> entity)
         {
-            if (coupling.SocketId == default)
+            if (entity.Value.SocketId == default)
             {
                 return;
             }
 
-            ref var filter = ref _socketService.GetCouplingFilter(coupling.SocketId);
-            filter.Add(in id, in groupIndex);
+            ref var filter = ref _socketService.GetCouplingFilter(entity.Value.SocketId);
+            filter.Add(in entity.LocalId, in entity.Index);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Coupling> coupling)
         {
-            if (coupling.SocketId == default)
+            if (coupling.Value.SocketId == default)
             {
                 return;
             }
 
-            ref var filter = ref _socketService.GetCouplingFilter(coupling.SocketId);
-            filter.Remove(in id);
+            ref var filter = ref _socketService.GetCouplingFilter(coupling.Value.SocketId);
+            filter.Remove(in coupling.LocalId);
         }
     }
 }

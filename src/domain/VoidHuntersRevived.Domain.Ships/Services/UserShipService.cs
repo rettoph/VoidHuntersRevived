@@ -24,22 +24,22 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref UserId userId, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<UserId> userId)
         {
             this.Strategy.Publish(sourceEventId, new SetUserShipUserId()
             {
-                ShipVhId = id.VhId,
-                UserId = userId.Value
+                ShipVhId = userId.GlobalId.Value,
+                UserId = userId.Value.Value
             });
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref UserId userId, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<UserId> userId)
         {
             this.Strategy.Publish(sourceEventId, new SetUserShipUserId()
             {
-                ShipVhId = id.VhId,
-                UserId = userId.Value
+                ShipVhId = userId.GlobalId.Value,
+                UserId = userId.Value.Value
             });
         }
 

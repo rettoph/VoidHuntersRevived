@@ -36,34 +36,34 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly DictionaryQueue<EntityId, VhId> _dirtyTrees = new();
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Node node, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node> node)
         {
-            _logger.Verbose("EntityId = {EntityId}", id.VhId);
+            _logger.Verbose("EntityId = {EntityId}", node.GlobalId);
 
-            ref var filter = ref _entityQueryService.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
-            filter.Add(id, groupIndex);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(node.Value.TreeId, Tree.NodeFilterContextId);
+            filter.Add(node.LocalId, node.Index);
 
-            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.TreeId, out bool alreadyDirty);
+            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.Value.TreeId, out bool alreadyDirty);
             dirtyEventId = alreadyDirty
-                ? HashBuilder<IReactOnAddEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Id.VhId)
-                : HashBuilder<IReactOnAddEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
+                ? HashBuilder<IReactOnAddEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Value.Id.VhId)
+                : HashBuilder<IReactOnAddEx<Node>, VhId>.Instance.Calculate(node.Value.Id.VhId);
 
-            ref Location treeLocation = ref _entityQueryService.QueryById<Location>(node.TreeId);
-            this.SetLocalTransformation(ref node, groupIndex, in treeLocation);
+            ref Location treeLocation = ref _entityQueryService.QueryById<Location>(node.Value.TreeId);
+            this.SetLocalTransformation(ref node.Value, node.GroupIndex, in treeLocation);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Node node, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node> node)
         {
-            _logger.Verbose("EntityId = {EntityId}", id.VhId);
+            _logger.Verbose("EntityId = {EntityId}", node.GlobalId);
 
-            ref var filter = ref _entityQueryService.GetFilter<Node>(node.TreeId, Tree.NodeFilterContextId);
-            filter.Remove(id.EGID);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(node.Value.TreeId, Tree.NodeFilterContextId);
+            filter.Remove(node.LocalId);
 
-            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.TreeId, out bool alreadyDirty);
+            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.Value.TreeId, out bool alreadyDirty);
             dirtyEventId = alreadyDirty
-                ? HashBuilder<IReactOnRemoveEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Id.VhId)
-                : HashBuilder<IReactOnRemoveEx<Node>, VhId>.Instance.Calculate(node.Id.VhId);
+                ? HashBuilder<IReactOnRemoveEx<Node>, VhId, VhId>.Instance.Calculate(dirtyEventId, node.Value.Id.VhId)
+                : HashBuilder<IReactOnRemoveEx<Node>, VhId>.Instance.Calculate(node.Value.Id.VhId);
         }
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]

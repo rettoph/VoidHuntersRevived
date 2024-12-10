@@ -28,19 +28,19 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Tree component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tree> tree)
         {
-            ref Location location = ref _entityQueryService.QueryByGroupIndex<Location>(groupIndex);
-            ref var filter = ref _entityQueryService.GetFilter<Node>(id, Tree.NodeFilterContextId);
+            ref Location location = ref _entityQueryService.QueryByGroupIndex<Location>(tree.GroupIndex);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(tree.LocalId, Tree.NodeFilterContextId);
 
             this.TransformNodes(ref location, ref filter);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Tree component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tree> tree)
         {
-            _logger.Verbose("Despawning Tree {TreeId}, HeadId = {HeadId}", id.VhId, component.HeadId.VhId);
-            _entitySpawnService.Despawn(sourceEventId, component.HeadId);
+            _logger.Verbose("Despawning Tree {TreeId}, HeadId = {HeadId}", tree.GlobalId, tree.Value.HeadId.VhId);
+            _entitySpawnService.Despawn(sourceEventId, tree.Value.HeadId);
         }
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]

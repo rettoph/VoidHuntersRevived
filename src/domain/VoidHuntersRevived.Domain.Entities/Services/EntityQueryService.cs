@@ -399,6 +399,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref filter;
         }
 
+        public ref EntityFilterCollection GetFilter<T>(LocalEntityId id, FilterContextID filterContext)
+            where T : unmanaged, IEntityComponent
+        {
+            ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(unchecked((int)id.Value.entityID), filterContext);
+
+            return ref filter;
+        }
+
         public ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
             where T : unmanaged, IEntityComponent
         {

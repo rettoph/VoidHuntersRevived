@@ -25,11 +25,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Sockets sockets, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Sockets> sockets)
         {
-            for (int i = 0; i < sockets.Items.count; i++)
+            for (int i = 0; i < sockets.Value.Items.count; i++)
             {
-                var filter = _socketService.GetCouplingFilter(nodeId: id, socketIndex: (byte)i);
+                var filter = _socketService.GetCouplingFilter(nodeId: sockets.EntityId, socketIndex: (byte)i);
                 foreach (var (indices, groupId) in filter)
                 {
                     var (entityIds, _) = _entityQueryService.QueryEntities<EntityId>(groupId);
