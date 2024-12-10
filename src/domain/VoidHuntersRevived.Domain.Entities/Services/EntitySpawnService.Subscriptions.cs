@@ -25,9 +25,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         public void Process(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("EntityId = {EntityId}", data.VhId);
+            _logger.Verbose("EntityId = {EntityId}", data.GlobalId);
 
-            if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == true)
+            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == true)
             {
                 ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID);
                 status.Increment(EntityModificationTypeEnum.Spawned);
@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Data = new SoftSpawnEntity()
                 {
                     IsPrivate = data.IsPrivate,
-                    VhId = data.VhId
+                    GlobalId = data.GlobalId
                 }
             });
 
@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Data = new HardSpawnEntity()
                 {
                     IsPrivate = data.IsPrivate,
-                    VhId = data.VhId,
+                    GlobalId = data.GlobalId,
                     TemplateKey = data.TemplateKey
                 }
             });
@@ -63,9 +63,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
         {
-            _logger.Verbose("EntityId = {EntityId}", data.VhId);
+            _logger.Verbose("EntityId = {EntityId}", data.GlobalId);
 
-            if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == true)
+            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == true)
             {
                 ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID);
                 status.Increment(EntityModificationTypeEnum.Spawned);
@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Data = new SoftSpawnEntity()
                 {
                     IsPrivate = data.IsPrivate,
-                    VhId = data.VhId
+                    GlobalId = data.GlobalId
                 }
             });
 
@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Data = new HardSpawnEntity<EntityInitializerDelegate>()
                 {
                     IsPrivate = data.IsPrivate,
-                    VhId = data.VhId,
+                    GlobalId = data.GlobalId,
                     TemplateKey = data.TemplateKey,
                     Initializer = data.Initializer
                 }
@@ -103,25 +103,25 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, HardSpawnEntity data)
         {
-            ref EntityId id = ref _entityQueryService.AddId(data.VhId);
+            ref EntityId id = ref _entityQueryService.AddId(data.GlobalId.Value);
 
-            EntityInitializer initializer = _entityTemplateService.GetByKey(data.TemplateKey).HardSpawnInstanceEntity(eventId, data.VhId, out id);
+            EntityInitializer initializer = _entityTemplateService.GetByKey(data.TemplateKey).HardSpawnInstanceEntity(eventId, data.GlobalId, out id);
         }
 
         public void Process(VhId eventId, HardSpawnEntity<EntityInitializerDelegate> data)
         {
-            ref EntityId id = ref _entityQueryService.AddId(data.VhId);
+            ref EntityId id = ref _entityQueryService.AddId(data.GlobalId.Value);
 
             IEntityTemplate template = _entityTemplateService.GetByKey(data.TemplateKey);
-            EntityInitializer initializer = template.HardSpawnInstanceEntity(eventId, data.VhId, out id);
+            EntityInitializer initializer = template.HardSpawnInstanceEntity(eventId, data.GlobalId, out id);
             data.Initializer.Invoke(_entityService, template, id, ref initializer);
         }
 
         public void Process(VhId eventId, SoftSpawnEntity data)
         {
-            if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == false)
+            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown VhId {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(SoftSpawnEntity), data.VhId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown VhId {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(SoftSpawnEntity), data.GlobalId);
                 return;
             }
 
@@ -149,11 +149,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void InternalRevert(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("EntityVhId = {EntityVhId}", data.VhId);
+            _logger.Verbose("EntityVhId = {EntityVhId}", data.GlobalId);
 
-            if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == false)
+            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown VhId {VhId}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), data.VhId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown VhId {VhId}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), data.GlobalId);
                 return;
             }
 
@@ -173,7 +173,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     Data = new SoftDespawnEntity()
                     {
                         IsPrivate = true,
-                        VhId = data.VhId
+                        GlobalId = data.GlobalId
                     }
                 });
             }
@@ -191,7 +191,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 {
                     IsPrivate = true,
                     IsPredictable = true,
-                    VhId = data.VhId
+                    GlobalId = data.GlobalId
                 }
             });
 
@@ -200,11 +200,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, DespawnEntity data)
         {
-            _logger.Verbose("EntityVhId = {EntityVhId}", data.VhId);
+            _logger.Verbose("EntityVhId = {EntityVhId}", data.GlobalId);
 
-            if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == false)
+            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to despawn entity, unknown VhId {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(DespawnEntity), data.VhId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to despawn entity, unknown VhId {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(DespawnEntity), data.GlobalId);
                 return;
             }
 
@@ -223,7 +223,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Data = new SoftDespawnEntity()
                 {
                     IsPrivate = data.IsPrivate,
-                    VhId = data.VhId
+                    GlobalId = data.GlobalId
                 }
             });
 
@@ -234,7 +234,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 {
                     IsPrivate = data.IsPrivate,
                     IsPredictable = false,
-                    VhId = data.VhId
+                    GlobalId = data.GlobalId
                 }
             });
 
@@ -243,9 +243,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, SoftDespawnEntity data)
         {
-            if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == false)
+            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft despawn entity. VhId = {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(SoftDespawnEntity), data.VhId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft despawn entity. VhId = {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(SoftDespawnEntity), data.GlobalId);
                 return;
             }
 
@@ -263,9 +263,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, HardDespawnEntity data)
         {
-            if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == false)
+            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to hard despawn entity. VhId = {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(HardDespawnEntity), data.VhId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to hard despawn entity. VhId = {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(HardDespawnEntity), data.GlobalId);
                 return;
             }
 
@@ -293,11 +293,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, DespawnEntity data)
         {
-            _logger.Verbose("EntityVhId = {EntityVhId}", data.VhId);
+            _logger.Verbose("EntityVhId = {EntityVhId}", data.GlobalId);
 
-            if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == false)
+            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to revert despawn entity, unknown VhId {VhId}, Id not found.", nameof(EntitySpawnService), nameof(Revert), nameof(DespawnEntity), data.VhId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to revert despawn entity, unknown VhId {VhId}, Id not found.", nameof(EntitySpawnService), nameof(Revert), nameof(DespawnEntity), data.GlobalId);
                 return;
             }
 
@@ -316,7 +316,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Data = new SoftSpawnEntity()
                 {
                     IsPrivate = true,
-                    VhId = data.VhId
+                    GlobalId = data.GlobalId
                 }
             });
 

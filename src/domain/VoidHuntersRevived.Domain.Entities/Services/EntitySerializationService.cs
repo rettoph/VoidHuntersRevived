@@ -107,12 +107,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             EntityReader reader = data.GetReader(options.Seed, index);
 
-            VhId entityVhId = reader.ReadVhId();
+            GlobalEntityId entityId = reader.ReadGlobalEntityId();
             Key<IEntityTemplate> entityTemplateKey = Key<IEntityTemplate>.GetById(reader.Read<VhId>());
 
-            _logger.Verbose("Preparing to deserialize {EntityId} of type {EntityTemplate} with seed {seed}", entityVhId.Value, entityTemplateKey, options.Seed.Value);
+            _logger.Verbose("Preparing to deserialize {EntityId} of type {EntityTemplate} with seed {seed}", entityId.Value, entityTemplateKey, options.Seed.Value);
 
-            return _entitySpawnService.Spawn(sourceId, entityTemplateKey, entityVhId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, entityTemplateKey, entityId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
                 EntityReader reader = data.GetReader(options.Seed, index, EntityHeaderSize);
 

@@ -1,5 +1,4 @@
-﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
+﻿using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -16,10 +15,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
         {
             if (reader.ReadBoolean() == true)
             {
-                VhId nodeVhId = reader.ReadVhId();
+                GlobalEntityId globalNodeId = reader.ReadGlobalEntityId();
                 byte index = reader.ReadByte();
 
-                if (_entityQueryService.TryGetId(nodeVhId, out EntityId nodeId))
+                if (_entityQueryService.TryGetId(globalNodeId.Value, out EntityId nodeId))
                 {
                     return new Coupling(
                         socketId: new NodeSocketId(

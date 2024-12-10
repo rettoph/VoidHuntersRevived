@@ -1,9 +1,9 @@
 ﻿using Svelto.ECS;
-using System.Diagnostics;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -123,7 +123,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             {
                 EntityId cloneId = _treeService.Spawn(
                     sourceId: eventId,
-                    vhid: eventId.Create(1),
+                    globalId: eventId.ToGlobalEntityId(1),
                     team: _teamService.GetDefaultTeam(),
                     treeTemplateKey: Resources.EntityTemplates.Ship.ChainEntityTemplate,
                     nodes: data.TargetData,
@@ -160,7 +160,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 { // Spawn a new free floating chain
                     EntityId cloneId = _treeService.Spawn(
                         sourceId: eventId,
-                        vhid: eventId.Create(2),
+                        globalId: eventId.ToGlobalEntityId(2),
                         team: _teamService.GetDefaultTeam(),
                         treeTemplateKey: Resources.EntityTemplates.Ship.ChainEntityTemplate,
                         nodes: data.TargetData,

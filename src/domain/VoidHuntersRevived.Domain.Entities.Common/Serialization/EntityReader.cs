@@ -1,4 +1,5 @@
 ﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
@@ -22,10 +23,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             _position = position;
         }
 
-        public VhId ReadVhId()
+        public GlobalEntityId ReadGlobalEntityId()
         {
             VhId raw = this.Read<VhId>();
-            return _seed.Create(raw);
+            return _seed.Create(raw).ToGlobalEntityId();
         }
 
         public byte ReadByte()

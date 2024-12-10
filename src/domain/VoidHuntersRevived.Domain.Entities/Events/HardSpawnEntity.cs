@@ -10,12 +10,12 @@ namespace VoidHuntersRevived.Domain.Entities.Events
         public required bool IsPrivate { get; init; }
         public bool IsPredictable => true;
 
-        public required VhId VhId { get; init; }
+        public required GlobalEntityId GlobalId { get; init; }
         public required Key<IEntityTemplate> TemplateKey { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<HardSpawnEntity, VhId, VhId, VhId>.Instance.Calculate(in source, this.VhId, this.TemplateKey.Id);
+            return HashBuilder<HardSpawnEntity, VhId, GlobalEntityId, VhId>.Instance.Calculate(in source, this.GlobalId, this.TemplateKey.Id);
         }
     }
 

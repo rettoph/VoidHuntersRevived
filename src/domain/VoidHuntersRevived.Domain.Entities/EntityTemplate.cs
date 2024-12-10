@@ -85,11 +85,11 @@ namespace VoidHuntersRevived.Domain.Entities
         }
 
         #region Instance Entity Methods
-        public EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id)
+        public EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in GlobalEntityId globalId, out EntityId id)
         {
             // Create a new EGID for the entity
             EGID egid = new(_uniqueNumberProvider.GetUInt32(), _group.Value);
-            id = new EntityId(egid, vhid);
+            id = new EntityId(egid, globalId.Value);
 
             // Invoke Svelto factory and initialize instance with common component values
             EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor);
@@ -150,6 +150,8 @@ namespace VoidHuntersRevived.Domain.Entities
 
             // Register default components...
             components.Set(new EntityId());
+            components.Set(new LocalEntityId());
+            components.Set(new GlobalEntityId());
             components.Set(new EntityStatus());
             components.Set(new Common.Components.EntityTemplate(key));
 

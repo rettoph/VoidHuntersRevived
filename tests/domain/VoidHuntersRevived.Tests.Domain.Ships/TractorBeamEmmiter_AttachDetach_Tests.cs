@@ -5,6 +5,7 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Physics.Extensions;
@@ -67,7 +68,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             var readEntityQueryService = simulation.Resolve<PredictiveStrategy, IEntityQueryService>();
             var readTreeService = simulation.Resolve<PredictiveStrategy, ITreeService>();
 
-            VhId shipVhId = VhId.NewId();
+            GlobalEntityId shipGlobalId = VhId.NewId().ToGlobalEntityId();
 
             IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
             {
@@ -79,7 +80,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 Team team = teamService.GetOpenTeam();
                 EntityId shipId = treeService.Spawn(
                     sourceId: vhids.Next(),
-                    vhid: shipVhId,
+                    globalId: shipGlobalId,
                     team: team,
                     treeTemplateKey: Resources.EntityTemplates.Ship.UserShipEntityTemplate,
                     headNodeTemplateKey: TestSquareEntityTemplateKey);
@@ -94,7 +95,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 EntityId square = socketService.Spawn(
                     sourceId: vhids.Next(),
                     targetSocketNode: nodeSocket,
-                    vhid: vhids.Next(),
+                    globalId: vhids.Next().ToGlobalEntityId(),
                     nodeTemplateKey: TestSquareEntityTemplateKey);
 
                 yield return 100;
@@ -108,7 +109,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 interval: TimeSpan.FromMilliseconds(16),
                 coroutineId: VhId.HashString(nameof(SetupStrategy)),
                 coroutine: SetupStrategy);
-            EntityId shipId = readEntityQueryService.GetId(shipVhId);
+            EntityId shipId = readEntityQueryService.GetId(shipGlobalId.Value);
             EntityId bridgeId = readTreeService.GetHead(shipId).Id;
 
             // Begin Tests
@@ -125,14 +126,14 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 // "Select" piece, detaching it from the ship
                 simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
                 {
-                    ShipVhId = shipVhId,
+                    ShipVhId = shipGlobalId.Value,
                     TargetVhId = targetNode.Id.VhId
                 }, verified).Update(TimeSpan.FromMilliseconds(1), 2);
 
                 // "Deselect" the piece, attaching it back onto the ship
                 simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
                 {
-                    ShipVhId = shipVhId,
+                    ShipVhId = shipGlobalId.Value,
                     AttachToSocketVhId = new SocketVhId(bridgeId.VhId, 0)
                 }, verified).Update(TimeSpan.FromMilliseconds(1), 2);
             }
@@ -144,7 +145,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     sourceId: sourceIdProvider.Next(),
                     data: new Input_TractorBeamEmitter_Deselect()
                     {
-                        ShipVhId = shipVhId,
+                        ShipVhId = shipGlobalId.Value,
                         AttachToSocketVhId = new SocketVhId(bridgeId.VhId, 0)
                     },
                     verified: true)

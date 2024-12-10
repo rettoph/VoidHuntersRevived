@@ -2,6 +2,7 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -49,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
                 EntityId teamId = _privateEntitySpawnService.Spawn(
                     sourceId: HashBuilder<Team, int>.Instance.Calculate(teamIndex),
                     entityTemplateKey: teamEntityTemplate.Key,
-                    vhid: HashBuilder<Team, int>.Instance.Calculate(teamIndex),
+                    globalId: HashBuilder<Team, int>.Instance.Calculate(teamIndex).ToGlobalEntityId(),
                     initializer: TeamInstanceInitializer);
             }
         }

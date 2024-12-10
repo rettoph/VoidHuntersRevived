@@ -10,11 +10,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Events
 
         public bool IsPredictable => true;
 
-        public required VhId VhId { get; init; }
+        public required GlobalEntityId GlobalId { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<DespawnEntity, VhId, VhId>.Instance.Calculate(in source, this.VhId);
+            return HashBuilder<DespawnEntity, VhId, GlobalEntityId>.Instance.Calculate(in source, this.GlobalId);
         }
     }
 }
