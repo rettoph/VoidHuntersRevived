@@ -18,5 +18,15 @@ namespace Svelto.ECS
         {
             filter.Remove(id.EGID);
         }
+
+        public static void Add(this EntityFilterCollection filter, in LocalEntityId id, in GroupIndex groupIndex)
+        {
+            filter.Add(id.Value.entityID, groupIndex.GroupID, groupIndex.Index);
+        }
+
+        public static void Remove(this EntityFilterCollection filter, in LocalEntityId id)
+        {
+            filter.Remove(id.Value);
+        }
     }
 }

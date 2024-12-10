@@ -1,5 +1,4 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Components
 {

@@ -1,6 +1,6 @@
 ﻿using Svelto.ECS;
 
-namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
+namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public readonly struct EntityFilterId<T>(EGID id, FilterContextID? context = null)
         where T : unmanaged, IEntityComponent
@@ -21,8 +21,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         public override bool Equals(object? obj)
         {
             return obj is EntityFilterId<T> id
-                && this.CombinedFilterId.filterID == id.CombinedFilterId.filterID
-                && this.CombinedFilterId.contextID.id == id.CombinedFilterId.contextID.id;
+                && CombinedFilterId.filterID == id.CombinedFilterId.filterID
+                && CombinedFilterId.contextID.id == id.CombinedFilterId.contextID.id;
         }
 
         public override int GetHashCode()
