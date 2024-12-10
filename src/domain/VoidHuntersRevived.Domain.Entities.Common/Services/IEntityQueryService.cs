@@ -7,24 +7,44 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IEntityQueryService
     {
+        bool TryQueryByEGID<T>(EGID egid, out T value)
+            where T : unmanaged, IEntityComponent;
+
+        bool TryQueryByEGID<T>(EGID egid, out GroupIndex groupIndex, out T value)
+            where T : unmanaged, IEntityComponent;
+
+        ref T QueryByEGID<T>(EGID egid)
+            where T : unmanaged, IEntityComponent;
+
+        ref T QueryByEGID<T>(EGID egid, out GroupIndex groupIndex)
+            where T : unmanaged, IEntityComponent;
+
+        ref T QueryByEGID<T>(EGID egid, out GroupIndex groupIndex, out bool exists)
+            where T : unmanaged, IEntityComponent;
+
         EntityId GetId(VhId vhid);
 
         bool TryGetId(VhId vhid, out EntityId id);
 
-        bool TryQueryById<T>(EntityId id, out T value)
-            where T : unmanaged, IEntityComponent;
+        public bool TryQueryById<T>(EntityId id, out T value)
+            where T : unmanaged, IEntityComponent
+                => this.TryQueryByEGID(id.EGID, out value);
 
-        bool TryQueryById<T>(EntityId id, out GroupIndex groupIndex, out T value)
-            where T : unmanaged, IEntityComponent;
+        public bool TryQueryById<T>(EntityId id, out GroupIndex groupIndex, out T value)
+            where T : unmanaged, IEntityComponent
+                => this.TryQueryByEGID(id.EGID, out groupIndex, out value);
 
-        ref T QueryById<T>(EntityId id)
-            where T : unmanaged, IEntityComponent;
+        public ref T QueryById<T>(EntityId id)
+            where T : unmanaged, IEntityComponent
+                => ref this.QueryByEGID<T>(id.EGID);
 
-        ref T QueryById<T>(EntityId id, out GroupIndex groupIndex)
-            where T : unmanaged, IEntityComponent;
+        public ref T QueryById<T>(EntityId id, out GroupIndex groupIndex)
+            where T : unmanaged, IEntityComponent
+                => ref this.QueryByEGID<T>(id.EGID, out groupIndex);
 
-        ref T QueryById<T>(EntityId id, out GroupIndex groupIndex, out bool exists)
-            where T : unmanaged, IEntityComponent;
+        public ref T QueryById<T>(EntityId id, out GroupIndex groupIndex, out bool exists)
+            where T : unmanaged, IEntityComponent
+                => ref this.QueryByEGID<T>(id.EGID, out groupIndex, out exists);
 
         /// <summary>
         /// Warning, extra lookup, less efficient
@@ -218,7 +238,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
             where T : unmanaged, IEntityComponent;
 
-        ref EntityFilterCollection GetFilter<T>(FilterVhId<T> filterId)
+        ref EntityFilterCollection GetFilter<T>(EntityFilterId<T> filterId)
             where T : unmanaged, IEntityComponent;
     }
 }

@@ -6,6 +6,6 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Components
 {
     public readonly struct TeamMember(EntityId teamEntityId) : IBelongsTo<Team, TeamMember>
     {
-        public FilterVhId<TeamMember> ParentFilterId { get; } = new FilterVhId<TeamMember>(teamEntityId);
+        public EntityFilterId<TeamMember> ParentFilterId { get; } = new EntityFilterId<TeamMember>(teamEntityId.EGID);
     }
 }

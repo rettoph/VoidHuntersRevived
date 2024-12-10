@@ -11,6 +11,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 
         public readonly EntityId HeadId = headId;
 
-        public FilterVhId<Node> ChildrenFilterId { get; } = new FilterVhId<Node>(treeId);
+        public EntityFilterId<Node> ChildrenFilterId { get; } = new EntityFilterId<Node>(treeId.EGID);
     }
 }

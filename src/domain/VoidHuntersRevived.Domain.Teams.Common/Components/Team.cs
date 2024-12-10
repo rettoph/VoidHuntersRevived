@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Components
     {
         public readonly Id<Team> Id;
         public readonly ResourceKey<string> Name;
-        public FilterVhId<TeamMember> ChildrenFilterId { get; }
+        public EntityFilterId<TeamMember> ChildrenFilterId { get; }
         public TeamMember TeamMemberComponent { get; }
         public Team(ResourceKey<string> name)
         {
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Components
         {
             this.Id = Id<Team>.FromString(name.Name);
             this.Name = name;
-            this.ChildrenFilterId = new FilterVhId<TeamMember>();
+            this.ChildrenFilterId = new EntityFilterId<TeamMember>();
             this.TeamMemberComponent = new TeamMember(entityId);
         }
     }

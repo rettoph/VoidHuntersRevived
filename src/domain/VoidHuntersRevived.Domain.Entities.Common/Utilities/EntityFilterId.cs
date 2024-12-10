@@ -1,9 +1,8 @@
 ﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
-    public readonly struct FilterVhId<T>(EntityId id, FilterContextID? context = null)
+    public readonly struct EntityFilterId<T>(EGID id, FilterContextID? context = null)
         where T : unmanaged, IEntityComponent
     {
         private static class FilterContext<TFilter, TId>
@@ -11,8 +10,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             public static readonly FilterContextID Value = FilterContextID.GetNewContextID();
         }
 
-        public readonly VhId VhId = id.VhId;
-        public readonly CombinedFilterID CombinedFilterId = new(unchecked((int)id.EGID.entityID), context ?? FilterContext<T, EntityId>.Value);
+        public readonly EGID Id = id;
+        public readonly CombinedFilterID CombinedFilterId = new(unchecked((int)id.entityID), context ?? FilterContext<T, EntityId>.Value);
 
         public static FilterContextID GetFilterContext<TId>()
         {
@@ -21,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 
         public override bool Equals(object? obj)
         {
-            return obj is FilterVhId<T> id
+            return obj is EntityFilterId<T> id
                 && this.CombinedFilterId.filterID == id.CombinedFilterId.filterID
                 && this.CombinedFilterId.contextID.id == id.CombinedFilterId.contextID.id;
         }
@@ -31,13 +30,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             return HashCode.Combine(CombinedFilterId);
         }
 
-        public static bool operator ==(FilterVhId<T> f1, FilterVhId<T> f2)
+        public static bool operator ==(EntityFilterId<T> f1, EntityFilterId<T> f2)
         {
             return f1.CombinedFilterId.filterID == f2.CombinedFilterId.filterID
                 && f1.CombinedFilterId.contextID.id == f2.CombinedFilterId.contextID.id;
         }
 
-        public static bool operator !=(FilterVhId<T> f1, FilterVhId<T> f2)
+        public static bool operator !=(EntityFilterId<T> f1, EntityFilterId<T> f2)
         {
             return f1.CombinedFilterId.filterID != f2.CombinedFilterId.filterID
                 || f1.CombinedFilterId.contextID.id != f2.CombinedFilterId.contextID.id;

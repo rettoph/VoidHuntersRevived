@@ -7,6 +7,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Components
         where TSelf : unmanaged, IBelongsTo<TParent, TSelf>, IEntityComponent
         where TParent : unmanaged, IEntityComponent
     {
-        FilterVhId<TSelf> ParentFilterId { get; }
+        EntityFilterId<TSelf> ParentFilterId { get; }
     }
 }

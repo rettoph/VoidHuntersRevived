@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == true)
             {
-                ref EntityStatus status = ref _entityQueryService.QueryById<EntityStatus>(id);
+                ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID);
                 status.Increment(EntityModificationTypeEnum.Spawned);
 
                 return;
@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             if (_entityQueryService.TryGetId(data.VhId, out EntityId id) == true)
             {
-                ref EntityStatus status = ref _entityQueryService.QueryById<EntityStatus>(id);
+                ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID);
                 status.Increment(EntityModificationTypeEnum.Spawned);
 
                 return;
@@ -125,7 +125,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            ref EntityStatus status = ref _entityQueryService.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID, out GroupIndex groupIndex, out bool exists);
             if (exists == false || status.Value != EntityStatusEnum.HardSpawned)
             {
                 _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(Process), nameof(SoftSpawnEntity), id.VhId, exists, exists ? status.Value : null);
@@ -157,7 +157,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            ref EntityStatus status = ref _entityQueryService.QueryById<EntityStatus>(id, out _, out bool exists);
+            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID, out _, out bool exists);
             if (exists == false)
             {
                 _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null);
@@ -208,7 +208,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            ref EntityStatus status = ref _entityQueryService.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID, out GroupIndex groupIndex, out bool exists);
             int spawnedCount = 0;
             if (exists == false || (spawnedCount = status.Increment(EntityModificationTypeEnum.Despawned)) != 0)
             {
@@ -249,7 +249,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            ref EntityStatus status = ref _entityQueryService.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID, out GroupIndex groupIndex, out bool exists);
             if (exists == false || status.Value != EntityStatusEnum.SoftDespawnEnqueued)
             {
                 _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft despawn entity. Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(Process), nameof(SoftDespawnEntity), id.VhId, exists, exists ? status.Value : null);
@@ -269,7 +269,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            ref EntityStatus status = ref _entityQueryService.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID, out GroupIndex groupIndex, out bool exists);
 
             if (exists == false)
             {
@@ -301,7 +301,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            ref EntityStatus status = ref _entityQueryService.QueryById<EntityStatus>(id, out GroupIndex groupIndex, out bool exists);
+            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID, out GroupIndex groupIndex, out bool exists);
 
             int spawnedCount = 0;
             if (exists == false || (spawnedCount = status.Increment(EntityModificationTypeEnum.Spawned)) != 1)

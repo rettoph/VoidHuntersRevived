@@ -66,19 +66,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             throw new Exception();
         }
 
-        public bool TryQueryById<T>(EntityId id, out T value)
+        public bool TryQueryByEGID<T>(EGID egid, out T value)
             where T : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.TryGetEntity<T>(id.EGID, out value);
+            return this.entitiesDB.TryGetEntity<T>(egid, out value);
         }
 
-        public bool TryQueryById<T>(EntityId id, out GroupIndex groupIndex, out T value)
+        public bool TryQueryByEGID<T>(EGID egid, out GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent
         {
-            if (this.entitiesDB.TryQueryEntitiesAndIndex<T>(id.EGID, out uint index, out var components))
+            if (this.entitiesDB.TryQueryEntitiesAndIndex<T>(egid, out uint index, out var components))
             {
                 value = components[index];
-                groupIndex = new GroupIndex(id.EGID.groupID, index);
+                groupIndex = new GroupIndex(egid.groupID, index);
 
                 return true;
             }
@@ -88,31 +88,31 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return false;
         }
 
-        public ref T QueryById<T>(EntityId id)
+        public ref T QueryByEGID<T>(EGID egid)
             where T : unmanaged, IEntityComponent
         {
-            var components = this.entitiesDB.QueryEntitiesAndIndex<T>(id.EGID, out uint index);
+            var components = this.entitiesDB.QueryEntitiesAndIndex<T>(egid, out uint index);
 
             return ref components[index];
         }
 
-        public ref T QueryById<T>(EntityId id, out GroupIndex groupIndex)
+        public ref T QueryByEGID<T>(EGID egid, out GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent
         {
-            var components = this.entitiesDB.QueryEntitiesAndIndex<T>(id.EGID, out uint index);
+            var components = this.entitiesDB.QueryEntitiesAndIndex<T>(egid, out uint index);
 
-            groupIndex = new GroupIndex(id.EGID.groupID, index);
+            groupIndex = new GroupIndex(egid.groupID, index);
 
             return ref components[index];
         }
 
-        public ref T QueryById<T>(EntityId id, out GroupIndex groupIndex, out bool exists)
+        public ref T QueryByEGID<T>(EGID egid, out GroupIndex groupIndex, out bool exists)
             where T : unmanaged, IEntityComponent
         {
-            if (this.entitiesDB.TryQueryEntitiesAndIndex<T>(id.EGID, out uint index, out var components))
+            if (this.entitiesDB.TryQueryEntitiesAndIndex<T>(egid, out uint index, out var components))
             {
                 exists = true;
-                groupIndex = new GroupIndex(id.EGID.groupID, index);
+                groupIndex = new GroupIndex(egid.groupID, index);
                 return ref components[index];
             }
 
@@ -334,7 +334,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public bool IsSpawned(EntityId id)
         {
-            if (this.TryQueryById<EntityStatus>(id, out EntityStatus status))
+            if (this.TryQueryByEGID<EntityStatus>(id.EGID, out EntityStatus status))
             {
                 return status.IsSpawned;
             }
@@ -344,7 +344,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public bool IsSpawned(EntityId id, out GroupIndex groupIndex)
         {
-            if (this.TryQueryById<EntityStatus>(id, out groupIndex, out EntityStatus status))
+            if (this.TryQueryByEGID<EntityStatus>(id.EGID, out groupIndex, out EntityStatus status))
             {
                 return status.IsSpawned;
             }
@@ -364,7 +364,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public bool IsDespawned(EntityId id)
         {
-            if (this.TryQueryById<EntityStatus>(id, out EntityStatus status))
+            if (this.TryQueryByEGID<EntityStatus>(id.EGID, out EntityStatus status))
             {
                 return status.IsDespawned;
             }
@@ -374,7 +374,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public bool IsDespawned(EntityId id, out GroupIndex groupIndex)
         {
-            if (this.TryQueryById<EntityStatus>(id, out groupIndex, out EntityStatus status))
+            if (this.TryQueryByEGID<EntityStatus>(id.EGID, out groupIndex, out EntityStatus status))
             {
                 return status.IsDespawned;
             }
@@ -408,7 +408,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref filter;
         }
 
-        public ref EntityFilterCollection GetFilter<T>(FilterVhId<T> filterId)
+        public ref EntityFilterCollection GetFilter<T>(EntityFilterId<T> filterId)
             where T : unmanaged, IEntityComponent
         {
             ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(filterId.CombinedFilterId);

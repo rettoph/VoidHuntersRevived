@@ -3,14 +3,14 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public struct EntityId(EGID eGID, VhId vhId) : IEntityComponent
+    public readonly struct EntityId(EGID egid, VhId vhId) : IEntityComponent
     {
         public static readonly EntityId Empty = default;
 
         /// <summary>
         /// Svelto's EGID, non deterministic.
         /// </summary>
-        public readonly EGID EGID = eGID;
+        public readonly EGID EGID = egid;
 
         /// <summary>
         /// Determinstic internal id
