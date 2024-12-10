@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             _position = position;
         }
 
-        public GlobalEntityId ReadGlobalEntityId()
+        public EntityGlobalId ReadGlobalEntityId()
         {
             VhId raw = this.Read<VhId>();
             return _seed.Create(raw).ToGlobalEntityId();

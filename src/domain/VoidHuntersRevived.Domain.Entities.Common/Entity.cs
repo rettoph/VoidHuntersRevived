@@ -4,15 +4,15 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public readonly ref struct Entity<T>(
         uint index,
-        LocalEntityId localId,
-        GlobalEntityId globalId,
+        EntityLocalId localId,
+        EntityGlobalId globalId,
         ref T value
     )
         where T : unmanaged, IEntityComponent
     {
         public readonly uint Index = index;
-        public readonly LocalEntityId LocalId = localId;
-        public readonly GlobalEntityId GlobalId = globalId;
+        public readonly EntityLocalId LocalId = localId;
+        public readonly EntityGlobalId GlobalId = globalId;
         public readonly ref T Value = ref value;
 
         public EntityId EntityId => new(this.LocalId.Value, this.GlobalId.Value);

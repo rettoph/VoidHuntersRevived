@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             IEngineService engineService,
             IComponentSerializerService componentSerializerService);
 
-        EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in GlobalEntityId vhid, out EntityId id);
+        EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId vhid, out EntityLocalId localId);
         void SoftSpawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
 
         void SoftDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);

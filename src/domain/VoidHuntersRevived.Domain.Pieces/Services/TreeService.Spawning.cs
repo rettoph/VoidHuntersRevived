@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     public partial class TreeService
     {
-        public EntityId Spawn(VhId sourceId, GlobalEntityId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Key<IEntityTemplate> headNodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Key<IEntityTemplate> headNodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
             return _entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, IEntityTemplate treeTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             });
         }
 
-        public EntityId Spawn(VhId sourceId, GlobalEntityId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, EntityData nodes, EntityInitializerDelegate initializerDelegate)
+        public EntityId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
             return _entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, IEntityTemplate treeTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     sourceId: sourceId,
                     options: new DeserializationOptions
                     {
-                        Seed = HashBuilder<TreeService, GlobalEntityId, byte>.Instance.Calculate(globalId, 1),
+                        Seed = HashBuilder<TreeService, EntityGlobalId, byte>.Instance.Calculate(globalId, 1),
                         Owner = globalId.Value
                     },
                     data: nodes,
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             });
         }
 
-        public EntityId Spawn(VhId sourceId, GlobalEntityId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
         {
             return _entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, IEntityTemplate treeTemplate, EntityId id, ref EntityInitializer initializer) =>
             {

@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             var readEntityQueryService = simulation.Resolve<PredictiveStrategy, IEntityQueryService>();
             var readTreeService = simulation.Resolve<PredictiveStrategy, ITreeService>();
 
-            GlobalEntityId shipGlobalId = VhId.NewId().ToGlobalEntityId();
+            EntityGlobalId shipGlobalId = VhId.NewId().ToGlobalEntityId();
 
             IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
             {

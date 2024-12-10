@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public readonly struct LocalEntityId(EGID egid) : IEntityComponent
+    public readonly struct EntityLocalId(EGID egid) : IEntityComponent
     {
         public readonly EGID Value = egid;
     }

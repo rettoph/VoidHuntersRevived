@@ -11,14 +11,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
 {
     public static class IEntityServiceExtensions
     {
-        public static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, GlobalEntityId treeId, Team team, Blueprint blueprint)
+        public static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, Blueprint blueprint)
         {
-            GlobalEntityId globalId = HashBuilder<Blueprint, GlobalEntityId, Id<Blueprint>>.Instance.Calculate(treeId, blueprint.Id).ToGlobalEntityId();
+            EntityGlobalId globalId = HashBuilder<Blueprint, EntityGlobalId, Id<Blueprint>>.Instance.Calculate(treeId, blueprint.Id).ToGlobalEntityId();
 
             return entitySpawnService.Spawn(sourceId, treeId, team, globalId, blueprint.Head, default);
         }
 
-        private static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, GlobalEntityId treeId, Team team, GlobalEntityId globalId, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
+        private static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, EntityGlobalId globalId, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
         {
             return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
                 {
                     for (int j = 0; j < blueprintPiece.Children[i].Length; j++)
                     {
-                        GlobalEntityId childGlobalId = HashBuilder<Blueprint, GlobalEntityId, VhId, int, int>.Instance.Calculate(
+                        EntityGlobalId childGlobalId = HashBuilder<Blueprint, EntityGlobalId, VhId, int, int>.Instance.Calculate(
                             treeId,
                             id.VhId,
                             i,

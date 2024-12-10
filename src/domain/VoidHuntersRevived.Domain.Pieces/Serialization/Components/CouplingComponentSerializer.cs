@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
         {
             if (reader.ReadBoolean() == true)
             {
-                GlobalEntityId globalNodeId = reader.ReadGlobalEntityId();
+                EntityGlobalId globalNodeId = reader.ReadGlobalEntityId();
                 byte index = reader.ReadByte();
 
                 if (_entityQueryService.TryGetId(globalNodeId.Value, out EntityId nodeId))

@@ -103,17 +103,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, HardSpawnEntity data)
         {
-            ref EntityId id = ref _entityQueryService.AddId(data.GlobalId.Value);
-
-            EntityInitializer initializer = _entityTemplateService.GetByKey(data.TemplateKey).HardSpawnInstanceEntity(eventId, data.GlobalId, out id);
+            ref EntityLocalId localId = ref _entityQueryService.AddLocalId(data.GlobalId);
+            EntityInitializer initializer = _entityTemplateService.GetByKey(data.TemplateKey).HardSpawnInstanceEntity(eventId, data.GlobalId, out localId);
         }
 
         public void Process(VhId eventId, HardSpawnEntity<EntityInitializerDelegate> data)
         {
-            ref EntityId id = ref _entityQueryService.AddId(data.GlobalId.Value);
-
+            ref EntityLocalId localId = ref _entityQueryService.AddLocalId(data.GlobalId);
             IEntityTemplate template = _entityTemplateService.GetByKey(data.TemplateKey);
-            EntityInitializer initializer = template.HardSpawnInstanceEntity(eventId, data.GlobalId, out id);
+            EntityInitializer initializer = template.HardSpawnInstanceEntity(eventId, data.GlobalId, out localId);
+
+            EntityId id = new(localId.Value, data.GlobalId.Value);
             data.Initializer.Invoke(_entityService, template, id, ref initializer);
         }
 
@@ -287,7 +287,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             descriptorEngine.HardDespawnInstanceEntity(in eventId, in id, in groupIndex, ref status);
-            _entityQueryService.RemoveId(id);
+            _entityQueryService.RemoveLocalId(data.GlobalId);
             status.Value = EntityStatusEnum.HardDespawned;
         }
 

@@ -107,7 +107,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             EntityReader reader = data.GetReader(options.Seed, index);
 
-            GlobalEntityId entityId = reader.ReadGlobalEntityId();
+            EntityGlobalId entityId = reader.ReadGlobalEntityId();
             Key<IEntityTemplate> entityTemplateKey = Key<IEntityTemplate>.GetById(reader.Read<VhId>());
 
             _logger.Verbose("Preparing to deserialize {EntityId} of type {EntityTemplate} with seed {seed}", entityId.Value, entityTemplateKey, options.Seed.Value);

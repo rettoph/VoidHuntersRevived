@@ -19,17 +19,17 @@ namespace Svelto.ECS
             filter.Remove(id.EGID);
         }
 
-        public static void Add(this EntityFilterCollection filter, in LocalEntityId id, in GroupIndex groupIndex)
+        public static void Add(this EntityFilterCollection filter, in EntityLocalId id, in GroupIndex groupIndex)
         {
             filter.Add(id.Value.entityID, groupIndex.GroupID, groupIndex.Index);
         }
 
-        public static void Add(this EntityFilterCollection filter, in LocalEntityId id, in uint index)
+        public static void Add(this EntityFilterCollection filter, in EntityLocalId id, in uint index)
         {
             filter.Add(id.Value.entityID, id.Value.groupID, index);
         }
 
-        public static void Remove(this EntityFilterCollection filter, in LocalEntityId id)
+        public static void Remove(this EntityFilterCollection filter, in EntityLocalId id)
         {
             filter.Remove(id.Value);
         }

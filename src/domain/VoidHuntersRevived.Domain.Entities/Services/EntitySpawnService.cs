@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IEntityService _entityService = entityService;
         private readonly ILogger _logger = logger;
 
-        EntityId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, GlobalEntityId globalId)
+        EntityId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _entityQueryService.GetId(globalId.Value);
         }
 
-        EntityId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, GlobalEntityId globalId, EntityInitializerDelegate initializer)
+        EntityId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId, EntityInitializerDelegate initializer)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _entityQueryService.GetId(globalId.Value);
         }
 
-        void IEntitySpawnService.Despawn(VhId sourceId, GlobalEntityId globalId)
+        void IEntitySpawnService.Despawn(VhId sourceId, EntityGlobalId globalId)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
             {
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             });
         }
 
-        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, GlobalEntityId globalId)
+        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _entityQueryService.GetId(globalId.Value);
         }
 
-        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, GlobalEntityId globalId, EntityInitializerDelegate initializer)
+        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId, EntityInitializerDelegate initializer)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return _entityQueryService.GetId(globalId.Value);
         }
 
-        void IPrivateEntitySpawnService.Despawn(VhId sourceId, GlobalEntityId globalId)
+        void IPrivateEntitySpawnService.Despawn(VhId sourceId, EntityGlobalId globalId)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
             {

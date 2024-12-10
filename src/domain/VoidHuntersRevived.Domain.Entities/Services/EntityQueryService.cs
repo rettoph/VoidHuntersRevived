@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -12,52 +13,55 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     public class EntityQueryService : IEntityQueryService, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; } = null!;
-        private readonly Dictionary<VhId, EntityId> _ids = [];
+        private readonly Dictionary<EntityGlobalId, EntityLocalId> _ids = [];
 
         public void Ready()
         {
             //
         }
 
+        public EntityLocalId GetLocalId(EntityGlobalId globalId)
+        {
+            return _ids[globalId];
+        }
+
+        public bool TryGetLocalId(EntityGlobalId globalId, out EntityLocalId localId)
+        {
+            return _ids.TryGetValue(globalId, out localId);
+        }
+
         public EntityId GetId(VhId vhid)
         {
-            return _ids[vhid];
+            return new EntityId(_ids[vhid.ToGlobalEntityId()].Value, vhid);
         }
 
         public bool TryGetId(VhId vhid, out EntityId id)
         {
-            return _ids.TryGetValue(vhid, out id);
+
+            if (_ids.TryGetValue(vhid.ToGlobalEntityId(), out EntityLocalId localId) == false)
+            {
+                id = default;
+                return false;
+            }
+
+            id = new EntityId(_ids[vhid.ToGlobalEntityId()].Value, vhid);
+            return true;
         }
 
-        public ref EntityId GetOrAddId(VhId vhid, out bool exists)
+        public ref EntityLocalId AddLocalId(EntityGlobalId globalId)
         {
-            return ref CollectionsMarshal.GetValueRefOrAddDefault(_ids, vhid, out exists);
-        }
-
-        public ref EntityId AddId(VhId vhid)
-        {
-            ref EntityId id = ref this.GetOrAddId(vhid, out bool exists);
+            ref EntityLocalId localId = ref CollectionsMarshal.GetValueRefOrAddDefault(_ids, globalId, out bool exists);
             if (exists == true)
             { // Unable to hard spawn - entity already exists
                 throw new NotImplementedException();
             }
 
-            return ref id;
+            return ref localId;
         }
 
-        public bool AddId(EntityId id)
+        public bool RemoveLocalId(EntityGlobalId globalId)
         {
-            if (_ids.TryAdd(id.VhId, id))
-            {
-                return true;
-            }
-
-            throw new Exception();
-        }
-
-        public bool RemoveId(EntityId id)
-        {
-            if (_ids.Remove(id.VhId))
+            if (_ids.Remove(globalId))
             {
                 return true;
             }
@@ -399,7 +403,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref filter;
         }
 
-        public ref EntityFilterCollection GetFilter<T>(LocalEntityId id, FilterContextID filterContext)
+        public ref EntityFilterCollection GetFilter<T>(EntityLocalId id, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent
         {
             ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(unchecked((int)id.Value.entityID), filterContext);

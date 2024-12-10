@@ -22,8 +22,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
             where T : unmanaged, IEntityComponent;
 
         EntityId GetId(VhId vhid);
-
         bool TryGetId(VhId vhid, out EntityId id);
+
+        EntityLocalId GetLocalId(EntityGlobalId globalId);
+        bool TryGetLocalId(EntityGlobalId globalId, out EntityLocalId localId);
 
         public bool TryQueryById<T>(EntityId id, out T value)
             where T : unmanaged, IEntityComponent
@@ -234,7 +236,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         ref EntityFilterCollection GetFilter<T>(EntityId id, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent;
 
-        ref EntityFilterCollection GetFilter<T>(LocalEntityId id, FilterContextID filterContext)
+        ref EntityFilterCollection GetFilter<T>(EntityLocalId id, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent;
 
         ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
