@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Extensions.System;
+﻿using Guppy.Core.Common.Extensions.System;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -23,11 +22,11 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities, ExclusiveGroupStruct groupID)
         {
             var (components, egids, _) = entities;
-            var (ids, _) = this.entitiesDB.QueryEntities<EntityId>(groupID);
+            var (globalIds, _) = this.entitiesDB.QueryEntities<EntityGlobalId>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                _logger.Verbose("{ClassName}<{TName}>::{MethodName} - Disposing of {ComponentType} for {VhId}", nameof(DisposableEngine<T>), _tName, nameof(Remove), _tName, ids[index].VhId.Value);
+                _logger.Verbose("{ClassName}<{TName}>::{MethodName} - Disposing of {ComponentType} for {VhId}", nameof(DisposableEngine<T>), _tName, nameof(Remove), _tName, globalIds[index]);
                 components[index].Dispose();
             }
         }

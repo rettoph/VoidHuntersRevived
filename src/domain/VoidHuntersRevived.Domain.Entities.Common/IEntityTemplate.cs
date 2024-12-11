@@ -23,10 +23,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             IComponentSerializerService componentSerializerService);
 
         EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, out EntityLocalId localId);
-        void SoftSpawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, in EntityLocalId localId, in GroupIndex groupIndex, ref EntityStatus status);
+        void SoftSpawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
 
-        void SoftDespawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, in EntityLocalId localId, in GroupIndex groupIndex, ref EntityStatus status);
-        void HardDespawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, in EntityLocalId localId, in GroupIndex groupIndex, ref EntityStatus status);
+        void SoftDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
+        void HardDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
 
         void SerializeInstanceEntity(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options);
         void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id);

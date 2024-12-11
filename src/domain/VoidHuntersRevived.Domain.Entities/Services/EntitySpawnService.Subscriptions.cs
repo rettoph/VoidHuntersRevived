@@ -133,7 +133,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
-            _entityTemplateService.GetByKey(templateKey).SoftSpawnInstanceEntity(in eventId, data.GlobalId, in localId, in groupIndex, ref status);
+            Entity entity = new(groupIndex.Index, localId, data.GlobalId);
+
+            _entityTemplateService.GetByKey(templateKey).SoftSpawnInstanceEntity(in eventId, in entity, ref status);
             status.Value = EntityStatusEnum.SoftSpawned;
         }
 
@@ -257,7 +259,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
-            _entityTemplateService.GetByKey(templateKey).SoftDespawnInstanceEntity(in eventId, data.GlobalId, in localId, in groupIndex, ref status);
+            Entity entity = new(groupIndex.Index, localId, data.GlobalId);
+
+            _entityTemplateService.GetByKey(templateKey).SoftDespawnInstanceEntity(in eventId, in entity, ref status);
             status.Value = EntityStatusEnum.SoftDespawned;
         }
 
@@ -279,14 +283,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
             IEntityTemplate descriptorEngine = _entityTemplateService.GetByKey(templateKey);
+            Entity entity = new(groupIndex.Index, localId, data.GlobalId);
 
             if (status.Value < EntityStatusEnum.SoftDespawned)
             { // Ensure an entity gets soft despawned if it hasn't been already
-                descriptorEngine.SoftDespawnInstanceEntity(in eventId, data.GlobalId, in localId, in groupIndex, ref status);
+                descriptorEngine.SoftDespawnInstanceEntity(in eventId, in entity, ref status);
                 status.Value = EntityStatusEnum.SoftDespawned;
             }
 
-            descriptorEngine.HardDespawnInstanceEntity(in eventId, data.GlobalId, in localId, in groupIndex, ref status);
+            descriptorEngine.HardDespawnInstanceEntity(in eventId, in entity, ref status);
             _entityQueryService.RemoveLocalId(data.GlobalId);
             status.Value = EntityStatusEnum.HardDespawned;
         }

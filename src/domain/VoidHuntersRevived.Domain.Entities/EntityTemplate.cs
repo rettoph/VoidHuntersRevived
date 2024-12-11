@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.System;
+﻿using Guppy.Core.Common.Extensions.System;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -24,8 +23,8 @@ namespace VoidHuntersRevived.Domain.Entities
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
-        private readonly ActionSequenceGroup<OnDespawnSequenceGroupEnum, VhId, IEntityTemplate, EntityGlobalId, EntityLocalId, GroupIndex> _onDespawnEngineInvokers;
-        private readonly ActionSequenceGroup<OnSpawnSequenceGroupEnum, VhId, IEntityTemplate, EntityGlobalId, EntityLocalId, GroupIndex> _onSpawnEngineInvokers;
+        private readonly ComponentEngineInvoker.ComponentEngineInvokerDelegateSequenceGroup<OnDespawnSequenceGroupEnum> _onDespawnEngineInvokers;
+        private readonly ComponentEngineInvoker.ComponentEngineInvokerDelegateSequenceGroup<OnSpawnSequenceGroupEnum> _onSpawnEngineInvokers;
         private EntitiesDB _entitiesDB;
         private FasterList<IComponentSerializer> _serializers;
 
@@ -101,19 +100,19 @@ namespace VoidHuntersRevived.Domain.Entities
             return initializer;
         }
 
-        public void SoftSpawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, in EntityLocalId localId, in GroupIndex groupIndex, ref EntityStatus status)
+        public void SoftSpawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
-            _onSpawnEngineInvokers.Invoke(sourceEventId, this, globalId, localId, groupIndex);
+            _onSpawnEngineInvokers.Invoke(sourceEventId, this, entity);
         }
 
-        public void SoftDespawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, in EntityLocalId localId, in GroupIndex groupIndex, ref EntityStatus status)
+        public void SoftDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
-            _onDespawnEngineInvokers.Invoke(sourceEventId, this, globalId, localId, groupIndex);
+            _onDespawnEngineInvokers.Invoke(sourceEventId, this, entity);
         }
 
-        public void HardDespawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, in EntityLocalId localId, in GroupIndex groupIndex, ref EntityStatus status)
+        public void HardDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
-            _functions.RemoveEntity<VoidHuntersEntityDescriptor>(localId.Value);
+            _functions.RemoveEntity<VoidHuntersEntityDescriptor>(entity.LocalId.Value);
         }
 
         public void SerializeInstanceEntity(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options)
