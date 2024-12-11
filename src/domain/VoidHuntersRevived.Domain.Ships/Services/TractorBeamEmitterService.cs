@@ -55,9 +55,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
             _space.QueryAABB(fixture =>
             {
-                if (_entityQueryService.IsSpawned(fixture.EntityId))
+                if (_entityQueryService.IsSpawned(fixture.Id.EntityLocalId))
                 {
-                    ref Node queryNode = ref _entityQueryService.QueryById<Node>(fixture.EntityId, out GroupIndex nodeGroupIndex);
+                    ref Node queryNode = ref _entityQueryService.QueryByLocalId<Node>(fixture.Id.EntityLocalId, out GroupIndex nodeGroupIndex);
                     ref Rigid queryRigid = ref _entityQueryService.QueryByGroupIndex<Rigid>(nodeGroupIndex);
 
                     FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Template.Value.Centeroid, queryNode.Transformation);

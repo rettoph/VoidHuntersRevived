@@ -335,9 +335,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return total;
         }
 
-        public bool IsSpawned(EntityId id)
+        public bool IsSpawned(EGID egid)
         {
-            if (this.TryQueryByEGID<EntityStatus>(id.EGID, out EntityStatus status))
+            if (this.TryQueryByEGID<EntityStatus>(egid, out EntityStatus status))
             {
                 return status.IsSpawned;
             }
@@ -345,9 +345,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return false;
         }
 
-        public bool IsSpawned(EntityId id, out GroupIndex groupIndex)
+        public bool IsSpawned(EGID egid, out GroupIndex groupIndex)
         {
-            if (this.TryQueryByEGID<EntityStatus>(id.EGID, out groupIndex, out EntityStatus status))
+            if (this.TryQueryByEGID<EntityStatus>(egid, out groupIndex, out EntityStatus status))
             {
                 return status.IsSpawned;
             }
@@ -365,9 +365,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return false;
         }
 
-        public bool IsDespawned(EntityId id)
+        public bool IsDespawned(EGID egid)
         {
-            if (this.TryQueryByEGID<EntityStatus>(id.EGID, out EntityStatus status))
+            if (this.TryQueryByEGID<EntityStatus>(egid, out EntityStatus status))
             {
                 return status.IsDespawned;
             }
@@ -375,9 +375,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return false;
         }
 
-        public bool IsDespawned(EntityId id, out GroupIndex groupIndex)
+        public bool IsDespawned(EGID egid, out GroupIndex groupIndex)
         {
-            if (this.TryQueryByEGID<EntityStatus>(id.EGID, out groupIndex, out EntityStatus status))
+            if (this.TryQueryByEGID<EntityStatus>(egid, out groupIndex, out EntityStatus status))
             {
                 return status.IsDespawned;
             }

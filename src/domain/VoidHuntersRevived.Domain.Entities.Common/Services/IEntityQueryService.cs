@@ -245,13 +245,30 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         int CalculateTotal<T>()
             where T : unmanaged, IEntityComponent;
 
-        bool IsSpawned(EntityId id);
-        bool IsSpawned(EntityId id, out GroupIndex groupIndex);
         bool IsSpawned(in GroupIndex groupIndex);
+        bool IsSpawned(EGID egid);
+        bool IsSpawned(EGID egid, out GroupIndex groupIndex);
+        bool IsSpawned(EntityLocalId localId)
+            => this.IsSpawned(localId.Value);
+        bool IsSpawned(EntityLocalId localId, out GroupIndex groupIndex)
+            => this.IsSpawned(localId.Value, out groupIndex);
+        bool IsSpawned(EntityId id)
+            => this.IsSpawned(id.EGID);
+        bool IsSpawned(EntityId id, out GroupIndex groupIndex)
+            => this.IsSpawned(id.EGID, out groupIndex);
 
-        bool IsDespawned(EntityId id);
-        bool IsDespawned(EntityId id, out GroupIndex groupIndex);
         bool IsDespawned(in GroupIndex groupIndex);
+        bool IsDespawned(EGID egid);
+        bool IsDespawned(EGID egid, out GroupIndex groupIndex);
+        bool IsDespawned(EntityLocalId localId)
+            => this.IsDespawned(localId.Value);
+        bool IsDespawned(EntityLocalId localId, out GroupIndex groupIndex)
+            => this.IsDespawned(localId.Value, out groupIndex);
+        bool IsDespawned(EntityId id)
+            => this.IsDespawned(id.EGID);
+        bool IsDespawned(EntityId id, out GroupIndex groupIndex)
+            => this.IsDespawned(id.EGID, out groupIndex);
+
 
         ref EntityFilterCollection GetFilter<T>(EGID egid, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent;

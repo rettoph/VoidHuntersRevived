@@ -106,21 +106,21 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void CreateFixtures(IBody body, Node node, Rigid rigid)
         {
-            for (int i = 0; i < rigid.Template.Value.Shapes.Length; i++)
+            for (uint i = 0; i < rigid.Template.Value.Shapes.Length; i++)
             {
-                VhId rigidShapeId = node.Id.VhId.Create(i);
-                _logger.Verbose("Creating fixture for tree {TreeId}; NodeId = {NodeId}, RigidShapeId = {RigidShapeId}", body.EntityLocalId, node.Id.VhId, rigidShapeId);
-                body.Create(rigidShapeId, node.Id, rigid.Template.Value.Shapes[i], node.LocalLocation.Transformation);
+                FixtureId rigidShapeFixtureId = new(i, node.Id.ToLocalEntityId());
+                _logger.Verbose("Creating fixture for tree {TreeId}; NodeId = {NodeId}, RigidShapeId = {RigidShapeId}", body.EntityLocalId, node.Id.VhId, rigidShapeFixtureId);
+                body.Create(rigidShapeFixtureId, rigid.Template.Value.Shapes[i], node.LocalLocation.Transformation);
             }
         }
 
         private void DestroyFixtures(IBody body, Node node, Rigid rigid)
         {
-            for (int i = 0; i < rigid.Template.Value.Shapes.Length; i++)
+            for (uint i = 0; i < rigid.Template.Value.Shapes.Length; i++)
             {
-                VhId rigidShapeId = node.Id.VhId.Create(i);
-                _logger.Verbose("Destroying fixture for tree {TreeId}; NodeId = {NodeId}, RigidShapeId = {RigidShapeId}", body.EntityLocalId, node.Id.VhId, rigidShapeId);
-                body.Destroy(rigidShapeId);
+                FixtureId rigidShapeFixtureId = new(i, node.Id.ToLocalEntityId());
+                _logger.Verbose("Destroying fixture for tree {TreeId}; NodeId = {NodeId}, RigidShapeId = {RigidShapeId}", body.EntityLocalId, node.Id.VhId, rigidShapeFixtureId);
+                body.Destroy(rigidShapeFixtureId);
             }
         }
     }
