@@ -21,6 +21,26 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         ref T QueryByEGID<T>(EGID egid, out GroupIndex groupIndex, out bool exists)
             where T : unmanaged, IEntityComponent;
 
+        bool TryQueryByLocalId<T>(EntityLocalId localId, out T value)
+            where T : unmanaged, IEntityComponent
+                => this.TryQueryByEGID(localId.Value, out value);
+
+        bool TryQueryByLocalId<T>(EntityLocalId localId, out GroupIndex groupIndex, out T value)
+            where T : unmanaged, IEntityComponent
+                => this.TryQueryByEGID(localId.Value, out groupIndex, out value);
+
+        ref T QueryByLocalId<T>(EntityLocalId localId)
+            where T : unmanaged, IEntityComponent
+                => ref this.QueryByEGID<T>(localId.Value);
+
+        ref T QueryByLocalId<T>(EntityLocalId localId, out GroupIndex groupIndex)
+            where T : unmanaged, IEntityComponent
+                => ref this.QueryByEGID<T>(localId.Value, out groupIndex);
+
+        ref T QueryByLocalId<T>(EntityLocalId localId, out GroupIndex groupIndex, out bool exists)
+            where T : unmanaged, IEntityComponent
+                => ref this.QueryByEGID<T>(localId.Value, out groupIndex, out exists);
+
         EntityId GetId(VhId vhid);
         bool TryGetId(VhId vhid, out EntityId id);
 
@@ -233,13 +253,18 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         bool IsDespawned(EntityId id, out GroupIndex groupIndex);
         bool IsDespawned(in GroupIndex groupIndex);
 
+        ref EntityFilterCollection GetFilter<T>(EGID egid, FilterContextID filterContext)
+            where T : unmanaged, IEntityComponent;
+
         ref EntityFilterCollection GetFilter<T>(EntityId id, FilterContextID filterContext)
-            where T : unmanaged, IEntityComponent;
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(id.EGID, filterContext);
 
-        ref EntityFilterCollection GetFilter<T>(EntityLocalId id, FilterContextID filterContext)
-            where T : unmanaged, IEntityComponent;
+        ref EntityFilterCollection GetFilter<T>(EntityLocalId localId, FilterContextID filterContext)
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(localId.Value, filterContext);
 
-        ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
+        ref EntityFilterCollection GetFilter<T>(CombinedFilterID combinedFilterId)
             where T : unmanaged, IEntityComponent;
 
         ref EntityFilterCollection GetFilter<T>(EntityFilterId<T> filterId)

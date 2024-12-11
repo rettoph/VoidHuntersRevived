@@ -1,12 +1,12 @@
 ﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Physics.Common
 {
     public interface IBody
     {
-        EntityId Id { get; }
+        EntityLocalId EntityLocalId { get; }
 
         ISpace? Space { get; }
 

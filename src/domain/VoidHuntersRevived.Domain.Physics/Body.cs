@@ -2,8 +2,8 @@
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dynamics;
@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public Fix64 AngularVelocity => (Fix64)_aether.AngularVelocity;
 
-        public EntityId Id { get; }
+        public EntityLocalId EntityLocalId { get; }
 
         public FixMatrix Transformation => FixMatrix.CreateRotationZ(this.Rotation) * FixMatrix.CreateTranslation(this.Position.X, this.Position.Y, Fix64.Zero);
 
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Domain.Physics
             set => _aether.SleepingAllowed = value;
         }
 
-        public Body(Space space, EntityId id)
+        public Body(EntityLocalId entityLocalId, Space space)
         {
             _space = space;
             _aether = space._aether.CreateBody(AetherVector2.Zero, FixedMath64.Zero, BodyType.Dynamic);
@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether.AngularDamping = (Fix64)1m;
             _aether.LinearDamping = (Fix64)0.25m;
 
-            this.Id = id;
+            this.EntityLocalId = entityLocalId;
             this.Enabled = true;
         }
 
@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public IFixture Create(VhId id, EntityId entityId, Polygon polygon, FixMatrix transformation)
         {
-            Fixture fixture = new Fixture(
+            Fixture fixture = new(
                 id,
                 entityId,
                 this,

@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((ids, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityId, Location, Enabled, Awake>())
+            foreach (var ((localIds, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Location, Enabled, Awake>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -38,8 +38,8 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                         continue;
                     }
 
-                    EntityId id = ids[i];
-                    IBody body = _space.GetBody(id);
+                    EntityLocalId localId = localIds[i];
+                    IBody body = _space.GetBody(localId);
 
                     ref Location location = ref locations[i];
                     location.Position = body.Position;
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Location location = ref _entityQueryService.QueryById<Location>(body.Id);
+            ref Location location = ref _entityQueryService.QueryByLocalId<Location>(body.EntityLocalId);
             body.SetTransform(location.Position, location.Rotation);
         }
     }

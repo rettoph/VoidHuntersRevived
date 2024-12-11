@@ -5,7 +5,6 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
-using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -51,36 +50,39 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
             ref var filter = ref _tractorBeamEmitterService.GetTractorableFilter(tractorBeamEmitterId);
             foreach (var (indices, groupId) in filter)
             {
-                var (entityIds, statuses, enableds, _) = _entityQueryService.QueryEntities<EntityId, EntityStatus, Enabled>(groupId);
+                var (localIds, statuses, enableds, trees, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Enabled, Tree>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
                     uint index = indices[i];
-                    ref EntityId tractorableId = ref entityIds[index];
+                    ref EntityLocalId targetId = ref localIds[index];
 
                     if (statuses[index].IsDespawned == true)
                     {
-                        _logger.Warning("TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsDespawned = {IsDespawned}.", tractorBeamEmitterId.VhId, tractorableId.VhId, statuses[index].IsDespawned);
+                        _logger.Warning("Despanwed - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsDespawned = {IsDespawned}.", tractorBeamEmitterId.VhId, targetId, statuses[index].IsDespawned);
                         continue;
                     }
 
                     if (enableds[index] == false)
                     {
-                        _logger.Warning("TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = {Enabled}.", tractorBeamEmitterId.VhId, tractorableId.VhId, enableds[index].Value);
-                        _tractorBeamEmitterService.Deselect(
-                            sourceId: HashBuilder<TractorBeamEmitterUpdateEngine, VhId>.Instance.Calculate(tractorableId.VhId),
-                            tractorBeamEmitterId: tractorBeamEmitterId,
-                            attachToSocketVhId: null);
+                        _logger.Warning("Not Enabled - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = {Enabled}.", tractorBeamEmitterId.VhId, targetId, enableds[index].Value);
+                        throw new NotImplementedException();
 
-                        continue;
+                        // What to do here?
+                        // We want to deselect the current item in the tractorbeam - but how to generate a sourceId?
+                        // Its possible a sourceId is required here since this method call can 'spawn' its own events
+                        // _tractorBeamEmitterService.Deselect(
+                        //     sourceId: HashBuilder<TractorBeamEmitterUpdateEngine, VhId>.Instance.Calculate(targetId.VhId),
+                        //     tractorBeamEmitterId: tractorBeamEmitterId,
+                        //     attachToSocketVhId: null);
+                        // 
+                        // continue;
                     }
 
-                    IBody targetBody = _space.GetBody(in tractorableId);
+                    IBody targetBody = _space.GetBody(in targetId);
+                    ref Tree targetTree = ref trees[index];
 
-                    EntityId targetId = _entityQueryService.GetId(tractorableId.VhId);
-                    ref Tree target = ref _entityQueryService.QueryById<Tree>(targetId);
-
-                    Location targetHeadChildLocation = _entityQueryService.QueryById<Plug>(target.HeadId).Location;
+                    Location targetHeadChildLocation = _entityQueryService.QueryById<Plug>(targetTree.HeadId).Location;
 
                     if (_socketService.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
                     {

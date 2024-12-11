@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                     continue;
                 }
 
-                if (!_predictiveSpace.TryGetBody(lockstepBody.Id, out IBody? predictiveBody))
+                if (!_predictiveSpace.TryGetBody(lockstepBody.EntityLocalId, out IBody? predictiveBody))
                 {
                     continue;
                 }

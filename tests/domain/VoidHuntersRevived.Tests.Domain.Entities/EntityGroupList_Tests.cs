@@ -4,6 +4,7 @@ using VoidHuntersRevived.Tests.Domain.Entities.Components;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {
+    [Collection("EntityGroups")]
     public class EntityGroupList_Tests
     {
         private struct TestComponentTwo : IEntityComponent
@@ -14,6 +15,13 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         [Fact]
         public void EntityGroupList_AutoAddExistingGroup()
         {
+            EntityGroup.Clear();
+            Assert.Empty(EntityGroup.GetAll());
+
+            EntityGroupList.Clear();
+            Assert.Empty(EntityGroupList.GetAll());
+
+
             EntityGroup group = EntityGroup.Create("test", [typeof(TestComponent)]);
             EntityGroupList groups = EntityGroupList.GetOrCreate([typeof(TestComponent)]);
             Assert.Equal(1, groups.Values.count);
@@ -22,6 +30,13 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         [Fact]
         public void EntityGroupList_EnsureMatchingComponentsReused()
         {
+            EntityGroup.Clear();
+            Assert.Empty(EntityGroup.GetAll());
+
+            EntityGroupList.Clear();
+            Assert.Empty(EntityGroupList.GetAll());
+
+
             EntityGroup group = EntityGroup.Create("test", [typeof(TestComponent), typeof(TestComponent)]);
 
             EntityGroupList groups1 = EntityGroupList.GetOrCreate([typeof(TestComponentTwo), typeof(TestComponent)]);

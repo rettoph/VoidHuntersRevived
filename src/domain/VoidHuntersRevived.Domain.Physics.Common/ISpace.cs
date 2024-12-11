@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Physics.Common
 {
@@ -20,12 +20,12 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         event OnEventDelegate<IBody> OnBodyDisabled;
         event OnEventDelegate<IBody> OnBodyAwakeChanged;
 
-        void EnableBody(in EntityId id);
-        void DisableBody(in EntityId id);
+        void EnableBody(in EntityLocalId entityLocalId);
+        void DisableBody(in EntityLocalId entityLocalId);
 
-        IBody GetBody(in EntityId id);
+        IBody GetBody(in EntityLocalId entityLocalId);
         IEnumerable<IBody> AllBodies();
-        bool TryGetBody(in EntityId id, [MaybeNullWhen(false)] out IBody body);
+        bool TryGetBody(in EntityLocalId entityLocalId, [MaybeNullWhen(false)] out IBody body);
 
         void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb);
         void Step(Step step);

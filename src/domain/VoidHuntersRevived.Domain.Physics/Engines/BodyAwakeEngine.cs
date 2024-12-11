@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
             while (_awakeChangedBodies.TryDequeue(out IBody? body))
             {
-                ref Awake awake = ref _entityQueryService.QueryById<Awake>(body.Id, out _, out bool exists);
+                ref Awake awake = ref _entityQueryService.QueryByEGID<Awake>(body.EntityLocalId.Value, out _, out bool exists);
 
                 if (exists)
                 {
@@ -56,14 +56,14 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 }
                 else
                 {
-                    _logger.Warning("Awake state changed to {AwakeValue} for body {BodyId}, but entity not found.", body.Awake, body.Id.VhId);
+                    _logger.Warning("Awake state changed to {AwakeValue} for body {BodyEntityLocalId}, but entity not found.", body.Awake, body.EntityLocalId);
                 }
             }
         }
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Awake awake = ref _entityQueryService.QueryById<Awake>(body.Id);
+            ref Awake awake = ref _entityQueryService.QueryByLocalId<Awake>(body.EntityLocalId);
             body.SleepingAllowed = awake.SleepingAllowed;
         }
 

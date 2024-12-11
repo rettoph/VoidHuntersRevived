@@ -11,12 +11,12 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Events
 
         public bool IsPredictable => true;
 
-        public required VhId EntityId { get; init; }
+        public required EntityGlobalId EntityGlobalId { get; init; }
         public required Key<IEntityTemplate> EntityTemplateKey { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<TestSpawnInput, VhId, VhId, VhId>.Instance.Calculate(source, this.EntityId, this.EntityTemplateKey.Id);
+            return HashBuilder<TestSpawnInput, VhId, EntityGlobalId, VhId>.Instance.Calculate(source, this.EntityGlobalId, this.EntityTemplateKey.Id);
         }
     }
 }

@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 }
             }
 
-            foreach (var ((ids, enableds, locations, statuses, count), _) in _entityQueryService.QueryEntities<EntityId, Enabled, Location, EntityStatus>())
+            foreach (var ((localIds, enableds, locations, statuses, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Enabled, Location, EntityStatus>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -71,14 +71,14 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
                         if (enabled.Value == true && withinPhysicsBubble == false)
                         { // disable piece no longer contained within physics bubble
-                            _space.DisableBody(ids[i]);
+                            _space.DisableBody(localIds[i]);
                             enabled.Value = false;
                             continue;
                         }
 
                         if (enabled.Value == false && withinPhysicsBubble == true)
                         { // enable piece now within physics bubble
-                            _space.EnableBody(ids[i]);
+                            _space.EnableBody(localIds[i]);
                             enabled.Value = true;
                             continue;
                         }
@@ -121,7 +121,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 return;
             }
 
-            _space.DisableBody(enabled.EntityId);
+            _space.DisableBody(enabled.LocalId);
             enabled.Value.Value = false;
         }
     }
