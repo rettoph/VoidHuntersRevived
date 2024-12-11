@@ -21,8 +21,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IOnDespawnEngine<Tree>,
         IOnStepEngine
     {
-
-        private readonly HashSet<EGID> _removedNodes = [];
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;
@@ -39,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tree> tree)
         {
-            _logger.Verbose("Despawning Tree {TreeId}, HeadId = {HeadId}", tree.GlobalId, tree.Value.HeadId.VhId);
+            _logger.Verbose("Despawning Tree {TreeId}, HeadId = {HeadId}", tree.LocalId, tree.Value.HeadId.VhId);
             _entitySpawnService.Despawn(sourceEventId, tree.Value.HeadId);
         }
 

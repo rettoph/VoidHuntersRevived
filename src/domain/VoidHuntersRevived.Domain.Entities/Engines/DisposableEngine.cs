@@ -22,11 +22,11 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         public void Remove((uint start, uint end) rangeOfEntities, in EntityCollection<T> entities, ExclusiveGroupStruct groupID)
         {
             var (components, egids, _) = entities;
-            var (globalIds, _) = this.entitiesDB.QueryEntities<EntityGlobalId>(groupID);
+            var (localIds, _) = this.entitiesDB.QueryEntities<EntityLocalId>(groupID);
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                _logger.Verbose("{ClassName}<{TName}>::{MethodName} - Disposing of {ComponentType} for {VhId}", nameof(DisposableEngine<T>), _tName, nameof(Remove), _tName, globalIds[index]);
+                _logger.Verbose("{ClassName}<{TName}>::{MethodName} - Disposing of {ComponentType} for {LocalId}", nameof(DisposableEngine<T>), _tName, nameof(Remove), _tName, localIds[index]);
                 components[index].Dispose();
             }
         }

@@ -38,8 +38,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node> node)
         {
-            _logger.Verbose("EntityId = {EntityId}", node.GlobalId);
-
             ref var filter = ref _entityQueryService.GetFilter<Node>(node.Value.TreeId, Tree.NodeFilterContextId);
             filter.Add(node.LocalId, node.Index);
 
@@ -55,8 +53,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node> node)
         {
-            _logger.Verbose("EntityId = {EntityId}", node.GlobalId);
-
             ref var filter = ref _entityQueryService.GetFilter<Node>(node.Value.TreeId, Tree.NodeFilterContextId);
             filter.Remove(node.LocalId);
 

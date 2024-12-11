@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             filter.Add(in tractorable.LocalId, in tractorable.Index);
 
             _tacticalService.AddUse(tractorable.Value.TractorBeamEmitter);
-            _logger.Verbose("Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", tractorable.GlobalId, tractorable.Value.TractorBeamEmitter.VhId.Value);
+            _logger.Verbose("Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", tractorable.LocalId, tractorable.Value.TractorBeamEmitter.VhId.Value);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]

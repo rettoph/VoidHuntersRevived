@@ -25,8 +25,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         public void Process(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("EntityId = {EntityId}", data.GlobalId);
-
             if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == true)
             {
                 ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID);
@@ -63,8 +61,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
         {
-            _logger.Verbose("EntityId = {EntityId}", data.GlobalId);
-
             if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == true)
             {
                 ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID);
@@ -121,14 +117,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             if (_entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown VhId {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(SoftSpawnEntity), data.GlobalId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown GlobalId {GlobalId}", nameof(EntitySpawnService), nameof(Process), nameof(SoftSpawnEntity), data.GlobalId);
                 return;
             }
 
             ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(localId.Value, out GroupIndex groupIndex, out bool exists);
             if (exists == false || status.Value != EntityStatusEnum.HardSpawned)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(Process), nameof(SoftSpawnEntity), data.GlobalId, exists, exists ? status.Value : null);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - LocalId = {LocalId}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(Process), nameof(SoftSpawnEntity), localId, exists, exists ? status.Value : null);
                 return;
             }
 
@@ -151,18 +147,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void InternalRevert(VhId eventId, SpawnEntity data)
         {
-            _logger.Verbose("EntityVhId = {EntityVhId}", data.GlobalId);
-
-            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == false)
+            if (_entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown VhId {VhId}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), data.GlobalId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft spawn entity, unknown GlobalId {GlobalId}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), data.GlobalId);
                 return;
             }
 
-            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID, out _, out bool exists);
+            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(localId.Value, out _, out bool exists);
             if (exists == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - LocalId = {LocalId}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), localId, exists, exists ? status.Value : null);
                 return;
             }
 
@@ -181,7 +175,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
             else
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnCount = {SpawnCount}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), id.VhId, exists, exists ? status.Value : null, spawnCount);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - LocalId = {LocalId}, Exists = {Exists}, Status = {Status}, SpawnCount = {SpawnCount}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), localId, exists, exists ? status.Value : null, spawnCount);
             }
 
             // TODO: Investigate why the HardDespawn event is published despite the SoftDespawn being locked behind the Despawn counter
@@ -202,19 +196,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, DespawnEntity data)
         {
-            _logger.Verbose("EntityVhId = {EntityVhId}", data.GlobalId);
-
-            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == false)
+            if (_entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to despawn entity, unknown VhId {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(DespawnEntity), data.GlobalId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to despawn entity, unknown GlobalId {GlobalId}", nameof(EntitySpawnService), nameof(Process), nameof(DespawnEntity), data.GlobalId);
                 return;
             }
 
-            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID, out GroupIndex groupIndex, out bool exists);
+            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(localId.Value, out GroupIndex groupIndex, out bool exists);
             int spawnedCount = 0;
             if (exists == false || (spawnedCount = status.Increment(EntityModificationTypeEnum.Despawned)) != 0)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnedCount = {SpawnedCount}", nameof(EntitySpawnService), nameof(Process), nameof(DespawnEntity), id.VhId, exists, exists ? status.Value : null, spawnedCount);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - LocalId = {LocalId}, Exists = {Exists}, Status = {Status}, SpawnedCount = {SpawnedCount}", nameof(EntitySpawnService), nameof(Process), nameof(DespawnEntity), localId, exists, exists ? status.Value : null, spawnedCount);
                 return;
             }
 
@@ -247,14 +239,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             if (_entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft despawn entity. VhId = {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(SoftDespawnEntity), data.GlobalId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft despawn entity. GlobalId = {GlobalId}", nameof(EntitySpawnService), nameof(Process), nameof(SoftDespawnEntity), data.GlobalId);
                 return;
             }
 
             ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(localId.Value, out GroupIndex groupIndex, out bool exists);
             if (exists == false || status.Value != EntityStatusEnum.SoftDespawnEnqueued)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft despawn entity. Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(Process), nameof(SoftDespawnEntity), data.GlobalId, exists, exists ? status.Value : null);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to soft despawn entity. LocalId = {LocalId}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(Process), nameof(SoftDespawnEntity), localId, exists, exists ? status.Value : null);
                 return;
             }
 
@@ -269,7 +261,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             if (_entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to hard despawn entity. VhId = {VhId}", nameof(EntitySpawnService), nameof(Process), nameof(HardDespawnEntity), data.GlobalId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to hard despawn entity. GlobalId = {GlobalId}", nameof(EntitySpawnService), nameof(Process), nameof(HardDespawnEntity), data.GlobalId);
                 return;
             }
 
@@ -277,7 +269,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             if (exists == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to hard despawn entity. Id = {Id}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(Process), nameof(HardDespawnEntity), data.GlobalId, exists, exists ? status.Value : null);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to hard despawn entity. LocalId = {LocalId}, Exists = {Exists}, Status = {Status}", nameof(EntitySpawnService), nameof(Process), nameof(HardDespawnEntity), localId, exists, exists ? status.Value : null);
                 return;
             }
 
@@ -298,20 +290,18 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Revert(VhId eventId, DespawnEntity data)
         {
-            _logger.Verbose("EntityVhId = {EntityVhId}", data.GlobalId);
-
-            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == false)
+            if (_entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to revert despawn entity, unknown VhId {VhId}, Id not found.", nameof(EntitySpawnService), nameof(Revert), nameof(DespawnEntity), data.GlobalId);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Unable to revert despawn entity, unknown GlobalId {GlobalId}", nameof(EntitySpawnService), nameof(Revert), nameof(DespawnEntity), data.GlobalId);
                 return;
             }
 
-            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID, out GroupIndex groupIndex, out bool exists);
+            ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(localId.Value, out GroupIndex groupIndex, out bool exists);
 
             int spawnedCount = 0;
             if (exists == false || (spawnedCount = status.Increment(EntityModificationTypeEnum.Spawned)) != 1)
             {
-                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - Id = {Id}, Exists = {Exists}, Status = {Status}, SpawnedCount = {SpawnedCount}", nameof(EntitySpawnService), nameof(Revert), nameof(DespawnEntity), id.VhId, exists, exists ? status.Value : null, spawnedCount);
+                _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - LocalId = {LocalId}, Exists = {Exists}, Status = {Status}, SpawnedCount = {SpawnedCount}", nameof(EntitySpawnService), nameof(Revert), nameof(DespawnEntity), localId, exists, exists ? status.Value : null, spawnedCount);
                 return;
             }
 
