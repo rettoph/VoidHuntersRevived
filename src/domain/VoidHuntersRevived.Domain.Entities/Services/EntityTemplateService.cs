@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Providers;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common.Providers;
@@ -24,6 +25,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityTemplateService(
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityTemplateFragmentService entityTemplateFragmentService,
+            ILoggerService loggerService,
             Lazy<IComponentSerializerService> componentSerializerService,
             EnginesRoot enginesRoot)
         {
@@ -45,7 +47,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                             _entityTemplateFragmentService,
                             _uniqueNumberProvider,
                             factory,
-                            functions
+                            functions,
+                            loggerService.GetOrCreate<EntityTemplate>()
                         );
                     });
         }

@@ -14,6 +14,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Engines.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
+using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
@@ -55,6 +56,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                 builder.RegisterPeerTypeFilter<IServerEngine>(PeerType.Server);
                 builder.RegisterGraphicsEnabledFilter<IGraphicsEngine>(true);
                 builder.RegisterStrategyFilter<IPredictiveSynchronizationEngine, IPredictiveStrategy>();
+
+                const string StrategyLoggerContext = nameof(Strategy);
+                builder.RegisterLoggerContext<Strategy>(StrategyLoggerContext);
+                builder.RegisterLoggerContext<PredictiveStrategy>(StrategyLoggerContext);
+                builder.RegisterLoggerContext<LockstepStrategy_Client>(StrategyLoggerContext);
+                builder.RegisterLoggerContext<LockstepStrategy_Server>(StrategyLoggerContext);
             });
         }
     }

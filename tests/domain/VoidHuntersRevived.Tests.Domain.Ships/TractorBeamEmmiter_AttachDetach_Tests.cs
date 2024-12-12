@@ -18,6 +18,7 @@ using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
@@ -153,6 +154,132 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
             // Verify state
             simulation.AssertBodyCount(1).AssertEntityCount<Tree>(1).AssertEntityCount<Node>(2);
+        }
+
+        [Fact]
+        public void SynchPredictiveWithAttachmentFromLockstep_Tests()
+        {
+            // Imagine the following ship
+            // 1. Predictive: [Bridge][Square:A][Square:B]
+            // 2. Predictive: [Bridge][Square:A] <-DETACH-> [Square:Z]
+            // 3. Predictive: [Bridge][Square:A][Square:Y]
+
+            // After such a case stratigies are laid out like so:
+            // Predictive: [Bridge][Square:A][Square:Y]
+            // Lockstep:   [Bridge][Square:A][Square:B]
+
+            // Now we will detach from both:
+            // Predictive: [Bridge] <-DETACH-> [Square:C][Square:X]
+            // Lockstep:   [Bridge] <-DETACH-> [Square:C][Square:D]
+
+            // Now connect both
+            // Predictive: [Bridge][Square:E][Square:W]
+            // Lockstep:   [Bridge][Square:E][Square:F]
+
+            // Wait for predictive syncronization. What will happen?
+            // [Square:W] was created out of phase and should be reverted
+            // This works, but we had a bug where the deserization method had
+            // a reference to a lockstep scoped entity (service references in an entity serializer)
+            // this caused inorrect deserialize data - a predictive node would attempt to attach to a
+            // lockstep tree
+
+            var simulation = CreateSimulationMocker();
+            var readTractorbeamEmitterService = simulation.Resolve<PredictiveStrategy, ITractorBeamEmitterService>();
+            var readEntityQueryService = simulation.Resolve<PredictiveStrategy, IEntityQueryService>();
+            var readTreeService = simulation.Resolve<PredictiveStrategy, ITreeService>();
+
+            EntityGlobalId shipGlobalId = VhId.NewId().ToGlobalEntityId();
+            EntityGlobalId square1Id = new(VhId.NewId());
+            EntityGlobalId square2Id = new(VhId.NewId());
+
+            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
+            {
+                ITeamService teamService = strategy.Scope.Resolve<ITeamService>();
+                ITreeService treeService = strategy.Scope.Resolve<ITreeService>();
+                ISocketService socketService = strategy.Scope.Resolve<ISocketService>();
+
+                // Spawn a test ship
+                Team team = teamService.GetOpenTeam();
+                EntityId shipId = treeService.Spawn(
+                    sourceId: vhids.Next(),
+                    globalId: shipGlobalId,
+                    team: team,
+                    treeTemplateKey: Resources.EntityTemplates.Ship.UserShipEntityTemplate,
+                    headNodeTemplateKey: TestSquareEntityTemplateKey);
+
+                yield return 100;
+
+                // Spawn a test square attached to the test ship
+                Node head = treeService.GetHead(shipId);
+                bool result = socketService.TryGetSocket(new SocketVhId(head.Id.VhId, 0), out NodeSocket nodeSocket);
+                Assert.True(result);
+
+                EntityId square = socketService.Spawn(
+                    sourceId: vhids.Next(),
+                    targetSocketNode: nodeSocket,
+                    globalId: square1Id,
+                    nodeTemplateKey: TestSquareEntityTemplateKey);
+
+                yield return 100;
+
+                // Spawn a second test square attached to the first test square
+                result = socketService.TryGetSocket(new SocketVhId(square.VhId, 0), out nodeSocket);
+                Assert.True(result);
+
+                EntityId square2 = socketService.Spawn(
+                    sourceId: vhids.Next(),
+                    targetSocketNode: nodeSocket,
+                    globalId: square2Id,
+                    nodeTemplateKey: TestSquareEntityTemplateKey);
+
+                yield return 100;
+
+                // Verify setup
+                strategy.AssertBodyCount(1).AssertEntityCount<Tree>(1).AssertEntityCount<Node>(3);
+            }
+
+            // Setup test (create ship with piece attached)
+            simulation.RunCoroutine(
+                interval: TimeSpan.FromMilliseconds(16),
+                coroutineId: VhId.HashString(nameof(SetupStrategy)),
+                coroutine: SetupStrategy);
+            EntityId shipId = readEntityQueryService.GetId(shipGlobalId.Value);
+            EntityId bridgeId = readTreeService.GetHead(shipId).Id;
+
+            // Begin Tests
+            VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
+
+            // Query for the available piece
+            bool result = readTractorbeamEmitterService.Query(shipId, FixVector2.Zero, out Node targetNode);
+            Assert.True(result);
+
+
+            // Detach and reattach square2 on the predictive strategy
+            simulation
+                .Input<IPredictiveStrategy>(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
+                {
+                    ShipVhId = shipGlobalId.Value,
+                    TargetVhId = square2Id.Value
+                }, true).Update(TimeSpan.FromMilliseconds(1), 2)
+                .Input<IPredictiveStrategy>(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
+                {
+                    ShipVhId = shipGlobalId.Value,
+                    AttachToSocketVhId = new SocketVhId(square1Id.Value, 0)
+                }, true).Update(TimeSpan.FromMilliseconds(1), 2);
+
+
+            // Select square1 on both strategies
+            simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
+            {
+                ShipVhId = shipGlobalId.Value,
+                TargetVhId = square1Id.Value
+            }, true).Update(TimeSpan.FromMilliseconds(16), 2);
+
+            // Update all simulations - hopefully the fake drop will resync on the predictive strategy
+            simulation.Update(TimeSpan.FromMilliseconds(16), 1000);
+
+            // Verify state
+            simulation.AssertBodyCount(2).AssertEntityCount<Tree>(2).AssertEntityCount<Node>(3);
         }
 
         private static EntityTemplateFragment[] GetEntityTemplateFragments()

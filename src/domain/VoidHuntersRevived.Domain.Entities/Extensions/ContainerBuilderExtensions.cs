@@ -46,10 +46,20 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
                 builder.RegisterType<BelongsToEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
 
+                const string EntityLoggerContext = "Entities";
+                builder.RegisterLoggerContext<EntityQueryService>(EntityLoggerContext);
+                builder.RegisterLoggerContext<EntitySerializationService>(EntityLoggerContext);
+                builder.RegisterLoggerContext<EntitySpawnService>(EntityLoggerContext);
+                builder.RegisterLoggerContext<EntityTemplateFragmentService>(EntityLoggerContext);
+                builder.RegisterLoggerContext<ComponentSerializerService>(EntityLoggerContext);
+                builder.RegisterLoggerContext<EntityTemplate>(EntityLoggerContext);
+
                 builder.Configure<LoggerConfiguration>((scope, config) =>
                 {
                     config.Destructure.AsScalar(typeof(Id<IEntityComponent>));
                     config.Destructure.AsScalar(typeof(Id<EntityTemplateFragment>));
+                    config.Destructure.AsScalar(typeof(EntityLocalId));
+                    config.Destructure.AsScalar(typeof(EntityGlobalId));
                 });
             });
         }

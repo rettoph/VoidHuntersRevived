@@ -1,4 +1,5 @@
-﻿using Svelto.DataStructures;
+﻿using Serilog;
+using Svelto.DataStructures;
 using Svelto.ECS;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -10,10 +11,11 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class EntityQueryService : IEntityQueryService, IQueryingEntitiesEngine
+    public class EntityQueryService(ILogger logger) : IEntityQueryService, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; } = null!;
         private readonly Dictionary<EntityGlobalId, EntityLocalId> _ids = [];
+        private readonly ILogger _logger = logger;
 
         public void Ready()
         {
@@ -56,6 +58,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 throw new NotImplementedException();
             }
 
+            _logger.Verbose("Added EntityGlobalId {EntityGlobalId}", globalId);
             return ref localId;
         }
 
@@ -63,6 +66,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             if (_ids.Remove(globalId))
             {
+                _logger.Verbose("Removed EntityGlobalId {EntityGlobalId}", globalId);
                 return true;
             }
 

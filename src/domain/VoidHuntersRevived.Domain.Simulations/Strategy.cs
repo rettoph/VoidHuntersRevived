@@ -116,6 +116,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         }
         public virtual void Publish(EventDto @event)
         {
+            this.logger.Verbose("Publishing {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
             _publishers[@event.Data.GetType()].Publish(@event);
         }
 
@@ -141,6 +142,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public void Enqueue(EventDto @event)
         {
+            this.logger.Verbose("Enqueing {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
             _enqueued.Enqueue(@event);
         }
     }

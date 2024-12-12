@@ -107,6 +107,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             ref EntityLocalId localId = ref _entityQueryService.AddLocalId(data.GlobalId);
             IEntityTemplate template = _entityTemplateService.GetByKey(data.TemplateKey);
+
+            _logger.Verbose("HardSpawnInstanceEntity - GlobalId = {GlobalId}, Template = {Template}", data.GlobalId, template.Key.Name);
             EntityInitializer initializer = template.HardSpawnInstanceEntity(eventId, data.GlobalId, out localId);
 
             EntityId id = new(localId.Value, data.GlobalId.Value);
@@ -131,6 +133,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
             Entity entity = new(groupIndex.Index, localId, data.GlobalId);
 
+            _logger.Verbose("SoftSpawnInstanceEntity - GlobalId = {GlobalId}, Template = {Template}", data.GlobalId, templateKey.Name);
             _entityTemplateService.GetByKey(templateKey).SoftSpawnInstanceEntity(in eventId, in entity, ref status);
             status.Value = EntityStatusEnum.SoftSpawned;
         }
@@ -253,6 +256,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
             Entity entity = new(groupIndex.Index, localId, data.GlobalId);
 
+            _logger.Verbose("SoftDespawnInstanceEntity - GlobalId = {GlobalId}, Template = {Template}", data.GlobalId, templateKey.Name);
             _entityTemplateService.GetByKey(templateKey).SoftDespawnInstanceEntity(in eventId, in entity, ref status);
             status.Value = EntityStatusEnum.SoftDespawned;
         }
@@ -283,6 +287,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 status.Value = EntityStatusEnum.SoftDespawned;
             }
 
+            _logger.Verbose("HardDespawnInstanceEntity - GlobalId = {GlobalId}, Template = {Template}", data.GlobalId, templateKey.Name);
             descriptorEngine.HardDespawnInstanceEntity(in eventId, in entity, ref status);
             _entityQueryService.RemoveLocalId(data.GlobalId);
             status.Value = EntityStatusEnum.HardDespawned;

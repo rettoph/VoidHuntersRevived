@@ -32,5 +32,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         {
             return left.Value.Value != right.Value.Value;
         }
+
+        public override string ToString()
+        {
+            return this.Value.ToString();
+        }
     }
 }

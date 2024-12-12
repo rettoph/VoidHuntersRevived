@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Extensions.System;
+using Serilog;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -23,6 +24,7 @@ namespace VoidHuntersRevived.Domain.Entities
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
+        private readonly ILogger _logger;
         private readonly ComponentEngineInvoker.ComponentEngineInvokerDelegateSequenceGroup<OnDespawnSequenceGroupEnum> _onDespawnEngineInvokers;
         private readonly ComponentEngineInvoker.ComponentEngineInvokerDelegateSequenceGroup<OnSpawnSequenceGroupEnum> _onSpawnEngineInvokers;
         private EntitiesDB _entitiesDB;
@@ -40,13 +42,15 @@ namespace VoidHuntersRevived.Domain.Entities
             IEntityTemplateFragmentService entityTemplateService,
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityFactory factory,
-            IEntityFunctions functions
+            IEntityFunctions functions,
+            ILogger logger
         )
         {
             _uniqueNumberProvider = uniqueNumberProvider;
             _factory = factory;
             _functions = functions;
             _entitiesDB = null!;
+            _logger = logger;
 
             _onDespawnEngineInvokers = new(false);
             _onSpawnEngineInvokers = new(false);
@@ -90,6 +94,8 @@ namespace VoidHuntersRevived.Domain.Entities
             EGID egid = new(_uniqueNumberProvider.GetUInt32(), _group.Value);
             localId = new(egid);
 
+            _logger.Verbose("HardSpawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", globalId, localId, this.Key.Name);
+
             // Invoke Svelto factory and initialize instance with common component values
             EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor);
             initializer.Init(localId);
@@ -102,16 +108,19 @@ namespace VoidHuntersRevived.Domain.Entities
 
         public void SoftSpawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
+            _logger.Verbose("SoftSpawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
             _onSpawnEngineInvokers.Invoke(sourceEventId, this, entity);
         }
 
         public void SoftDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
+            _logger.Verbose("SoftDespawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
             _onDespawnEngineInvokers.Invoke(sourceEventId, this, entity);
         }
 
         public void HardDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
+            _logger.Verbose("HardDespawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
             _functions.RemoveEntity<VoidHuntersEntityDescriptor>(entity.LocalId.Value);
         }
 

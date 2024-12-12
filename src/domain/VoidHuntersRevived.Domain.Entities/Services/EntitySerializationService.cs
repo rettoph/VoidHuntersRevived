@@ -34,6 +34,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 throw new NotImplementedException();
             }
 
+            _logger.Verbose("Starting Serialization - Id = {Id}", id.VhId);
+
             try
             {
                 _serializing = true;
@@ -61,6 +63,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer)
         {
+            _logger.Verbose("Starting Deserialization - Id = {Id}, OwnerId = {OwnerId}, Seed = {Seed}", data.Id, options.Owner, options.Seed);
+
             EntityId entityId = this.InternalDeserialize(sourceId, data, 0, options, initializer);
             for (int i = 1; i < data.IndexCount; i++)
             {
@@ -110,14 +114,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EntityGlobalId entityId = reader.ReadGlobalEntityId();
             Key<IEntityTemplate> entityTemplateKey = Key<IEntityTemplate>.GetById(reader.Read<VhId>());
 
-            _logger.Verbose("Preparing to deserialize {EntityId} of type {EntityTemplate} with seed {seed}", entityId.Value, entityTemplateKey, options.Seed.Value);
+            _logger.Verbose("Preparing to deserialize - EntityId = {EntityId}, Seed = {Seed}, Index = {Index}, DataId = {DataId}", entityId.Value, options.Seed.Value, index, data.Id);
 
             return _entitySpawnService.Spawn(sourceId, entityTemplateKey, entityId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
                 EntityReader reader = data.GetReader(options.Seed, index, EntityHeaderSize);
 
-                _entityTemplateService.GetByKey(entityTemplateKey).DeserializeInstanceEntity(in sourceId, in options, ref reader, ref initializer, in id);
-
+                entities.Templates.GetByKey(entityTemplateKey).DeserializeInstanceEntity(in sourceId, in options, ref reader, ref initializer, in id);
+                -
                 initializerDelegate(entities, entityTemplate, id, ref initializer);
             });
         }
