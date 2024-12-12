@@ -121,7 +121,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 EntityReader reader = data.GetReader(options.Seed, index, EntityHeaderSize);
 
                 entities.Templates.GetByKey(entityTemplateKey).DeserializeInstanceEntity(in sourceId, in options, ref reader, ref initializer, in id);
-                -
+
                 initializerDelegate(entities, entityTemplate, id, ref initializer);
             });
         }
