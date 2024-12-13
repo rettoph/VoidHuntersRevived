@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
             return new Node(id, treeId);
         }
 
-        protected override void Write(ref EntityWriter writer, in EntityId id, in Node instance, in SerializationOptions options)
+        protected override void Write(ref EntityWriter writer, in Entity entity, in Node instance, in SerializationOptions options)
         {
         }
     }

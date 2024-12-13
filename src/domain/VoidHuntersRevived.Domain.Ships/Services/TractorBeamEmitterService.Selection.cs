@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         data: new TractorBeamEmitter_Select()
                         {
                             TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
-                            TargetData = _entitySerializationService.Serialize(nodeId, SerializationOptions.Default),
+                            TargetData = _entitySerializationService.Serialize(nodeId.ToLocalEntityId(), SerializationOptions.Default),
                             Location = node.Transformation.ToLocation()
                         });
 
@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     Data = new TractorBeamEmitter_Deselect()
                     {
                         TractorBeamEmitterVhId = tractorBeamEmitterId.VhId,
-                        TargetData = _entitySerializationService.Serialize(deselected.headId, SerializationOptions.Default),
+                        TargetData = _entitySerializationService.Serialize(deselected.headId.ToLocalEntityId(), SerializationOptions.Default),
                         Location = deselected.location,
                         AttachToSocketVhId = attachToSocketVhId
                     }

@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
             return default;
         }
 
-        protected override void Write(ref EntityWriter writer, in EntityId id, in Coupling instance, in SerializationOptions options)
+        protected override void Write(ref EntityWriter writer, in Entity entity, in Coupling instance, in SerializationOptions options)
         {
             if (writer.WriteIf(instance.SocketId != NodeSocketId.Empty))
             {

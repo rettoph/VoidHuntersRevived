@@ -124,11 +124,11 @@ namespace VoidHuntersRevived.Domain.Entities
             _functions.RemoveEntity<VoidHuntersEntityDescriptor>(entity.LocalId.Value);
         }
 
-        public void SerializeInstanceEntity(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options)
+        public void SerializeInstanceEntity(ref EntityWriter writer, in Entity entity, in SerializationOptions options)
         {
             foreach (IComponentSerializer serializer in _serializers)
             {
-                serializer.Serialize(ref writer, in id, in groupIndex, _entitiesDB, in options);
+                serializer.Serialize(ref writer, in entity, _entitiesDB, in options);
             }
         }
 

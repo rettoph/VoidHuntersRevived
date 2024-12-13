@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ISocketService _socketService = socketService;
 
-        protected override void Write(ref EntityWriter writer, in EntityId id, in Sockets instance, in SerializationOptions options)
+        protected override void Write(ref EntityWriter writer, in Entity entity, in Sockets instance, in SerializationOptions options)
         {
             if (options.Recursion == Recursion.None)
             {
@@ -24,21 +24,21 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
 
             for (int i = 0; i < instance.Items.count; i++)
             {
-                this.WriteSocketCouplings(ref writer, in id, (byte)i, options);
+                this.WriteSocketCouplings(ref writer, in entity, (byte)i, options);
             }
         }
 
-        private void WriteSocketCouplings(ref EntityWriter writer, in EntityId nodeId, byte socketIndex, SerializationOptions options)
+        private void WriteSocketCouplings(ref EntityWriter writer, in Entity entity, byte socketIndex, SerializationOptions options)
         {
-            ref var filter = ref _socketService.GetCouplingFilter(nodeId, socketIndex);
+            ref var filter = ref _socketService.GetCouplingFilter(entity.EntityId, socketIndex);
 
             foreach (var (indices, groupId) in filter)
             {
-                var (entityIds, _) = _entityQueryService.QueryEntities<EntityId>(groupId);
+                var (entityLocalIds, _) = _entityQueryService.QueryEntities<EntityLocalId>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    writer.Push(entityIds[indices[i]]);
+                    writer.Push(entityLocalIds[indices[i]]);
                 }
             }
         }

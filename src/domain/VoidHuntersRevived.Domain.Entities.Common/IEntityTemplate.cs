@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         void SoftDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
         void HardDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
 
-        void SerializeInstanceEntity(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options);
+        void SerializeInstanceEntity(ref EntityWriter writer, in Entity entity, in SerializationOptions options);
         void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id);
     }
 }

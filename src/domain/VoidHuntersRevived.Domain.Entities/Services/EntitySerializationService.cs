@@ -24,29 +24,35 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         // Serialization buffers
         private readonly List<byte> _data = [];
         private readonly List<int> _indices = [];
-        private readonly Stack<EntityId> _nested = [];
+        private readonly Stack<EntityLocalId> _nested = [];
         private bool _serializing;
 
-        public EntityData Serialize(EntityId id, SerializationOptions options)
+        public EntityData Serialize(EntityLocalId localId, SerializationOptions options)
         {
             if (_serializing == true)
             {
                 throw new NotImplementedException();
             }
 
-            _logger.Verbose("Starting Serialization - Id = {Id}", id.VhId);
+            _logger.Verbose("Starting Serialization - LocalId = {LocalId}", localId);
+
 
             try
             {
                 _serializing = true;
 
-                this.InternalSerialize(id, options);
-                while (_nested.TryPop(out EntityId nestedId))
+                EntityGlobalId globalId = _entityQueryService.QueryByLocalId<EntityGlobalId>(localId, out GroupIndex groupIndex);
+                Entity entity = new(in groupIndex.Index, in localId, in globalId);
+                this.InternalSerialize(ref entity, options);
+
+                while (_nested.TryPop(out EntityLocalId nestedLocalId))
                 {
-                    this.InternalSerialize(nestedId, options);
+                    EntityGlobalId nestedGlobalId = _entityQueryService.QueryByLocalId<EntityGlobalId>(nestedLocalId, out GroupIndex nestedGroupIndex);
+                    Entity nestedEntity = new(in nestedGroupIndex.Index, in nestedLocalId, in nestedGlobalId);
+                    this.InternalSerialize(ref nestedEntity, options);
                 }
 
-                EntityData result = new(id.VhId, _data.ToArray(), _indices.ToArray());
+                EntityData result = new(globalId.Value, _data.ToArray(), _indices.ToArray());
 
                 return result;
             }
@@ -85,19 +91,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return entityId;
         }
 
-        private void InternalSerialize(EntityId id, SerializationOptions options)
+        private void InternalSerialize(ref Entity entity, SerializationOptions options)
         {
-            Key<IEntityTemplate> templateKey = _entityQueryService.QueryById<EntityTemplateComponent>(id, out GroupIndex groupIndex).Key;
+            Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<EntityTemplateComponent>(entity.GroupIndex).Key;
 
             EntityWriter writer = new(_data, _nested);
 
             _indices.Add(_data.Count);
-            writer.Write(id.VhId);
+            writer.Write(entity.GlobalId);
             writer.Write(templateKey.Id);
 
-            _logger.Verbose("Preparing to serialize {EntityId} of type {EntityTemplate}", id.VhId, templateKey);
+            _logger.Verbose("Preparing to serialize {EntityLocalId} of type {EntityTemplate}", entity.LocalId, templateKey);
 
-            _entityTemplateService.GetByKey(templateKey).SerializeInstanceEntity(ref writer, in id, in groupIndex, in options);
+            _entityTemplateService.GetByKey(templateKey).SerializeInstanceEntity(ref writer, in entity, in options);
         }
 
         public static readonly unsafe int EntityHeaderSize = sizeof(VhId) + sizeof(Id<EntityTemplateFragment>);
@@ -111,16 +117,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             EntityReader reader = data.GetReader(options.Seed, index);
 
-            EntityGlobalId entityId = reader.ReadGlobalEntityId();
+            EntityGlobalId entityGlobalId = reader.ReadGlobalEntityId();
             Key<IEntityTemplate> entityTemplateKey = Key<IEntityTemplate>.GetById(reader.Read<VhId>());
 
-            _logger.Verbose("Preparing to deserialize - EntityId = {EntityId}, Seed = {Seed}, Index = {Index}, DataId = {DataId}", entityId.Value, options.Seed.Value, index, data.Id);
+            _logger.Verbose("Preparing to deserialize - EntityId = {EntityId}, Seed = {Seed}, Index = {Index}, DataId = {DataId}", entityGlobalId.Value, options.Seed.Value, index, data.Id);
 
-            return _entitySpawnService.Spawn(sourceId, entityTemplateKey, entityId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, entityTemplateKey, entityGlobalId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
             {
                 EntityReader reader = data.GetReader(options.Seed, index, EntityHeaderSize);
 
-                entities.Templates.GetByKey(entityTemplateKey).DeserializeInstanceEntity(in sourceId, in options, ref reader, ref initializer, in id);
+                entityTemplate.DeserializeInstanceEntity(in sourceId, in options, ref reader, ref initializer, in id);
 
                 initializerDelegate(entities, entityTemplate, id, ref initializer);
             });
