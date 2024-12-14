@@ -37,8 +37,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tree> tree)
         {
-            _logger.Verbose("Despawning Tree {TreeId}, HeadId = {HeadId}", tree.LocalId, tree.Value.HeadId.VhId);
-            _entitySpawnService.Despawn(sourceEventId, tree.Value.HeadId);
+            _logger.Verbose("Despawning Tree {TreeId}, HeadId = {HeadId}", tree.LocalId, tree.Component.HeadId.VhId);
+            _entitySpawnService.Despawn(sourceEventId, tree.Component.HeadId);
         }
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]

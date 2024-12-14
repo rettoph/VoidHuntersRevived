@@ -41,13 +41,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 _serializing = true;
 
                 EntityGlobalId globalId = _entityQueryService.QueryByLocalId<EntityGlobalId>(localId, out GroupIndex groupIndex);
-                Entity entity = new(in groupIndex.Index, in localId, in globalId);
+                Entity entity = new(groupIndex.Index, localId, globalId);
                 this.InternalSerialize(ref entity, options);
 
                 while (_nested.TryPop(out EntityLocalId nestedLocalId))
                 {
                     EntityGlobalId nestedGlobalId = _entityQueryService.QueryByLocalId<EntityGlobalId>(nestedLocalId, out GroupIndex nestedGroupIndex);
-                    Entity nestedEntity = new(in nestedGroupIndex.Index, in nestedLocalId, in nestedGlobalId);
+                    Entity nestedEntity = new(nestedGroupIndex.Index, nestedLocalId, nestedGlobalId);
                     this.InternalSerialize(ref nestedEntity, options);
                 }
 

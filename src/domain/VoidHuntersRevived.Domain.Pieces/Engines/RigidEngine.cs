@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 if (enabled)
                 {
                     IBody body = _space.GetBody(node.TreeId.ToLocalEntityId());
-                    this.CreateFixtures(body, node, rigid.Value);
+                    this.CreateFixtures(body, node, rigid.Component);
                 }
             }
             else
@@ -89,7 +89,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 {
                     if (_space.TryGetBody(node.TreeId.ToLocalEntityId(), out IBody? body) == true)
                     {
-                        this.DestroyFixtures(body, node, rigid.Value);
+                        this.DestroyFixtures(body, node, rigid.Component);
                     }
                     else
                     {

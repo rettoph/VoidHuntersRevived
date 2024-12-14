@@ -100,6 +100,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             ref EntityLocalId localId = ref _entityQueryService.AddLocalId(data.GlobalId);
             EntityInitializer initializer = _entityTemplateService.GetByKey(data.TemplateKey).HardSpawnInstanceEntity(eventId, data.GlobalId, out localId);
+            _entityQueryService.AddGlobalId(localId, data.GlobalId);
         }
 
         public void Process(VhId eventId, HardSpawnEntity<EntityInitializerDelegate> data)
@@ -109,6 +110,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             _logger.Verbose("HardSpawnInstanceEntity - GlobalId = {GlobalId}, Template = {Template}", data.GlobalId, template.Key.Name);
             EntityInitializer initializer = template.HardSpawnInstanceEntity(eventId, data.GlobalId, out localId);
+            _entityQueryService.AddGlobalId(localId, data.GlobalId);
 
             InitializingEntity entity = new(in localId, data.GlobalId, ref initializer, in template);
             data.Initializer.Invoke(_entityService, in entity);
@@ -129,7 +131,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
+            Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(groupIndex).Key;
             Entity entity = new(groupIndex.Index, localId, data.GlobalId);
 
             _logger.Verbose("SoftSpawnInstanceEntity - GlobalId = {GlobalId}, Template = {Template}", data.GlobalId, templateKey.Name);
@@ -252,7 +254,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
+            Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(groupIndex).Key;
             Entity entity = new(groupIndex.Index, localId, data.GlobalId);
 
             _logger.Verbose("SoftDespawnInstanceEntity - GlobalId = {GlobalId}, Template = {Template}", data.GlobalId, templateKey.Name);
@@ -276,7 +278,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 return;
             }
 
-            Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(in groupIndex).Key;
+            Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(groupIndex).Key;
             IEntityTemplate descriptorEngine = _entityTemplateService.GetByKey(templateKey);
             Entity entity = new(groupIndex.Index, localId, data.GlobalId);
 
@@ -288,7 +290,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             _logger.Verbose("HardDespawnInstanceEntity - GlobalId = {GlobalId}, Template = {Template}", data.GlobalId, templateKey.Name);
             descriptorEngine.HardDespawnInstanceEntity(in eventId, in entity, ref status);
-            _entityQueryService.RemoveLocalId(data.GlobalId);
+            _entityQueryService.Remove(data.GlobalId);
             status.Value = EntityStatusEnum.HardDespawned;
         }
 

@@ -6,5 +6,10 @@
         {
             return new EntityLocalId(id.EGID);
         }
+
+        public static EntityGlobalId ToGlobalEntityId(this EntityId id)
+        {
+            return new EntityGlobalId(id.VhId);
+        }
     }
 }

@@ -23,5 +23,15 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         {
             return this.Value.ToString();
         }
+
+        public static bool operator ==(EntityLocalId left, EntityLocalId right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(EntityLocalId left, EntityLocalId right)
+        {
+            return !(left == right);
+        }
     }
 }

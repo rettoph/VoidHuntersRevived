@@ -39,29 +39,29 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node> node)
         {
-            _logger.Verbose("OnSpawn - NodeId = {NodeId}, TreeId = {TreeId}, LocalTreeId = {LocalTreeId}", node.GlobalId, node.Value.TreeId.VhId, node.Value.TreeId.ToLocalEntityId());
+            _logger.Verbose("OnSpawn - NodeId = {NodeId}, TreeId = {TreeId}, LocalTreeId = {LocalTreeId}", node.GlobalId, node.Component.TreeId.VhId, node.Component.TreeId.ToLocalEntityId());
 
-            ref var filter = ref _entityQueryService.GetFilter<Node>(node.Value.TreeId, Tree.NodeFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(node.Component.TreeId, Tree.NodeFilterContextId);
             filter.Add(node.LocalId, node.Index);
 
-            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.Value.TreeId, out bool alreadyDirty);
+            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.Component.TreeId, out bool alreadyDirty);
             dirtyEventId = alreadyDirty
                 ? HashBuilder<IReactOnAddEx<Node>, VhId, EntityGlobalId>.Instance.Calculate(dirtyEventId, node.GlobalId)
                 : HashBuilder<IReactOnAddEx<Node>, EntityGlobalId>.Instance.Calculate(node.GlobalId);
 
-            ref Location treeLocation = ref _entityQueryService.QueryById<Location>(node.Value.TreeId);
+            ref Location treeLocation = ref _entityQueryService.QueryById<Location>(node.Component.TreeId);
             this.SetLocalTransformation(ref node, in treeLocation);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node> node)
         {
-            _logger.Verbose("OnDespawn - NodeId = {NodeId}, TreeId = {TreeId}, LocalTreeId = {LocalTreeId}", node.GlobalId, node.Value.TreeId.VhId, node.Value.TreeId.ToLocalEntityId());
+            _logger.Verbose("OnDespawn - NodeId = {NodeId}, TreeId = {TreeId}, LocalTreeId = {LocalTreeId}", node.GlobalId, node.Component.TreeId.VhId, node.Component.TreeId.ToLocalEntityId());
 
-            ref var filter = ref _entityQueryService.GetFilter<Node>(node.Value.TreeId, Tree.NodeFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(node.Component.TreeId, Tree.NodeFilterContextId);
             filter.Remove(node.LocalId);
 
-            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.Value.TreeId, out bool alreadyDirty);
+            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.Component.TreeId, out bool alreadyDirty);
             dirtyEventId = alreadyDirty
                 ? HashBuilder<IReactOnRemoveEx<Node>, VhId, EntityGlobalId>.Instance.Calculate(dirtyEventId, node.GlobalId)
                 : HashBuilder<IReactOnRemoveEx<Node>, EntityGlobalId>.Instance.Calculate(node.GlobalId);
@@ -87,11 +87,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             _logger.Verbose("Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(Node.LocalLocation), nameof(Node), node.LocalId);
 
-            node.Value.WorldTransform(treeLocation.Transformation);
+            node.Component.WorldTransform(treeLocation.Transformation);
 
             if (!_entityQueryService.TryQueryByGroupIndex<Coupling>(node.GroupIndex, out Coupling coupling) || coupling.SocketId == NodeSocketId.Empty)
             {
-                node.Value.SetLocationTransformation(FixMatrix.Identity);
+                node.Component.SetLocationTransformation(FixMatrix.Identity);
                 return;
             }
 
@@ -100,7 +100,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 ref Plug plug = ref _entityQueryService.QueryByGroupIndex<Plug>(node.GroupIndex);
                 NodeSocket nodeSocket = _socketService.GetSocket(coupling.SocketId);
 
-                node.Value.SetLocationTransformation(plug.Location.Transformation.Invert() * nodeSocket.LocalTransformation);
+                node.Component.SetLocationTransformation(plug.Location.Transformation.Invert() * nodeSocket.LocalTransformation);
             }
             catch (Exception ex)
             {
@@ -111,7 +111,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 // moving the mouse randomly. It doesnt occurre very often
                 // We set the transformation to zero so that the constructed rigid shape can still take form
                 // Without this it will default all vertices to 0,0 and fail an assert
-                node.Value.SetLocationTransformation(FixMatrix.Identity);
+                node.Component.SetLocationTransformation(FixMatrix.Identity);
 
                 var id = _entityQueryService.QueryByGroupIndex<EntityId>(node.GroupIndex);
                 _logger.Error(ex, "There was a fatal error attempting to set node transformation for node {NodeId}.", id.VhId.Value);

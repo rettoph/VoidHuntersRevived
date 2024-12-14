@@ -14,7 +14,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     public class EntityQueryService(ILogger logger) : IEntityQueryService, IQueryingEntitiesEngine
     {
         public EntitiesDB entitiesDB { get; set; } = null!;
-        private readonly Dictionary<EntityGlobalId, EntityLocalId> _ids = [];
+        private readonly Dictionary<EntityGlobalId, EntityLocalId> _globalLocalIds = [];
+        private readonly Dictionary<EntityLocalId, EntityGlobalId> _localGlobalIds = [];
         private readonly ILogger _logger = logger;
 
         public void Ready()
@@ -24,35 +25,90 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityLocalId GetLocalId(EntityGlobalId globalId)
         {
-            return _ids[globalId];
+            return _globalLocalIds[globalId];
         }
 
         public bool TryGetLocalId(EntityGlobalId globalId, out EntityLocalId localId)
         {
-            return _ids.TryGetValue(globalId, out localId);
+            return _globalLocalIds.TryGetValue(globalId, out localId);
+        }
+
+        public EntityGlobalId GetGlobalId(EntityLocalId localId)
+        {
+            return _localGlobalIds[localId];
+        }
+
+        public bool TryGetGlobalId(EntityLocalId localId, out EntityGlobalId globalId)
+        {
+            return _localGlobalIds.TryGetValue(localId, out globalId);
+        }
+
+        public bool TryGetEntity(EntityGlobalId globalId, out Entity entity)
+        {
+            if (this.TryGetLocalId(globalId, out EntityLocalId localId) == false)
+            {
+                entity = default;
+                return false;
+            }
+
+            _ = this.QueryByEGID<EntityLocalId>(localId.Value, out GroupIndex groupIndex);
+
+            entity = new Entity(groupIndex.Index, localId, globalId);
+            return true;
+        }
+        public bool TryGetEntity<T>(EntityGlobalId globalId, out Entity<T> entity)
+            where T : unmanaged, IEntityComponent
+        {
+            if (this.TryGetLocalId(globalId, out EntityLocalId localId) == false)
+            {
+                entity = default;
+                return false;
+            }
+
+            ref T component = ref this.QueryByEGID<T>(localId.Value, out GroupIndex groupIndex);
+
+            entity = new Entity<T>(groupIndex.Index, localId, globalId, ref component);
+            return true;
+        }
+
+        public bool TryGetEntity(EntityLocalId localId, out Entity entity)
+        {
+            EntityGlobalId globalId = this.QueryByEGID<EntityGlobalId>(localId.Value, out GroupIndex groupIndex);
+
+            entity = new Entity(groupIndex.Index, localId, globalId);
+            return true;
+        }
+        public bool TryGetEntity<T>(EntityLocalId localId, out Entity<T> entity)
+            where T : unmanaged, IEntityComponent
+        {
+            EntityGlobalId globalId = this.QueryByEGID<EntityGlobalId>(localId.Value, out GroupIndex groupIndex);
+            ref T component = ref this.QueryByGroupIndex<T>(groupIndex);
+
+            entity = new Entity<T>(groupIndex.Index, localId, globalId, ref component);
+            return true;
         }
 
         public EntityId GetId(VhId vhid)
         {
-            return new EntityId(_ids[vhid.ToGlobalEntityId()].Value, vhid);
+            return new EntityId(_globalLocalIds[vhid.ToGlobalEntityId()].Value, vhid);
         }
 
         public bool TryGetId(VhId vhid, out EntityId id)
         {
 
-            if (_ids.TryGetValue(vhid.ToGlobalEntityId(), out EntityLocalId localId) == false)
+            if (_globalLocalIds.TryGetValue(vhid.ToGlobalEntityId(), out EntityLocalId localId) == false)
             {
                 id = default;
                 return false;
             }
 
-            id = new EntityId(_ids[vhid.ToGlobalEntityId()].Value, vhid);
+            id = new EntityId(_globalLocalIds[vhid.ToGlobalEntityId()].Value, vhid);
             return true;
         }
 
         public ref EntityLocalId AddLocalId(EntityGlobalId globalId)
         {
-            ref EntityLocalId localId = ref CollectionsMarshal.GetValueRefOrAddDefault(_ids, globalId, out bool exists);
+            ref EntityLocalId localId = ref CollectionsMarshal.GetValueRefOrAddDefault(_globalLocalIds, globalId, out bool exists);
             if (exists == true)
             { // Unable to hard spawn - entity already exists
                 throw new NotImplementedException();
@@ -62,9 +118,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref localId;
         }
 
-        public bool RemoveLocalId(EntityGlobalId globalId)
+        public void AddGlobalId(EntityLocalId localId, EntityGlobalId globalId)
         {
-            if (_ids.Remove(globalId))
+            _localGlobalIds.Add(localId, globalId);
+        }
+
+        public bool Remove(EntityGlobalId globalId)
+        {
+            if (_globalLocalIds.Remove(globalId, out EntityLocalId localId)
+                && _localGlobalIds.Remove(localId))
             {
                 _logger.Verbose("Removed EntityGlobalId {EntityGlobalId}", globalId);
                 return true;
@@ -164,7 +226,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return this.entitiesDB.HasAll(groupId, out entities);
         }
 
-        public ref T QueryByGroupIndex<T>(in GroupIndex groupIndex)
+        public ref T QueryByGroupIndex<T>(GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent
         {
             var (entities, _) = this.entitiesDB.QueryEntities<T>(groupIndex.GroupID);
@@ -172,7 +234,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref entities[groupIndex.Index];
         }
 
-        public bool TryQueryByGroupIndex<T>(in GroupIndex groupIndex, out T value)
+        public bool TryQueryByGroupIndex<T>(GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent
         {
             if (!entitiesDB.HasAny<T>(groupIndex.GroupID))
@@ -193,7 +255,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref entities[index];
         }
 
-        public bool TryQueryByGroupIndex<T>(in ExclusiveGroupStruct groupId, uint index, out T value)
+        public bool TryQueryByGroupIndex<T>(ExclusiveGroupStruct groupId, uint index, out T value)
             where T : unmanaged, IEntityComponent
         {
             if (!entitiesDB.HasAny<T>(groupId))
@@ -359,9 +421,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return false;
         }
 
-        public bool IsSpawned(in GroupIndex groupIndex)
+        public bool IsSpawned(GroupIndex groupIndex)
         {
-            if (this.TryQueryByGroupIndex<EntityStatus>(in groupIndex, out EntityStatus status))
+            if (this.TryQueryByGroupIndex<EntityStatus>(groupIndex, out EntityStatus status))
             {
                 return status.IsSpawned;
             }
@@ -389,9 +451,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return false;
         }
 
-        public bool IsDespawned(in GroupIndex groupIndex)
+        public bool IsDespawned(GroupIndex groupIndex)
         {
-            if (this.TryQueryByGroupIndex<EntityStatus>(in groupIndex, out EntityStatus status))
+            if (this.TryQueryByGroupIndex<EntityStatus>(groupIndex, out EntityStatus status))
             {
                 return status.IsDespawned;
             }

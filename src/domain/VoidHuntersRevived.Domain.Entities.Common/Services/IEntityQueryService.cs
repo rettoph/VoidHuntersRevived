@@ -1,6 +1,7 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
@@ -46,6 +47,16 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 
         EntityLocalId GetLocalId(EntityGlobalId globalId);
         bool TryGetLocalId(EntityGlobalId globalId, out EntityLocalId localId);
+
+        EntityGlobalId GetGlobalId(EntityLocalId localId);
+        bool TryGetGlobalId(EntityLocalId localId, out EntityGlobalId globalId);
+
+        bool TryGetEntity(EntityGlobalId globalId, out Entity entity);
+        bool TryGetEntity<T>(EntityGlobalId globalId, out Entity<T> entity)
+            where T : unmanaged, IEntityComponent;
+        bool TryGetEntity(EntityLocalId localId, out Entity entity);
+        bool TryGetEntity<T>(EntityLocalId localId, out Entity<T> entity)
+            where T : unmanaged, IEntityComponent;
 
         public bool TryQueryById<T>(EntityId id, out T value)
             where T : unmanaged, IEntityComponent
@@ -107,46 +118,16 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
             return false;
         }
 
-        /// <summary>
-        /// Warning, extra lookup, even less efficient
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        ref T QueryByVhId<T>(VhId vhid)
-            where T : unmanaged, IEntityComponent => ref this.QueryById<T>(this.GetId(vhid));
-
-        /// <summary>
-        /// Warning, extra lookup, even less efficient
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="id"></param>
-        /// <param name="groupIndex"></param>
-        /// <returns></returns>
-        ref T QueryByVhId<T>(VhId vhid, out GroupIndex groupIndex)
-            where T : unmanaged, IEntityComponent => ref this.QueryById<T>(this.GetId(vhid), out groupIndex);
-
-        /// <summary>
-        /// Warning, extra lookup, even less efficient
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="id"></param>
-        /// <param name="groupIndex"></param>
-        /// <param name="exists"></param>
-        /// <returns></returns>
-        ref T QueryByVhId<T>(VhId vhid, out GroupIndex groupIndex, out bool exists)
-            where T : unmanaged, IEntityComponent => ref this.QueryById<T>(this.GetId(vhid), out groupIndex, out exists);
-
-        ref T QueryByGroupIndex<T>(in GroupIndex groupIndex)
+        ref T QueryByGroupIndex<T>(GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent;
 
-        bool TryQueryByGroupIndex<T>(in GroupIndex groupIndex, out T value)
+        bool TryQueryByGroupIndex<T>(GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent;
 
         ref T QueryByGroupIndex<T>(ExclusiveGroupStruct groupId, uint index)
             where T : unmanaged, IEntityComponent;
 
-        bool TryQueryByGroupIndex<T>(in ExclusiveGroupStruct groupId, uint index, out T value)
+        bool TryQueryByGroupIndex<T>(ExclusiveGroupStruct groupId, uint index, out T value)
             where T : unmanaged, IEntityComponent;
 
         bool HasAny<T>(ExclusiveGroupStruct groupID)
@@ -245,7 +226,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         int CalculateTotal<T>()
             where T : unmanaged, IEntityComponent;
 
-        bool IsSpawned(in GroupIndex groupIndex);
+        bool IsSpawned(GroupIndex groupIndex);
         bool IsSpawned(EGID egid);
         bool IsSpawned(EGID egid, out GroupIndex groupIndex);
         bool IsSpawned(EntityLocalId localId)
@@ -257,7 +238,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         bool IsSpawned(EntityId id, out GroupIndex groupIndex)
             => this.IsSpawned(id.EGID, out groupIndex);
 
-        bool IsDespawned(in GroupIndex groupIndex);
+        bool IsDespawned(GroupIndex groupIndex);
         bool IsDespawned(EGID egid);
         bool IsDespawned(EGID egid, out GroupIndex groupIndex);
         bool IsDespawned(EntityLocalId localId)
@@ -280,9 +261,18 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         ref EntityFilterCollection GetFilter<T>(EntityLocalId localId, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent
                 => ref this.GetFilter<T>(localId.Value, filterContext);
+        ref EntityFilterCollection GetFilter<T, TFilter>(EntityLocalId localId)
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(localId.Value, FilterContextHelper.GetFilterContext<T, TFilter>());
 
         ref EntityFilterCollection GetFilter<T>(CombinedFilterID combinedFilterId)
             where T : unmanaged, IEntityComponent;
+        ref EntityFilterCollection GetFilter<T>(int filterId, FilterContextID contextID)
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(new CombinedFilterID(filterId, contextID));
+        ref EntityFilterCollection GetFilter<T, TFilter>(int filterId)
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(filterId, FilterContextHelper.GetFilterContext<T, TFilter>());
 
         ref EntityFilterCollection GetFilter<T>(EntityFilterId<T> filterId)
             where T : unmanaged, IEntityComponent;

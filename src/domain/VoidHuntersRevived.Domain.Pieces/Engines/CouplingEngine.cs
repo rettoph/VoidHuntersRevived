@@ -21,24 +21,24 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Coupling> entity)
         {
-            if (entity.Value.SocketId == default)
+            if (entity.Component.SocketId == default)
             {
                 return;
             }
 
-            ref var filter = ref _socketService.GetCouplingFilter(entity.Value.SocketId);
+            ref var filter = ref _socketService.GetCouplingFilter(entity.Component.SocketId);
             filter.Add(in entity.LocalId, in entity.Index);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Coupling> coupling)
         {
-            if (coupling.Value.SocketId == default)
+            if (coupling.Component.SocketId == default)
             {
                 return;
             }
 
-            ref var filter = ref _socketService.GetCouplingFilter(coupling.Value.SocketId);
+            ref var filter = ref _socketService.GetCouplingFilter(coupling.Component.SocketId);
             filter.Remove(in coupling.LocalId);
         }
     }

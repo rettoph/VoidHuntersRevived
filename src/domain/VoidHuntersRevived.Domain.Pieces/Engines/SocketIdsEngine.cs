@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Sockets> sockets)
         {
-            for (int i = 0; i < sockets.Value.Items.count; i++)
+            for (int i = 0; i < sockets.Component.Items.count; i++)
             {
                 var filter = _socketService.GetCouplingFilter(nodeId: sockets.EntityId, socketIndex: (byte)i);
                 foreach (var (indices, groupId) in filter)

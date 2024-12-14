@@ -5,8 +5,6 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Components
 {
     public struct TractorBeamEmitter : IEntityComponent
     {
-        public static FilterContextID TractorableFilterContext = FilterContextID.GetNewContextID();
-
         public bool Active;
         public EntityId TargetId;
 

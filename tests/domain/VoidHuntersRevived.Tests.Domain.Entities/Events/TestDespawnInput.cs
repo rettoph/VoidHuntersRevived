@@ -7,8 +7,6 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Events
 {
     internal class TestDepawnInput : IInputData
     {
-        public VhId ShipVhId => throw new NotImplementedException();
-
         public bool IsPredictable => true;
 
         public required EntityGlobalId EntityGlobalId { get; init; }

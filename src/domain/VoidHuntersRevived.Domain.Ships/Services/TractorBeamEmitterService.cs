@@ -2,6 +2,7 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
@@ -36,22 +37,17 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         private readonly ISocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
 
-        public ref EntityFilterCollection GetTractorableFilter(EntityId tractorBeamEmitterId)
+        public ref EntityFilterCollection GetTractorableFilter(EntityLocalId tractorBeamEmitterLocalId)
         {
-            return ref _entityQueryService.GetFilter<Tractorable>(tractorBeamEmitterId, TractorBeamEmitter.TractorableFilterContext);
+            return ref _entityQueryService.GetFilter<Tractorable, TractorBeamEmitter>(tractorBeamEmitterLocalId);
         }
 
-        public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Node targetNode)
+        public bool Query(in Entity<TractorBeamEmitter> tractorBeamEmitter, FixVector2 target, out Node targetNode)
         {
-            if (!_entityQueryService.TryQueryById(tractorBeamEmitterId, out TractorBeamEmitter tractorBeamEmitter))
-            {
-                targetNode = default;
-                return false;
-            }
-
             AABB aabb = new(target, QueryRadius, QueryRadius);
             Fix64 minDistance = QueryRadius;
             Node? callbackTargetNode = default!;
+            EntityGlobalId tractorBeamEmitterGlobalId = tractorBeamEmitter.GlobalId;
 
             _space.QueryAABB(fixture =>
             {
@@ -69,11 +65,11 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     }
 
                     ref Tree tree = ref _entityQueryService.QueryById<Tree>(queryNode.TreeId, out GroupIndex treeGroupIndex);
-                    if (_entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitter == default)
+                    if (_entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitterLocalId == default)
                     { // Target resides within a tractorable tree, so we want to grab the head
                         callbackTargetNode = tree.HeadId == queryNode.Id ? queryNode : _entityQueryService.QueryById<Node>(tree.HeadId);
                     }
-                    else if (queryNode.TreeId == tractorBeamEmitterId && tree.HeadId != queryNode.Id)
+                    else if (queryNode.TreeId.ToGlobalEntityId() == tractorBeamEmitterGlobalId && tree.HeadId != queryNode.Id)
                     { // The node belongs to the current tractor beam emitter's ship and is not the head
                         callbackTargetNode = queryNode;
                     }

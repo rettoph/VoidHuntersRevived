@@ -110,8 +110,8 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 interval: TimeSpan.FromMilliseconds(16),
                 coroutineId: VhId.HashString(nameof(SetupStrategy)),
                 coroutine: SetupStrategy);
-            EntityId shipId = readEntityQueryService.GetId(shipGlobalId.Value);
-            EntityId bridgeId = readTreeService.GetHead(shipId).Id;
+            Assert.True(readEntityQueryService.TryGetEntity<TractorBeamEmitter>(shipGlobalId, out var tractrBeamEmitter));
+            EntityId bridgeId = readTreeService.GetHead(tractrBeamEmitter.EntityId).Id;
 
             // Begin Tests
             VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
@@ -121,20 +121,20 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 bool verified = i % 2 == 0;
 
                 // Query for the available piece
-                bool result = readTractorbeamEmitterService.Query(shipId, FixVector2.Zero, out Node targetNode);
+                bool result = readTractorbeamEmitterService.Query(tractrBeamEmitter, FixVector2.Zero, out Node targetNode);
                 Assert.True(result);
 
                 // "Select" piece, detaching it from the ship
                 simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
                 {
-                    ShipVhId = shipGlobalId.Value,
-                    TargetVhId = targetNode.Id.VhId
+                    TractorBeamEmitterGlobalId = shipGlobalId,
+                    TargetNodeGlobalId = targetNode.Id.ToGlobalEntityId()
                 }, verified).Update(TimeSpan.FromMilliseconds(1), 2);
 
                 // "Deselect" the piece, attaching it back onto the ship
                 simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
                 {
-                    ShipVhId = shipGlobalId.Value,
+                    TractorBeamEmitterGlobalId = shipGlobalId,
                     AttachToSocketVhId = new SocketVhId(bridgeId.VhId, 0)
                 }, verified).Update(TimeSpan.FromMilliseconds(1), 2);
             }
@@ -146,7 +146,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     sourceId: sourceIdProvider.Next(),
                     data: new Input_TractorBeamEmitter_Deselect()
                     {
-                        ShipVhId = shipGlobalId.Value,
+                        TractorBeamEmitterGlobalId = shipGlobalId,
                         AttachToSocketVhId = new SocketVhId(bridgeId.VhId, 0)
                     },
                     verified: true)
@@ -243,14 +243,14 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 interval: TimeSpan.FromMilliseconds(16),
                 coroutineId: VhId.HashString(nameof(SetupStrategy)),
                 coroutine: SetupStrategy);
-            EntityId shipId = readEntityQueryService.GetId(shipGlobalId.Value);
-            EntityId bridgeId = readTreeService.GetHead(shipId).Id;
+            Assert.True(readEntityQueryService.TryGetEntity<TractorBeamEmitter>(shipGlobalId, out var tractrBeamEmitter));
+            EntityId bridgeId = readTreeService.GetHead(tractrBeamEmitter.EntityId).Id;
 
             // Begin Tests
             VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
 
             // Query for the available piece
-            bool result = readTractorbeamEmitterService.Query(shipId, FixVector2.Zero, out Node targetNode);
+            bool result = readTractorbeamEmitterService.Query(tractrBeamEmitter, FixVector2.Zero, out Node targetNode);
             Assert.True(result);
 
 
@@ -258,12 +258,12 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             simulation
                 .Input<IPredictiveStrategy>(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
                 {
-                    ShipVhId = shipGlobalId.Value,
-                    TargetVhId = square2Id.Value
+                    TractorBeamEmitterGlobalId = shipGlobalId,
+                    TargetNodeGlobalId = square2Id
                 }, true).Update(TimeSpan.FromMilliseconds(1), 2)
                 .Input<IPredictiveStrategy>(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
                 {
-                    ShipVhId = shipGlobalId.Value,
+                    TractorBeamEmitterGlobalId = shipGlobalId,
                     AttachToSocketVhId = new SocketVhId(square1Id.Value, 0)
                 }, true).Update(TimeSpan.FromMilliseconds(1), 2);
 
@@ -271,8 +271,8 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             // Select square1 on both strategies
             simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
             {
-                ShipVhId = shipGlobalId.Value,
-                TargetVhId = square1Id.Value
+                TractorBeamEmitterGlobalId = shipGlobalId,
+                TargetNodeGlobalId = square1Id
             }, true).Update(TimeSpan.FromMilliseconds(16), 2);
 
             // Update all simulations - hopefully the fake drop will resync on the predictive strategy

@@ -1,22 +1,13 @@
 ﻿using Svelto.ECS;
+using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
     public readonly struct EntityFilterId<T>(EGID id, FilterContextID? context = null)
         where T : unmanaged, IEntityComponent
     {
-        private static class FilterContext<TFilter, TId>
-        {
-            public static readonly FilterContextID Value = FilterContextID.GetNewContextID();
-        }
-
         public readonly EGID Id = id;
-        public readonly CombinedFilterID CombinedFilterId = new(unchecked((int)id.entityID), context ?? FilterContext<T, EntityId>.Value);
-
-        public static FilterContextID GetFilterContext<TId>()
-        {
-            return FilterContext<T, TId>.Value;
-        }
+        public readonly CombinedFilterID CombinedFilterId = new(unchecked((int)id.entityID), context ?? FilterContextHelper.GetFilterContext<T, EntityId>());
 
         public override bool Equals(object? obj)
         {

@@ -10,15 +10,15 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
         {
             return new Input_TractorBeamEmitter_Select()
             {
-                ShipVhId = reader.GetVhId(),
-                TargetVhId = reader.GetVhId()
+                TractorBeamEmitterGlobalId = reader.GetEntityGlobalId(),
+                TargetNodeGlobalId = reader.GetEntityGlobalId()
             };
         }
 
         public override void Serialize(NetDataWriter writer, in Input_TractorBeamEmitter_Select instance)
         {
-            writer.Put(instance.ShipVhId);
-            writer.Put(instance.TargetVhId);
+            writer.Put(instance.TractorBeamEmitterGlobalId);
+            writer.Put(instance.TargetNodeGlobalId);
         }
     }
 }

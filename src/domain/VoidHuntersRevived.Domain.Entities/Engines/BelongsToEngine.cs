@@ -30,13 +30,13 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<TBelongsTo> belongsTo)
         {
-            if (belongsTo.Value.ParentFilterId == default)
+            if (belongsTo.Component.ParentFilterId == default)
             {
-                _logger.Warning("{0}::{1} - Empty {2}", typeof(BelongsToEngine<TBelongsTo, TParent>).GetFormattedName(), nameof(BelongsToEngine<TBelongsTo, TParent>.OnSpawn), nameof(belongsTo.Value.ParentFilterId));
+                _logger.Warning("{0}::{1} - Empty {2}", typeof(BelongsToEngine<TBelongsTo, TParent>).GetFormattedName(), nameof(BelongsToEngine<TBelongsTo, TParent>.OnSpawn), nameof(belongsTo.Component.ParentFilterId));
                 return;
             }
 
-            _entityQueryService.GetFilter(belongsTo.Value.ParentFilterId).Add(in belongsTo.LocalId, in belongsTo.Index);
+            _entityQueryService.GetFilter(belongsTo.Component.ParentFilterId).Add(in belongsTo.LocalId, in belongsTo.Index);
         }
     }
 }
