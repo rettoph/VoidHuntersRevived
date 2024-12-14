@@ -111,8 +111,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             _logger.Verbose("HardSpawnInstanceEntity - GlobalId = {GlobalId}, Template = {Template}", data.GlobalId, template.Key.Name);
             EntityInitializer initializer = template.HardSpawnInstanceEntity(eventId, data.GlobalId, out localId);
 
-            EntityId id = new(localId.Value, data.GlobalId.Value);
-            data.Initializer.Invoke(_entityService, template, id, ref initializer);
+            InitializingEntity entity = new(in localId, data.GlobalId, ref initializer, in template);
+            data.Initializer.Invoke(_entityService, in entity);
         }
 
         public void Process(VhId eventId, SoftSpawnEntity data)

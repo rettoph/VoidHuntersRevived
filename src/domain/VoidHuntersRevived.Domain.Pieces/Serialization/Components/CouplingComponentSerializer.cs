@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
-        protected override Coupling Read(in DeserializationOptions options, ref EntityReader reader, in EntityId id)
+        protected override Coupling Read(in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
             if (reader.ReadBoolean() == true)
             {

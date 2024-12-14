@@ -1,5 +1,4 @@
 ﻿using Serilog;
-using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
@@ -27,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly Stack<EntityLocalId> _nested = [];
         private bool _serializing;
 
-        public EntityData Serialize(EntityLocalId localId, SerializationOptions options)
+        public Common.Serialization.EntityData Serialize(EntityLocalId localId, SerializationOptions options)
         {
             if (_serializing == true)
             {
@@ -52,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     this.InternalSerialize(ref nestedEntity, options);
                 }
 
-                EntityData result = new(globalId.Value, _data.ToArray(), _indices.ToArray());
+                Common.Serialization.EntityData result = new(globalId.Value, _data.ToArray(), _indices.ToArray());
 
                 return result;
             }
@@ -67,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer)
+        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, Common.Serialization.EntityData data, EntityInitializerDelegate initializer)
         {
             _logger.Verbose("Starting Deserialization - Id = {Id}, OwnerId = {OwnerId}, Seed = {Seed}", data.Id, options.Owner, options.Seed);
 
@@ -80,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return entityId;
         }
 
-        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
+        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, Common.Serialization.EntityData data, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
         {
             EntityId entityId = this.InternalDeserialize(sourceId, data, 0, options, rootInitializer + initializer);
             for (int i = 1; i < data.IndexCount; i++)
@@ -110,7 +109,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityId InternalDeserialize(
             VhId sourceId,
-            EntityData data,
+            Common.Serialization.EntityData data,
             int index,
             DeserializationOptions options,
             EntityInitializerDelegate initializerDelegate)
@@ -122,13 +121,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             _logger.Verbose("Preparing to deserialize - EntityId = {EntityId}, Seed = {Seed}, Index = {Index}, DataId = {DataId}", entityGlobalId.Value, options.Seed.Value, index, data.Id);
 
-            return _entitySpawnService.Spawn(sourceId, entityTemplateKey, entityGlobalId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, entityTemplateKey, entityGlobalId, (IEntityService entities, in InitializingEntity entity) =>
             {
                 EntityReader reader = data.GetReader(options.Seed, index, EntityHeaderSize);
 
-                entityTemplate.DeserializeInstanceEntity(in sourceId, in options, ref reader, ref initializer, in id);
+                entity.Template.DeserializeInstanceEntity(in sourceId, in options, ref reader, in entity);
 
-                initializerDelegate(entities, entityTemplate, id, ref initializer);
+                initializerDelegate(entities, in entity);
             });
         }
     }

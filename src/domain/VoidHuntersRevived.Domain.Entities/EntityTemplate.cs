@@ -132,11 +132,11 @@ namespace VoidHuntersRevived.Domain.Entities
             }
         }
 
-        public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
             foreach (IComponentSerializer serializer in _serializers)
             {
-                serializer.Deserialize(in sourceId, in options, ref reader, ref initializer, in id);
+                serializer.Deserialize(in sourceId, in options, ref reader, in entity);
             }
         }
         #endregion

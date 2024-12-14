@@ -1,5 +1,4 @@
-﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
@@ -20,14 +19,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
 
         private static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, EntityGlobalId globalId, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
         {
-            return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+            return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {
-                initializer.Init(team.TeamMemberComponent);
-                initializer.Init(new Node(id, entities.Query.GetId(treeId.Value)));
+                entity.Initializer.Init(team.TeamMemberComponent);
+                entity.Initializer.Init(new Node(entity.EntityId, entities.Query.GetId(treeId.Value)));
 
                 if (socketVhId != default)
                 {
-                    initializer.Init<Coupling>(new Coupling(
+                    entity.Initializer.Init<Coupling>(new Coupling(
                         socketId: new NodeSocketId(
                             nodeId: entities.Query.GetId(socketVhId.NodeVhId),
                             index: socketVhId.Index))
@@ -40,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
                     {
                         EntityGlobalId childGlobalId = HashBuilder<Blueprint, EntityGlobalId, VhId, int, int>.Instance.Calculate(
                             treeId,
-                            id.VhId,
+                            entity.EntityId.VhId,
                             i,
                             j).ToGlobalEntityId();
 
@@ -50,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
                             team,
                             childGlobalId,
                             blueprintPiece.Children[i][j],
-                            new SocketVhId(id.VhId, (byte)i));
+                            new SocketVhId(entity.EntityId.VhId, (byte)i));
                     }
                 }
             });

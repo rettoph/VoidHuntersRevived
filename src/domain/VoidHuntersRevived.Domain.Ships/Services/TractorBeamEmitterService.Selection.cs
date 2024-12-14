@@ -127,15 +127,15 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     team: _teamService.GetDefaultTeam(),
                     treeTemplateKey: Resources.EntityTemplates.Ship.ChainEntityTemplate,
                     nodes: data.TargetData,
-                    initializer: (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+                    initializer: (IEntityService entities, in InitializingEntity entity) =>
                     {
                         if (!entities.Query.TryGetId(data.TractorBeamEmitterVhId, out EntityId tractorBeamEmitterId))
                         {
                             throw new ArgumentException($"Unable to locate {nameof(TractorBeamEmitter)} {data.TractorBeamEmitterVhId.Value}");
                         }
 
-                        initializer.Init<Location>(data.Location);
-                        initializer.Init<Tractorable>(new Tractorable()
+                        entity.Initializer.Init<Location>(data.Location);
+                        entity.Initializer.Init<Tractorable>(new Tractorable()
                         {
                             TractorBeamEmitter = tractorBeamEmitterId
                         });
@@ -164,10 +164,10 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         team: _teamService.GetDefaultTeam(),
                         treeTemplateKey: Resources.EntityTemplates.Ship.ChainEntityTemplate,
                         nodes: data.TargetData,
-                        initializer: (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+                        initializer: (IEntityService entities, in InitializingEntity entity) =>
                         {
-                            initializer.Init<Location>(data.Location);
-                            initializer.Init<Tractorable>(new Tractorable()
+                            entity.Initializer.Init<Location>(data.Location);
+                            entity.Initializer.Init<Tractorable>(new Tractorable()
                             {
                                 TractorBeamEmitter = default
                             });

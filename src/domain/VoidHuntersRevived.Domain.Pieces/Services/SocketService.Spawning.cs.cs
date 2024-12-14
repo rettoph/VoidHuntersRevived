@@ -1,9 +1,7 @@
-﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
-using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
@@ -20,21 +18,21 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             SocketVhId socketVhId = targetNodeSocket.Id.VhId;
             VhId treeId = targetNodeSocket.Node.TreeId.VhId;
 
-            return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, globalId, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {
-                initializer.Init(teamMember);
-                initializer.Init(new Node(id, entities.Query.GetId(treeId)));
-                initializer.Init<Coupling>(new Coupling(
+                entity.Initializer.Init(teamMember);
+                entity.Initializer.Init(new Node(entity.EntityId, entities.Query.GetId(treeId)));
+                entity.Initializer.Init<Coupling>(new Coupling(
                     socketId: new NodeSocketId(
                         nodeId: entities.Query.GetId(socketVhId.NodeVhId),
                         index: socketVhId.Index))
                 );
 
-                initializerDelegate?.Invoke(entities, entityTemplate, id, ref initializer);
+                initializerDelegate?.Invoke(entities, in entity);
             });
         }
 
-        public EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, Entities.Common.Serialization.EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
         {
             TeamMember teamMember = _entityQueryService.QueryById<TeamMember>(nodeSocket.Node.TreeId);
             SocketVhId socketVhId = nodeSocket.Id.VhId;
@@ -47,19 +45,19 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     Owner = nodeSocket.Node.TreeId.VhId
                 },
                 data: nodes,
-                initializer: (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+                initializer: (IEntityService entities, in InitializingEntity entity) =>
                 {
-                    initializer.Init(teamMember);
+                    entity.Initializer.Init(teamMember);
                 },
-                rootInitializer: (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+                rootInitializer: (IEntityService entities, in InitializingEntity entity) =>
                 {
-                    initializer.Init<Coupling>(new Coupling(
+                    entity.Initializer.Init<Coupling>(new Coupling(
                         socketId: new NodeSocketId(
                             nodeId: entities.Query.GetId(socketVhId.NodeVhId),
                             index: socketVhId.Index))
                         );
 
-                    initializerDelegate?.Invoke(entities, entityTemplate, id, ref initializer);
+                    initializerDelegate?.Invoke(entities, in entity);
                 });
 
             return nodeId;

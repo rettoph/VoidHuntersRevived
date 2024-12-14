@@ -12,13 +12,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
-        protected override Node Read(in DeserializationOptions options, ref EntityReader reader, in EntityId id)
+        protected override Node Read(in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
             EntityId treeId = _entityQueryService.GetId(options.Owner);
 
-            _logger.Verbose("Deserializing Node - Id = {Id}, TreeId = {TreeId}, TreeLocalId = {TreeLocalId}", id.VhId, treeId.VhId, treeId.ToLocalEntityId());
+            _logger.Verbose("Deserializing Node - Id = {Id}, TreeId = {TreeId}, TreeLocalId = {TreeLocalId}", entity.GlobalId, treeId.VhId, treeId.ToLocalEntityId());
 
-            return new Node(id, treeId);
+            return new Node(entity.EntityId, treeId);
         }
 
         protected override void Write(ref EntityWriter writer, in Entity entity, in Node instance, in SerializationOptions options)

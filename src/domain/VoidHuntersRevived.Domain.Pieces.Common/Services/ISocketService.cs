@@ -18,6 +18,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Services
         bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket);
 
         EntityId Spawn(VhId sourceId, NodeSocket targetSocketNode, EntityGlobalId globalId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializer = null);
-        EntityId Spawn(VhId sourceId, NodeSocket targetSocketNode, EntityData nodes, EntityInitializerDelegate? initializer = null);
+        EntityId Spawn(VhId sourceId, NodeSocket targetSocketNode, Entities.Common.Serialization.EntityData nodes, EntityInitializerDelegate? initializer = null);
     }
 }

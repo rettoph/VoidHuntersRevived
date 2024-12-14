@@ -43,13 +43,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
             }
         }
 
-        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
             // No deserialization needed
             // base.Deserialize(sourceId, options, reader, ref initializer, id);
         }
 
-        protected override Sockets Read(in DeserializationOptions options, ref EntityReader reader, in EntityId id)
+        protected override Sockets Read(in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
             throw new NotImplementedException();
         }

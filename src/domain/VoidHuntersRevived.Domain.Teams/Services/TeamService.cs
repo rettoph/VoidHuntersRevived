@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Svelto.ECS;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
@@ -55,13 +54,13 @@ namespace VoidHuntersRevived.Domain.Teams.Services
             }
         }
 
-        private void TeamInstanceInitializer(IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer)
+        private void TeamInstanceInitializer(IEntityService entities, in InitializingEntity entity)
         {
-            Team importedTeam = initializer.Get<Team>();
-            Team runtimeTeam = new(id, importedTeam.Name);
-            initializer.Init<Team>(runtimeTeam);
+            Team importedTeam = entity.Initializer.Get<Team>();
+            Team runtimeTeam = new(entity.EntityId, importedTeam.Name);
+            entity.Initializer.Init<Team>(runtimeTeam);
 
-            if (initializer.Has<DefaultTeam>())
+            if (entity.Initializer.Has<DefaultTeam>())
             {
                 _defaultTeamComponent = runtimeTeam;
             }
