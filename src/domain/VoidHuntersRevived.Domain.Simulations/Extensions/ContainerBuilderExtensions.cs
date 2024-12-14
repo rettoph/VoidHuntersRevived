@@ -27,7 +27,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainSimulationServices), builder =>
             {
                 builder.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
-                builder.RegisterType<EngineService>().As<IEngineService>().InstancePerLifetimeScope();
 
                 builder.RegisterType<TickBuffer>().InstancePerLifetimeScope();
 

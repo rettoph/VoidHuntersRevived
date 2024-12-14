@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.Simulation = simulation;
 
-            this.Engines.Initialize(this);
+            this.Engines.Initialize();
 
             EventPublisher.PopulatePublishers(this.Engines, _loggerService.Value, _publishers);
 

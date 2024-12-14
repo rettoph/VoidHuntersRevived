@@ -1,7 +1,7 @@
 ﻿using Guppy.Game.Common;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common
 {
