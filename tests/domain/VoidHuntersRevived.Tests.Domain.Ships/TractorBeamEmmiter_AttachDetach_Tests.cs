@@ -110,8 +110,8 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 interval: TimeSpan.FromMilliseconds(16),
                 coroutineId: VhId.HashString(nameof(SetupStrategy)),
                 coroutine: SetupStrategy);
-            Assert.True(readEntityQueryService.TryGetEntity<TractorBeamEmitter>(shipGlobalId, out var tractrBeamEmitter));
-            EntityId bridgeId = readTreeService.GetHead(tractrBeamEmitter.EntityId.ToLocalEntityId()).Id;
+            EntityLocalId shipLocalId = readEntityQueryService.GetLocalId(shipGlobalId);
+            EntityId bridgeId = readTreeService.GetHead(shipLocalId).Id;
 
             // Begin Tests
             VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
@@ -121,7 +121,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 bool verified = i % 2 == 0;
 
                 // Query for the available piece
-                bool result = readTractorbeamEmitterService.Query(shipGlobalId, FixVector2.Zero, out Node targetNode);
+                bool result = readTractorbeamEmitterService.Query(shipLocalId, FixVector2.Zero, out Node targetNode);
                 Assert.True(result);
 
                 // "Select" piece, detaching it from the ship
@@ -243,14 +243,14 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 interval: TimeSpan.FromMilliseconds(16),
                 coroutineId: VhId.HashString(nameof(SetupStrategy)),
                 coroutine: SetupStrategy);
-            Assert.True(readEntityQueryService.TryGetEntity<TractorBeamEmitter>(shipGlobalId, out var tractrBeamEmitter));
-            EntityId bridgeId = readTreeService.GetHead(tractrBeamEmitter.EntityId.ToLocalEntityId()).Id;
+            EntityLocalId shipLocalId = readEntityQueryService.GetLocalId(shipGlobalId);
+            EntityId bridgeId = readTreeService.GetHead(shipLocalId).Id;
 
             // Begin Tests
             VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
 
             // Query for the available piece
-            bool result = readTractorbeamEmitterService.Query(shipGlobalId, FixVector2.Zero, out Node targetNode);
+            bool result = readTractorbeamEmitterService.Query(shipLocalId, FixVector2.Zero, out Node targetNode);
             Assert.True(result);
 
 

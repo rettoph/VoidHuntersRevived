@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Services
     public interface ITractorBeamEmitterService
     {
         ref EntityFilterCollection GetTractorableFilter(EntityLocalId tractorBeamEmitterLocalId);
-        bool Query(EntityGlobalId tractorBeamEmitterGlobalId, FixVector2 target, out Node targetNode);
+        bool Query(EntityLocalId tractorBeamEmitterLocalId, FixVector2 target, out Node targetNode);
 
         void Select(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, EntityGlobalId nodeGlobalId);
 

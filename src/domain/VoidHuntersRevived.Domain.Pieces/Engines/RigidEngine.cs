@@ -64,17 +64,17 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             Node node = _entityQueryService.QueryByGroupIndex<Node>(rigid.GroupIndex);
 
-            if (_entityQueryService.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
+            if (_entityQueryService.TryQueryByLocalId<Enabled>(node.TreeLocalId, out Enabled enabled) == true)
             {
                 if (enabled)
                 {
-                    IBody body = _space.GetBody(node.TreeId.ToLocalEntityId());
+                    IBody body = _space.GetBody(node.TreeLocalId);
                     this.CreateFixtures(body, node, rigid.Component);
                 }
             }
             else
             {
-                _logger.Warning("Unable to create fixtures for node {NodeId} on tree {TreeId}.", rigid.LocalId, node.TreeId.VhId);
+                _logger.Warning("Unable to create fixtures for node {NodeLocalId} on tree {TreeLocalId}.", rigid.LocalId, node.TreeLocalId);
             }
         }
 
@@ -83,24 +83,24 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             Node node = _entityQueryService.QueryByGroupIndex<Node>(rigid.GroupIndex);
 
-            if (_entityQueryService.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
+            if (_entityQueryService.TryQueryByLocalId<Enabled>(node.TreeLocalId, out Enabled enabled) == true)
             {
                 if (enabled)
                 {
-                    if (_space.TryGetBody(node.TreeId.ToLocalEntityId(), out IBody? body) == true)
+                    if (_space.TryGetBody(node.TreeLocalId, out IBody? body) == true)
                     {
                         this.DestroyFixtures(body, node, rigid.Component);
                     }
                     else
                     {
-                        _logger.Warning("Unable to destroy fixtures for node {NodeId} on tree {TreeId}. Body not found.", rigid.LocalId, node.TreeId.VhId);
+                        _logger.Warning("Unable to destroy fixtures for node {NodeLocalId} on tree {TreeLocalId}. Body not found.", rigid.LocalId, node.TreeLocalId);
                     }
                 }
 
             }
             else
             {
-                _logger.Warning("Unable to destroy fixtures for node {NodeId} on tree {TreeId}. Tree not found.", rigid.LocalId, node.TreeId.VhId);
+                _logger.Warning("Unable to destroy fixtures for node {NodeLocalId} on tree {TreeLocalId}. Tree not found.", rigid.LocalId, node.TreeLocalId);
             }
         }
 

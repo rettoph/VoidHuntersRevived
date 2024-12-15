@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 if (message.Value)
                 {
-                    if (_readTractorBeamEmitterService.Query(tractorBeamEmitterGlobalId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
+                    if (_readTractorBeamEmitterService.Query(tractorBeamEmitterLocalId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
                     {
                         return;
                     }

@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
-    public struct Node(EntityId id, EntityId treeId) : IEntityComponent, IBelongsTo<Tree, Node>
+    public struct Node(EntityId id, EntityLocalId treeLocalId) : IEntityComponent, IBelongsTo<Tree, Node>
     {
         private bool _dirtyTransformation = true;
         private bool _dirtyXnaTransformation = true;
@@ -19,9 +19,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
         private Matrix _xnaTransformation;
 
         public readonly EntityId Id = id;
-        public readonly EntityId TreeId = treeId;
+        public readonly EntityLocalId TreeLocalId = treeLocalId;
 
-        public readonly EntityFilterId<Node> TreeFilterId => new(this.TreeId.EGID);
+        public readonly EntityFilterId<Node> TreeFilterId => new(this.TreeLocalId.Value);
         EntityFilterId<Node> IBelongsTo<Tree, Node>.ParentFilterId => this.TreeFilterId;
 
         public Location LocalLocation => _localLocation;

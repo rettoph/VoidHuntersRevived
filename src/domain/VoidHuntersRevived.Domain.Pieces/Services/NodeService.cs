@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public ref Tree GetTree(in Node node)
         {
-            return ref _entityQueryService.QueryById<Tree>(node.TreeId);
+            return ref _entityQueryService.QueryByLocalId<Tree>(node.TreeLocalId);
         }
 
         public bool IsHead(in Node node)

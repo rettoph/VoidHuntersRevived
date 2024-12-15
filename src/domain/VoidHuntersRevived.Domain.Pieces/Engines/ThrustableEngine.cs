@@ -6,7 +6,6 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -36,12 +35,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             Node node = _entityQueryService.QueryByGroupIndex<Node>(thrustable.GroupIndex);
 
-            if (_entityQueryService.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
+            if (_entityQueryService.HasAny<Helm>(node.TreeLocalId.Value.groupID) == false)
             {
                 return;
             }
 
-            ref var filter = ref _entityQueryService.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Thrustable>(node.TreeLocalId, Helm.ThrustableFilterContextId);
             filter.Add(thrustable.LocalId, thrustable.Index);
         }
 
@@ -50,18 +49,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             Node node = _entityQueryService.QueryByGroupIndex<Node>(thrustable.GroupIndex);
 
-            if (_entityQueryService.HasAny<Helm>(node.TreeId.EGID.groupID) == false)
+            if (_entityQueryService.HasAny<Helm>(node.TreeLocalId.Value.groupID) == false)
             {
                 return;
             }
 
-            ref var filter = ref _entityQueryService.GetFilter<Thrustable>(node.TreeId, Helm.ThrustableFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Thrustable>(node.TreeLocalId, Helm.ThrustableFilterContextId);
             filter.Remove(thrustable.LocalId);
         }
 
         public void Process(VhId eventId, Tree_Clean data)
         {
-            if (!_entityQueryService.TryGetLocalId(data.TreeId.ToGlobalEntityId(), out EntityLocalId treeLocalId))
+            if (!_entityQueryService.TryGetLocalId(data.TreeGlobalId, out EntityLocalId treeLocalId))
             {
                 return;
             }

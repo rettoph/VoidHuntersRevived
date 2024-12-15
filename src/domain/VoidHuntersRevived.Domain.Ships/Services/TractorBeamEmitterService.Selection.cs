@@ -37,9 +37,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 return;
             }
 
-            if (_entityQueryService.IsSpawned(node.TreeId) == false)
+            if (_entityQueryService.IsSpawned(node.TreeLocalId) == false)
             {
-                _logger.Warning("Node {NodeGlobalId} Tree {TreeId} does not exist", nodeGlobalId, node.TreeId.VhId);
+                _logger.Warning("Node {NodeGlobalId} Tree {TreeLocalId} does not exist", nodeGlobalId, node.TreeLocalId);
                 return;
             }
 
@@ -56,8 +56,8 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
             if (_nodeService.IsHead(in node))
             {
-                _logger.Verbose("Despawning Node {NodeGlobalId} Tree {TreeId}", nodeGlobalId, node.TreeId.VhId);
-                _entitySpawnService.Despawn(sourceId, node.TreeId);
+                _logger.Verbose("Despawning Node {NodeGlobalId} Tree {TreeLocalId}", nodeGlobalId, node.TreeLocalId);
+                _entitySpawnService.Despawn(sourceId, node.TreeLocalId);
             }
             else
             {

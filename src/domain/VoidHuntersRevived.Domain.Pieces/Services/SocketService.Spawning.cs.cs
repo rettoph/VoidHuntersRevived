@@ -14,14 +14,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         public EntityId Spawn(VhId sourceId, NodeSocket targetNodeSocket, EntityGlobalId globalId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
-            TeamMember teamMember = _entityQueryService.QueryById<TeamMember>(targetNodeSocket.Node.TreeId);
+            TeamMember teamMember = _entityQueryService.QueryByLocalId<TeamMember>(targetNodeSocket.Node.TreeLocalId);
             SocketVhId socketVhId = targetNodeSocket.Id.VhId;
-            VhId treeId = targetNodeSocket.Node.TreeId.VhId;
+            EntityLocalId treeLocalId = targetNodeSocket.Node.TreeLocalId;
 
             return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {
                 entity.Initializer.Init(teamMember);
-                entity.Initializer.Init(new Node(entity.EntityId, entities.Query.GetId(treeId)));
+                entity.Initializer.Init(new Node(entity.EntityId, treeLocalId));
                 entity.Initializer.Init<Coupling>(new Coupling(
                     socketId: new NodeSocketId(
                         nodeId: entities.Query.GetId(socketVhId.NodeVhId),
@@ -34,15 +34,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, Entities.Common.Serialization.EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
         {
-            TeamMember teamMember = _entityQueryService.QueryById<TeamMember>(nodeSocket.Node.TreeId);
+            TeamMember teamMember = _entityQueryService.QueryByLocalId<TeamMember>(nodeSocket.Node.TreeLocalId);
             SocketVhId socketVhId = nodeSocket.Id.VhId;
+            EntityGlobalId treeGlobalId = _entityQueryService.GetGlobalId(nodeSocket.Node.TreeLocalId);
 
             EntityId nodeId = _entitySerializationService.Deserialize(
                 sourceId: sourceId,
                 options: new DeserializationOptions
                 {
                     Seed = HashBuilder<SocketService, VhId, SocketVhId>.Instance.Calculate(sourceId, socketVhId),
-                    Owner = nodeSocket.Node.TreeId.VhId
+                    Owner = treeGlobalId.Value
                 },
                 data: nodes,
                 initializer: (IEntityService entities, in InitializingEntity entity) =>

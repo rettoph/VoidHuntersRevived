@@ -9,7 +9,6 @@ using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
@@ -34,34 +33,34 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;
-        private readonly DictionaryQueue<EntityId, VhId> _dirtyTrees = new();
+        private readonly DictionaryQueue<EntityLocalId, VhId> _dirtyTrees = new();
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node> node)
         {
-            _logger.Verbose("OnSpawn - NodeId = {NodeId}, TreeId = {TreeId}, LocalTreeId = {LocalTreeId}", node.GlobalId, node.Component.TreeId.VhId, node.Component.TreeId.ToLocalEntityId());
+            _logger.Verbose("OnSpawn - NodeGlobalId = {NodeGlobalId}, LocalTreeId = {LocalTreeId}", node.GlobalId, node.Component.TreeLocalId);
 
-            ref var filter = ref _entityQueryService.GetFilter<Node>(node.Component.TreeId, Tree.NodeFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(node.Component.TreeLocalId, Tree.NodeFilterContextId);
             filter.Add(node.LocalId, node.Index);
 
-            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.Component.TreeId, out bool alreadyDirty);
+            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.Component.TreeLocalId, out bool alreadyDirty);
             dirtyEventId = alreadyDirty
                 ? HashBuilder<IReactOnAddEx<Node>, VhId, EntityGlobalId>.Instance.Calculate(dirtyEventId, node.GlobalId)
                 : HashBuilder<IReactOnAddEx<Node>, EntityGlobalId>.Instance.Calculate(node.GlobalId);
 
-            ref Location treeLocation = ref _entityQueryService.QueryById<Location>(node.Component.TreeId);
+            ref Location treeLocation = ref _entityQueryService.QueryByLocalId<Location>(node.Component.TreeLocalId);
             this.SetLocalTransformation(ref node, in treeLocation);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node> node)
         {
-            _logger.Verbose("OnDespawn - NodeId = {NodeId}, TreeId = {TreeId}, LocalTreeId = {LocalTreeId}", node.GlobalId, node.Component.TreeId.VhId, node.Component.TreeId.ToLocalEntityId());
+            _logger.Verbose("OnDespawn - NodeId = {NodeId}, TreeLocalId = {TreeLocalId}", node.GlobalId, node.Component.TreeLocalId);
 
-            ref var filter = ref _entityQueryService.GetFilter<Node>(node.Component.TreeId, Tree.NodeFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(node.Component.TreeLocalId, Tree.NodeFilterContextId);
             filter.Remove(node.LocalId);
 
-            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.Component.TreeId, out bool alreadyDirty);
+            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(node.Component.TreeLocalId, out bool alreadyDirty);
             dirtyEventId = alreadyDirty
                 ? HashBuilder<IReactOnRemoveEx<Node>, VhId, EntityGlobalId>.Instance.Calculate(dirtyEventId, node.GlobalId)
                 : HashBuilder<IReactOnRemoveEx<Node>, EntityGlobalId>.Instance.Calculate(node.GlobalId);
@@ -70,14 +69,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            while (_dirtyTrees.TryDequeue(out EntityId dirtyTreeId, out VhId dirtyTreeEventId))
+            while (_dirtyTrees.TryDequeue(out EntityLocalId dirtyTreeLocalId, out VhId dirtyTreeEventId))
             {
-                if (_entityQueryService.IsSpawned(dirtyTreeId))
+                if (_entityQueryService.IsSpawned(dirtyTreeLocalId))
                 {
+                    EntityGlobalId dirtyTreGlobalId = _entityQueryService.GetGlobalId(dirtyTreeLocalId);
+
                     this.Strategy.Publish(dirtyTreeEventId, new Tree_Clean()
                     {
                         IsPrivate = true,
-                        TreeId = dirtyTreeId.VhId
+                        TreeGlobalId = dirtyTreGlobalId
                     });
                 }
             }
