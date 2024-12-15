@@ -58,6 +58,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         bool TryGetEntity<T>(EntityLocalId localId, out Entity<T> entity)
             where T : unmanaged, IEntityComponent;
 
+        bool TryGetEntity(ExclusiveGroupStruct groupId, uint index, out Entity entity);
+        bool TryGetEntity<T>(ExclusiveGroupStruct groupId, uint index, out Entity<T> entity)
+            where T : unmanaged, IEntityComponent;
+
         public bool TryQueryById<T>(EntityId id, out T value)
             where T : unmanaged, IEntityComponent
                 => this.TryQueryByEGID(id.EGID, out value);
@@ -233,6 +237,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
             => this.IsSpawned(localId.Value);
         bool IsSpawned(EntityLocalId localId, out GroupIndex groupIndex)
             => this.IsSpawned(localId.Value, out groupIndex);
+        bool IsSpawned(EntityGlobalId globalId)
+            => this.IsSpawned(this.GetLocalId(globalId).Value);
+        bool IsSpawned(EntityGlobalId globalId, out GroupIndex groupIndex)
+            => this.IsSpawned(this.GetLocalId(globalId).Value, out groupIndex);
         bool IsSpawned(EntityId id)
             => this.IsSpawned(id.EGID);
         bool IsSpawned(EntityId id, out GroupIndex groupIndex)
@@ -245,6 +253,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
             => this.IsDespawned(localId.Value);
         bool IsDespawned(EntityLocalId localId, out GroupIndex groupIndex)
             => this.IsDespawned(localId.Value, out groupIndex);
+        bool IsDespawned(EntityGlobalId globalId)
+            => this.IsDespawned(this.GetLocalId(globalId).Value);
+        bool IsDespawned(EntityGlobalId globalId, out GroupIndex groupIndex)
+            => this.IsDespawned(this.GetLocalId(globalId).Value, out groupIndex);
         bool IsDespawned(EntityId id)
             => this.IsDespawned(id.EGID);
         bool IsDespawned(EntityId id, out GroupIndex groupIndex)

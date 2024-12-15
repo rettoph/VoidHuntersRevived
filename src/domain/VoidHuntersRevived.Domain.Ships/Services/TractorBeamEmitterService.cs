@@ -42,12 +42,11 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             return ref _entityQueryService.GetFilter<Tractorable, TractorBeamEmitter>(tractorBeamEmitterLocalId);
         }
 
-        public bool Query(in Entity<TractorBeamEmitter> tractorBeamEmitter, FixVector2 target, out Node targetNode)
+        public bool Query(EntityGlobalId tractorBeamEmitterGlobalId, FixVector2 target, out Node targetNode)
         {
             AABB aabb = new(target, QueryRadius, QueryRadius);
             Fix64 minDistance = QueryRadius;
             Node? callbackTargetNode = default!;
-            EntityGlobalId tractorBeamEmitterGlobalId = tractorBeamEmitter.GlobalId;
 
             _space.QueryAABB(fixture =>
             {

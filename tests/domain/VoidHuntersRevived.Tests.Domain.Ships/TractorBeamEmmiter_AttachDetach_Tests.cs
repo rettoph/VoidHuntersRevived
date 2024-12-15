@@ -121,7 +121,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 bool verified = i % 2 == 0;
 
                 // Query for the available piece
-                bool result = readTractorbeamEmitterService.Query(tractrBeamEmitter, FixVector2.Zero, out Node targetNode);
+                bool result = readTractorbeamEmitterService.Query(shipGlobalId, FixVector2.Zero, out Node targetNode);
                 Assert.True(result);
 
                 // "Select" piece, detaching it from the ship
@@ -250,7 +250,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
 
             // Query for the available piece
-            bool result = readTractorbeamEmitterService.Query(tractrBeamEmitter, FixVector2.Zero, out Node targetNode);
+            bool result = readTractorbeamEmitterService.Query(shipGlobalId, FixVector2.Zero, out Node targetNode);
             Assert.True(result);
 
 

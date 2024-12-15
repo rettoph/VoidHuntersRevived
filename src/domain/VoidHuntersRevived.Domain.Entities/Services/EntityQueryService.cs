@@ -59,16 +59,27 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TryGetEntity<T>(EntityGlobalId globalId, out Entity<T> entity)
             where T : unmanaged, IEntityComponent
         {
-            if (this.TryGetLocalId(globalId, out EntityLocalId localId) == false)
+            try
             {
+                if (this.TryGetLocalId(globalId, out EntityLocalId localId) == false)
+                {
+                    entity = default;
+                    return false;
+                }
+
+                ref T component = ref this.QueryByEGID<T>(localId.Value, out GroupIndex groupIndex);
+
+                entity = new Entity<T>(groupIndex.Index, localId, globalId, ref component);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error getting entity. EntityGlobalId = {EntityGlobalId}, Type = {Type}", globalId, typeof(T));
+
                 entity = default;
                 return false;
             }
-
-            ref T component = ref this.QueryByEGID<T>(localId.Value, out GroupIndex groupIndex);
-
-            entity = new Entity<T>(groupIndex.Index, localId, globalId, ref component);
-            return true;
         }
 
         public bool TryGetEntity(EntityLocalId localId, out Entity entity)
@@ -81,11 +92,46 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TryGetEntity<T>(EntityLocalId localId, out Entity<T> entity)
             where T : unmanaged, IEntityComponent
         {
-            EntityGlobalId globalId = this.QueryByEGID<EntityGlobalId>(localId.Value, out GroupIndex groupIndex);
-            ref T component = ref this.QueryByGroupIndex<T>(groupIndex);
+            try
+            {
+                EntityGlobalId globalId = this.QueryByEGID<EntityGlobalId>(localId.Value, out GroupIndex groupIndex);
+                ref T component = ref this.QueryByGroupIndex<T>(groupIndex);
 
-            entity = new Entity<T>(groupIndex.Index, localId, globalId, ref component);
+                entity = new Entity<T>(groupIndex.Index, localId, globalId, ref component);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error getting entity. EntityLocalId = {EntityLocalId}, Type = {Type}", localId, typeof(T));
+
+                entity = default;
+                return false;
+            }
+        }
+
+        public bool TryGetEntity(ExclusiveGroupStruct groupId, uint index, out Entity entity)
+        {
+            var (localIds, globalIds, _) = this.QueryEntities<EntityLocalId, EntityGlobalId>(groupId);
+
+            entity = new Entity(index, localIds[index], globalIds[index]);
             return true;
+        }
+        public bool TryGetEntity<T>(ExclusiveGroupStruct groupId, uint index, out Entity<T> entity)
+            where T : unmanaged, IEntityComponent
+        {
+            try
+            {
+                var (localIds, globalIds, components, _) = this.QueryEntities<EntityLocalId, EntityGlobalId, T>(groupId);
+                entity = new Entity<T>(index, localIds[index], globalIds[index], ref components[index]);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error getting entity. ExclusiveGroupStruct = {ExclusiveGroupStruct}, Index = {Index}, Type = {Type}", groupId, index, typeof(T));
+
+                entity = default;
+                return false;
+            }
         }
 
         public EntityId GetId(VhId vhid)

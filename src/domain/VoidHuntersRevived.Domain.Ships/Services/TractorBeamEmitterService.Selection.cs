@@ -23,47 +23,58 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         IEventEngine<TractorBeamEmitter_Select>,
         IEventEngine<TractorBeamEmitter_Deselect>
     {
-        public void Select(VhId sourceId, in Entity<TractorBeamEmitter> tractorBeamEmitter, in Entity<Node> node)
+        public void Select(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, EntityGlobalId nodeGlobalId)
         {
-            if (_entityQueryService.IsSpawned(node.GroupIndex) == false)
+            if (_entityQueryService.IsSpawned(nodeGlobalId, out GroupIndex nodeGroupIndex) == false)
             {
-                _logger.Warning("Node {NodeId} does not exist", node.LocalId);
+                _logger.Warning("Node {NodeGlobalId} does not exist", nodeGlobalId);
                 return;
             }
 
-            if (_entityQueryService.IsSpawned(node.Component.TreeId) == false)
+            if (_entityQueryService.TryQueryByGroupIndex<Node>(nodeGroupIndex, out Node node) == false)
             {
-                _logger.Warning("Node {NodeId} Tree {TreeId} does not exist", node.LocalId, node.Component.TreeId.VhId);
+                _logger.Warning("Node {NodeGlobalId} is not a valid Node", nodeGlobalId);
                 return;
             }
 
-            _logger.Verbose("Selecting {NodeId} with TractorBeamEmitter {TractorBeamEmitterId}", node.LocalId, tractorBeamEmitter.LocalId);
+            if (_entityQueryService.IsSpawned(node.TreeId) == false)
+            {
+                _logger.Warning("Node {NodeGlobalId} Tree {TreeId} does not exist", nodeGlobalId, node.TreeId.VhId);
+                return;
+            }
+
+            _logger.Verbose("Selecting {NodeGlobalId} with TractorBeamEmitter {TractorBeamEmitterGlobalId}", nodeGlobalId, tractorBeamEmitterGlobalId);
             this.Strategy.Publish(
                 sourceId: NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId),
                 data: new TractorBeamEmitter_Select()
                 {
-                    TractorBeamEmitterGlobalId = tractorBeamEmitter.GlobalId,
-                    TargetData = _entitySerializationService.Serialize(node.LocalId, SerializationOptions.Default),
-                    Location = node.Component.Transformation.ToLocation()
+                    TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
+                    TargetData = _entitySerializationService.Serialize(nodeGroupIndex.GroupID, nodeGroupIndex.Index, SerializationOptions.Default),
+                    Location = node.Transformation.ToLocation()
                 });
 
 
-            if (_nodeService.IsHead(in node.Component))
+            if (_nodeService.IsHead(in node))
             {
-                _logger.Verbose("Despawning Node {NodeVhId} Tree {TreeId}", node.LocalId, node.Component.TreeId.VhId);
-                _entitySpawnService.Despawn(sourceId, node.Component.TreeId);
+                _logger.Verbose("Despawning Node {NodeGlobalId} Tree {TreeId}", nodeGlobalId, node.TreeId.VhId);
+                _entitySpawnService.Despawn(sourceId, node.TreeId);
             }
             else
             {
-                _logger.Verbose("Despawning Node {NodeVhId}", node.LocalId);
-                _entitySpawnService.Despawn(sourceId, _entityQueryService.GetGlobalId(node.LocalId));
+                _logger.Verbose("Despawning Node {NodeGlobalId}", nodeGlobalId);
+                _entitySpawnService.Despawn(sourceId, nodeGlobalId);
             }
         }
 
         private readonly Queue<(EntityId id, EntityId headId, Location location)> _deselecteds = new();
-        public void Deselect(VhId sourceId, in Entity<TractorBeamEmitter> tractorBeamEmitter, SocketVhId? attachToSocketVhId)
+        public void Deselect(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, SocketVhId? attachToSocketVhId)
         {
-            ref var filter = ref this.GetTractorableFilter(tractorBeamEmitter.LocalId);
+            if (_entityQueryService.TryGetLocalId(tractorBeamEmitterGlobalId, out EntityLocalId tracorBeamEmitterLocalId) == false)
+            {
+                throw new NotImplementedException();
+            }
+
+            ref var filter = ref this.GetTractorableFilter(tracorBeamEmitterLocalId);
             foreach (var (indices, groupId) in filter)
             {
                 var (entityIds, statuses, trees, locations, _) = _entityQueryService.QueryEntities<EntityId, EntityStatus, Tree, Location>(groupId);
@@ -88,13 +99,13 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             VhId nextSourceId = NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId);
             while (_deselecteds.TryDequeue(out (EntityId id, EntityId headId, Location location) deselected))
             {
-                _logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterId}", deselected.id.VhId.Value, tractorBeamEmitter.GlobalId);
+                _logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterGlobalId}", deselected.id.VhId.Value, tractorBeamEmitterGlobalId);
                 this.Strategy.Publish(new EventDto()
                 {
                     SourceId = nextSourceId,
                     Data = new TractorBeamEmitter_Deselect()
                     {
-                        TractorBeamEmitterGlobalId = tractorBeamEmitter.GlobalId,
+                        TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
                         TargetData = _entitySerializationService.Serialize(deselected.headId.ToLocalEntityId(), SerializationOptions.Default),
                         Location = deselected.location,
                         AttachToSocketVhId = attachToSocketVhId

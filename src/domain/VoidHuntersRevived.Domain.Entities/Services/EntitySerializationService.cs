@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
@@ -26,47 +27,27 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly Stack<EntityLocalId> _nested = [];
         private bool _serializing;
 
-        public Common.Serialization.EntityData Serialize(EntityLocalId localId, SerializationOptions options)
+        public EntityData Serialize(EntityLocalId localId, SerializationOptions options)
         {
-            if (_serializing == true)
+            if (_entityQueryService.TryGetEntity(localId, out Entity entity) == false)
             {
                 throw new NotImplementedException();
             }
 
-            _logger.Verbose("Starting Serialization - LocalId = {LocalId}", localId);
-
-
-            try
-            {
-                _serializing = true;
-
-                EntityGlobalId globalId = _entityQueryService.QueryByLocalId<EntityGlobalId>(localId, out GroupIndex groupIndex);
-                Entity entity = new(groupIndex.Index, localId, globalId);
-                this.InternalSerialize(ref entity, options);
-
-                while (_nested.TryPop(out EntityLocalId nestedLocalId))
-                {
-                    EntityGlobalId nestedGlobalId = _entityQueryService.QueryByLocalId<EntityGlobalId>(nestedLocalId, out GroupIndex nestedGroupIndex);
-                    Entity nestedEntity = new(nestedGroupIndex.Index, nestedLocalId, nestedGlobalId);
-                    this.InternalSerialize(ref nestedEntity, options);
-                }
-
-                Common.Serialization.EntityData result = new(globalId.Value, _data.ToArray(), _indices.ToArray());
-
-                return result;
-            }
-            finally
-            {
-                // Reset serialization buffers
-                _data.Clear();
-                _indices.Clear();
-                _nested.Clear();
-
-                _serializing = false;
-            }
+            return this.Serialize(ref entity, options);
         }
 
-        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, Common.Serialization.EntityData data, EntityInitializerDelegate initializer)
+        public EntityData Serialize(ExclusiveGroupStruct groupId, uint index, SerializationOptions options)
+        {
+            if (_entityQueryService.TryGetEntity(groupId, index, out Entity entity) == false)
+            {
+                throw new NotImplementedException();
+            }
+
+            return this.Serialize(ref entity, options);
+        }
+
+        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer)
         {
             _logger.Verbose("Starting Deserialization - Id = {Id}, OwnerId = {OwnerId}, Seed = {Seed}", data.Id, options.Owner, options.Seed);
 
@@ -79,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return entityId;
         }
 
-        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, Common.Serialization.EntityData data, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
+        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
         {
             EntityId entityId = this.InternalDeserialize(sourceId, data, 0, options, rootInitializer + initializer);
             for (int i = 1; i < data.IndexCount; i++)
@@ -88,6 +69,45 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             return entityId;
+        }
+
+        private EntityData Serialize(ref Entity entity, SerializationOptions options)
+        {
+            if (_serializing == true)
+            {
+                throw new NotImplementedException();
+            }
+
+            _logger.Verbose("Starting Serialization - LocalId = {LocalId}", entity.LocalId);
+
+
+            try
+            {
+                _serializing = true;
+
+                EntityGlobalId globalId = _entityQueryService.QueryByLocalId<EntityGlobalId>(entity.LocalId, out GroupIndex groupIndex);
+                this.InternalSerialize(ref entity, options);
+
+                while (_nested.TryPop(out EntityLocalId nestedLocalId))
+                {
+                    EntityGlobalId nestedGlobalId = _entityQueryService.QueryByLocalId<EntityGlobalId>(nestedLocalId, out GroupIndex nestedGroupIndex);
+                    Entity nestedEntity = new(nestedGroupIndex.Index, nestedLocalId, nestedGlobalId);
+                    this.InternalSerialize(ref nestedEntity, options);
+                }
+
+                EntityData result = new(globalId.Value, _data.ToArray(), _indices.ToArray());
+
+                return result;
+            }
+            finally
+            {
+                // Reset serialization buffers
+                _data.Clear();
+                _indices.Clear();
+                _nested.Clear();
+
+                _serializing = false;
+            }
         }
 
         private void InternalSerialize(ref Entity entity, SerializationOptions options)
@@ -109,7 +129,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         private EntityId InternalDeserialize(
             VhId sourceId,
-            Common.Serialization.EntityData data,
+            EntityData data,
             int index,
             DeserializationOptions options,
             EntityInitializerDelegate initializerDelegate)

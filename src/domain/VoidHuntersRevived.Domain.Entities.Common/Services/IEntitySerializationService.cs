@@ -1,13 +1,16 @@
-﻿using VoidHuntersRevived.Common;
+﻿using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
+using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IEntitySerializationService
     {
-        Serialization.EntityData Serialize(EntityLocalId localId, SerializationOptions options);
+        EntityData Serialize(EntityLocalId localId, SerializationOptions options);
+        EntityData Serialize(ExclusiveGroupStruct groupId, uint index, SerializationOptions options);
 
-        EntityId Deserialize(VhId sourceId, DeserializationOptions options, Serialization.EntityData data, EntityInitializerDelegate initializer);
-        EntityId Deserialize(VhId sourceId, DeserializationOptions options, Serialization.EntityData data, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer);
+        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer);
+        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer);
     }
 }

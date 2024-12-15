@@ -78,16 +78,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             VhId sourceId = new(messageId);
 
-            this.ForEachCurrentUserEntity((shipLocalId, shipGlobalId) =>
+            this.ForEachCurrentUserEntity((tractorBeamEmitterLocalId, tractorBeamEmitterGlobalId) =>
             {
                 if (message.Value)
                 {
-                    if (_readEntityQueryService.TryGetEntity<TractorBeamEmitter>(shipLocalId, out var tractorBeamEmitter) == false)
-                    {
-                        return;
-                    }
-
-                    if (_readTractorBeamEmitterService.Query(tractorBeamEmitter, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
+                    if (_readTractorBeamEmitterService.Query(tractorBeamEmitterGlobalId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
                     {
                         return;
                     }
@@ -96,7 +91,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         sourceId: sourceId,
                         data: new Tactical_SetTarget()
                         {
-                            ShipGlobalId = shipGlobalId,
+                            ShipGlobalId = tractorBeamEmitterGlobalId,
                             Value = (FixVector2)this.CurrentTargetPosition,
                             Snap = true
                         });
@@ -105,21 +100,21 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         sourceId: sourceId,
                         data: new Input_TractorBeamEmitter_Select()
                         {
-                            TractorBeamEmitterGlobalId = shipGlobalId,
+                            TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
                             TargetNodeGlobalId = targetNode.Id.ToGlobalEntityId()
                         });
                 }
                 else
                 {
-                    ref Tactical tactical = ref _readEntityQueryService.QueryByLocalId<Tactical>(shipLocalId);
-                    SocketVhId? attachToSocket = _readSocketService.TryGetClosestOpenSocket(new EntityId(shipLocalId.Value, shipGlobalId.Value), tactical.Target, out NodeSocket nodeSocket)
+                    ref Tactical tactical = ref _readEntityQueryService.QueryByLocalId<Tactical>(tractorBeamEmitterLocalId);
+                    SocketVhId? attachToSocket = _readSocketService.TryGetClosestOpenSocket(new EntityId(tractorBeamEmitterLocalId.Value, tractorBeamEmitterGlobalId.Value), tactical.Target, out NodeSocket nodeSocket)
                                 ? nodeSocket.Id.VhId : null;
 
                     this.Strategy.Simulation.Input(
                         sourceId: sourceId,
                         data: new Input_TractorBeamEmitter_Deselect()
                         {
-                            TractorBeamEmitterGlobalId = shipGlobalId,
+                            TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
                             AttachToSocketVhId = attachToSocket
                         });
                 }
