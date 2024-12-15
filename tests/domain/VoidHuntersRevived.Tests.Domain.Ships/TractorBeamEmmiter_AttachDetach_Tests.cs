@@ -89,7 +89,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 yield return 100;
 
                 // Spawn a test square attached to the test ship
-                Node head = treeService.GetHead(shipId);
+                Node head = treeService.GetHead(shipId.ToLocalEntityId());
                 bool result = socketService.TryGetSocket(new SocketVhId(head.Id.VhId, 0), out NodeSocket nodeSocket);
                 Assert.True(result);
 
@@ -111,7 +111,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 coroutineId: VhId.HashString(nameof(SetupStrategy)),
                 coroutine: SetupStrategy);
             Assert.True(readEntityQueryService.TryGetEntity<TractorBeamEmitter>(shipGlobalId, out var tractrBeamEmitter));
-            EntityId bridgeId = readTreeService.GetHead(tractrBeamEmitter.EntityId).Id;
+            EntityId bridgeId = readTreeService.GetHead(tractrBeamEmitter.EntityId.ToLocalEntityId()).Id;
 
             // Begin Tests
             VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
@@ -210,7 +210,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 yield return 100;
 
                 // Spawn a test square attached to the test ship
-                Node head = treeService.GetHead(shipId);
+                Node head = treeService.GetHead(shipId.ToLocalEntityId());
                 bool result = socketService.TryGetSocket(new SocketVhId(head.Id.VhId, 0), out NodeSocket nodeSocket);
                 Assert.True(result);
 
@@ -244,7 +244,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 coroutineId: VhId.HashString(nameof(SetupStrategy)),
                 coroutine: SetupStrategy);
             Assert.True(readEntityQueryService.TryGetEntity<TractorBeamEmitter>(shipGlobalId, out var tractrBeamEmitter));
-            EntityId bridgeId = readTreeService.GetHead(tractrBeamEmitter.EntityId).Id;
+            EntityId bridgeId = readTreeService.GetHead(tractrBeamEmitter.EntityId.ToLocalEntityId()).Id;
 
             // Begin Tests
             VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));

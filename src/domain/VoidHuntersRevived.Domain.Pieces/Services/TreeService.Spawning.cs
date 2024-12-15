@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 });
 
                 entity.Initializer.Init(team.TeamMemberComponent);
-                entity.Initializer.Init(new Tree(entity.EntityId, headId));
+                entity.Initializer.Init(new Tree(entity.LocalId, headId.ToLocalEntityId()));
                 initializerDelegate?.Invoke(entities, in entity);
             });
         }
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     });
 
                 tree.Initializer.Init(team.TeamMemberComponent);
-                tree.Initializer.Init<Tree>(new Tree(tree.EntityId, headId));
+                tree.Initializer.Init<Tree>(new Tree(tree.LocalId, headId.ToLocalEntityId()));
                 initializerDelegate(entities, in tree);
             });
         }
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 EntityId headId = entities.Spawn.Spawn(sourceId, globalId, team, blueprint);
 
                 tree.Initializer.Init(team.TeamMemberComponent);
-                tree.Initializer.Init(new Tree(tree.EntityId, headId));
+                tree.Initializer.Init(new Tree(tree.LocalId, headId.ToLocalEntityId()));
                 initializerDelegate?.Invoke(entities, in tree);
             });
         }

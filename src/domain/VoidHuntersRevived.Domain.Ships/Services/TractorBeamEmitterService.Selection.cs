@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
         }
 
-        private readonly Queue<(EntityId id, EntityId headId, Location location)> _deselecteds = new();
+        private readonly Queue<(EntityId id, EntityLocalId headLocalId, Location location)> _deselecteds = new();
         public void Deselect(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, SocketVhId? attachToSocketVhId)
         {
             if (_entityQueryService.TryGetLocalId(tractorBeamEmitterGlobalId, out EntityLocalId tracorBeamEmitterLocalId) == false)
@@ -90,14 +90,14 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     }
 
                     EntityId id = entityIds[index];
-                    _deselecteds.Enqueue((id, trees[index].HeadId, locations[index]));
+                    _deselecteds.Enqueue((id, trees[index].HeadLocalId, locations[index]));
 
                     filter.Remove(id);
                 }
             }
 
             VhId nextSourceId = NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId);
-            while (_deselecteds.TryDequeue(out (EntityId id, EntityId headId, Location location) deselected))
+            while (_deselecteds.TryDequeue(out (EntityId id, EntityLocalId headLocalId, Location location) deselected))
             {
                 _logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterGlobalId}", deselected.id.VhId.Value, tractorBeamEmitterGlobalId);
                 this.Strategy.Publish(new EventDto()
@@ -106,7 +106,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     Data = new TractorBeamEmitter_Deselect()
                     {
                         TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
-                        TargetData = _entitySerializationService.Serialize(deselected.headId.ToLocalEntityId(), SerializationOptions.Default),
+                        TargetData = _entitySerializationService.Serialize(deselected.headLocalId, SerializationOptions.Default),
                         Location = deselected.location,
                         AttachToSocketVhId = attachToSocketVhId
                     }

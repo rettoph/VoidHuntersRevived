@@ -66,9 +66,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     ref Tree tree = ref _entityQueryService.QueryById<Tree>(queryNode.TreeId, out GroupIndex treeGroupIndex);
                     if (_entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitterLocalId == default)
                     { // Target resides within a tractorable tree, so we want to grab the head
-                        callbackTargetNode = tree.HeadId == queryNode.Id ? queryNode : _entityQueryService.QueryById<Node>(tree.HeadId);
+                        callbackTargetNode = tree.HeadLocalId == queryNode.Id.ToLocalEntityId() ? queryNode : _entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
                     }
-                    else if (queryNode.TreeId.ToGlobalEntityId() == tractorBeamEmitterGlobalId && tree.HeadId != queryNode.Id)
+                    else if (queryNode.TreeId.ToGlobalEntityId() == tractorBeamEmitterGlobalId && tree.HeadLocalId != queryNode.Id.ToLocalEntityId())
                     { // The node belongs to the current tractor beam emitter's ship and is not the head
                         callbackTargetNode = queryNode;
                     }

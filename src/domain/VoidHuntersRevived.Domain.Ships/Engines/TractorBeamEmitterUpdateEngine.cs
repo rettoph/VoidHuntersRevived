@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                     IBody targetBody = _space.GetBody(in targetId);
                     ref Tree targetTree = ref trees[index];
 
-                    Location targetHeadChildLocation = _entityQueryService.QueryById<Plug>(targetTree.HeadId).Location;
+                    Location targetHeadChildLocation = _entityQueryService.QueryByLocalId<Plug>(targetTree.HeadLocalId).Location;
 
                     if (_socketService.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
                     {

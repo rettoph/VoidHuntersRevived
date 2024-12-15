@@ -52,6 +52,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             });
         }
 
+        void IEntitySpawnService.Despawn(VhId sourceId, EntityLocalId localId)
+        {
+            EntityGlobalId globalId = _entityQueryService.GetGlobalId(localId);
+            this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
+            {
+                IsPrivate = false,
+                GlobalId = globalId
+            });
+        }
+
         EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()

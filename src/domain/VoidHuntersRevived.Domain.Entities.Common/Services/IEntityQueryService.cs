@@ -238,9 +238,24 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         bool IsSpawned(EntityLocalId localId, out GroupIndex groupIndex)
             => this.IsSpawned(localId.Value, out groupIndex);
         bool IsSpawned(EntityGlobalId globalId)
-            => this.IsSpawned(this.GetLocalId(globalId).Value);
+        {
+            if (this.TryGetLocalId(globalId, out EntityLocalId localId) == false)
+            {
+                return false;
+            }
+
+            return this.IsSpawned(localId.Value);
+        }
         bool IsSpawned(EntityGlobalId globalId, out GroupIndex groupIndex)
-            => this.IsSpawned(this.GetLocalId(globalId).Value, out groupIndex);
+        {
+            if (this.TryGetLocalId(globalId, out EntityLocalId localId) == false)
+            {
+                groupIndex = default;
+                return false;
+            }
+
+            return this.IsSpawned(localId.Value, out groupIndex);
+        }
         bool IsSpawned(EntityId id)
             => this.IsSpawned(id.EGID);
         bool IsSpawned(EntityId id, out GroupIndex groupIndex)

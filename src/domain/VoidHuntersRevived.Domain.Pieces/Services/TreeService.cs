@@ -15,21 +15,21 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly IBlueprintService _blueprintService = blueprintService;
 
-        public ref Node GetHead(in Tree tree)
+        public ref Node GetHead(Tree tree)
         {
-            return ref _entityQueryService.QueryById<Node>(tree.HeadId);
+            return ref _entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
         }
 
-        public ref Node GetHead(in EntityId treeId)
+        public ref Node GetHead(EntityLocalId treeLocalId)
         {
-            ref Tree tree = ref _entityQueryService.QueryById<Tree>(treeId);
-            return ref this.GetHead(in tree);
+            ref Tree tree = ref _entityQueryService.QueryByLocalId<Tree>(treeLocalId);
+            return ref this.GetHead(tree);
         }
 
-        public ref Node GetHead(in GroupIndex treeGroupIndex)
+        public ref Node GetHead(GroupIndex treeGroupIndex)
         {
             ref Tree tree = ref _entityQueryService.QueryByGroupIndex<Tree>(treeGroupIndex);
-            return ref this.GetHead(in tree);
+            return ref this.GetHead(tree);
         }
     }
 }
