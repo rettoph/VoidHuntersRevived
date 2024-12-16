@@ -13,10 +13,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Services
         NodeSocketLocalId GetLocalId(NodeSocketGlobalId nodeSockeGlobalId);
 
         NodeSocket GetNodeSocket(NodeSocketLocalId nodeSocketLocalId);
-        bool TryGetNodeSocket(NodeSocketGlobalId socketVhId, out NodeSocket nodeSocket);
+
+        bool TryGetNodeSocket(NodeSocketGlobalId nodeSocketGlobalId, out NodeSocket nodeSocket);
+        bool TryGetNodeSocket(NodeSocketLocalId nodeSocketLocalId, out NodeSocket nodeSocket);
 
         ref EntityFilterCollection GetCouplingFilter(NodeSocketLocalId socketId);
-        ref EntityFilterCollection GetCouplingFilter(EntityId nodeId, byte socketIndex);
+        ref EntityFilterCollection GetCouplingFilter(EntityLocalId nodeLocalId, byte socketIndex);
 
         bool TryGetClosestOpenNodeSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket);
 

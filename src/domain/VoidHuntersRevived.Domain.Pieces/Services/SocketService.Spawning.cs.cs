@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {
                 entity.Initializer.Init(teamMember);
-                entity.Initializer.Init(new Node(entity.EntityId, entities.Query.GetLocalId(treeGlobalId)));
+                entity.Initializer.Init(new Node(entity.LocalId, entities.Query.GetLocalId(treeGlobalId)));
                 entity.Initializer.Init<Coupling>(new Coupling(
                     socketId: new NodeSocketLocalId(
                         nodeLocalId: entities.Query.GetLocalId(targetNodeSocketGlobalId.NodeGlobalId),

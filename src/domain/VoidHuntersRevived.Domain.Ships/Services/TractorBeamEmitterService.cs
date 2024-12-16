@@ -2,7 +2,6 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
@@ -66,9 +65,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     ref Tree tree = ref _entityQueryService.QueryByLocalId<Tree>(queryNode.TreeLocalId, out GroupIndex treeGroupIndex);
                     if (_entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitterLocalId == default)
                     { // Target resides within a tractorable tree, so we want to grab the head
-                        callbackTargetNode = tree.HeadLocalId == queryNode.Id.ToLocalEntityId() ? queryNode : _entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
+                        callbackTargetNode = tree.HeadLocalId == queryNode.LocalId ? queryNode : _entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
                     }
-                    else if (queryNode.TreeLocalId == tractorBeamEmitterLocalId && tree.HeadLocalId != queryNode.Id.ToLocalEntityId())
+                    else if (queryNode.TreeLocalId == tractorBeamEmitterLocalId && tree.HeadLocalId != queryNode.LocalId)
                     { // The node belongs to the current tractor beam emitter's ship and is not the head
                         callbackTargetNode = queryNode;
                     }

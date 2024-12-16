@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Deselect data)
         {
-            _tractorBeamEmitterService.Deselect(eventId, data.TractorBeamEmitterGlobalId, data.AttachToSocketVhId);
+            _tractorBeamEmitterService.Deselect(eventId, data.TractorBeamEmitterGlobalId, data.AttachToNodeSocketGlobalId);
         }
     }
 }

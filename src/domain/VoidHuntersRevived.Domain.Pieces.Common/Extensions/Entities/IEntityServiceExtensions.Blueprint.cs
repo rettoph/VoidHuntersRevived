@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
             return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {
                 entity.Initializer.Init(team.TeamMemberComponent);
-                entity.Initializer.Init(new Node(entity.EntityId, entities.Query.GetLocalId(treeId)));
+                entity.Initializer.Init(new Node(entity.LocalId, entities.Query.GetLocalId(treeId)));
 
                 if (socketVhId != default)
                 {

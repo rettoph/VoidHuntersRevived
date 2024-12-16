@@ -90,10 +90,10 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
                 // Spawn a test square attached to the test ship
                 Node head = treeService.GetHead(shipId.ToLocalEntityId());
-                bool result = socketService.TryGetNodeSocket(new NodeSocketGlobalId(head.Id.ToGlobalEntityId(), 0), out NodeSocket nodeSocket);
+                bool result = socketService.TryGetNodeSocket(new NodeSocketLocalId(head.LocalId, 0), out NodeSocket nodeSocket);
                 Assert.True(result);
 
-                EntityId square = socketService.Spawn(
+                EntityId squareId = socketService.Spawn(
                     sourceId: vhids.Next(),
                     targetSocketNode: nodeSocket,
                     globalId: vhids.Next().ToGlobalEntityId(),
@@ -111,7 +111,8 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 coroutineId: VhId.HashString(nameof(SetupStrategy)),
                 coroutine: SetupStrategy);
             EntityLocalId shipLocalId = readEntityQueryService.GetLocalId(shipGlobalId);
-            EntityId bridgeId = readTreeService.GetHead(shipLocalId).Id;
+            EntityLocalId bridgeLocalId = readTreeService.GetHead(shipLocalId).LocalId;
+            EntityGlobalId bridgeGlobalId = readEntityQueryService.GetGlobalId(bridgeLocalId);
 
             // Begin Tests
             VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
@@ -124,18 +125,20 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 bool result = readTractorbeamEmitterService.Query(shipLocalId, FixVector2.Zero, out Node targetNode);
                 Assert.True(result);
 
+                EntityGlobalId targetNodeGlobalId = readEntityQueryService.GetGlobalId(targetNode.LocalId);
+
                 // "Select" piece, detaching it from the ship
                 simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
                 {
                     TractorBeamEmitterGlobalId = shipGlobalId,
-                    TargetNodeGlobalId = targetNode.Id.ToGlobalEntityId()
+                    TargetNodeGlobalId = targetNodeGlobalId
                 }, verified).Update(TimeSpan.FromMilliseconds(1), 2);
 
                 // "Deselect" the piece, attaching it back onto the ship
                 simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
                 {
                     TractorBeamEmitterGlobalId = shipGlobalId,
-                    AttachToSocketVhId = new NodeSocketGlobalId(bridgeId.ToGlobalEntityId(), 0)
+                    AttachToNodeSocketGlobalId = new NodeSocketGlobalId(bridgeGlobalId, 0)
                 }, verified).Update(TimeSpan.FromMilliseconds(1), 2);
             }
 
@@ -147,7 +150,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     data: new Input_TractorBeamEmitter_Deselect()
                     {
                         TractorBeamEmitterGlobalId = shipGlobalId,
-                        AttachToSocketVhId = new NodeSocketGlobalId(bridgeId.ToGlobalEntityId(), 0)
+                        AttachToNodeSocketGlobalId = new NodeSocketGlobalId(bridgeGlobalId, 0)
                     },
                     verified: true)
                 .Update(TimeSpan.FromMilliseconds(16), 1000);
@@ -211,7 +214,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
                 // Spawn a test square attached to the test ship
                 Node head = treeService.GetHead(shipId.ToLocalEntityId());
-                bool result = socketService.TryGetNodeSocket(new NodeSocketGlobalId(head.Id.ToGlobalEntityId(), 0), out NodeSocket nodeSocket);
+                bool result = socketService.TryGetNodeSocket(new NodeSocketLocalId(head.LocalId, 0), out NodeSocket nodeSocket);
                 Assert.True(result);
 
                 EntityId square = socketService.Spawn(
@@ -244,7 +247,6 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 coroutineId: VhId.HashString(nameof(SetupStrategy)),
                 coroutine: SetupStrategy);
             EntityLocalId shipLocalId = readEntityQueryService.GetLocalId(shipGlobalId);
-            EntityId bridgeId = readTreeService.GetHead(shipLocalId).Id;
 
             // Begin Tests
             VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
@@ -264,7 +266,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 .Input<IPredictiveStrategy>(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
                 {
                     TractorBeamEmitterGlobalId = shipGlobalId,
-                    AttachToSocketVhId = new NodeSocketGlobalId(square1Id, 0)
+                    AttachToNodeSocketGlobalId = new NodeSocketGlobalId(square1Id, 0)
                 }, true).Update(TimeSpan.FromMilliseconds(1), 2);
 
 

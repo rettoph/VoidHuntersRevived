@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
 
             _logger.Verbose("Deserializing Node - Id = {Id}, TreeId = {TreeId}, TreeLocalId = {TreeLocalId}", entity.GlobalId, treeId.VhId, treeId.ToLocalEntityId());
 
-            return new Node(entity.EntityId, treeId.ToLocalEntityId());
+            return new Node(entity.LocalId, treeId.ToLocalEntityId());
         }
 
         protected override void Write(ref EntityWriter writer, in Entity entity, in Node instance, in SerializationOptions options)

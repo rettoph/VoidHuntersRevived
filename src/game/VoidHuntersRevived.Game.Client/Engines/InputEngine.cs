@@ -8,7 +8,6 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
@@ -87,6 +86,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         return;
                     }
 
+                    EntityGlobalId targetNodeGlobalId = _readEntityQueryService.GetGlobalId(targetNode.LocalId);
+
                     this.Strategy.Simulation.Input(
                         sourceId: sourceId,
                         data: new Tactical_SetTarget()
@@ -101,7 +102,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         data: new Input_TractorBeamEmitter_Select()
                         {
                             TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
-                            TargetNodeGlobalId = targetNode.Id.ToGlobalEntityId()
+                            TargetNodeGlobalId = targetNodeGlobalId
                         });
                 }
                 else
@@ -115,7 +116,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                         data: new Input_TractorBeamEmitter_Deselect()
                         {
                             TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
-                            AttachToSocketVhId = attachToSocketLocalId
+                            AttachToNodeSocketGlobalId = attachToSocketLocalId
                         });
                 }
             });

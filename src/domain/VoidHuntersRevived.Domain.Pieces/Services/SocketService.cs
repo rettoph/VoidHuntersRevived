@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
@@ -66,14 +65,30 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             return false;
         }
 
+        public bool TryGetNodeSocket(NodeSocketLocalId nodeSocketLocalId, out NodeSocket nodeSocket)
+        {
+            _logger.Verbose("TryGetNodeSocket - NodeSocketLocalId = {NodeSocketLocalId}", nodeSocketLocalId);
+
+            if (_entityQueryService.TryQueryByLocalId<Node>(nodeSocketLocalId.NodeLocalId, out GroupIndex groupIndex, out Node node) == false)
+            {
+                nodeSocket = default;
+                return false;
+            }
+
+            var (sockets, _) = _entityQueryService.QueryEntities<Sockets>(groupIndex.GroupID);
+
+            nodeSocket = new(nodeSocketLocalId, node, sockets[groupIndex.Index].Items[nodeSocketLocalId.SocketIndex]);
+            return true;
+        }
+
         public ref EntityFilterCollection GetCouplingFilter(NodeSocketLocalId socketId)
         {
             return ref _entityQueryService.GetFilter<Coupling>(socketId.NodeLocalId, socketId.FilterContextId);
         }
 
-        public ref EntityFilterCollection GetCouplingFilter(EntityId nodeId, byte socketIndex)
+        public ref EntityFilterCollection GetCouplingFilter(EntityLocalId nodeLocalId, byte socketIndex)
         {
-            return ref this.GetCouplingFilter(new NodeSocketLocalId(nodeId.ToLocalEntityId(), socketIndex));
+            return ref this.GetCouplingFilter(new NodeSocketLocalId(nodeLocalId, socketIndex));
         }
 
         public bool TryGetClosestOpenNodeSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket)
@@ -125,7 +140,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             {
                 NodeSocket nodeSocket = nodeSockets[j];
 
-                var filter = this.GetCouplingFilter(nodeSockets.Node.Id, j);
+                var filter = this.GetCouplingFilter(nodeSockets.Node.LocalId, j);
                 int count = 0;
                 foreach (var (indices, groupId) in filter)
                 {

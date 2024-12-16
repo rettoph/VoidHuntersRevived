@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 EntityId headId = entities.Spawn.Spawn(sourceId, headNodeTemplateKey, globalId.Value.Create(1).ToGlobalEntityId(), (IEntityService entities, in InitializingEntity entity) =>
                 {
                     entity.Initializer.Init(team.TeamMemberComponent);
-                    entity.Initializer.Init(new Node(entity.EntityId, entities.Query.GetLocalId(globalId)));
+                    entity.Initializer.Init(new Node(entity.LocalId, entities.Query.GetLocalId(globalId)));
                 });
 
                 entity.Initializer.Init(team.TeamMemberComponent);

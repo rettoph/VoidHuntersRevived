@@ -1,6 +1,5 @@
 ﻿using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common
@@ -15,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
         public FixMatrix LocalTransformation => FixMatrixHelper.FastMultiplyTransformations(this.Socket.Location.Transformation, Node.LocalLocation.Transformation);
         public FixMatrix Transformation => FixMatrixHelper.FastMultiplyTransformations(this.Socket.Location.Transformation, Node.Transformation);
 
-        public NodeSocket(Node node, byte index, Socket socket) : this(new NodeSocketLocalId(node.Id.ToLocalEntityId(), index), node, socket)
+        public NodeSocket(Node node, byte index, Socket socket) : this(new NodeSocketLocalId(node.LocalId, index), node, socket)
         {
         }
     }

@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
             return new Input_TractorBeamEmitter_Deselect()
             {
                 TractorBeamEmitterGlobalId = reader.GetEntityGlobalId(),
-                AttachToSocketVhId = reader.GetIf() ? new NodeSocketGlobalId(reader.GetEntityGlobalId(), reader.GetByte()) : null
+                AttachToNodeSocketGlobalId = reader.GetIf() ? new NodeSocketGlobalId(reader.GetEntityGlobalId(), reader.GetByte()) : null
             };
         }
 
@@ -20,10 +20,10 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
         {
             writer.Put(instance.TractorBeamEmitterGlobalId);
 
-            if (writer.PutIf(instance.AttachToSocketVhId.HasValue))
+            if (writer.PutIf(instance.AttachToNodeSocketGlobalId.HasValue))
             {
-                writer.Put(instance.AttachToSocketVhId!.Value.NodeGlobalId);
-                writer.Put(instance.AttachToSocketVhId.Value.SocketIndex);
+                writer.Put(instance.AttachToNodeSocketGlobalId!.Value.NodeGlobalId);
+                writer.Put(instance.AttachToNodeSocketGlobalId.Value.SocketIndex);
             }
         }
     }

@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             for (int i = 0; i < sockets.Component.Items.count; i++)
             {
-                var filter = _socketService.GetCouplingFilter(nodeId: sockets.EntityId, socketIndex: (byte)i);
+                var filter = _socketService.GetCouplingFilter(nodeLocalId: sockets.LocalId, socketIndex: (byte)i);
                 foreach (var (indices, groupId) in filter)
                 {
                     var (entityIds, _) = _entityQueryService.QueryEntities<EntityId>(groupId);
