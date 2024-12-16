@@ -18,12 +18,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
                 EntityGlobalId globalNodeId = reader.ReadGlobalEntityId();
                 byte index = reader.ReadByte();
 
-                if (_entityQueryService.TryGetId(globalNodeId.Value, out EntityId nodeId))
+                if (_entityQueryService.TryGetLocalId(globalNodeId, out EntityLocalId nodeLocalId))
                 {
                     return new Coupling(
-                        socketId: new NodeSocketId(
-                            nodeId: nodeId,
-                            index: index)
+                        socketId: new NodeSocketLocalId(
+                            nodeLocalId: nodeLocalId,
+                            socketIndex: index)
                         );
                 }
                 else
@@ -40,10 +40,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
 
         protected override void Write(ref EntityWriter writer, in Entity entity, in Coupling instance, in SerializationOptions options)
         {
-            if (writer.WriteIf(instance.SocketId != NodeSocketId.Empty))
+            if (writer.WriteIf(instance.SocketId != NodeSocketLocalId.Empty))
             {
-                writer.Write(instance.SocketId.NodeId.VhId);
-                writer.Write(instance.SocketId.Index);
+                EntityGlobalId nodeGlobalId = _entityQueryService.GetGlobalId(instance.SocketId.NodeLocalId);
+
+                writer.Write(nodeGlobalId);
+                writer.Write(instance.SocketId.SocketIndex);
             }
         }
     }

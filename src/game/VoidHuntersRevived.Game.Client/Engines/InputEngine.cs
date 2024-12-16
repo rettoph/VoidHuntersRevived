@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private IEntityQueryService _readEntityQueryService = null!;
         private ITractorBeamEmitterService _readTractorBeamEmitterService = null!;
-        private ISocketService _readSocketService = null!;
+        private INodeSocketService _readSocketService = null!;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             _readEntityQueryService = readStrategy.Engines.Get<IEntityService>().Query;
             _readTractorBeamEmitterService = readStrategy.Engines.Get<ITractorBeamEmitterService>();
-            _readSocketService = readStrategy.Engines.Get<ISocketService>();
+            _readSocketService = readStrategy.Engines.Get<INodeSocketService>();
         }
 
         public void Process(in Guid messageId, Input_Helm_SetDirection message)
@@ -107,15 +107,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 else
                 {
                     ref Tactical tactical = ref _readEntityQueryService.QueryByLocalId<Tactical>(tractorBeamEmitterLocalId);
-                    SocketVhId? attachToSocket = _readSocketService.TryGetClosestOpenSocket(new EntityId(tractorBeamEmitterLocalId.Value, tractorBeamEmitterGlobalId.Value), tactical.Target, out NodeSocket nodeSocket)
-                                ? nodeSocket.Id.VhId : null;
+                    NodeSocketGlobalId? attachToSocketLocalId = _readSocketService.TryGetClosestOpenNodeSocket(new EntityId(tractorBeamEmitterLocalId.Value, tractorBeamEmitterGlobalId.Value), tactical.Target, out NodeSocket nodeSocket)
+                                ? _readSocketService.GetGlobalId(nodeSocket.LocalId) : null;
 
                     this.Strategy.Simulation.Input(
                         sourceId: sourceId,
                         data: new Input_TractorBeamEmitter_Deselect()
                         {
                             TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
-                            AttachToSocketVhId = attachToSocket
+                            AttachToSocketVhId = attachToSocketLocalId
                         });
                 }
             });

@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((ids, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityId, Location, Enabled, Awake>())
+            foreach (var ((localIds, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Location, Enabled, Awake>())
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                         continue;
                     }
 
-                    ref var filter = ref _entityQueryService.GetFilter<Node>(ids[treeIndex], Tree.NodeFilterContextId);
+                    ref var filter = ref _entityQueryService.GetFilter<Node>(localIds[treeIndex], Tree.NodeFilterContextId);
                     this.TransformNodes(ref locations[treeIndex], ref filter);
                 }
             }

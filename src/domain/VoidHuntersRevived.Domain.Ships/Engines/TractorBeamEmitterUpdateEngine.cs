@@ -25,14 +25,14 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         ISpace space,
         ILogger logger,
         ITractorBeamEmitterService tractorBeamEmitterService,
-        ISocketService socketService) : StrategyEngine,
+        INodeSocketService socketService) : StrategyEngine,
         IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ISpace _space = space;
         private readonly ILogger _logger = logger;
         private readonly ITractorBeamEmitterService _tractorBeamEmitterService = tractorBeamEmitterService;
-        private readonly ISocketService _socketService = socketService;
+        private readonly INodeSocketService _socketService = socketService;
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.ProcessInput)]
         public void OnStep(Step step)
@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
                     Location targetHeadChildLocation = _entityQueryService.QueryByLocalId<Plug>(targetTree.HeadLocalId).Location;
 
-                    if (_socketService.TryGetClosestOpenSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
+                    if (_socketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
                     {
                         FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.Transformation;
                         FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);

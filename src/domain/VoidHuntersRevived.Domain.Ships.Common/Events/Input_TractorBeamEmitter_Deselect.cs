@@ -11,11 +11,11 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Events
         public bool IsPredictable => true;
 
         public required EntityGlobalId TractorBeamEmitterGlobalId { get; init; }
-        public required SocketVhId? AttachToSocketVhId { get; init; }
+        public required NodeSocketGlobalId? AttachToSocketVhId { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<Input_TractorBeamEmitter_Deselect, VhId, EntityGlobalId, bool, SocketVhId>.Instance.Calculate(source, this.TractorBeamEmitterGlobalId, this.AttachToSocketVhId.HasValue, this.AttachToSocketVhId ?? default);
+            return HashBuilder<Input_TractorBeamEmitter_Deselect, VhId, EntityGlobalId, bool, NodeSocketGlobalId>.Instance.Calculate(source, this.TractorBeamEmitterGlobalId, this.AttachToSocketVhId.HasValue, this.AttachToSocketVhId ?? default);
         }
     }
 }

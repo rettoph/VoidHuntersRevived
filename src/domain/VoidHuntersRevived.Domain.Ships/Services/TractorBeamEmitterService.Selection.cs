@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         }
 
         private readonly Queue<(EntityId id, EntityLocalId headLocalId, Location location)> _deselecteds = new();
-        public void Deselect(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, SocketVhId? attachToSocketVhId)
+        public void Deselect(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, NodeSocketGlobalId? attachToSocketVhId)
         {
             if (_entityQueryService.TryGetLocalId(tractorBeamEmitterGlobalId, out EntityLocalId tracorBeamEmitterLocalId) == false)
             {
@@ -150,7 +150,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         {
             try
             {
-                if (data.AttachToSocketVhId.HasValue && _socketService.TryGetSocket(data.AttachToSocketVhId.Value, out NodeSocket attachToSocket))
+                if (data.AttachToSocketVhId.HasValue && _socketService.TryGetNodeSocket(data.AttachToSocketVhId.Value, out NodeSocket attachToSocket))
                 { // Spawn a new piece attached to the input node
                     _socketService.Spawn(eventId, attachToSocket, data.TargetData);
                 }

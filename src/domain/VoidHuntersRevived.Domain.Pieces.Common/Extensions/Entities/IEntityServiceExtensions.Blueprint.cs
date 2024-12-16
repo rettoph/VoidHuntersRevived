@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
             return entitySpawnService.Spawn(sourceId, treeId, team, globalId, blueprint.Head, default);
         }
 
-        private static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, EntityGlobalId globalId, IBlueprintPiece blueprintPiece, SocketVhId socketVhId)
+        private static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, EntityGlobalId globalId, IBlueprintPiece blueprintPiece, NodeSocketGlobalId socketVhId)
         {
             return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {
@@ -27,9 +27,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
                 if (socketVhId != default)
                 {
                     entity.Initializer.Init<Coupling>(new Coupling(
-                        socketId: new NodeSocketId(
-                            nodeId: entities.Query.GetId(socketVhId.NodeVhId),
-                            index: socketVhId.Index))
+                        socketId: new NodeSocketLocalId(
+                            nodeLocalId: entities.Query.GetLocalId(socketVhId.NodeGlobalId),
+                            socketIndex: socketVhId.SocketIndex))
                     );
                 }
 
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
                             team,
                             childGlobalId,
                             blueprintPiece.Children[i][j],
-                            new SocketVhId(entity.EntityId.VhId, (byte)i));
+                            new NodeSocketGlobalId(entity.EntityId.ToGlobalEntityId(), (byte)i));
                     }
                 }
             });

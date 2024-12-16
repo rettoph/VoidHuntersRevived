@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             {
                 ITeamService teamService = strategy.Scope.Resolve<ITeamService>();
                 ITreeService treeService = strategy.Scope.Resolve<ITreeService>();
-                ISocketService socketService = strategy.Scope.Resolve<ISocketService>();
+                INodeSocketService socketService = strategy.Scope.Resolve<INodeSocketService>();
 
                 // Spawn a test ship
                 Team team = teamService.GetOpenTeam();
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
                 // Spawn a test square attached to the test ship
                 Node head = treeService.GetHead(shipId.ToLocalEntityId());
-                bool result = socketService.TryGetSocket(new SocketVhId(head.Id.VhId, 0), out NodeSocket nodeSocket);
+                bool result = socketService.TryGetNodeSocket(new NodeSocketGlobalId(head.Id.ToGlobalEntityId(), 0), out NodeSocket nodeSocket);
                 Assert.True(result);
 
                 EntityId square = socketService.Spawn(
@@ -135,7 +135,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
                 {
                     TractorBeamEmitterGlobalId = shipGlobalId,
-                    AttachToSocketVhId = new SocketVhId(bridgeId.VhId, 0)
+                    AttachToSocketVhId = new NodeSocketGlobalId(bridgeId.ToGlobalEntityId(), 0)
                 }, verified).Update(TimeSpan.FromMilliseconds(1), 2);
             }
 
@@ -147,7 +147,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     data: new Input_TractorBeamEmitter_Deselect()
                     {
                         TractorBeamEmitterGlobalId = shipGlobalId,
-                        AttachToSocketVhId = new SocketVhId(bridgeId.VhId, 0)
+                        AttachToSocketVhId = new NodeSocketGlobalId(bridgeId.ToGlobalEntityId(), 0)
                     },
                     verified: true)
                 .Update(TimeSpan.FromMilliseconds(16), 1000);
@@ -196,7 +196,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             {
                 ITeamService teamService = strategy.Scope.Resolve<ITeamService>();
                 ITreeService treeService = strategy.Scope.Resolve<ITreeService>();
-                ISocketService socketService = strategy.Scope.Resolve<ISocketService>();
+                INodeSocketService socketService = strategy.Scope.Resolve<INodeSocketService>();
 
                 // Spawn a test ship
                 Team team = teamService.GetOpenTeam();
@@ -211,7 +211,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
                 // Spawn a test square attached to the test ship
                 Node head = treeService.GetHead(shipId.ToLocalEntityId());
-                bool result = socketService.TryGetSocket(new SocketVhId(head.Id.VhId, 0), out NodeSocket nodeSocket);
+                bool result = socketService.TryGetNodeSocket(new NodeSocketGlobalId(head.Id.ToGlobalEntityId(), 0), out NodeSocket nodeSocket);
                 Assert.True(result);
 
                 EntityId square = socketService.Spawn(
@@ -223,7 +223,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 yield return 100;
 
                 // Spawn a second test square attached to the first test square
-                result = socketService.TryGetSocket(new SocketVhId(square.VhId, 0), out nodeSocket);
+                result = socketService.TryGetNodeSocket(new NodeSocketGlobalId(square.ToGlobalEntityId(), 0), out nodeSocket);
                 Assert.True(result);
 
                 EntityId square2 = socketService.Spawn(
@@ -264,7 +264,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 .Input<IPredictiveStrategy>(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
                 {
                     TractorBeamEmitterGlobalId = shipGlobalId,
-                    AttachToSocketVhId = new SocketVhId(square1Id.Value, 0)
+                    AttachToSocketVhId = new NodeSocketGlobalId(square1Id, 0)
                 }, true).Update(TimeSpan.FromMilliseconds(1), 2);
 
 

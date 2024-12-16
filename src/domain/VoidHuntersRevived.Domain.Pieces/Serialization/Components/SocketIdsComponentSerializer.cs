@@ -10,10 +10,10 @@ using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
 {
-    public class SocketIdsComponentSerializer(IEntityQueryService entityQueryService, ISocketService socketService) : ComponentSerializer<Sockets>
+    public class SocketIdsComponentSerializer(IEntityQueryService entityQueryService, INodeSocketService socketService) : ComponentSerializer<Sockets>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
-        private readonly ISocketService _socketService = socketService;
+        private readonly INodeSocketService _socketService = socketService;
 
         protected override void Write(ref EntityWriter writer, in Entity entity, in Sockets instance, in SerializationOptions options)
         {

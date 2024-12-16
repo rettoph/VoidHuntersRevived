@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
@@ -17,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         IEntitySpawnService entitySpawnService,
         IEntitySerializationService entitySerializationService,
         ITreeService treeService,
-        ILogger logger) : StrategyEngine, ISocketService
+        ILogger logger) : StrategyEngine, INodeSocketService
     {
         private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
 
@@ -27,23 +28,37 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         private readonly IEntitySerializationService _entitySerializationService = entitySerializationService;
         private readonly ITreeService _treeService = treeService;
 
-        public NodeSocket GetSocket(NodeSocketId socketId)
+        public NodeSocketGlobalId GetGlobalId(NodeSocketLocalId nodeSocketLocalId)
         {
-            _logger.Verbose("Locating {NodeId}:{SocketIndex} - Node EGID {EntityId}:{GroupId}", socketId.NodeId.VhId.Value, socketId.Index, socketId.NodeId.EGID.entityID, socketId.NodeId.EGID.groupID);
+            return new NodeSocketGlobalId(
+                nodeGlobalId: _entityQueryService.GetGlobalId(nodeSocketLocalId.NodeLocalId),
+                socketIndex: nodeSocketLocalId.SocketIndex);
+        }
 
-            ref Node node = ref _entityQueryService.QueryById<Node>(socketId.NodeId, out GroupIndex groupIndex);
+        public NodeSocketLocalId GetLocalId(NodeSocketGlobalId nodeSocketGlobalId)
+        {
+            return new NodeSocketLocalId(
+                nodeLocalId: _entityQueryService.GetLocalId(nodeSocketGlobalId.NodeGlobalId),
+                socketIndex: nodeSocketGlobalId.SocketIndex);
+        }
+
+        public NodeSocket GetNodeSocket(NodeSocketLocalId nodeSocketLocalId)
+        {
+            _logger.Verbose("GetNodeSocket - NodeSocketLocalId = {NodeSocketLocalId}", nodeSocketLocalId);
+
+            ref Node node = ref _entityQueryService.QueryByLocalId<Node>(nodeSocketLocalId.NodeLocalId, out GroupIndex groupIndex);
             var (sockets, _) = _entityQueryService.QueryEntities<Sockets>(groupIndex.GroupID);
 
-            NodeSocket nodeSocket = new(node, socketId, sockets[groupIndex.Index].Items[socketId.Index]);
+            NodeSocket nodeSocket = new(nodeSocketLocalId, node, sockets[groupIndex.Index].Items[nodeSocketLocalId.SocketIndex]);
 
             return nodeSocket;
         }
 
-        public bool TryGetSocket(SocketVhId socketVhId, out NodeSocket nodeSocket)
+        public bool TryGetNodeSocket(NodeSocketGlobalId nodeSocketGlobalId, out NodeSocket nodeSocket)
         {
-            if (_entityQueryService.TryGetId(socketVhId.NodeVhId, out EntityId nodeId))
+            if (_entityQueryService.TryGetLocalId(nodeSocketGlobalId.NodeGlobalId, out EntityLocalId nodeLocalId))
             {
-                nodeSocket = this.GetSocket(new NodeSocketId(nodeId, socketVhId.Index));
+                nodeSocket = this.GetNodeSocket(new NodeSocketLocalId(nodeLocalId, nodeSocketGlobalId.SocketIndex));
                 return true;
             }
 
@@ -51,17 +66,17 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             return false;
         }
 
-        public ref EntityFilterCollection GetCouplingFilter(NodeSocketId socketId)
+        public ref EntityFilterCollection GetCouplingFilter(NodeSocketLocalId socketId)
         {
-            return ref _entityQueryService.GetFilter<Coupling>(socketId.NodeId, socketId.FilterContextId);
+            return ref _entityQueryService.GetFilter<Coupling>(socketId.NodeLocalId, socketId.FilterContextId);
         }
 
         public ref EntityFilterCollection GetCouplingFilter(EntityId nodeId, byte socketIndex)
         {
-            return ref this.GetCouplingFilter(new NodeSocketId(nodeId, socketIndex));
+            return ref this.GetCouplingFilter(new NodeSocketLocalId(nodeId.ToLocalEntityId(), socketIndex));
         }
 
-        public bool TryGetClosestOpenSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket)
+        public bool TryGetClosestOpenNodeSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket)
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
             ref var filter = ref _entityQueryService.GetFilter<Node>(treeId, Tree.NodeFilterContextId);

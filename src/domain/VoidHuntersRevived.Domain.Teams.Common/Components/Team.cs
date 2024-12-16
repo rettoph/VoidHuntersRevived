@@ -17,12 +17,12 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Components
             this.Name = name;
         }
 
-        public Team(EntityId entityId, ResourceKey<string> name)
+        public Team(EntityLocalId localId, ResourceKey<string> name)
         {
             this.Id = Id<Team>.FromString(name.Name);
             this.Name = name;
             this.ChildrenFilterId = new EntityFilterId<TeamMember>();
-            this.TeamMemberComponent = new TeamMember(entityId);
+            this.TeamMemberComponent = new TeamMember(localId);
         }
     }
 }

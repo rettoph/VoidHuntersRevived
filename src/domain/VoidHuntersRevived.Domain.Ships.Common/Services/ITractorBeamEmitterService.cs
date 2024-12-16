@@ -14,6 +14,6 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Services
 
         void Select(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, EntityGlobalId nodeGlobalId);
 
-        void Deselect(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, SocketVhId? attachToSocketVhId);
+        void Deselect(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, NodeSocketGlobalId? attachToSocketVhId);
     }
 }

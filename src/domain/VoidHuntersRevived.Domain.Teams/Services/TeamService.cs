@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         private void TeamInstanceInitializer(IEntityService entities, in InitializingEntity entity)
         {
             Team importedTeam = entity.Initializer.Get<Team>();
-            Team runtimeTeam = new(entity.EntityId, importedTeam.Name);
+            Team runtimeTeam = new(entity.LocalId, importedTeam.Name);
             entity.Initializer.Init<Team>(runtimeTeam);
 
             if (entity.Initializer.Has<DefaultTeam>())

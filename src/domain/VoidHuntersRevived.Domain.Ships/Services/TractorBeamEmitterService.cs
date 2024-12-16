@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         IEntitySerializationService entitySerializationService,
         INodeService nodeService,
         ITreeService treeService,
-        ISocketService socketService,
+        INodeSocketService socketService,
         ITeamService teamService,
         ILogger logger) : StrategyEngine, ITractorBeamEmitterService
     {
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         private readonly INodeService _nodeService = nodeService;
         private readonly ITreeService _treeService = treeService;
         private readonly ITeamService _teamService = teamService;
-        private readonly ISocketService _socketService = socketService;
+        private readonly INodeSocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
 
         public ref EntityFilterCollection GetTractorableFilter(EntityLocalId tractorBeamEmitterLocalId)

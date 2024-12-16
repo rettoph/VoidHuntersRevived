@@ -15,13 +15,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
     public sealed class SocketIdsEngine(
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
-        ISocketService socketService,
+        INodeSocketService socketService,
         ILogger logger) : StrategyEngine,
         IOnDespawnEngine<Sockets>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
-        private readonly ISocketService _socketService = socketService;
+        private readonly INodeSocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]

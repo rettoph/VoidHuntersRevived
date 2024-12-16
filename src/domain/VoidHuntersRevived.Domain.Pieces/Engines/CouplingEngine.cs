@@ -11,11 +11,11 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
-    public sealed class CouplingEngine(ISocketService socketService, ILogger logger) : StrategyEngine,
+    public sealed class CouplingEngine(INodeSocketService socketService, ILogger logger) : StrategyEngine,
         IOnSpawnEngine<Coupling>,
         IOnDespawnEngine<Coupling>
     {
-        private readonly ISocketService _socketService = socketService;
+        private readonly INodeSocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]

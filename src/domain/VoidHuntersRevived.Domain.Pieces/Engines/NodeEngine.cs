@@ -23,13 +23,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
     public sealed class NodeEngine(
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
-        ISocketService socketService,
+        INodeSocketService socketService,
         ILogger logger) : StrategyEngine,
         IOnSpawnEngine<Node>,
         IOnDespawnEngine<Node>,
         IOnStepEngine
     {
-        private readonly ISocketService _socketService = socketService;
+        private readonly INodeSocketService _socketService = socketService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             node.Component.WorldTransform(treeLocation.Transformation);
 
-            if (!_entityQueryService.TryQueryByGroupIndex<Coupling>(node.GroupIndex, out Coupling coupling) || coupling.SocketId == NodeSocketId.Empty)
+            if (!_entityQueryService.TryQueryByGroupIndex<Coupling>(node.GroupIndex, out Coupling coupling) || coupling.SocketId == NodeSocketLocalId.Empty)
             {
                 node.Component.SetLocationTransformation(FixMatrix.Identity);
                 return;
@@ -99,7 +99,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             try
             {
                 ref Plug plug = ref _entityQueryService.QueryByGroupIndex<Plug>(node.GroupIndex);
-                NodeSocket nodeSocket = _socketService.GetSocket(coupling.SocketId);
+                NodeSocket nodeSocket = _socketService.GetNodeSocket(coupling.SocketId);
 
                 node.Component.SetLocationTransformation(plug.Location.Transformation.Invert() * nodeSocket.LocalTransformation);
             }
