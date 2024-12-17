@@ -12,7 +12,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public readonly EntityLocalId LocalId = localId;
         public readonly EntityGlobalId GlobalId = globalId;
 
-        public EntityId EntityId => new(this.LocalId.Value, this.GlobalId.Value);
         public ExclusiveGroupStruct Group => this.LocalId.Value.groupID;
         public GroupIndex GroupIndex => new(this.Group, this.Index);
     }
@@ -30,7 +29,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public readonly EntityGlobalId GlobalId = globalId;
         public readonly ref T Component = ref component;
 
-        public EntityId EntityId => new(this.LocalId.Value, this.GlobalId.Value);
         public ExclusiveGroupStruct Group => this.LocalId.Value.groupID;
         public GroupIndex GroupIndex => new(this.Group, this.Index);
 

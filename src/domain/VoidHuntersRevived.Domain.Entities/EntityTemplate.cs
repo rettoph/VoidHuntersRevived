@@ -15,7 +15,6 @@ using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Utilities;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities
 {
@@ -100,7 +99,6 @@ namespace VoidHuntersRevived.Domain.Entities
             EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor);
             initializer.Init(localId);
             initializer.Init(globalId);
-            initializer.Init(new EntityId(localId.Value, globalId.Value));
             initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
 
             return initializer;
@@ -159,7 +157,6 @@ namespace VoidHuntersRevived.Domain.Entities
             HashSet<Key<IEntityTemplate>> populatedTemplateKeys = [];
 
             // Register default components...
-            components.Set(new EntityId());
             components.Set(new EntityLocalId());
             components.Set(new EntityGlobalId());
             components.Set(new EntityStatus());

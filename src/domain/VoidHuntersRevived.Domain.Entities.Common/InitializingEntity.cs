@@ -13,7 +13,5 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public readonly EntityGlobalId GlobalId = globalId;
         public readonly EntityInitializer Initializer = initializer;
         public readonly IEntityTemplate Template = template;
-
-        public EntityId EntityId => new(this.LocalId.Value, this.GlobalId.Value);
     }
 }

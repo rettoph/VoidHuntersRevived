@@ -37,9 +37,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
                 {
                     for (int j = 0; j < blueprintPiece.Children[i].Length; j++)
                     {
-                        EntityGlobalId childGlobalId = HashBuilder<Blueprint, EntityGlobalId, VhId, int, int>.Instance.Calculate(
+                        EntityGlobalId childGlobalId = HashBuilder<Blueprint, EntityGlobalId, EntityGlobalId, int, int>.Instance.Calculate(
                             treeId,
-                            entity.EntityId.VhId,
+                            entity.GlobalId,
                             i,
                             j).ToGlobalEntityId();
 
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
                             team,
                             childGlobalId,
                             blueprintPiece.Children[i][j],
-                            new NodeSocketGlobalId(entity.EntityId.ToGlobalEntityId(), (byte)i));
+                            new NodeSocketGlobalId(entity.GlobalId, (byte)i));
                     }
                 }
             });
