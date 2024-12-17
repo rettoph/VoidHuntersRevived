@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 else
                 {
                     ref Tactical tactical = ref _readEntityQueryService.QueryByLocalId<Tactical>(tractorBeamEmitterLocalId);
-                    NodeSocketGlobalId? attachToSocketLocalId = _readSocketService.TryGetClosestOpenNodeSocket(new EntityId(tractorBeamEmitterLocalId.Value, tractorBeamEmitterGlobalId.Value), tactical.Target, out NodeSocket nodeSocket)
+                    NodeSocketGlobalId? attachToSocketLocalId = _readSocketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Target, out NodeSocket nodeSocket)
                                 ? _readSocketService.GetGlobalId(nodeSocket.LocalId) : null;
 
                     this.Strategy.Simulation.Input(

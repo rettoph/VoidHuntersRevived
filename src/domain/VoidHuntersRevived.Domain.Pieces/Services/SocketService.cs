@@ -91,10 +91,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             return ref this.GetCouplingFilter(new NodeSocketLocalId(nodeLocalId, socketIndex));
         }
 
-        public bool TryGetClosestOpenNodeSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket)
+        public bool TryGetClosestOpenNodeSocket(EntityLocalId treeLocalId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket)
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
-            ref var filter = ref _entityQueryService.GetFilter<Node>(treeId, Tree.NodeFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(treeLocalId, Tree.NodeFilterContextId);
             Fix64 closestOpenSocketDistance = OpenNodemaximumDistance;
             nodeSocket = default!;
             bool result = false;

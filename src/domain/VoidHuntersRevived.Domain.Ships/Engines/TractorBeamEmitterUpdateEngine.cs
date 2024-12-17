@@ -7,7 +7,6 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -37,18 +36,18 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.ProcessInput)]
         public void OnStep(Step step)
         {
-            foreach (var ((vhids, tacticals, tractorBeamEmitters, count), _) in _entityQueryService.QueryEntities<EntityId, Tactical, TractorBeamEmitter>())
+            foreach (var ((localIds, tacticals, tractorBeamEmitters, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Tactical, TractorBeamEmitter>())
             {
                 for (int i = 0; i < count; i++)
                 {
-                    this.UpdateTractorBeamEmitterTractorables(in vhids[i], ref tacticals[i], ref tractorBeamEmitters[i]);
+                    this.UpdateTractorBeamEmitterTractorables(in localIds[i], ref tacticals[i], ref tractorBeamEmitters[i]);
                 }
             }
         }
 
-        private void UpdateTractorBeamEmitterTractorables(in EntityId tractorBeamEmitterId, ref Tactical tactical, ref TractorBeamEmitter tractorBeamEmitter)
+        private void UpdateTractorBeamEmitterTractorables(in EntityLocalId tractorBeamEmitterLocalId, ref Tactical tactical, ref TractorBeamEmitter tractorBeamEmitter)
         {
-            ref var filter = ref _tractorBeamEmitterService.GetTractorableFilter(tractorBeamEmitterId.ToLocalEntityId());
+            ref var filter = ref _tractorBeamEmitterService.GetTractorableFilter(tractorBeamEmitterLocalId);
             foreach (var (indices, groupId) in filter)
             {
                 var (localIds, statuses, enableds, trees, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Enabled, Tree>(groupId);
@@ -60,13 +59,13 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
                     if (statuses[index].IsDespawned == true)
                     {
-                        _logger.Warning("Despanwed - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, IsDespawned = {IsDespawned}.", tractorBeamEmitterId.VhId, targetId, statuses[index].IsDespawned);
+                        _logger.Warning("Despanwed - TractorBeamEmitter = {TractorBeamEmitterId}, TractorBeamEmitterLocalId = {TractorBeamEmitterLocalId}, IsDespawned = {IsDespawned}.", tractorBeamEmitterLocalId, targetId, statuses[index].IsDespawned);
                         continue;
                     }
 
                     if (enableds[index] == false)
                     {
-                        _logger.Warning("Not Enabled - TractorBeamEmitter = {TractorBeamEmitterId}, Tractorable = {TractorableId}, Enabled = {Enabled}.", tractorBeamEmitterId.VhId, targetId, enableds[index].Value);
+                        _logger.Warning("Not Enabled - TractorBeamEmitter = {TractorBeamEmitterId}, TractorBeamEmitterLocalId = {TractorBeamEmitterLocalId}, Enabled = {Enabled}.", tractorBeamEmitterLocalId, targetId, enableds[index].Value);
                         throw new NotImplementedException();
 
                         // What to do here?
@@ -85,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
                     Location targetHeadChildLocation = _entityQueryService.QueryByLocalId<Plug>(targetTree.HeadLocalId).Location;
 
-                    if (_socketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterId, tactical.Value, out var openSocketNode))
+                    if (_socketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Value, out var openSocketNode))
                     {
                         FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.Transformation;
                         FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);

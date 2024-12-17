@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Services
         ref EntityFilterCollection GetCouplingFilter(NodeSocketLocalId socketId);
         ref EntityFilterCollection GetCouplingFilter(EntityLocalId nodeLocalId, byte socketIndex);
 
-        bool TryGetClosestOpenNodeSocket(EntityId treeId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket);
+        bool TryGetClosestOpenNodeSocket(EntityLocalId treeLocalId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket);
 
         EntityId Spawn(VhId sourceId, NodeSocket targetSocketNode, EntityGlobalId globalId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializer = null);
         EntityId Spawn(VhId sourceId, NodeSocket targetSocketNode, EntityData nodes, EntityInitializerDelegate? initializer = null);
