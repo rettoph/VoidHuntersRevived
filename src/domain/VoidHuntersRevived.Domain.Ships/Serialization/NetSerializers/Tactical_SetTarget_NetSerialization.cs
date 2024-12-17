@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
         {
             return new Tactical_SetTarget()
             {
-                ShipVhId = reader.GetVhId(),
+                ShipGlobalId = reader.GetEntityGlobalId(),
                 Value = reader.GetFixVector2(),
                 Snap = reader.GetBool()
             };
@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in Tactical_SetTarget instance)
         {
-            writer.Put(instance.ShipVhId);
+            writer.Put(instance.ShipGlobalId);
             writer.Put(instance.Value);
             writer.Put(instance.Snap);
         }

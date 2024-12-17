@@ -1,7 +1,7 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 
@@ -9,13 +9,11 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Services
 {
     public interface ITractorBeamEmitterService
     {
-        ref EntityFilterCollection GetTractorableFilter(EntityId tractorBeamEmitterId);
-        bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Node targetNode);
+        ref EntityFilterCollection GetTractorableFilter(EntityLocalId tractorBeamEmitterLocalId);
+        bool Query(EntityLocalId tractorBeamEmitterLocalId, FixVector2 target, out Node targetNode);
 
-        void Select(VhId sourceId, EntityId tractorBeamEmitterId, EntityId nodeId);
+        void Select(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, EntityGlobalId nodeGlobalId);
 
-        [Obsolete]
-        void Deselect(VhId sourceId, EntityId tractorBeamEmitterId);
-        void Deselect(VhId sourceId, EntityId tractorBeamEmitterId, SocketVhId? attachToSocketVhId);
+        void Deselect(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, NodeSocketGlobalId? attachToSocketVhId);
     }
 }

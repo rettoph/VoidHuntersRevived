@@ -126,6 +126,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return _dictionary.Values;
         }
 
+        public static void Clear()
+        {
+            _dictionary.Clear();
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is EntityGroupList group &&

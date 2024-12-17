@@ -21,32 +21,30 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         IOnDespawnEngine<Tree>,
         IOnStepEngine
     {
-
-        private readonly HashSet<EGID> _removedNodes = [];
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Tree component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tree> tree)
         {
-            ref Location location = ref _entityQueryService.QueryByGroupIndex<Location>(groupIndex);
-            ref var filter = ref _entityQueryService.GetFilter<Node>(id, Tree.NodeFilterContextId);
+            ref Location location = ref _entityQueryService.QueryByGroupIndex<Location>(tree.GroupIndex);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(tree.LocalId, Tree.NodeFilterContextId);
 
             this.TransformNodes(ref location, ref filter);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Tree component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tree> tree)
         {
-            _logger.Verbose("Despawning Tree {TreeId}, HeadId = {HeadId}", id.VhId, component.HeadId.VhId);
-            _entitySpawnService.Despawn(sourceEventId, component.HeadId);
+            _logger.Verbose("Despawning Tree {TreeId}, HeadLocalId = {HeadLocalId}", tree.LocalId, tree.Component.HeadLocalId);
+            _entitySpawnService.Despawn(sourceEventId, tree.Component.HeadLocalId);
         }
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((ids, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityId, Location, Enabled, Awake>())
+            foreach (var ((localIds, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Location, Enabled, Awake>())
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
@@ -55,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                         continue;
                     }
 
-                    ref var filter = ref _entityQueryService.GetFilter<Node>(ids[treeIndex], Tree.NodeFilterContextId);
+                    ref var filter = ref _entityQueryService.GetFilter<Node>(localIds[treeIndex], Tree.NodeFilterContextId);
                     this.TransformNodes(ref locations[treeIndex], ref filter);
                 }
             }

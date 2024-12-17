@@ -1,8 +1,9 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 
-namespace VoidHuntersRevived.Domain.Entities.Common.Events
+namespace VoidHuntersRevived.Domain.Entities.Events
 {
     public class SpawnEntity : IEventData
     {
@@ -10,12 +11,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Events
 
         public bool IsPredictable => true;
 
-        public required VhId VhId { get; init; }
+        public required EntityGlobalId GlobalId { get; init; }
         public required Key<IEntityTemplate> TemplateKey { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<SpawnEntity, VhId, VhId, VhId>.Instance.Calculate(in source, this.VhId, this.TemplateKey.Id);
+            return HashBuilder<SpawnEntity, VhId, EntityGlobalId, VhId>.Instance.Calculate(in source, this.GlobalId, this.TemplateKey.Id);
         }
     }
 

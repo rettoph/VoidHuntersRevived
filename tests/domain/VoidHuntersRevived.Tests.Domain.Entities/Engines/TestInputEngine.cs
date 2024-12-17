@@ -20,12 +20,12 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Engines
 
         public void Process(VhId eventId, TestSpawnInput data)
         {
-            _entitySpawnService.Spawn(eventId.Create(1), data.EntityTemplateKey, data.EntityId);
+            _entitySpawnService.Spawn(eventId.Create(1), data.EntityTemplateKey, data.EntityGlobalId);
         }
 
         public void Process(VhId eventId, TestDepawnInput data)
         {
-            _entitySpawnService.Despawn(eventId.Create(1), data.EntityId);
+            _entitySpawnService.Despawn(eventId.Create(1), data.EntityGlobalId);
         }
     }
 }

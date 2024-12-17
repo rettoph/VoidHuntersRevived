@@ -11,19 +11,19 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public ref Tree GetTree(in Node node)
         {
-            return ref _entityQueryService.QueryById<Tree>(node.TreeId);
+            return ref _entityQueryService.QueryByLocalId<Tree>(node.TreeLocalId);
         }
 
         public bool IsHead(in Node node)
         {
-            return this.GetTree(node).HeadId == node.Id;
+            return this.GetTree(node).HeadLocalId == node.LocalId;
         }
 
         public bool IsHead(in Node node, in GroupIndex treeGroupIndex)
         {
             if (_entityQueryService.TryQueryByGroupIndex<Tree>(treeGroupIndex, out Tree tree))
             {
-                return tree.HeadId == node.Id;
+                return tree.HeadLocalId == node.LocalId;
             }
 
             return false;

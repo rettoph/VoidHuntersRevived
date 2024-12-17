@@ -71,6 +71,28 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return this;
         }
 
+        public SimulationMocker Input<TStrategy>(VhId sourceId, IInputData data, bool verified)
+            where TStrategy : IStrategy
+        {
+            foreach (IStrategyMocker strategy in this.Strategies.OfType<IStrategyMocker<TStrategy>>())
+            {
+                strategy.Input(sourceId, data, verified);
+            }
+
+            return this;
+        }
+
+        public SimulationMocker Input<TStrategy>(IInputData data, bool verified)
+            where TStrategy : IStrategy
+        {
+            foreach (IStrategyMocker strategy in this.Strategies.OfType<IStrategyMocker<TStrategy>>())
+            {
+                strategy.Input(data, verified);
+            }
+
+            return this;
+        }
+
         public SimulationMocker InputMany<T>(Func<int, T> generator, int count, int offset, bool verified)
             where T : IInputData
         {

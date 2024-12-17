@@ -3,7 +3,7 @@ using VoidHuntersRevived.Common;
 
 namespace LiteNetLib.Utils
 {
-    public static class BinaryReaderExtensions
+    public static class NetDataReaderExtensions
     {
         public static Vector2 GetVector2(this NetDataReader reader)
         {

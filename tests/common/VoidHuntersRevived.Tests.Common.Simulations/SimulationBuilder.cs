@@ -57,7 +57,8 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                     .Setup(settings => settings.GetValue(Settings.StepsPerTick), () => stepsPerTick);
 
                 mocker.Mocker<ILoggerService>()
-                    .Setup(loggers => loggers.GetOrCreate(It.IsAny<Type>()), () => new Mocker<ILogger>().GetInstance());
+                    .Setup(loggers => loggers.GetOrCreate(It.IsAny<Type>()), () => new Mocker<ILogger>().GetInstance())
+                    .Setup(loggers => loggers.GetOrCreate<It.IsAnyType>(), () => new Mocker<ILogger>().GetInstance());
             });
         }
 

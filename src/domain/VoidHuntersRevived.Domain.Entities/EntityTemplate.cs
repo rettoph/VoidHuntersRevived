@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.System;
+﻿using Guppy.Core.Common.Extensions.System;
+using Serilog;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -15,7 +15,6 @@ using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Utilities;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities
 {
@@ -24,8 +23,9 @@ namespace VoidHuntersRevived.Domain.Entities
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
-        private readonly ActionSequenceGroup<OnDespawnSequenceGroupEnum, VhId, IEntityTemplate, EntityId, GroupIndex> _onDespawnEngineInvokers;
-        private readonly ActionSequenceGroup<OnSpawnSequenceGroupEnum, VhId, IEntityTemplate, EntityId, GroupIndex> _onSpawnEngineInvokers;
+        private readonly ILogger _logger;
+        private readonly ComponentEngineInvoker.ComponentEngineInvokerDelegateSequenceGroup<OnDespawnSequenceGroupEnum> _onDespawnEngineInvokers;
+        private readonly ComponentEngineInvoker.ComponentEngineInvokerDelegateSequenceGroup<OnSpawnSequenceGroupEnum> _onSpawnEngineInvokers;
         private EntitiesDB _entitiesDB;
         private FasterList<IComponentSerializer> _serializers;
 
@@ -41,13 +41,15 @@ namespace VoidHuntersRevived.Domain.Entities
             IEntityTemplateFragmentService entityTemplateService,
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityFactory factory,
-            IEntityFunctions functions
+            IEntityFunctions functions,
+            ILogger logger
         )
         {
             _uniqueNumberProvider = uniqueNumberProvider;
             _factory = factory;
             _functions = functions;
             _entitiesDB = null!;
+            _logger = logger;
 
             _onDespawnEngineInvokers = new(false);
             _onSpawnEngineInvokers = new(false);
@@ -85,48 +87,54 @@ namespace VoidHuntersRevived.Domain.Entities
         }
 
         #region Instance Entity Methods
-        public EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id)
+        public EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, out EntityLocalId localId)
         {
             // Create a new EGID for the entity
             EGID egid = new(_uniqueNumberProvider.GetUInt32(), _group.Value);
-            id = new EntityId(egid, vhid);
+            localId = new(egid);
+
+            _logger.Verbose("HardSpawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", globalId, localId, this.Key.Name);
 
             // Invoke Svelto factory and initialize instance with common component values
             EntityInitializer initializer = _factory.BuildEntity(egid, _descriptor);
-            initializer.Init(id);
+            initializer.Init(localId);
+            initializer.Init(globalId);
             initializer.Init(new EntityStatus(EntityStatusEnum.HardSpawned));
 
             return initializer;
         }
 
-        public void SoftSpawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
+        public void SoftSpawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
-            _onSpawnEngineInvokers.Invoke(sourceEventId, this, id, groupIndex);
+            _logger.Verbose("SoftSpawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
+            _onSpawnEngineInvokers.Invoke(sourceEventId, this, entity);
         }
 
-        public void SoftDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
+        public void SoftDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
-            _onDespawnEngineInvokers.Invoke(sourceEventId, this, id, groupIndex);
+            _logger.Verbose("SoftDespawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
+            _onDespawnEngineInvokers.Invoke(sourceEventId, this, entity);
         }
 
-        public void HardDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status)
+        public void HardDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
-            _functions.RemoveEntity<VoidHuntersEntityDescriptor>(id.EGID);
+            _logger.Verbose("HardDespawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
+            _functions.RemoveEntity<VoidHuntersEntityDescriptor>(entity.LocalId.Value);
         }
 
-        public void SerializeInstanceEntity(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options)
+        public void SerializeInstanceEntity(ref EntityWriter writer, in Entity entity, in SerializationOptions options)
         {
             foreach (IComponentSerializer serializer in _serializers)
             {
-                serializer.Serialize(ref writer, in id, in groupIndex, _entitiesDB, in options);
+                serializer.Serialize(ref writer, in entity, _entitiesDB, in options);
             }
         }
 
-        public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
             foreach (IComponentSerializer serializer in _serializers)
             {
-                serializer.Deserialize(in sourceId, in options, ref reader, ref initializer, in id);
+                serializer.Deserialize(in sourceId, in options, ref reader, in entity);
             }
         }
         #endregion
@@ -149,7 +157,8 @@ namespace VoidHuntersRevived.Domain.Entities
             HashSet<Key<IEntityTemplate>> populatedTemplateKeys = [];
 
             // Register default components...
-            components.Set(new EntityId());
+            components.Set(new EntityLocalId());
+            components.Set(new EntityGlobalId());
             components.Set(new EntityStatus());
             components.Set(new Common.Components.EntityTemplate(key));
 

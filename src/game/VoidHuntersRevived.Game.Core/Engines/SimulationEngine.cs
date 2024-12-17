@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Game.Core.Engines
             // {
             //     for (int y = -radius; y < radius; y += step)
             //     {
-            //         _treeService.Spawn(eventId, eventId.Create(i++), _teamService.GetDefaultTeamComponent(), ChainEntityTemplate.ChainEntityTemplateKey, pieceTypes[i % pieceTypes.Length].Key, (IEntityService entities, EntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+            //         _treeService.Spawn(eventId, eventId.Create(i++), _teamService.GetDefaultTeamComponent(), ChainEntityTemplate.ChainEntityTemplateKey, pieceTypes[i % pieceTypes.Length].Key, (IEntityService entities, EntityTemplate entityTemplate, in Entity entity, ref EntityInitializer initializer) =>
             //         {
             //             initializer.Init(new Location()
             //             {

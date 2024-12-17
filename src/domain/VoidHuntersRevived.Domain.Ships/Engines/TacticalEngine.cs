@@ -22,8 +22,8 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
         public void Process(VhId eventId, Tactical_SetTarget data)
         {
-            EntityId id = _entityQueryService.GetId(data.ShipVhId);
-            ref Tactical tactical = ref _entityQueryService.QueryById<Tactical>(id);
+            EntityLocalId shipLocalId = _entityQueryService.GetLocalId(data.ShipGlobalId);
+            ref Tactical tactical = ref _entityQueryService.QueryByLocalId<Tactical>(shipLocalId);
 
             tactical.Target = data.Value;
 

@@ -5,6 +5,7 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
@@ -111,12 +112,12 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
 
         private TestSpawnInput GenerateTestSpawnInput(int id)
         {
-            return new TestSpawnInput() { EntityId = HashBuilder<TestSpawnInput, int>.Instance.Calculate(id), EntityTemplateKey = TestEntityTemplateKey };
+            return new TestSpawnInput() { EntityGlobalId = HashBuilder<TestSpawnInput, int>.Instance.Calculate(id).ToGlobalEntityId(), EntityTemplateKey = TestEntityTemplateKey };
         }
 
         private TestDepawnInput GenerateTestDepawnInput(int id)
         {
-            return new TestDepawnInput() { EntityId = HashBuilder<TestDepawnInput, int>.Instance.Calculate(id) };
+            return new TestDepawnInput() { EntityGlobalId = HashBuilder<TestDepawnInput, int>.Instance.Calculate(id).ToGlobalEntityId() };
         }
     }
 }

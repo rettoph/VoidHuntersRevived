@@ -3,8 +3,8 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Ships.Common.Components
 {
-    public struct Tractorable : IEntityComponent
+    public readonly struct Tractorable : IEntityComponent
     {
-        public EntityId TractorBeamEmitter { get; init; }
+        public EntityLocalId TractorBeamEmitterLocalId { get; init; }
     }
 }

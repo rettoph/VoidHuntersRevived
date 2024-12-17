@@ -1,8 +1,10 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Network.Common;
 using Guppy.Game.Graphics.Common;
 using Guppy.Game.Input.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -23,7 +25,8 @@ using VoidHuntersRevived.Game.Core.Events;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     internal class InputEngine(
-        ICamera2D camera
+        ICamera2D camera,
+        INetScope<IStrategy> netScope
     ) : StrategyEngine<ILockstepStrategy>,
         IClientEngine,
         IOnInitializeEngine<IStrategy>,
@@ -35,11 +38,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private bool _spamClick;
 
         private readonly ICamera2D _camera = camera;
+        private readonly INetScope<IStrategy> _netScope = netScope;
 
         private IEntityQueryService _readEntityQueryService = null!;
         private ITractorBeamEmitterService _readTractorBeamEmitterService = null!;
-        private ISocketService _readSocketService = null!;
-        private IUserShipService _readUserShipService = null!;
+        private INodeSocketService _readSocketService = null!;
 
         private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
 
@@ -50,84 +53,78 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             _readEntityQueryService = readStrategy.Engines.Get<IEntityService>().Query;
             _readTractorBeamEmitterService = readStrategy.Engines.Get<ITractorBeamEmitterService>();
-            _readSocketService = readStrategy.Engines.Get<ISocketService>();
-            _readUserShipService = readStrategy.Engines.Get<IUserShipService>();
+            _readSocketService = readStrategy.Engines.Get<INodeSocketService>();
         }
 
         public void Process(in Guid messageId, Input_Helm_SetDirection message)
         {
-            if (_readUserShipService.TryGetCurrentUserShipId(out EntityId shipId) == false)
-            {
-                return;
-            }
+            VhId sourceId = new(messageId);
 
-            this.Strategy.Simulation.Input(
-                sourceId: new VhId(messageId),
-                data: new Helm_SetDirection()
-                {
-                    ShipVhId = shipId.VhId,
-                    Which = message.Which,
-                    Value = message.Value
-                });
+            this.ForEachCurrentUserEntity((shipLocalId, shipGlobalId) =>
+            {
+                this.Strategy.Simulation.Input(
+                    sourceId: sourceId,
+                    data: new Helm_SetDirection()
+                    {
+                        ShipGlobalId = shipGlobalId,
+                        Which = message.Which,
+                        Value = message.Value
+                    });
+            });
         }
 
         public void Process(in Guid messageId, Input_TractorBeamEmitter_SetActive message)
         {
-            if (_readUserShipService.TryGetCurrentUserShipId(out EntityId shipId) == false)
-            {
-                return;
-            }
+            VhId sourceId = new(messageId);
 
-            VhId eventId = new(messageId);
-
-            if (message.Value)
+            this.ForEachCurrentUserEntity((tractorBeamEmitterLocalId, tractorBeamEmitterGlobalId) =>
             {
-                if (_readTractorBeamEmitterService.Query(shipId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
+                if (message.Value)
                 {
-                    return;
+                    if (_readTractorBeamEmitterService.Query(tractorBeamEmitterLocalId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
+                    {
+                        return;
+                    }
+
+                    EntityGlobalId targetNodeGlobalId = _readEntityQueryService.GetGlobalId(targetNode.LocalId);
+
+                    this.Strategy.Simulation.Input(
+                        sourceId: sourceId,
+                        data: new Tactical_SetTarget()
+                        {
+                            ShipGlobalId = tractorBeamEmitterGlobalId,
+                            Value = (FixVector2)this.CurrentTargetPosition,
+                            Snap = true
+                        });
+
+                    this.Strategy.Simulation.Input(
+                        sourceId: sourceId,
+                        data: new Input_TractorBeamEmitter_Select()
+                        {
+                            TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
+                            TargetNodeGlobalId = targetNodeGlobalId
+                        });
                 }
+                else
+                {
+                    ref Tactical tactical = ref _readEntityQueryService.QueryByLocalId<Tactical>(tractorBeamEmitterLocalId);
+                    NodeSocketGlobalId? attachToSocketLocalId = _readSocketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Target, out NodeSocket nodeSocket)
+                                ? _readSocketService.GetGlobalId(nodeSocket.LocalId) : null;
 
-                this.Strategy.Simulation.Input(
-                    sourceId: eventId,
-                    data: new Tactical_SetTarget()
-                    {
-                        ShipVhId = shipId.VhId,
-                        Value = (FixVector2)this.CurrentTargetPosition,
-                        Snap = true
-                    });
-
-                this.Strategy.Simulation.Input(
-                    sourceId: eventId,
-                    data: new Input_TractorBeamEmitter_Select()
-                    {
-                        ShipVhId = shipId.VhId,
-                        TargetVhId = targetNode.Id.VhId
-                    });
-            }
-            else
-            {
-                ref Tactical tactical = ref _readEntityQueryService.QueryById<Tactical>(shipId);
-                SocketVhId? attachToSocket = _readSocketService.TryGetClosestOpenSocket(shipId, tactical.Target, out NodeSocket nodeSocket)
-                            ? nodeSocket.Id.VhId : null;
-
-                this.Strategy.Simulation.Input(
-                    sourceId: eventId,
-                    data: new Input_TractorBeamEmitter_Deselect()
-                    {
-                        ShipVhId = shipId.VhId,
-                        AttachToSocketVhId = attachToSocket
-                    });
-            }
+                    this.Strategy.Simulation.Input(
+                        sourceId: sourceId,
+                        data: new Input_TractorBeamEmitter_Deselect()
+                        {
+                            TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
+                            AttachToNodeSocketGlobalId = attachToSocketLocalId
+                        });
+                }
+            });
         }
 
         [SequenceGroup<OnTickSequenceGroup>(OnTickSequenceGroup.InputEvents)]
         public void OnTick(Tick tick)
         {
-            if (_readUserShipService.TryGetCurrentUserShipId(out EntityId shipId) == false)
-            {
-                return;
-            }
-
             if (_spamClick)
             {
                 this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
@@ -140,25 +137,45 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 }
             }
 
-            ref Tactical tactical = ref _readEntityQueryService.QueryById<Tactical>(shipId);
-            if (tactical.Uses == 0)
+            this.ForEachCurrentUserEntity((shipLocalId, shipGlobalId) =>
             {
-                return;
-            }
-
-            this.Strategy.Simulation.Input(
-                sourceId: tick.Hash,
-                data: new Tactical_SetTarget()
+                ref Tactical tactical = ref _readEntityQueryService.QueryByLocalId<Tactical>(shipLocalId);
+                if (tactical.Uses == 0)
                 {
-                    ShipVhId = shipId.VhId,
-                    Value = (FixVector2)this.CurrentTargetPosition,
-                    Snap = false
-                });
+                    return;
+                }
+
+                this.Strategy.Simulation.Input(
+                    sourceId: tick.Hash,
+                    data: new Tactical_SetTarget()
+                    {
+                        ShipGlobalId = shipGlobalId,
+                        Value = (FixVector2)this.CurrentTargetPosition,
+                        Snap = false
+                    });
+            });
         }
 
         public void Process(in Guid messageId, Input_Spam_Click message)
         {
             _spamClick = message.Value;
+        }
+
+        private void ForEachCurrentUserEntity(Action<EntityLocalId, EntityGlobalId> input)
+        {
+            int currentUserId = _netScope.Group.Peer.Users.Current.Id;
+            ref var filter = ref _readEntityQueryService.GetFilter<EntityLocalId, IUser>(currentUserId);
+            foreach (var (indices, group) in filter)
+            {
+                var (localIds, globalIds, _) = _readEntityQueryService.QueryEntities<EntityLocalId, EntityGlobalId>(group);
+
+                for (int i = 0; i < indices.count; i++)
+                {
+                    EntityLocalId localId = localIds[indices[i]];
+                    EntityGlobalId globalId = globalIds[indices[i]];
+                    input(localId, globalId);
+                }
+            }
         }
     }
 }

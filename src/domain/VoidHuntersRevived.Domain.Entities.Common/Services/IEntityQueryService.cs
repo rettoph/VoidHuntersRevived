@@ -1,117 +1,79 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IEntityQueryService
     {
-        EntityId GetId(VhId vhid);
-
-        bool TryGetId(VhId vhid, out EntityId id);
-
-        bool TryQueryById<T>(EntityId id, out T value)
+        bool TryQueryByEGID<T>(EGID egid, out T value)
             where T : unmanaged, IEntityComponent;
 
-        bool TryQueryById<T>(EntityId id, out GroupIndex groupIndex, out T value)
+        bool TryQueryByEGID<T>(EGID egid, out GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent;
 
-        ref T QueryById<T>(EntityId id)
+        ref T QueryByEGID<T>(EGID egid)
             where T : unmanaged, IEntityComponent;
 
-        ref T QueryById<T>(EntityId id, out GroupIndex groupIndex)
+        ref T QueryByEGID<T>(EGID egid, out GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent;
 
-        ref T QueryById<T>(EntityId id, out GroupIndex groupIndex, out bool exists)
+        ref T QueryByEGID<T>(EGID egid, out GroupIndex groupIndex, out bool exists)
             where T : unmanaged, IEntityComponent;
 
-        /// <summary>
-        /// Warning, extra lookup, less efficient
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="vhid"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        bool TryQueryByVhId<T>(VhId vhid, out T value)
+        bool TryQueryByLocalId<T>(EntityLocalId localId, out T value)
             where T : unmanaged, IEntityComponent
-        {
-            if (this.TryGetId(vhid, out EntityId id) && this.TryQueryById(id, out value))
-            {
-                return true;
-            }
+                => this.TryQueryByEGID(localId.Value, out value);
 
-            value = default;
-            return false;
-        }
-
-        /// <summary>
-        /// Warning, extra lookup, less efficient
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="vhid"></param>
-        /// <param name="groupIndex"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        bool TryQueryByVhId<T>(VhId vhid, out GroupIndex groupIndex, out T value)
+        bool TryQueryByLocalId<T>(EntityLocalId localId, out GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent
-        {
-            if (this.TryGetId(vhid, out EntityId id) && this.TryQueryById(id, out groupIndex, out value))
-            {
-                return true;
-            }
+                => this.TryQueryByEGID(localId.Value, out groupIndex, out value);
 
-            groupIndex = default;
-            value = default;
-            return false;
-        }
+        ref T QueryByLocalId<T>(EntityLocalId localId)
+            where T : unmanaged, IEntityComponent
+                => ref this.QueryByEGID<T>(localId.Value);
 
-        /// <summary>
-        /// Warning, extra lookup, even less efficient
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        ref T QueryByVhId<T>(VhId vhid)
-            where T : unmanaged, IEntityComponent => ref this.QueryById<T>(this.GetId(vhid));
+        ref T QueryByLocalId<T>(EntityLocalId localId, out GroupIndex groupIndex)
+            where T : unmanaged, IEntityComponent
+                => ref this.QueryByEGID<T>(localId.Value, out groupIndex);
 
-        /// <summary>
-        /// Warning, extra lookup, even less efficient
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="id"></param>
-        /// <param name="groupIndex"></param>
-        /// <returns></returns>
-        ref T QueryByVhId<T>(VhId vhid, out GroupIndex groupIndex)
-            where T : unmanaged, IEntityComponent => ref this.QueryById<T>(this.GetId(vhid), out groupIndex);
+        ref T QueryByLocalId<T>(EntityLocalId localId, out GroupIndex groupIndex, out bool exists)
+            where T : unmanaged, IEntityComponent
+                => ref this.QueryByEGID<T>(localId.Value, out groupIndex, out exists);
 
-        /// <summary>
-        /// Warning, extra lookup, even less efficient
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="id"></param>
-        /// <param name="groupIndex"></param>
-        /// <param name="exists"></param>
-        /// <returns></returns>
-        ref T QueryByVhId<T>(VhId vhid, out GroupIndex groupIndex, out bool exists)
-            where T : unmanaged, IEntityComponent => ref this.QueryById<T>(this.GetId(vhid), out groupIndex, out exists);
+        EntityLocalId GetLocalId(EntityGlobalId globalId);
+        bool TryGetLocalId(EntityGlobalId globalId, out EntityLocalId localId);
 
-        ref T QueryByGroupIndex<T>(in GroupIndex groupIndex)
+        EntityGlobalId GetGlobalId(EntityLocalId localId);
+        bool TryGetGlobalId(EntityLocalId localId, out EntityGlobalId globalId);
+
+        bool TryGetEntity(EntityGlobalId globalId, out Entity entity);
+        bool TryGetEntity<T>(EntityGlobalId globalId, out Entity<T> entity)
+            where T : unmanaged, IEntityComponent;
+        bool TryGetEntity(EntityLocalId localId, out Entity entity);
+        bool TryGetEntity<T>(EntityLocalId localId, out Entity<T> entity)
             where T : unmanaged, IEntityComponent;
 
-        bool TryQueryByGroupIndex<T>(in GroupIndex groupIndex, out T value)
+        bool TryGetEntity(ExclusiveGroupStruct groupId, uint index, out Entity entity);
+        bool TryGetEntity<T>(ExclusiveGroupStruct groupId, uint index, out Entity<T> entity)
+            where T : unmanaged, IEntityComponent;
+
+        ref T QueryByGroupIndex<T>(GroupIndex groupIndex)
+            where T : unmanaged, IEntityComponent;
+
+        bool TryQueryByGroupIndex<T>(GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent;
 
         ref T QueryByGroupIndex<T>(ExclusiveGroupStruct groupId, uint index)
             where T : unmanaged, IEntityComponent;
 
-        bool TryQueryByGroupIndex<T>(in ExclusiveGroupStruct groupId, uint index, out T value)
+        bool TryQueryByGroupIndex<T>(ExclusiveGroupStruct groupId, uint index, out T value)
             where T : unmanaged, IEntityComponent;
 
-        bool HasAny<T>(ExclusiveGroupStruct groupID)
+        bool Has<T>(ExclusiveGroupStruct groupID)
             where T : unmanaged, IEntityComponent;
 
-        bool HasAny<T1>(ExclusiveGroupStruct groupId, out EntityCollection<T1> entities)
+        bool Has<T1>(ExclusiveGroupStruct groupId, out EntityCollection<T1> entities)
             where T1 : unmanaged, IEntityComponent;
 
         bool HasAll<T1, T2>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2> entities)
@@ -204,21 +166,66 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         int CalculateTotal<T>()
             where T : unmanaged, IEntityComponent;
 
-        bool IsSpawned(EntityId id);
-        bool IsSpawned(EntityId id, out GroupIndex groupIndex);
-        bool IsSpawned(in GroupIndex groupIndex);
+        bool IsSpawned(GroupIndex groupIndex);
+        bool IsSpawned(EGID egid);
+        bool IsSpawned(EGID egid, out GroupIndex groupIndex);
+        bool IsSpawned(EntityLocalId localId)
+            => this.IsSpawned(localId.Value);
+        bool IsSpawned(EntityLocalId localId, out GroupIndex groupIndex)
+            => this.IsSpawned(localId.Value, out groupIndex);
+        bool IsSpawned(EntityGlobalId globalId)
+        {
+            if (this.TryGetLocalId(globalId, out EntityLocalId localId) == false)
+            {
+                return false;
+            }
 
-        bool IsDespawned(EntityId id);
-        bool IsDespawned(EntityId id, out GroupIndex groupIndex);
-        bool IsDespawned(in GroupIndex groupIndex);
+            return this.IsSpawned(localId.Value);
+        }
+        bool IsSpawned(EntityGlobalId globalId, out GroupIndex groupIndex)
+        {
+            if (this.TryGetLocalId(globalId, out EntityLocalId localId) == false)
+            {
+                groupIndex = default;
+                return false;
+            }
 
-        ref EntityFilterCollection GetFilter<T>(EntityId id, FilterContextID filterContext)
+            return this.IsSpawned(localId.Value, out groupIndex);
+        }
+
+        bool IsDespawned(GroupIndex groupIndex);
+        bool IsDespawned(EGID egid);
+        bool IsDespawned(EGID egid, out GroupIndex groupIndex);
+        bool IsDespawned(EntityLocalId localId)
+            => this.IsDespawned(localId.Value);
+        bool IsDespawned(EntityLocalId localId, out GroupIndex groupIndex)
+            => this.IsDespawned(localId.Value, out groupIndex);
+        bool IsDespawned(EntityGlobalId globalId)
+            => this.IsDespawned(this.GetLocalId(globalId).Value);
+        bool IsDespawned(EntityGlobalId globalId, out GroupIndex groupIndex)
+            => this.IsDespawned(this.GetLocalId(globalId).Value, out groupIndex);
+
+
+        ref EntityFilterCollection GetFilter<T>(EGID egid, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent;
 
-        ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
-            where T : unmanaged, IEntityComponent;
+        ref EntityFilterCollection GetFilter<T>(EntityLocalId localId, FilterContextID filterContext)
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(localId.Value, filterContext);
+        ref EntityFilterCollection GetFilter<T, TFilter>(EntityLocalId localId)
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(localId.Value, FilterContextHelper.GetFilterContext<T, TFilter>());
 
-        ref EntityFilterCollection GetFilter<T>(FilterVhId<T> filterId)
+        ref EntityFilterCollection GetFilter<T>(CombinedFilterID combinedFilterId)
+            where T : unmanaged, IEntityComponent;
+        ref EntityFilterCollection GetFilter<T>(int filterId, FilterContextID contextID)
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(new CombinedFilterID(filterId, contextID));
+        ref EntityFilterCollection GetFilter<T, TFilter>(int filterId)
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(filterId, FilterContextHelper.GetFilterContext<T, TFilter>());
+
+        ref EntityFilterCollection GetFilter<T>(EntityFilterId<T> filterId)
             where T : unmanaged, IEntityComponent;
     }
 }

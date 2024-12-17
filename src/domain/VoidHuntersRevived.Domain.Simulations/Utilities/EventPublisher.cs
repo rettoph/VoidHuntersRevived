@@ -3,9 +3,9 @@ using Guppy.Core.Common.Providers;
 using Serilog;
 using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Utilities
 {

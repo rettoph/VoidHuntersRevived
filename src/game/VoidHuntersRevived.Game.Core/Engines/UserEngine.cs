@@ -4,6 +4,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
@@ -40,13 +41,13 @@ namespace VoidHuntersRevived.Game.Core.Engines
             // _treeFactory.Create(id.Create(1), EntityTemplates.Chain, PieceTypes.HullSquare);
 
             Blueprint blueprint = _blueprintService.GetAll().First();
-            _treeService.Spawn(eventId, eventId.Create(1), _teamService.GetOpenTeam(), Resources.EntityTemplates.Ship.UserShipEntityTemplate, blueprint, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+            _treeService.Spawn(eventId, eventId.Create(1).ToGlobalEntityId(), _teamService.GetOpenTeam(), Resources.EntityTemplates.Ship.UserShipEntityTemplate, blueprint, (IEntityService entities, in InitializingEntity entity) =>
             {
-                initializer.Init(new Location()
+                entity.Initializer.Init(new Location()
                 {
                     Position = new FixVector2(0, 0)
                 });
-                initializer.Init(new UserId(data.UserDto.Id));
+                entity.Initializer.Init(new UserId(data.UserDto.Id));
             });
         }
     }

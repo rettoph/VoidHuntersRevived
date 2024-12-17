@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
         {
             return new Helm_SetDirection()
             {
-                ShipVhId = reader.GetVhId(),
+                ShipGlobalId = reader.GetEntityGlobalId(),
                 Which = reader.GetEnum<Direction>(),
                 Value = reader.GetBool()
             };
@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in Helm_SetDirection instance)
         {
-            writer.Put(instance.ShipVhId);
+            writer.Put(instance.ShipGlobalId);
             writer.Put(instance.Which);
             writer.Put(instance.Value);
         }

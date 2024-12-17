@@ -40,7 +40,6 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                 builder.RegisterEngine<DrawVertexVisibleEngine>();
                 builder.RegisterEngine<InputEngine>();
                 builder.RegisterEngine<ShaderAntiAliasingEngine>();
-                builder.RegisterEngine<TractorBeamHighlightEngine>();
 
                 builder.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
                 {
