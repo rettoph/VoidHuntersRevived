@@ -32,11 +32,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 var filter = _socketService.GetCouplingFilter(nodeLocalId: sockets.LocalId, socketIndex: (byte)i);
                 foreach (var (indices, groupId) in filter)
                 {
-                    var (entityIds, _) = _entityQueryService.QueryEntities<EntityId>(groupId);
+                    var (localIds, _) = _entityQueryService.QueryEntities<EntityLocalId>(groupId);
 
                     for (int j = 0; j < indices.count; j++)
                     {
-                        _entitySpawnService.Despawn(sourceEventId, entityIds[indices[j]]);
+                        _entitySpawnService.Despawn(sourceEventId, localIds[indices[j]]);
                     }
                 }
             }

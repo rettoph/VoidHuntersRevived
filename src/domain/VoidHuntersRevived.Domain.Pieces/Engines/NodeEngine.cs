@@ -114,9 +114,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 // Without this it will default all vertices to 0,0 and fail an assert
                 node.Component.SetLocationTransformation(FixMatrix.Identity);
 
-                var id = _entityQueryService.QueryByGroupIndex<EntityId>(node.GroupIndex);
-                _logger.Error(ex, "There was a fatal error attempting to set node transformation for node {NodeId}.", id.VhId.Value);
-                _entitySpawnService.Despawn(NameSpace<NodeEngine>.Instance, id);
+                var localId = _entityQueryService.QueryByGroupIndex<EntityLocalId>(node.GroupIndex);
+                _logger.Error(ex, "There was a fatal error attempting to set node transformation for node {NodeLocalId}.", localId);
+                _entitySpawnService.Despawn(NameSpace<NodeEngine>.Instance, localId);
+#if DEBUG
+                throw;
+#endif
             }
         }
     }

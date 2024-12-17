@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
         }
 
-        private readonly Queue<(EntityId id, EntityLocalId headLocalId, Location location)> _deselecteds = new();
+        private readonly Queue<(EntityLocalId localId, EntityLocalId headLocalId, Location location)> _deselecteds = new();
         public void Deselect(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, NodeSocketGlobalId? attachToSocketVhId)
         {
             if (_entityQueryService.TryGetLocalId(tractorBeamEmitterGlobalId, out EntityLocalId tracorBeamEmitterLocalId) == false)
@@ -77,29 +77,30 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             ref var filter = ref this.GetTractorableFilter(tracorBeamEmitterLocalId);
             foreach (var (indices, groupId) in filter)
             {
-                var (entityIds, statuses, trees, locations, _) = _entityQueryService.QueryEntities<EntityId, EntityStatus, Tree, Location>(groupId);
+                var (localIds, statuses, trees, locations, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Tree, Location>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
                     uint index = indices[i];
+                    EntityLocalId localId = localIds[index];
 
                     if (statuses[index].IsDespawned)
                     {
-                        _logger.Warning("Unable to deselect {TractorableId}, despawned. Multiple deselect calls in a single frame?", entityIds[index].VhId.Value);
+                        _logger.Warning("Unable to deselect {TractorableId}, despawned. Multiple deselect calls in a single frame?", localId);
                         continue;
                     }
 
-                    EntityId id = entityIds[index];
-                    _deselecteds.Enqueue((id, trees[index].HeadLocalId, locations[index]));
 
-                    filter.Remove(id);
+                    _deselecteds.Enqueue((localId, trees[index].HeadLocalId, locations[index]));
+
+                    filter.Remove(localId);
                 }
             }
 
             VhId nextSourceId = NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId);
-            while (_deselecteds.TryDequeue(out (EntityId id, EntityLocalId headLocalId, Location location) deselected))
+            while (_deselecteds.TryDequeue(out (EntityLocalId localId, EntityLocalId headLocalId, Location location) deselected))
             {
-                _logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterGlobalId}", deselected.id.VhId.Value, tractorBeamEmitterGlobalId);
+                _logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterLocalId}", deselected.localId, tractorBeamEmitterGlobalId);
                 this.Strategy.Publish(new EventDto()
                 {
                     SourceId = nextSourceId,
@@ -111,7 +112,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         AttachToSocketVhId = attachToSocketVhId
                     }
                 });
-                _entitySpawnService.Despawn(nextSourceId, deselected.id);
+                _entitySpawnService.Despawn(nextSourceId, deselected.localId);
             }
         }
 

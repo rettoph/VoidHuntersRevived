@@ -192,10 +192,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 
             return this.IsSpawned(localId.Value, out groupIndex);
         }
-        bool IsSpawned(EntityId id)
-            => this.IsSpawned(id.EGID);
-        bool IsSpawned(EntityId id, out GroupIndex groupIndex)
-            => this.IsSpawned(id.EGID, out groupIndex);
 
         bool IsDespawned(GroupIndex groupIndex);
         bool IsDespawned(EGID egid);
@@ -208,10 +204,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
             => this.IsDespawned(this.GetLocalId(globalId).Value);
         bool IsDespawned(EntityGlobalId globalId, out GroupIndex groupIndex)
             => this.IsDespawned(this.GetLocalId(globalId).Value, out groupIndex);
-        bool IsDespawned(EntityId id)
-            => this.IsDespawned(id.EGID);
-        bool IsDespawned(EntityId id, out GroupIndex groupIndex)
-            => this.IsDespawned(id.EGID, out groupIndex);
 
 
         ref EntityFilterCollection GetFilter<T>(EGID egid, FilterContextID filterContext)
