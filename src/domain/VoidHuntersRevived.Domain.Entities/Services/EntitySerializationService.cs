@@ -47,28 +47,28 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return this.Serialize(ref entity, options);
         }
 
-        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer)
+        public EntityLocalId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer)
         {
             _logger.Verbose("Starting Deserialization - Id = {Id}, OwnerId = {OwnerId}, Seed = {Seed}", data.Id, options.Owner, options.Seed);
 
-            EntityId entityId = this.InternalDeserialize(sourceId, data, 0, options, initializer);
+            EntityLocalId entityLocalId = this.InternalDeserialize(sourceId, data, 0, options, initializer);
             for (int i = 1; i < data.IndexCount; i++)
             {
                 this.InternalDeserialize(sourceId, data, i, options, initializer);
             }
 
-            return entityId;
+            return entityLocalId;
         }
 
-        public EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
+        public EntityLocalId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer)
         {
-            EntityId entityId = this.InternalDeserialize(sourceId, data, 0, options, rootInitializer + initializer);
+            EntityLocalId entityLocalId = this.InternalDeserialize(sourceId, data, 0, options, rootInitializer + initializer);
             for (int i = 1; i < data.IndexCount; i++)
             {
                 this.InternalDeserialize(sourceId, data, i, options, initializer);
             }
 
-            return entityId;
+            return entityLocalId;
         }
 
         private EntityData Serialize(ref Entity entity, SerializationOptions options)
@@ -127,7 +127,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public static readonly unsafe int EntityHeaderSize = sizeof(VhId) + sizeof(Id<EntityTemplateFragment>);
 
-        private EntityId InternalDeserialize(
+        private EntityLocalId InternalDeserialize(
             VhId sourceId,
             EntityData data,
             int index,

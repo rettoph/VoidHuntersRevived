@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Services
 
         bool TryGetClosestOpenNodeSocket(EntityLocalId treeLocalId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket);
 
-        EntityId Spawn(VhId sourceId, NodeSocket targetSocketNode, EntityGlobalId globalId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializer = null);
-        EntityId Spawn(VhId sourceId, NodeSocket targetSocketNode, EntityData nodes, EntityInitializerDelegate? initializer = null);
+        EntityLocalId Spawn(VhId sourceId, NodeSocket targetSocketNode, EntityGlobalId globalId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializer = null);
+        EntityLocalId Spawn(VhId sourceId, NodeSocket targetSocketNode, EntityData nodes, EntityInitializerDelegate? initializer = null);
     }
 }

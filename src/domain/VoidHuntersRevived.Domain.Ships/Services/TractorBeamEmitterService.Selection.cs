@@ -119,7 +119,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         {
             try
             {
-                EntityId cloneId = _treeService.Spawn(
+                EntityLocalId cloneLocalId = _treeService.Spawn(
                     sourceId: eventId,
                     globalId: eventId.ToGlobalEntityId(1),
                     team: _teamService.GetDefaultTeam(),
@@ -156,7 +156,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 }
                 else
                 { // Spawn a new free floating chain
-                    EntityId cloneId = _treeService.Spawn(
+                    EntityLocalId cloneLocalId = _treeService.Spawn(
                         sourceId: eventId,
                         globalId: eventId.ToGlobalEntityId(2),
                         team: _teamService.GetDefaultTeam(),

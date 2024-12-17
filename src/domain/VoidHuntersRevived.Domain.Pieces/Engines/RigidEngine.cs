@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            if (_entityQueryService.HasAny<Tree>(body.EntityLocalId.Group) == false)
+            if (_entityQueryService.Has<Tree>(body.EntityLocalId.Group) == false)
             {
                 _logger.Warning("No Tree detected. BodyEntityLocalId = {BodyEntityLocalId}", body.EntityLocalId);
                 return;
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             ref var filter = ref _entityQueryService.GetFilter<Node>(body.EntityLocalId, Tree.NodeFilterContextId);
             foreach (var (indices, group) in filter)
             {
-                if (_entityQueryService.HasAny<Rigid>(group))
+                if (_entityQueryService.Has<Rigid>(group))
                 {
                     var (nodes, rigids, _) = _entityQueryService.QueryEntities<Node, Rigid>(group);
 

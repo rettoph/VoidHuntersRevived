@@ -10,14 +10,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
 {
     public static class IEntityServiceExtensions
     {
-        public static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, Blueprint blueprint)
+        public static EntityLocalId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, Blueprint blueprint)
         {
             EntityGlobalId globalId = HashBuilder<Blueprint, EntityGlobalId, Id<Blueprint>>.Instance.Calculate(treeId, blueprint.Id).ToGlobalEntityId();
 
             return entitySpawnService.Spawn(sourceId, treeId, team, globalId, blueprint.Head, default);
         }
 
-        private static EntityId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, EntityGlobalId globalId, IBlueprintPiece blueprintPiece, NodeSocketGlobalId socketVhId)
+        private static EntityLocalId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, EntityGlobalId globalId, IBlueprintPiece blueprintPiece, NodeSocketGlobalId socketVhId)
         {
             return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {

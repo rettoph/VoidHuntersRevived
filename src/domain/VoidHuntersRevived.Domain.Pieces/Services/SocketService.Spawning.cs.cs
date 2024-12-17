@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     public partial class SocketService : INodeSocketService
     {
-        public EntityId Spawn(VhId sourceId, NodeSocket targetNodeSocket, EntityGlobalId globalId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityLocalId Spawn(VhId sourceId, NodeSocket targetNodeSocket, EntityGlobalId globalId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
             TeamMember teamMember = _entityQueryService.QueryByLocalId<TeamMember>(targetNodeSocket.Node.TreeLocalId);
             NodeSocketGlobalId targetNodeSocketGlobalId = this.GetGlobalId(targetNodeSocket.LocalId);
@@ -33,18 +33,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             });
         }
 
-        public EntityId Spawn(VhId sourceId, NodeSocket targetNodeSocket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityLocalId Spawn(VhId sourceId, NodeSocket targetNodeSocket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
         {
             TeamMember teamMember = _entityQueryService.QueryByLocalId<TeamMember>(targetNodeSocket.Node.TreeLocalId);
             NodeSocketGlobalId targetNodeSocketGlobalId = this.GetGlobalId(targetNodeSocket.LocalId);
             EntityGlobalId treeGlobalId = _entityQueryService.GetGlobalId(targetNodeSocket.Node.TreeLocalId);
 
-            EntityId nodeId = _entitySerializationService.Deserialize(
+            EntityLocalId nodeLocalId = _entitySerializationService.Deserialize(
                 sourceId: sourceId,
                 options: new DeserializationOptions
                 {
                     Seed = HashBuilder<SocketService, VhId, NodeSocketGlobalId>.Instance.Calculate(sourceId, targetNodeSocketGlobalId),
-                    Owner = treeGlobalId.Value
+                    Owner = treeGlobalId
                 },
                 data: nodes,
                 initializer: (IEntityService entities, in InitializingEntity entity) =>
@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     initializerDelegate?.Invoke(entities, in entity);
                 });
 
-            return nodeId;
+            return nodeLocalId;
         }
     }
 }

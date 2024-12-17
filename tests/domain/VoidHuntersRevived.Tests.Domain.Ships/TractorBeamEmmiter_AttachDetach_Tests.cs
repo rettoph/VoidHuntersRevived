@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
                 // Spawn a test ship
                 Team team = teamService.GetOpenTeam();
-                EntityId shipId = treeService.Spawn(
+                EntityLocalId shipLocalId = treeService.Spawn(
                     sourceId: vhids.Next(),
                     globalId: shipGlobalId,
                     team: team,
@@ -89,11 +89,11 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 yield return 100;
 
                 // Spawn a test square attached to the test ship
-                Node head = treeService.GetHead(shipId.ToLocalEntityId());
+                Node head = treeService.GetHead(shipLocalId);
                 bool result = socketService.TryGetNodeSocket(new NodeSocketLocalId(head.LocalId, 0), out NodeSocket nodeSocket);
                 Assert.True(result);
 
-                EntityId squareId = socketService.Spawn(
+                EntityLocalId squareLocalId = socketService.Spawn(
                     sourceId: vhids.Next(),
                     targetSocketNode: nodeSocket,
                     globalId: vhids.Next().ToGlobalEntityId(),
@@ -192,8 +192,8 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             var readTreeService = simulation.Resolve<PredictiveStrategy, ITreeService>();
 
             EntityGlobalId shipGlobalId = VhId.NewId().ToGlobalEntityId();
-            EntityGlobalId square1Id = new(VhId.NewId());
-            EntityGlobalId square2Id = new(VhId.NewId());
+            EntityGlobalId square1GlobalId = new(VhId.NewId());
+            EntityGlobalId square2GlobalId = new(VhId.NewId());
 
             IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
             {
@@ -203,7 +203,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
                 // Spawn a test ship
                 Team team = teamService.GetOpenTeam();
-                EntityId shipId = treeService.Spawn(
+                EntityLocalId shipLocalId = treeService.Spawn(
                     sourceId: vhids.Next(),
                     globalId: shipGlobalId,
                     team: team,
@@ -213,26 +213,26 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 yield return 100;
 
                 // Spawn a test square attached to the test ship
-                Node head = treeService.GetHead(shipId.ToLocalEntityId());
+                Node head = treeService.GetHead(shipLocalId);
                 bool result = socketService.TryGetNodeSocket(new NodeSocketLocalId(head.LocalId, 0), out NodeSocket nodeSocket);
                 Assert.True(result);
 
-                EntityId square = socketService.Spawn(
+                EntityLocalId square1LocalId = socketService.Spawn(
                     sourceId: vhids.Next(),
                     targetSocketNode: nodeSocket,
-                    globalId: square1Id,
+                    globalId: square1GlobalId,
                     nodeTemplateKey: TestSquareEntityTemplateKey);
 
                 yield return 100;
 
                 // Spawn a second test square attached to the first test square
-                result = socketService.TryGetNodeSocket(new NodeSocketGlobalId(square.ToGlobalEntityId(), 0), out nodeSocket);
+                result = socketService.TryGetNodeSocket(new NodeSocketGlobalId(square1GlobalId, 0), out nodeSocket);
                 Assert.True(result);
 
-                EntityId square2 = socketService.Spawn(
+                EntityLocalId square2LocalId = socketService.Spawn(
                     sourceId: vhids.Next(),
                     targetSocketNode: nodeSocket,
-                    globalId: square2Id,
+                    globalId: square2GlobalId,
                     nodeTemplateKey: TestSquareEntityTemplateKey);
 
                 yield return 100;
@@ -261,12 +261,12 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                 .Input<IPredictiveStrategy>(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
                 {
                     TractorBeamEmitterGlobalId = shipGlobalId,
-                    TargetNodeGlobalId = square2Id
+                    TargetNodeGlobalId = square2GlobalId
                 }, true).Update(TimeSpan.FromMilliseconds(1), 2)
                 .Input<IPredictiveStrategy>(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
                 {
                     TractorBeamEmitterGlobalId = shipGlobalId,
-                    AttachToNodeSocketGlobalId = new NodeSocketGlobalId(square1Id, 0)
+                    AttachToNodeSocketGlobalId = new NodeSocketGlobalId(square1GlobalId, 0)
                 }, true).Update(TimeSpan.FromMilliseconds(1), 2);
 
 
@@ -274,7 +274,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
             {
                 TractorBeamEmitterGlobalId = shipGlobalId,
-                TargetNodeGlobalId = square1Id
+                TargetNodeGlobalId = square1GlobalId
             }, true).Update(TimeSpan.FromMilliseconds(16), 2);
 
             // Update all simulations - hopefully the fake drop will resync on the predictive strategy

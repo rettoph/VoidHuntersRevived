@@ -3,10 +3,8 @@ using Svelto.DataStructures;
 using Svelto.ECS;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -134,24 +132,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public EntityId GetId(VhId vhid)
-        {
-            return new EntityId(_globalLocalIds[vhid.ToGlobalEntityId()].Value, vhid);
-        }
-
-        public bool TryGetId(VhId vhid, out EntityId id)
-        {
-
-            if (_globalLocalIds.TryGetValue(vhid.ToGlobalEntityId(), out EntityLocalId localId) == false)
-            {
-                id = default;
-                return false;
-            }
-
-            id = new EntityId(_globalLocalIds[vhid.ToGlobalEntityId()].Value, vhid);
-            return true;
-        }
-
         public ref EntityLocalId AddLocalId(EntityGlobalId globalId)
         {
             ref EntityLocalId localId = ref CollectionsMarshal.GetValueRefOrAddDefault(_globalLocalIds, globalId, out bool exists);
@@ -236,13 +216,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref Unsafe.NullRef<T>(); ;
         }
 
-        public bool HasAny<T>(ExclusiveGroupStruct groupID)
+        public bool Has<T>(ExclusiveGroupStruct groupID)
             where T : unmanaged, IEntityComponent
         {
             return this.entitiesDB.HasAny<T>(groupID);
         }
 
-        public bool HasAny<T1>(ExclusiveGroupStruct groupId, out EntityCollection<T1> entities)
+        public bool Has<T1>(ExclusiveGroupStruct groupId, out EntityCollection<T1> entities)
             where T1 : unmanaged, IEntityComponent
         {
             return this.entitiesDB.HasAny(groupId, out entities);

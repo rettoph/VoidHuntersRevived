@@ -8,12 +8,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     public partial class TreeService(
         IEntityQueryService entityQueryService,
-        IEntitySpawnService entitySpawnService,
-        IBlueprintService blueprintService) : StrategyEngine, ITreeService
+        IEntitySpawnService entitySpawnService) : StrategyEngine, ITreeService
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
-        private readonly IBlueprintService _blueprintService = blueprintService;
 
         public ref Node GetHead(Tree tree)
         {

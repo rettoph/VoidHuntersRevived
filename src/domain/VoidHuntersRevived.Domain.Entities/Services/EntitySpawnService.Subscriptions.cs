@@ -24,9 +24,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         public void Process(VhId eventId, SpawnEntity data)
         {
-            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == true)
+            if (_entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == true)
             {
-                ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID);
+                ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(localId.Value);
                 status.Increment(EntityModificationTypeEnum.Spawned);
 
                 return;
@@ -60,9 +60,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public void Process(VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
         {
-            if (_entityQueryService.TryGetId(data.GlobalId.Value, out EntityId id) == true)
+            if (_entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == true)
             {
-                ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(id.EGID);
+                ref EntityStatus status = ref _entityQueryService.QueryByEGID<EntityStatus>(localId.Value);
                 status.Increment(EntityModificationTypeEnum.Spawned);
 
                 return;

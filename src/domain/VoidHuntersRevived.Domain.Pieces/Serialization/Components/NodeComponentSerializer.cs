@@ -1,6 +1,5 @@
 ﻿using Serilog;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -14,11 +13,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
         private readonly ILogger _logger = logger;
         protected override Node Read(in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
-            EntityId treeId = _entityQueryService.GetId(options.Owner);
+            EntityLocalId treeLocalId = _entityQueryService.GetLocalId(options.Owner);
 
-            _logger.Verbose("Deserializing Node - Id = {Id}, TreeId = {TreeId}, TreeLocalId = {TreeLocalId}", entity.GlobalId, treeId.VhId, treeId.ToLocalEntityId());
+            _logger.Verbose("Deserializing Node - Id = {Id}, TreeLocalId = {TreeLocalId}", entity.GlobalId, treeLocalId);
 
-            return new Node(entity.LocalId, treeId.ToLocalEntityId());
+            return new Node(entity.LocalId, treeLocalId);
         }
 
         protected override void Write(ref EntityWriter writer, in Entity entity, in Node instance, in SerializationOptions options)

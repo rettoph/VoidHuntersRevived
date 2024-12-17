@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         EntityData Serialize(EntityLocalId localId, SerializationOptions options);
         EntityData Serialize(ExclusiveGroupStruct groupId, uint index, SerializationOptions options);
 
-        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer);
-        EntityId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer);
+        EntityLocalId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer);
+        EntityLocalId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer, EntityInitializerDelegate rootInitializer);
     }
 }

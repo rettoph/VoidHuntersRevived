@@ -101,7 +101,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
             foreach (var (indeces, group) in filter)
             {
-                if (!_entityQueryService.HasAny<Sockets>(group))
+                if (!_entityQueryService.Has<Sockets>(group))
                 {
                     continue;
                 }

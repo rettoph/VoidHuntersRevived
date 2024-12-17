@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
             foreach (IEntityTemplate teamEntityTemplate in _entityTemplateService.WithComponent<Team>())
             {
                 teamIndex++;
-                EntityId teamId = _privateEntitySpawnService.Spawn(
+                EntityLocalId teamLocalId = _privateEntitySpawnService.Spawn(
                     sourceId: HashBuilder<Team, int>.Instance.Calculate(teamIndex),
                     entityTemplateKey: teamEntityTemplate.Key,
                     globalId: HashBuilder<Team, int>.Instance.Calculate(teamIndex).ToGlobalEntityId(),

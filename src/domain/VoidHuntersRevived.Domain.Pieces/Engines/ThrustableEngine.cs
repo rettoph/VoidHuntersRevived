@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             Node node = _entityQueryService.QueryByGroupIndex<Node>(thrustable.GroupIndex);
 
-            if (_entityQueryService.HasAny<Helm>(node.TreeLocalId.Value.groupID) == false)
+            if (_entityQueryService.Has<Helm>(node.TreeLocalId.Value.groupID) == false)
             {
                 return;
             }
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             Node node = _entityQueryService.QueryByGroupIndex<Node>(thrustable.GroupIndex);
 
-            if (_entityQueryService.HasAny<Helm>(node.TreeLocalId.Value.groupID) == false)
+            if (_entityQueryService.Has<Helm>(node.TreeLocalId.Value.groupID) == false)
             {
                 return;
             }
@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             {
                 return;
             }
-            if (!_entityQueryService.HasAny<Helm>(treeLocalId.Group))
+            if (!_entityQueryService.Has<Helm>(treeLocalId.Group))
             {
                 return;
             }
