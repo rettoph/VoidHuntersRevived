@@ -8,8 +8,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Events
     {
         public bool IsPredictable => false;
 
-        public VhId ShipVhId => default!;
-
         public required UserDto UserDto { get; init; }
 
         public VhId CalculateHash(in VhId source)

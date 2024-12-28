@@ -1,5 +1,6 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
@@ -9,11 +10,11 @@ namespace VoidHuntersRevived.Domain.Entities.Events
         public required bool IsPrivate { get; init; }
         public required bool IsPredictable { get; init; }
 
-        public required VhId VhId { get; init; }
+        public required EntityGlobalId GlobalId { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<HardDespawnEntity, VhId, VhId, bool, bool>.Instance.Calculate(in source, this.VhId, this.IsPrivate, this.IsPredictable);
+            return HashBuilder<HardDespawnEntity, VhId, EntityGlobalId, bool, bool>.Instance.Calculate(in source, this.GlobalId, this.IsPrivate, this.IsPredictable);
         }
     }
 }

@@ -4,10 +4,10 @@ using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {

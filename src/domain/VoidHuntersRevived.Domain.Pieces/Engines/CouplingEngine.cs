@@ -11,35 +11,35 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
-    public sealed class CouplingEngine(ISocketService socketService, ILogger logger) : StrategyEngine,
+    public sealed class CouplingEngine(INodeSocketService socketService, ILogger logger) : StrategyEngine,
         IOnSpawnEngine<Coupling>,
         IOnDespawnEngine<Coupling>
     {
-        private readonly ISocketService _socketService = socketService;
+        private readonly INodeSocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Coupling> entity)
         {
-            if (coupling.SocketId == default)
+            if (entity.Component.SocketId == default)
             {
                 return;
             }
 
-            ref var filter = ref _socketService.GetCouplingFilter(coupling.SocketId);
-            filter.Add(in id, in groupIndex);
+            ref var filter = ref _socketService.GetCouplingFilter(entity.Component.SocketId);
+            filter.Add(in entity.LocalId, in entity.Index);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Coupling coupling, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Coupling> coupling)
         {
-            if (coupling.SocketId == default)
+            if (coupling.Component.SocketId == default)
             {
                 return;
             }
 
-            ref var filter = ref _socketService.GetCouplingFilter(coupling.SocketId);
-            filter.Remove(in id);
+            ref var filter = ref _socketService.GetCouplingFilter(coupling.Component.SocketId);
+            filter.Remove(in coupling.LocalId);
         }
     }
 }

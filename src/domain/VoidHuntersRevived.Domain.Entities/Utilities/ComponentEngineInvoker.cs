@@ -12,7 +12,22 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
     public abstract class ComponentEngineInvoker
     {
-        public abstract void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, EntityId id, GroupIndex groupIndex);
+        public delegate void ComponentEngineInvokerDelegate(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity);
+        public class ComponentEngineInvokerDelegateSequenceGroup<TSequenceGroup> : DelegateSequenceGroup<TSequenceGroup, ComponentEngineInvokerDelegate>
+            where TSequenceGroup : unmanaged, Enum
+        {
+            public ComponentEngineInvokerDelegateSequenceGroup(bool sequence) : base(typeof(ComponentEngineInvokerDelegate), sequence)
+            {
+            }
+
+            public void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
+            {
+                this.Sequenced?.Invoke(sourceEventId, entityTemplate, in entity);
+            }
+        }
+
+
+        public abstract void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity);
 
         public static IEnumerable<ComponentEngineInvoker> Create(Type componentEngineInvokerType, Type engineType, Type componentType, IEnumerable<IEngine> engines, EntitiesDB entitiesDB)
         {
@@ -54,10 +69,12 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         SequenceGroup<OnSpawnSequenceGroupEnum> IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>.Value { get; } = engine.GetType()!.GetMethod(nameof(IOnSpawnEngine<T>.OnSpawn))!.TryGetSequenceGroup<OnSpawnSequenceGroupEnum>(engine, true, out var sequenceGroup)
             ? sequenceGroup : throw new NotImplementedException();
 
-        public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, EntityId id, GroupIndex groupIndex)
+        public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
         {
-            ref T component = ref _entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
-            _engine.OnSpawn(sourceEventId, entityTemplate, id, ref component, in groupIndex);
+            ref T component = ref _entitiesDB.QueryEntityByIndex<T>(entity.Index, entity.Group);
+            Entity<T> entityC = new(in entity, ref component);
+
+            _engine.OnSpawn(sourceEventId, entityTemplate, ref entityC);
         }
     }
 
@@ -70,10 +87,12 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         SequenceGroup<OnDespawnSequenceGroupEnum> IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>.Value { get; } = engine.GetType()!.GetMethod(nameof(IOnDespawnEngine<T>.OnDespawn))!.TryGetSequenceGroup<OnDespawnSequenceGroupEnum>(engine, true, out var sequenceGroup)
             ? sequenceGroup : throw new NotImplementedException();
 
-        public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, EntityId id, GroupIndex groupIndex)
+        public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
         {
-            ref T component = ref _entitiesDB.QueryEntityByIndex<T>(groupIndex.Index, groupIndex.GroupID);
-            _engine.OnDespawn(sourceEventId, entityTemplate, id, ref component, in groupIndex);
+            ref T component = ref _entitiesDB.QueryEntityByIndex<T>(entity.Index, entity.Group);
+            Entity<T> entityC = new(in entity, ref component);
+
+            _engine.OnDespawn(sourceEventId, entityTemplate, ref entityC);
         }
     }
 }

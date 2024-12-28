@@ -1,9 +1,9 @@
 ﻿namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    public readonly ref struct EntityWriter(List<byte> data, Stack<EntityId> nested)
+    public readonly ref struct EntityWriter(List<byte> data, Stack<EntityLocalId> nested)
     {
         private readonly List<byte> _data = data;
-        private readonly Stack<EntityId> _nested = nested;
+        private readonly Stack<EntityLocalId> _nested = nested;
 
         public unsafe void Write<T>(T value)
             where T : unmanaged
@@ -25,9 +25,9 @@
             }
         }
 
-        public void Push(EntityId id)
+        public void Push(EntityLocalId localId)
         {
-            _nested.Push(id);
+            _nested.Push(localId);
         }
 
         public bool WriteIf(bool condition)

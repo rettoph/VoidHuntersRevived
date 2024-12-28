@@ -1,8 +1,8 @@
 ﻿using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Events;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -18,71 +18,81 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IEntityService _entityService = entityService;
         private readonly ILogger _logger = logger;
 
-        EntityId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, VhId vhid)
+        EntityLocalId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
                 IsPrivate = false,
                 TemplateKey = entityTemplateKey,
-                VhId = vhid
+                GlobalId = globalId
             });
 
-            return _entityQueryService.GetId(vhid);
+            return _entityQueryService.GetLocalId(globalId);
         }
 
-        EntityId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, VhId vhid, EntityInitializerDelegate initializer)
+        EntityLocalId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId, EntityInitializerDelegate initializer)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
                 IsPrivate = false,
                 TemplateKey = entityTemplateKey,
-                VhId = vhid,
+                GlobalId = globalId,
                 Initializer = initializer
             });
 
-            return _entityQueryService.GetId(vhid);
+            return _entityQueryService.GetLocalId(globalId);
         }
 
-        void IEntitySpawnService.Despawn(VhId sourceId, VhId vhid)
+        void IEntitySpawnService.Despawn(VhId sourceId, EntityGlobalId globalId)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
             {
                 IsPrivate = false,
-                VhId = vhid
+                GlobalId = globalId
             });
         }
 
-        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, VhId vhid)
+        void IEntitySpawnService.Despawn(VhId sourceId, EntityLocalId localId)
+        {
+            EntityGlobalId globalId = _entityQueryService.GetGlobalId(localId);
+            this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
+            {
+                IsPrivate = false,
+                GlobalId = globalId
+            });
+        }
+
+        EntityLocalId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity()
             {
                 IsPrivate = true,
                 TemplateKey = entityTemplateKey,
-                VhId = vhid
+                GlobalId = globalId
             });
 
-            return _entityQueryService.GetId(vhid);
+            return _entityQueryService.GetLocalId(globalId);
         }
 
-        EntityId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, VhId vhid, EntityInitializerDelegate initializer)
+        EntityLocalId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId, EntityInitializerDelegate initializer)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new SpawnEntity<EntityInitializerDelegate>()
             {
                 IsPrivate = true,
                 TemplateKey = entityTemplateKey,
-                VhId = vhid,
+                GlobalId = globalId,
                 Initializer = initializer
             });
 
-            return _entityQueryService.GetId(vhid);
+            return _entityQueryService.GetLocalId(globalId);
         }
 
-        void IPrivateEntitySpawnService.Despawn(VhId sourceId, VhId vhid)
+        void IPrivateEntitySpawnService.Despawn(VhId sourceId, EntityGlobalId globalId)
         {
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
             {
                 IsPrivate = true,
-                VhId = vhid
+                GlobalId = globalId
             });
         }
     }

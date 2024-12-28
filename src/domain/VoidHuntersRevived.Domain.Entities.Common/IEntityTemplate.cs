@@ -5,7 +5,6 @@ using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
@@ -22,13 +21,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             IEngineService engineService,
             IComponentSerializerService componentSerializerService);
 
-        EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in VhId vhid, out EntityId id);
-        void SoftSpawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
+        EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, out EntityLocalId localId);
+        void SoftSpawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
 
-        void SoftDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
-        void HardDespawnInstanceEntity(in VhId sourceEventId, in EntityId id, in GroupIndex groupIndex, ref EntityStatus status);
+        void SoftDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
+        void HardDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
 
-        void SerializeInstanceEntity(ref EntityWriter writer, in EntityId id, in GroupIndex groupIndex, in SerializationOptions options);
-        void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id);
+        void SerializeInstanceEntity(ref EntityWriter writer, in Entity entity, in SerializationOptions options);
+        void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity);
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using tainicom.Aether.Physics2D.Common;
 using tainicom.Aether.Physics2D.Dynamics;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D.Dynamics;
@@ -16,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Physics
         private CollisionGroup _collisionCategories;
         private CollisionGroup _collidesWith;
         private readonly Space _space;
-        private readonly Dictionary<VhId, Fixture> _fixtures;
+        private readonly Dictionary<FixtureId, Fixture> _fixtures;
 
         internal readonly AetherBody _aether;
 
@@ -32,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public Fix64 AngularVelocity => (Fix64)_aether.AngularVelocity;
 
-        public EntityId Id { get; }
+        public EntityLocalId EntityLocalId { get; }
 
         public FixMatrix Transformation => FixMatrix.CreateRotationZ(this.Rotation) * FixMatrix.CreateTranslation(this.Position.X, this.Position.Y, Fix64.Zero);
 
@@ -71,7 +70,7 @@ namespace VoidHuntersRevived.Domain.Physics
             set => _aether.SleepingAllowed = value;
         }
 
-        public Body(Space space, EntityId id)
+        public Body(EntityLocalId entityLocalId, Space space)
         {
             _space = space;
             _aether = space._aether.CreateBody(AetherVector2.Zero, FixedMath64.Zero, BodyType.Dynamic);
@@ -80,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether.AngularDamping = (Fix64)1m;
             _aether.LinearDamping = (Fix64)0.25m;
 
-            this.Id = id;
+            this.EntityLocalId = entityLocalId;
             this.Enabled = true;
         }
 
@@ -120,11 +119,10 @@ namespace VoidHuntersRevived.Domain.Physics
             _aether.ApplyLinearImpulse(impulse.AsAetherVector2());
         }
 
-        public IFixture Create(VhId id, EntityId entityId, Polygon polygon, FixMatrix transformation)
+        public IFixture Create(FixtureId id, Polygon polygon, FixMatrix transformation)
         {
-            Fixture fixture = new Fixture(
+            Fixture fixture = new(
                 id,
-                entityId,
                 this,
                 polygon.ToShape(transformation),
                 (Category)this.CollisionCategories.Flags,
@@ -135,22 +133,7 @@ namespace VoidHuntersRevived.Domain.Physics
             return fixture;
         }
 
-        public void Destroy(IFixture fixture)
-        {
-            if (fixture is not Fixture casted)
-            {
-                return;
-            }
-
-            if (!_fixtures.Remove(casted.Id))
-            {
-                return;
-            }
-
-            casted.Dispose();
-        }
-
-        public void Destroy(VhId id)
+        public void Destroy(FixtureId id)
         {
             if (_fixtures.Remove(id, out Fixture? fixture))
             {

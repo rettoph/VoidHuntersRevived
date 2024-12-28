@@ -46,6 +46,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return _dictionary.Values;
         }
 
+        public static void Clear()
+        {
+            _dictionary.Clear();
+        }
+
         public bool Contains(IEnumerable<Type> componentTypes)
         {
             foreach (Type componentType in componentTypes)

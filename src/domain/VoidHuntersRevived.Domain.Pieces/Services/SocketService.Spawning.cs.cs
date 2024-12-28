@@ -1,5 +1,4 @@
-﻿using Svelto.ECS;
-using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
@@ -12,57 +11,58 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    public partial class SocketService : ISocketService
+    public partial class SocketService : INodeSocketService
     {
-        public EntityId Spawn(VhId sourceId, NodeSocket targetNodeSocket, VhId vhid, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityLocalId Spawn(VhId sourceId, NodeSocket targetNodeSocket, EntityGlobalId globalId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
-            TeamMember teamMember = _entityQueryService.QueryById<TeamMember>(targetNodeSocket.Node.TreeId);
-            SocketVhId socketVhId = targetNodeSocket.Id.VhId;
-            VhId treeId = targetNodeSocket.Node.TreeId.VhId;
+            TeamMember teamMember = _entityQueryService.QueryByLocalId<TeamMember>(targetNodeSocket.Node.TreeLocalId);
+            NodeSocketGlobalId targetNodeSocketGlobalId = this.GetGlobalId(targetNodeSocket.LocalId);
+            EntityGlobalId treeGlobalId = _entityQueryService.GetGlobalId(targetNodeSocket.Node.TreeLocalId);
 
-            return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, vhid, (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+            return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {
-                initializer.Init(teamMember);
-                initializer.Init(new Node(id, entities.Query.GetId(treeId)));
-                initializer.Init<Coupling>(new Coupling(
-                    socketId: new NodeSocketId(
-                        nodeId: entities.Query.GetId(socketVhId.NodeVhId),
-                        index: socketVhId.Index))
+                entity.Initializer.Init(teamMember);
+                entity.Initializer.Init(new Node(entity.LocalId, entities.Query.GetLocalId(treeGlobalId)));
+                entity.Initializer.Init<Coupling>(new Coupling(
+                    socketId: new NodeSocketLocalId(
+                        nodeLocalId: entities.Query.GetLocalId(targetNodeSocketGlobalId.NodeGlobalId),
+                        socketIndex: targetNodeSocketGlobalId.SocketIndex))
                 );
 
-                initializerDelegate?.Invoke(entities, entityTemplate, id, ref initializer);
+                initializerDelegate?.Invoke(entities, in entity);
             });
         }
 
-        public EntityId Spawn(VhId sourceId, NodeSocket nodeSocket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
+        public EntityLocalId Spawn(VhId sourceId, NodeSocket targetNodeSocket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
         {
-            TeamMember teamMember = _entityQueryService.QueryById<TeamMember>(nodeSocket.Node.TreeId);
-            SocketVhId socketVhId = nodeSocket.Id.VhId;
+            TeamMember teamMember = _entityQueryService.QueryByLocalId<TeamMember>(targetNodeSocket.Node.TreeLocalId);
+            NodeSocketGlobalId targetNodeSocketGlobalId = this.GetGlobalId(targetNodeSocket.LocalId);
+            EntityGlobalId treeGlobalId = _entityQueryService.GetGlobalId(targetNodeSocket.Node.TreeLocalId);
 
-            EntityId nodeId = _entitySerializationService.Deserialize(
+            EntityLocalId nodeLocalId = _entitySerializationService.Deserialize(
                 sourceId: sourceId,
                 options: new DeserializationOptions
                 {
-                    Seed = HashBuilder<SocketService, VhId, SocketVhId>.Instance.Calculate(sourceId, socketVhId),
-                    Owner = nodeSocket.Node.TreeId.VhId
+                    Seed = HashBuilder<SocketService, VhId, NodeSocketGlobalId>.Instance.Calculate(sourceId, targetNodeSocketGlobalId),
+                    Owner = treeGlobalId
                 },
                 data: nodes,
-                initializer: (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+                initializer: (IEntityService entities, in InitializingEntity entity) =>
                 {
-                    initializer.Init(teamMember);
+                    entity.Initializer.Init(teamMember);
                 },
-                rootInitializer: (IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer) =>
+                rootInitializer: (IEntityService entities, in InitializingEntity entity) =>
                 {
-                    initializer.Init<Coupling>(new Coupling(
-                        socketId: new NodeSocketId(
-                            nodeId: entities.Query.GetId(socketVhId.NodeVhId),
-                            index: socketVhId.Index))
-                        );
+                    entity.Initializer.Init<Coupling>(new Coupling(
+                        socketId: new NodeSocketLocalId(
+                        nodeLocalId: entities.Query.GetLocalId(targetNodeSocketGlobalId.NodeGlobalId),
+                        socketIndex: targetNodeSocketGlobalId.SocketIndex))
+                    );
 
-                    initializerDelegate?.Invoke(entities, entityTemplate, id, ref initializer);
+                    initializerDelegate?.Invoke(entities, in entity);
                 });
 
-            return nodeId;
+            return nodeLocalId;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         IEntitySerializationService entitySerializationService,
         INodeService nodeService,
         ITreeService treeService,
-        ISocketService socketService,
+        INodeSocketService socketService,
         ITeamService teamService,
         ILogger logger) : StrategyEngine, ITractorBeamEmitterService
     {
@@ -33,31 +33,25 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         private readonly INodeService _nodeService = nodeService;
         private readonly ITreeService _treeService = treeService;
         private readonly ITeamService _teamService = teamService;
-        private readonly ISocketService _socketService = socketService;
+        private readonly INodeSocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
 
-        public ref EntityFilterCollection GetTractorableFilter(EntityId tractorBeamEmitterId)
+        public ref EntityFilterCollection GetTractorableFilter(EntityLocalId tractorBeamEmitterLocalId)
         {
-            return ref _entityQueryService.GetFilter<Tractorable>(tractorBeamEmitterId, TractorBeamEmitter.TractorableFilterContext);
+            return ref _entityQueryService.GetFilter<Tractorable, TractorBeamEmitter>(tractorBeamEmitterLocalId);
         }
 
-        public bool Query(EntityId tractorBeamEmitterId, FixVector2 target, out Node targetNode)
+        public bool Query(EntityLocalId tractorBeamEmitterLocalId, FixVector2 target, out Node targetNode)
         {
-            if (!_entityQueryService.TryQueryById(tractorBeamEmitterId, out TractorBeamEmitter tractorBeamEmitter))
-            {
-                targetNode = default;
-                return false;
-            }
-
             AABB aabb = new(target, QueryRadius, QueryRadius);
             Fix64 minDistance = QueryRadius;
             Node? callbackTargetNode = default!;
 
             _space.QueryAABB(fixture =>
             {
-                if (_entityQueryService.IsSpawned(fixture.EntityId))
+                if (_entityQueryService.IsSpawned(fixture.Id.EntityLocalId))
                 {
-                    ref Node queryNode = ref _entityQueryService.QueryById<Node>(fixture.EntityId, out GroupIndex nodeGroupIndex);
+                    ref Node queryNode = ref _entityQueryService.QueryByLocalId<Node>(fixture.Id.EntityLocalId, out GroupIndex nodeGroupIndex);
                     ref Rigid queryRigid = ref _entityQueryService.QueryByGroupIndex<Rigid>(nodeGroupIndex);
 
                     FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Template.Value.Centeroid, queryNode.Transformation);
@@ -68,12 +62,12 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         return true;
                     }
 
-                    ref Tree tree = ref _entityQueryService.QueryById<Tree>(queryNode.TreeId, out GroupIndex treeGroupIndex);
-                    if (_entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitter == default)
+                    ref Tree tree = ref _entityQueryService.QueryByLocalId<Tree>(queryNode.TreeLocalId, out GroupIndex treeGroupIndex);
+                    if (_entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitterLocalId == default)
                     { // Target resides within a tractorable tree, so we want to grab the head
-                        callbackTargetNode = tree.HeadId == queryNode.Id ? queryNode : _entityQueryService.QueryById<Node>(tree.HeadId);
+                        callbackTargetNode = tree.HeadLocalId == queryNode.LocalId ? queryNode : _entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
                     }
-                    else if (queryNode.TreeId == tractorBeamEmitterId && tree.HeadId != queryNode.Id)
+                    else if (queryNode.TreeLocalId == tractorBeamEmitterLocalId && tree.HeadLocalId != queryNode.LocalId)
                     { // The node belongs to the current tractor beam emitter's ship and is not the head
                         callbackTargetNode = queryNode;
                     }

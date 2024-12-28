@@ -11,19 +11,19 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
         {
             return new Input_TractorBeamEmitter_Deselect()
             {
-                ShipVhId = reader.GetVhId(),
-                AttachToSocketVhId = reader.GetIf() ? new SocketVhId(reader.GetVhId(), reader.GetByte()) : null
+                TractorBeamEmitterGlobalId = reader.GetEntityGlobalId(),
+                AttachToNodeSocketGlobalId = reader.GetIf() ? new NodeSocketGlobalId(reader.GetEntityGlobalId(), reader.GetByte()) : null
             };
         }
 
         public override void Serialize(NetDataWriter writer, in Input_TractorBeamEmitter_Deselect instance)
         {
-            writer.Put(instance.ShipVhId);
+            writer.Put(instance.TractorBeamEmitterGlobalId);
 
-            if (writer.PutIf(instance.AttachToSocketVhId.HasValue))
+            if (writer.PutIf(instance.AttachToNodeSocketGlobalId.HasValue))
             {
-                writer.Put(instance.AttachToSocketVhId!.Value.NodeVhId);
-                writer.Put(instance.AttachToSocketVhId.Value.Index);
+                writer.Put(instance.AttachToNodeSocketGlobalId!.Value.NodeGlobalId);
+                writer.Put(instance.AttachToNodeSocketGlobalId.Value.SocketIndex);
             }
         }
     }

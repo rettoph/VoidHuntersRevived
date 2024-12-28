@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Collision collision = ref _entityQueryService.QueryById<Collision>(body.Id);
+            ref Collision collision = ref _entityQueryService.QueryByLocalId<Collision>(body.EntityLocalId);
             body.CollisionCategories = collision.Categories;
             body.CollidesWith = collision.CollidesWith;
         }

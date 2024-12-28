@@ -1,6 +1,5 @@
 ﻿using Serilog;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
@@ -21,30 +20,12 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Select data)
         {
-            if (!_entityQueryService.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId))
-            {
-                _logger.Warning("ShipVhId {ShipId} not found.", data.ShipVhId.Value);
-                return;
-            }
-
-            if (!_entityQueryService.TryGetId(data.TargetVhId, out EntityId targetNodeId))
-            {
-                _logger.Warning("TargetVhId {TargetId} not found.", data.TargetVhId.Value);
-                return;
-            }
-
-            _tractorBeamEmitterService.Select(eventId, tractorBeamEmitterId, targetNodeId);
+            _tractorBeamEmitterService.Select(eventId, data.TractorBeamEmitterGlobalId, data.TargetNodeGlobalId);
         }
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Deselect data)
         {
-            if (!_entityQueryService.TryGetId(data.ShipVhId, out EntityId tractorBeamEmitterId))
-            {
-                _logger.Warning("ShipVhId {ShipId} not found.", data.ShipVhId.Value);
-                return;
-            }
-
-            _tractorBeamEmitterService.Deselect(eventId, tractorBeamEmitterId, data.AttachToSocketVhId);
+            _tractorBeamEmitterService.Deselect(eventId, data.TractorBeamEmitterGlobalId, data.AttachToNodeSocketGlobalId);
         }
     }
 }

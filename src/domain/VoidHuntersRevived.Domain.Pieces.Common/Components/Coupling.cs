@@ -2,8 +2,8 @@
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
-    public readonly struct Coupling(NodeSocketId socketId) : IEntityComponent
+    public readonly struct Coupling(NodeSocketLocalId socketId) : IEntityComponent
     {
-        public readonly NodeSocketId SocketId = socketId;
+        public readonly NodeSocketLocalId SocketId = socketId;
     }
 }

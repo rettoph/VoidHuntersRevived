@@ -10,12 +10,12 @@ using VoidHuntersRevived.Domain.Pieces.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
 {
-    public class SocketIdsComponentSerializer(IEntityQueryService entityQueryService, ISocketService socketService) : ComponentSerializer<Sockets>
+    public class SocketIdsComponentSerializer(IEntityQueryService entityQueryService, INodeSocketService socketService) : ComponentSerializer<Sockets>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
-        private readonly ISocketService _socketService = socketService;
+        private readonly INodeSocketService _socketService = socketService;
 
-        protected override void Write(ref EntityWriter writer, in EntityId id, in Sockets instance, in SerializationOptions options)
+        protected override void Write(ref EntityWriter writer, in Entity entity, in Sockets instance, in SerializationOptions options)
         {
             if (options.Recursion == Recursion.None)
             {
@@ -24,32 +24,32 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
 
             for (int i = 0; i < instance.Items.count; i++)
             {
-                this.WriteSocketCouplings(ref writer, in id, (byte)i, options);
+                this.WriteSocketCouplings(ref writer, in entity, (byte)i, options);
             }
         }
 
-        private void WriteSocketCouplings(ref EntityWriter writer, in EntityId nodeId, byte socketIndex, SerializationOptions options)
+        private void WriteSocketCouplings(ref EntityWriter writer, in Entity entity, byte socketIndex, SerializationOptions options)
         {
-            ref var filter = ref _socketService.GetCouplingFilter(nodeId, socketIndex);
+            ref var filter = ref _socketService.GetCouplingFilter(entity.LocalId, socketIndex);
 
             foreach (var (indices, groupId) in filter)
             {
-                var (entityIds, _) = _entityQueryService.QueryEntities<EntityId>(groupId);
+                var (entityLocalIds, _) = _entityQueryService.QueryEntities<EntityLocalId>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    writer.Push(entityIds[indices[i]]);
+                    writer.Push(entityLocalIds[indices[i]]);
                 }
             }
         }
 
-        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, ref EntityInitializer initializer, in EntityId id)
+        public override void Deserialize(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
             // No deserialization needed
             // base.Deserialize(sourceId, options, reader, ref initializer, id);
         }
 
-        protected override Sockets Read(in DeserializationOptions options, ref EntityReader reader, in EntityId id)
+        protected override Sockets Read(in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
             throw new NotImplementedException();
         }

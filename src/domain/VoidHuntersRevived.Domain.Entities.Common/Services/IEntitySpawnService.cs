@@ -4,13 +4,10 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
     public interface IEntitySpawnService
     {
-        EntityId Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, VhId vhid);
-        EntityId Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, VhId vhid, EntityInitializerDelegate initializer);
+        EntityLocalId Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId);
+        EntityLocalId Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId, EntityInitializerDelegate initializer);
 
-        void Despawn(VhId sourceId, VhId vhid);
-        void Despawn(VhId sourceId, EntityId id)
-        {
-            this.Despawn(sourceId, id.VhId);
-        }
+        void Despawn(VhId sourceId, EntityGlobalId globalId);
+        void Despawn(VhId sourceId, EntityLocalId localId);
     }
 }

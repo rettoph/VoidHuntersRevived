@@ -7,8 +7,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Events
     {
         public bool IsPredictable => false;
 
-        public VhId ShipVhId => default!;
-
         public VhId CalculateHash(in VhId source)
         {
             return HashBuilder<Simulation_Begin, VhId>.Instance.Calculate(in source);

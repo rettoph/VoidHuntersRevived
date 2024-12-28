@@ -1,12 +1,11 @@
-﻿using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Physics.Common
 {
     public interface IBody
     {
-        EntityId Id { get; }
+        EntityLocalId EntityLocalId { get; }
 
         ISpace? Space { get; }
 
@@ -25,9 +24,10 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         bool Awake { get; }
         bool SleepingAllowed { get; set; }
 
-        IFixture Create(VhId id, EntityId entityId, Polygon polygon, FixMatrix transformation);
-        void Destroy(IFixture fixture);
-        void Destroy(VhId id);
+        IFixture Create(FixtureId id, Polygon polygon, FixMatrix transformation);
+        void Destroy(FixtureId id);
+        void Destroy(IFixture fixture)
+            => this.Destroy(fixture.Id);
 
         void SetTransform(FixVector2 position, Fix64 rotation);
         void SetVelocity(FixVector2 linear, Fix64 angular);

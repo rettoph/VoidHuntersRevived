@@ -6,12 +6,12 @@ using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
 
             predictiveEvent = this.GetPredictionEvent(@event);
-            this.logger.Verbose("Predicting event {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
+            this.logger.Verbose("Predicting {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
 
             if (@event.Data.IsPrivate)
             { // Private events may as well be immidiately confirmed, right? They will never get verified
@@ -129,7 +129,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                     break;
                 }
 
-                this.logger.Verbose("Confirming Event {EventName}, {EventId}", confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
+                this.logger.Verbose("Confirming {EventName}, {EventId}", confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
 
                 if (_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published) == false)
                 {

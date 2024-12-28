@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Svelto.ECS;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -46,21 +46,21 @@ namespace VoidHuntersRevived.Domain.Teams.Services
             foreach (IEntityTemplate teamEntityTemplate in _entityTemplateService.WithComponent<Team>())
             {
                 teamIndex++;
-                EntityId teamId = _privateEntitySpawnService.Spawn(
+                EntityLocalId teamLocalId = _privateEntitySpawnService.Spawn(
                     sourceId: HashBuilder<Team, int>.Instance.Calculate(teamIndex),
                     entityTemplateKey: teamEntityTemplate.Key,
-                    vhid: HashBuilder<Team, int>.Instance.Calculate(teamIndex),
+                    globalId: HashBuilder<Team, int>.Instance.Calculate(teamIndex).ToGlobalEntityId(),
                     initializer: TeamInstanceInitializer);
             }
         }
 
-        private void TeamInstanceInitializer(IEntityService entities, IEntityTemplate entityTemplate, EntityId id, ref EntityInitializer initializer)
+        private void TeamInstanceInitializer(IEntityService entities, in InitializingEntity entity)
         {
-            Team importedTeam = initializer.Get<Team>();
-            Team runtimeTeam = new(id, importedTeam.Name);
-            initializer.Init<Team>(runtimeTeam);
+            Team importedTeam = entity.Initializer.Get<Team>();
+            Team runtimeTeam = new(entity.LocalId, importedTeam.Name);
+            entity.Initializer.Init<Team>(runtimeTeam);
 
-            if (initializer.Has<DefaultTeam>())
+            if (entity.Initializer.Has<DefaultTeam>())
             {
                 _defaultTeamComponent = runtimeTeam;
             }

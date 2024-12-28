@@ -4,7 +4,7 @@ namespace VoidHuntersRevived.Common
 {
     public static class VhIdExtensions
     {
-        private static int[] _buffer = new int[12];
+        private static readonly int[] _buffer = new int[12];
 
         public static unsafe VhId Create(this VhId nameSpace, int name)
         {
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Common
 
             fixed (int* pBuffer = _buffer)
             {
-                Span<byte> dataSpan = new Span<byte>((byte*)pBuffer, 32);
+                Span<byte> dataSpan = new((byte*)pBuffer, 32);
                 uint128 hash = xxHash128.ComputeHash(dataSpan, 32);
                 VhId* newId = (VhId*)&hash;
 
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Common
 
             fixed (int* pBuffer = _buffer)
             {
-                Span<byte> dataSpan = new Span<byte>((byte*)pBuffer, 32);
+                Span<byte> dataSpan = new((byte*)pBuffer, 32);
                 uint128 hash = xxHash128.ComputeHash(dataSpan, 32);
                 VhId* newId = (VhId*)&hash;
 
@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Common
 
             fixed (int* pBuffer = _buffer)
             {
-                Span<byte> dataSpan = new Span<byte>((byte*)pBuffer, 48);
+                Span<byte> dataSpan = new((byte*)pBuffer, 48);
                 uint128 hash = xxHash128.ComputeHash(dataSpan, 48);
                 VhId* newId = (VhId*)&hash;
 

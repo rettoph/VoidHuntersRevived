@@ -1,5 +1,6 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
@@ -11,14 +12,14 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Events
     {
         public bool IsPredictable => true;
 
-        public required VhId TractorBeamEmitterVhId { get; init; }
+        public required EntityGlobalId TractorBeamEmitterGlobalId { get; init; }
         public required EntityData TargetData { get; init; }
         public required Location Location { get; init; }
-        public required SocketVhId? AttachToSocketVhId { get; init; }
+        public required NodeSocketGlobalId? AttachToSocketVhId { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<TractorBeamEmitter_Deselect, VhId, VhId, VhId, bool, SocketVhId>.Instance.Calculate(source, this.TractorBeamEmitterVhId, this.TargetData.Id, this.AttachToSocketVhId.HasValue, this.AttachToSocketVhId ?? default);
+            return HashBuilder<TractorBeamEmitter_Deselect, VhId, EntityGlobalId, VhId, bool, NodeSocketGlobalId>.Instance.Calculate(source, this.TractorBeamEmitterGlobalId, this.TargetData.Id, this.AttachToSocketVhId.HasValue, this.AttachToSocketVhId ?? default);
         }
     }
 }

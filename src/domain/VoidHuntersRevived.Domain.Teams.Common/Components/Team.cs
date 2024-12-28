@@ -2,7 +2,6 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Teams.Common.Components
 {
@@ -10,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Components
     {
         public readonly Id<Team> Id;
         public readonly ResourceKey<string> Name;
-        public FilterVhId<TeamMember> ChildrenFilterId { get; }
+        public EntityFilterId<TeamMember> ChildrenFilterId { get; }
         public TeamMember TeamMemberComponent { get; }
         public Team(ResourceKey<string> name)
         {
@@ -18,12 +17,12 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Components
             this.Name = name;
         }
 
-        public Team(EntityId entityId, ResourceKey<string> name)
+        public Team(EntityLocalId localId, ResourceKey<string> name)
         {
             this.Id = Id<Team>.FromString(name.Name);
             this.Name = name;
-            this.ChildrenFilterId = new FilterVhId<TeamMember>();
-            this.TeamMemberComponent = new TeamMember(entityId);
+            this.ChildrenFilterId = new EntityFilterId<TeamMember>();
+            this.TeamMemberComponent = new TeamMember(localId);
         }
     }
 }

@@ -32,16 +32,16 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            if (_entityQueryService.HasAny<Tree>(body.Id.EGID.groupID) == false)
+            if (_entityQueryService.Has<Tree>(body.EntityLocalId.Group) == false)
             {
-                _logger.Warning("No Tree detected. BodyId = {BodyId}", body.Id.VhId);
+                _logger.Warning("No Tree detected. BodyEntityLocalId = {BodyEntityLocalId}", body.EntityLocalId);
                 return;
             }
 
-            ref var filter = ref _entityQueryService.GetFilter<Node>(body.Id, Tree.NodeFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(body.EntityLocalId, Tree.NodeFilterContextId);
             foreach (var (indices, group) in filter)
             {
-                if (_entityQueryService.HasAny<Rigid>(group))
+                if (_entityQueryService.Has<Rigid>(group))
                 {
                     var (nodes, rigids, _) = _entityQueryService.QueryEntities<Node, Rigid>(group);
 
@@ -51,7 +51,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                         Node node = nodes[index];
                         Rigid rigid = rigids[index];
 
-                        _logger.Verbose("BodyId = {BodyId}, NodeId = {EntityId}", body.Id.VhId, node.Id.VhId);
                         this.CreateFixtures(body, node, rigid);
                     }
                 }
@@ -59,71 +58,67 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         }
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group05)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Rigid component, in GroupIndex groupIndex)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Rigid> rigid)
         {
-            _logger.Verbose("EntityId = {EntityId}", id.VhId);
+            Node node = _entityQueryService.QueryByGroupIndex<Node>(rigid.GroupIndex);
 
-            Node node = _entityQueryService.QueryByGroupIndex<Node>(groupIndex);
-
-            if (_entityQueryService.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
+            if (_entityQueryService.TryQueryByLocalId<Enabled>(node.TreeLocalId, out Enabled enabled) == true)
             {
                 if (enabled)
                 {
-                    IBody body = _space.GetBody(node.TreeId);
-                    this.CreateFixtures(body, node, component);
+                    IBody body = _space.GetBody(node.TreeLocalId);
+                    this.CreateFixtures(body, node, rigid.Component);
                 }
             }
             else
             {
-                _logger.Warning("Unable to create fixtures for node {NodeId} on tree {TreeId}.", id.VhId, node.TreeId.VhId);
+                _logger.Warning("Unable to create fixtures for node {NodeLocalId} on tree {TreeLocalId}.", rigid.LocalId, node.TreeLocalId);
             }
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group05)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, EntityId id, ref Rigid component, in GroupIndex groupIndex)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Rigid> rigid)
         {
-            _logger.Verbose("EntityId = {EntityId}", id.VhId);
+            Node node = _entityQueryService.QueryByGroupIndex<Node>(rigid.GroupIndex);
 
-            Node node = _entityQueryService.QueryByGroupIndex<Node>(groupIndex);
-
-            if (_entityQueryService.TryQueryById<Enabled>(node.TreeId, out Enabled enabled) == true)
+            if (_entityQueryService.TryQueryByLocalId<Enabled>(node.TreeLocalId, out Enabled enabled) == true)
             {
                 if (enabled)
                 {
-                    if (_space.TryGetBody(node.TreeId, out IBody? body) == true)
+                    if (_space.TryGetBody(node.TreeLocalId, out IBody? body) == true)
                     {
-                        this.DestroyFixtures(body, node, component);
+                        this.DestroyFixtures(body, node, rigid.Component);
                     }
                     else
                     {
-                        _logger.Warning("Unable to destroy fixtures for node {NodeId} on tree {TreeId}. Body not found.", id.VhId, node.TreeId.VhId);
+                        _logger.Warning("Unable to destroy fixtures for node {NodeLocalId} on tree {TreeLocalId}. Body not found.", rigid.LocalId, node.TreeLocalId);
                     }
                 }
 
             }
             else
             {
-                _logger.Warning("Unable to destroy fixtures for node {NodeId} on tree {TreeId}. Tree not found.", id.VhId, node.TreeId.VhId);
+                _logger.Warning("Unable to destroy fixtures for node {NodeLocalId} on tree {TreeLocalId}. Tree not found.", rigid.LocalId, node.TreeLocalId);
             }
         }
 
         private void CreateFixtures(IBody body, Node node, Rigid rigid)
         {
-            for (int i = 0; i < rigid.Template.Value.Shapes.Length; i++)
+            for (uint i = 0; i < rigid.Template.Value.Shapes.Length; i++)
             {
-                VhId rigidShapeId = node.Id.VhId.Create(i);
-                _logger.Verbose("Creating fixture for tree {TreeId}; NodeId = {NodeId}, RigidShapeId = {RigidShapeId}", body.Id.VhId, node.Id.VhId, rigidShapeId);
-                body.Create(rigidShapeId, node.Id, rigid.Template.Value.Shapes[i], node.LocalLocation.Transformation);
+                FixtureId rigidShapeFixtureId = new(i, node.LocalId);
+                _logger.Verbose("Creating fixture for tree {TreeId}; NodeLocalId = {NodeLocalId}, RigidShapeId = {RigidShapeId}", body.EntityLocalId, node.LocalId, rigidShapeFixtureId);
+                body.Create(rigidShapeFixtureId, rigid.Template.Value.Shapes[i], node.LocalLocation.Transformation);
             }
         }
 
         private void DestroyFixtures(IBody body, Node node, Rigid rigid)
         {
-            for (int i = 0; i < rigid.Template.Value.Shapes.Length; i++)
+            for (uint i = 0; i < rigid.Template.Value.Shapes.Length; i++)
             {
-                VhId rigidShapeId = node.Id.VhId.Create(i);
-                _logger.Verbose("Destroying fixture for tree {TreeId}; NodeId = {NodeId}, RigidShapeId = {RigidShapeId}", body.Id.VhId, node.Id.VhId, rigidShapeId);
-                body.Destroy(rigidShapeId);
+                FixtureId rigidShapeFixtureId = new(i, node.LocalId);
+                _logger.Verbose("Destroying fixture for tree {TreeId}; NodeLocalId = {NodeLocalId}, RigidShapeId = {RigidShapeId}", body.EntityLocalId, node.LocalId, rigidShapeFixtureId);
+                body.Destroy(rigidShapeFixtureId);
             }
         }
     }

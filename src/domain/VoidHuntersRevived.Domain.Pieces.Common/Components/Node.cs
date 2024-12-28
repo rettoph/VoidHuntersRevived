@@ -5,12 +5,11 @@ using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.FixedPoint.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
-    public struct Node(EntityId id, EntityId treeId) : IEntityComponent, IBelongsTo<Tree, Node>
+    public struct Node(EntityLocalId localId, EntityLocalId treeLocalId) : IEntityComponent, IBelongsTo<Tree, Node>
     {
         private bool _dirtyTransformation = true;
         private bool _dirtyXnaTransformation = true;
@@ -19,11 +18,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
         private FixMatrix _transformation;
         private Matrix _xnaTransformation;
 
-        public readonly EntityId Id = id;
-        public readonly EntityId TreeId = treeId;
+        public readonly EntityLocalId LocalId = localId;
+        public readonly EntityLocalId TreeLocalId = treeLocalId;
 
-        public readonly FilterVhId<Node> TreeFilterId = new(treeId);
-        FilterVhId<Node> IBelongsTo<Tree, Node>.ParentFilterId => this.TreeFilterId;
+        public readonly EntityFilterId<Node> TreeFilterId => new(this.TreeLocalId.Value);
+        EntityFilterId<Node> IBelongsTo<Tree, Node>.ParentFilterId => this.TreeFilterId;
 
         public Location LocalLocation => _localLocation;
         public FixMatrix Transformation

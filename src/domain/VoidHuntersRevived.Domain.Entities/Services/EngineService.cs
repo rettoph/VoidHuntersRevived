@@ -4,10 +4,9 @@ using Guppy.Core.Messaging.Common.Services;
 using Svelto.ECS;
 using System.Collections;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
-using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 
-namespace VoidHuntersRevived.Domain.Simulations.Services
+namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public sealed class EngineService(
         IFiltered<IEngine> engines,
@@ -22,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public EnginesRoot Root => _enginesRoot;
 
-        public void Initialize(IStrategy strategy)
+        public void Initialize()
         {
             _engines.AddRange(_engineProviders.Value.SelectMany(x => x.GetEngines()));
 

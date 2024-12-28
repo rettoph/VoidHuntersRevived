@@ -9,6 +9,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
         public readonly VhId Id;
         public int IndexCount => _indices.Length;
+        public int Length => _data.Length;
 
         public EntityData(VhId id, byte[] data, int[] indices)
         {
