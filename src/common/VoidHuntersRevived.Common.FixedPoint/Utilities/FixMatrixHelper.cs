@@ -5,6 +5,48 @@ namespace VoidHuntersRevived.Common.FixedPoint.Utilities
     public static class FixMatrixHelper
     {
 
+        public static FixMatrix FastMultiply(
+            Fix64 x1, Fix64 y1, Fix64 cos1, Fix64 sin1,
+            Fix64 x2, Fix64 y2, Fix64 cos2, Fix64 sin2
+        )
+        {
+            Fix64 cos1cos2 = cos1 * cos2;
+            Fix64 sin1sin2 = sin1 * sin2;
+            Fix64 cos1sin2 = cos1 * sin2;
+            Fix64 sin1cos2 = sin1 * cos2;
+
+            FixMatrix result = new(
+                cos1cos2 - sin1sin2, cos1sin2 + sin1cos2, Fix64.Zero, Fix64.Zero,
+                -sin1cos2 - cos1sin2, cos1cos2 - sin1sin2, Fix64.Zero, Fix64.Zero,
+                Fix64.Zero, Fix64.Zero, Fix64.One, Fix64.Zero,
+                (x1 * cos2) - (y1 * sin2) + x2, (x1 * sin2) + (y1 * cos2) + y2, Fix64.Zero, Fix64.One
+            );
+
+            return result;
+        }
+
+        public static FixMatrix FastMultiply(
+            Fix64 x1, Fix64 y1, Fix64 cos1, Fix64 sin1,
+            Fix64 x2, Fix64 y2
+        )
+        {
+            // This is the equivelent to trans2 having 0 rads
+            // cos2 = 1, sin2 = 0
+            Fix64 cos1cos2 = cos1; // * 1;
+            //Fix64 sin1sin2 = sin1 * 0;
+            //Fix64 cos1sin2 = cos1 * 0;
+            Fix64 sin1cos2 = sin1; // * 1;
+
+            FixMatrix result = new(
+                cos1cos2, sin1cos2, Fix64.Zero, Fix64.Zero,
+                -sin1cos2, cos1cos2, Fix64.Zero, Fix64.Zero,
+                Fix64.Zero, Fix64.Zero, Fix64.One, Fix64.Zero,
+                x1 + x2, y1 + y2, Fix64.Zero, Fix64.One
+            );
+
+            return result;
+        }
+
         public static FixMatrix FastMultiplyTransformations(FixMatrix transformation1, FixMatrix transformation2)
         {
             Fix64 cos1cos2 = transformation1.M11 * transformation2.M11;

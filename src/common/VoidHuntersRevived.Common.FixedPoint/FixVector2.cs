@@ -41,6 +41,16 @@ namespace VoidHuntersRevived.Common.FixedPoint
                 radians: Fix64.Atan2(this.X, this.Y));
         }
 
+        public readonly FixMatrix ToFixMatrix()
+        {
+            return new FixMatrix(
+                m11: Fix64.One, m12: Fix64.Zero, m13: Fix64.Zero, m14: Fix64.Zero,
+                m21: Fix64.Zero, m22: Fix64.One, m23: Fix64.Zero, m24: Fix64.Zero,
+                m31: Fix64.Zero, m32: Fix64.Zero, m33: Fix64.One, m34: Fix64.Zero,
+                m41: this.X, m42: this.Y, m43: Fix64.Zero, m44: Fix64.One
+            );
+        }
+
         /// <summary>
         /// Creates a new <see cref="AetherVector2"/> that contains linear interpolation of the specified vectors.
         /// </summary>

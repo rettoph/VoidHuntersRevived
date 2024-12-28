@@ -11,6 +11,11 @@ namespace VoidHuntersRevived.Common.FixedPoint.Extensions
 
         public static Fix64 Radians(this FixMatrix matrix)
         {
+            if (matrix.M12 == Fix64.Zero && matrix.M11 == Fix64.One)
+            {
+                return Fix64.Zero;
+            }
+
             return Fix64.Atan2(matrix.M12, matrix.M11);
         }
 
