@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
     {
         public override Plug Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Location location = default;
+            FixTransform2D nodeTransform = default;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -18,8 +18,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(Plug.Location):
-                        location = JsonSerializer.Deserialize<Location>(ref reader, options);
+                    case nameof(Plug.NodeTransform):
+                        nodeTransform = JsonSerializer.Deserialize<FixTransform2D>(ref reader, options);
                         reader.Read();
                         break;
                 }
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 
             return new Plug()
             {
-                Location = location
+                NodeTransform = nodeTransform
             };
         }
 

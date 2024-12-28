@@ -1,6 +1,5 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
@@ -8,9 +7,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
     {
         public static readonly Plug Default = new()
         {
-            Location = new Location(FixVector2.UnitX / (Fix64)2, Fix64.PiOver2)
+            NodeTransform = new FixTransform2D(FixVector2.UnitX / (Fix64)2, Fix64.PiOver2)
         };
 
-        public required Location Location { get; init; }
+        public required FixTransform2D NodeTransform { get; init; }
     }
 }

@@ -6,11 +6,9 @@
       "Template": "Body.Thruster"
     },
     "Plug": {
-      "Location": {
-        "Position": {
-          "X": 0,
-          "Y": 0
-        },
+      "NodeTransform": {
+        "X": 0,
+        "Y": 0,
         "Rotation": 3.1415926535
       }
     },

@@ -100,7 +100,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 ref Plug plug = ref _entityQueryService.QueryByGroupIndex<Plug>(node.GroupIndex);
                 NodeSocket nodeSocket = _socketService.GetNodeSocket(coupling.SocketId);
 
-                node.Component.SetLocationTransform(FixTransform2D.Invert(plug.Location.ToFixTransform2D()) * nodeSocket.LocalTransform);
+                node.Component.SetLocationTransform(FixTransform2D.Invert(plug.NodeTransform) * nodeSocket.LocalTransform);
             }
             catch (Exception ex)
             {

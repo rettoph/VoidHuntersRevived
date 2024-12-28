@@ -1,10 +1,8 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Microsoft.Xna.Framework;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -82,19 +80,19 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                     IBody targetBody = _space.GetBody(in targetId);
                     ref Tree targetTree = ref trees[index];
 
-                    Location targetHeadChildLocation = _entityQueryService.QueryByLocalId<Plug>(targetTree.HeadLocalId).Location;
+                    FixTransform2D targetHeadChildTransform = _entityQueryService.QueryByLocalId<Plug>(targetTree.HeadLocalId).NodeTransform;
 
                     if (_socketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Value, out var openSocketNode))
                     {
-                        FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.WorldTransform.ToFixMatrix();
-                        FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
+                        FixTransform2D potentialTransform = FixTransform2D.Invert(targetHeadChildTransform) * openSocketNode.WorldTransform;
+                        FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransform);
 
-                        targetBody.SetTransform(potentialPosition, potentialTransformation.Radians());
+                        targetBody.SetTransform(potentialPosition, potentialTransform.Rotation);
 
                         return;
                     }
 
-                    FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, targetHeadChildLocation.Transformation * FixMatrix.CreateRotationZ(targetBody.Rotation));
+                    FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, targetHeadChildTransform * FixTransform2D.CreateRotation(targetBody.Rotation));
                     targetBody.SetTransform(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
                 }
             }

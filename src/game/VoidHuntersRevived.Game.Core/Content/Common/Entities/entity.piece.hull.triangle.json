@@ -24,11 +24,9 @@
       ]
     },
     "Plug": {
-      "Location": {
-        "Position": {
-          "X": 0.5,
-          "Y": 0
-        },
+      "NodeTransform": {
+        "X": 0.5,
+        "Y": 0,
         "Rotation": 1.5707963267
       }
     },
