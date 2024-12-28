@@ -160,7 +160,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     continue;
                 }
 
-                FixVector2 socketWorldPosition = FixVector2.Transform(FixVector2.Zero, nodeSocket.Transformation);
+                FixVector2 socketWorldPosition = FixVector2.Transform(FixVector2.Zero, nodeSocket.WorldTransform);
                 FixVector2.Distance(ref socketWorldPosition, ref worldPosition, out Fix64 jointDistanceFromTarget);
                 if (jointDistanceFromTarget > closestOpenSocketDistance)
                 { // Socket is further away than previously checked closest

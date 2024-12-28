@@ -1,22 +1,16 @@
-﻿using Microsoft.Xna.Framework;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
-using VoidHuntersRevived.Common.FixedPoint.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
     public struct Node(EntityLocalId localId, EntityLocalId treeLocalId) : IEntityComponent, IBelongsTo<Tree, Node>
     {
         private bool _dirtyTransformation = true;
-        private bool _dirtyXnaTransformation = true;
-        private Location _localLocation = new();
-        private FixMatrix _worldTransformation = FixMatrix.Identity;
-        private FixMatrix _transformation;
-        private Matrix _xnaTransformation;
+        private FixTransform2D _localTransformation = new();
+        private FixTransform2D _worldTransformation = FixTransform2D.Identity;
+        private FixTransform2D _transformation;
 
         public readonly EntityLocalId LocalId = localId;
         public readonly EntityLocalId TreeLocalId = treeLocalId;
@@ -24,8 +18,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
         public readonly EntityFilterId<Node> TreeFilterId => new(this.TreeLocalId.Value);
         EntityFilterId<Node> IBelongsTo<Tree, Node>.ParentFilterId => this.TreeFilterId;
 
-        public Location LocalLocation => _localLocation;
-        public FixMatrix Transformation
+        public FixTransform2D LocalTransformation => _localTransformation;
+        public FixTransform2D Transformation
         {
             get
             {
@@ -34,42 +28,23 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
                     return _transformation;
                 }
 
-                _transformation = FixMatrixHelper.FastMultiplyTransformations(LocalLocation.Transformation, _worldTransformation);
+                _transformation = _localTransformation * _worldTransformation;
                 _dirtyTransformation = false;
 
                 return _transformation;
             }
         }
-        public Matrix XnaTransformation
+
+        public void SetWorldTransform(FixTransform2D worldTransform)
         {
-            get
-            {
-                if (_dirtyXnaTransformation == false)
-                {
-                    return _xnaTransformation;
-                }
-
-                _xnaTransformation = Transformation.ToTransformationXnaMatrix();
-                _dirtyXnaTransformation = false;
-
-                return _xnaTransformation;
-            }
+            _worldTransformation = worldTransform;
+            _dirtyTransformation = true;
         }
 
-
-
-        public void WorldTransform(FixMatrix world)
+        public void SetLocationTransform(FixTransform2D localTransform)
         {
-            _worldTransformation = world;
+            _localTransformation = localTransform;
             _dirtyTransformation = true;
-            _dirtyXnaTransformation = true;
-        }
-
-        public void SetLocationTransformation(FixMatrix transformation)
-        {
-            _localLocation.Transformation = transformation;
-            _dirtyTransformation = true;
-            _dirtyXnaTransformation = true;
         }
     }
 }

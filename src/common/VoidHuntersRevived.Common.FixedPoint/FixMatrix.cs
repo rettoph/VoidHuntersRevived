@@ -1365,6 +1365,15 @@ namespace VoidHuntersRevived.Common.FixedPoint
             cos = this.M11;
             sin = this.M12;
         }
+
+        public FixTransform2D ToFixTransform2D()
+        {
+            return new FixTransform2D(
+                x: this.M41,
+                y: this.M42,
+                cos: this.M11,
+                sin: this.M12);
+        }
         #endregion
     }
 }

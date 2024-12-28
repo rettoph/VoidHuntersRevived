@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             {
                 FixtureId rigidShapeFixtureId = new(i, node.LocalId);
                 _logger.Verbose("Creating fixture for tree {TreeId}; NodeLocalId = {NodeLocalId}, RigidShapeId = {RigidShapeId}", body.EntityLocalId, node.LocalId, rigidShapeFixtureId);
-                body.Create(rigidShapeFixtureId, rigid.Template.Value.Shapes[i], node.LocalLocation.Transformation);
+                body.Create(rigidShapeFixtureId, rigid.Template.Value.Shapes[i], node.LocalTransformation.ToFixMatrix());
             }
         }
 

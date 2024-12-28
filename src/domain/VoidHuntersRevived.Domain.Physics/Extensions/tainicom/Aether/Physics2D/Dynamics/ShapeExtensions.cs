@@ -19,11 +19,6 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions.tainicom.Aether.Physics2D
                 vertexes[i] = FixVector2.Transform(original, transformation).AsAetherVector2();
             }
 
-            if (vertexes[0] == vertexes[1] && vertexes[0] == vertexes[2])
-            {
-
-            }
-
             AetherVertices vertices = new(vertexes);
             vertices = GiftWrap.GetConvexHull(vertices);
 

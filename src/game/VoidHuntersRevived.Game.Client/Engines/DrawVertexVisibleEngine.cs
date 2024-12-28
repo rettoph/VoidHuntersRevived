@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ref ColorScheme colorScheme = ref colorSchemes[vertexVisible.Index];
             ref Node node = ref nodes[vertexVisible.Index];
 
-            vertex.LocalTransformation = node.XnaTransformation;
+            vertex.LocalTransformation = node.Transformation.ToMatrix();
             vertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
             vertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
         }
@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
                     ref ColorScheme colorScheme = ref colorSchemes[i];
                     ref Node node = ref nodes[i];
 
-                    vertex.LocalTransformation = node.XnaTransformation;
+                    vertex.LocalTransformation = node.Transformation.ToMatrix();
                     vertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
                     vertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
                 }

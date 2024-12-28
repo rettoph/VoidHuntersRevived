@@ -49,6 +49,7 @@ namespace VoidHuntersRevived.Domain.Extensions
             builder.RegisterJsonConverter<Fix64Converter>();
             builder.RegisterJsonConverter<FixPolarConverter>();
             builder.RegisterJsonConverter<FixVector2Converter>();
+            builder.RegisterJsonConverter<FixTransform2DConverter>();
             builder.RegisterJsonConverter<NativeDynamicArrayCastJsonConverter>();
             builder.RegisterJsonConverter<KeyConverter>();
 

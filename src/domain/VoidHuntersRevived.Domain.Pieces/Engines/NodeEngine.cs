@@ -4,7 +4,6 @@ using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Common.FixedPoint.Extensions;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
@@ -86,13 +85,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void SetLocalTransformation(ref Entity<Node> node, in Location treeLocation)
         {
-            _logger.Verbose("Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(Node.LocalLocation), nameof(Node), node.LocalId);
+            _logger.Verbose("Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(Node.LocalTransformation), nameof(Node), node.LocalId);
 
-            node.Component.WorldTransform(treeLocation.Transformation);
+            node.Component.SetWorldTransform(treeLocation.ToFixTransform2D());
 
             if (!_entityQueryService.TryQueryByGroupIndex<Coupling>(node.GroupIndex, out Coupling coupling) || coupling.SocketId == NodeSocketLocalId.Empty)
             {
-                node.Component.SetLocationTransformation(FixMatrix.Identity);
+                node.Component.SetLocationTransform(FixTransform2D.Identity);
                 return;
             }
 
@@ -101,7 +100,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 ref Plug plug = ref _entityQueryService.QueryByGroupIndex<Plug>(node.GroupIndex);
                 NodeSocket nodeSocket = _socketService.GetNodeSocket(coupling.SocketId);
 
-                node.Component.SetLocationTransformation(plug.Location.Transformation.Invert() * nodeSocket.LocalTransformation);
+                node.Component.SetLocationTransform(FixTransform2D.Invert(plug.Location.ToFixTransform2D()) * nodeSocket.LocalTransform);
             }
             catch (Exception ex)
             {
@@ -112,7 +111,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 // moving the mouse randomly. It doesnt occurre very often
                 // We set the transformation to zero so that the constructed rigid shape can still take form
                 // Without this it will default all vertices to 0,0 and fail an assert
-                node.Component.SetLocationTransformation(FixMatrix.Identity);
+                node.Component.SetLocationTransform(FixTransform2D.Identity);
 
                 var localId = _entityQueryService.QueryByGroupIndex<EntityLocalId>(node.GroupIndex);
                 _logger.Error(ex, "There was a fatal error attempting to set node transformation for node {NodeLocalId}.", localId);

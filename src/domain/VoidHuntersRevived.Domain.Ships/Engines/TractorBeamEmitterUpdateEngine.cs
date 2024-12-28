@@ -86,7 +86,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
                     if (_socketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Value, out var openSocketNode))
                     {
-                        FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.Transformation;
+                        FixMatrix potentialTransformation = targetHeadChildLocation.Transformation.Invert() * openSocketNode.WorldTransform.ToFixMatrix();
                         FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransformation);
 
                         targetBody.SetTransform(potentialPosition, potentialTransformation.Radians());

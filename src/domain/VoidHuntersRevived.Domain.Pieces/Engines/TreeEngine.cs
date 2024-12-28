@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    nodes[indices[i]].WorldTransform(location.Transformation);
+                    nodes[indices[i]].SetWorldTransform(location.ToFixTransform2D());
                 }
             }
         }

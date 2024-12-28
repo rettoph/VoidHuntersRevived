@@ -4,7 +4,6 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common.Extensions.Svelto;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common.Interfaces;
-using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Components
@@ -36,8 +35,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
                 FixVector2 end = vertexAngles[nextI].FixedVertex;
                 FixVector2 center = (start + end) / (Fix64)2;
 
-                var location = new Location(center, vertexAngles[i].Angle - Fix64.PiOver2);
-                items.Set(i - 1, new Socket(location));
+                FixTransform2D transform = new(center, vertexAngles[i].Angle - Fix64.PiOver2);
+                items.Set(i - 1, new Socket(transform));
             }
 
             return new Sockets()
