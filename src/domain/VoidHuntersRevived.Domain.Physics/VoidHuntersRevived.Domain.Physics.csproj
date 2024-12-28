@@ -25,6 +25,9 @@
     <Using Include="tainicom.Aether.Physics2D.Dynamics.World">
       <Alias>AetherWorld</Alias>
     </Using>
+	<Using Include="tainicom.Aether.Physics2D.Common.Transform">
+		<Alias>AetherTransform</Alias>
+	</Using>
   </ItemGroup>
 
 </Project>

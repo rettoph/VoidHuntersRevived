@@ -7,7 +7,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Extensions.FixedPoint
     {
         public static Location ToLocation(this FixTransform2D transform)
         {
-            return new Location(new FixVector2(transform.X, transform.Y), transform.Rotation);
+            return new Location(transform.Position, transform.Radians);
         }
     }
 }

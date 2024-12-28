@@ -23,17 +23,24 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public FixVector2 LocalCenter => _aether.LocalCenter.AsFixVector2();
 
-        public FixVector2 Position => _aether.Position.AsFixVector2();
-
-        public Fix64 Rotation => (Fix64)_aether.Rotation;
-
         public FixVector2 LinearVelocity => _aether.LinearVelocity.AsFixVector2();
 
         public Fix64 AngularVelocity => (Fix64)_aether.AngularVelocity;
 
         public EntityLocalId EntityLocalId { get; }
 
-        public FixMatrix Transformation => FixMatrix.CreateRotationZ(this.Rotation) * FixMatrix.CreateTranslation(this.Position.X, this.Position.Y, Fix64.Zero);
+        public FixTransform2D Transform
+        {
+            get
+            {
+                var trans = _aether.GetTransform();
+                var output = new FixTransform2D(_aether.Position.X, _aether.Position.Y, _aether.Rotation);
+
+                return output;
+            }
+        }
+        public FixVector2 Position => _aether.Position.AsFixVector2();
+        public Fix64 Rotation => _aether.Rotation;
 
         public CollisionGroup CollisionCategories
         {
@@ -81,6 +88,14 @@ namespace VoidHuntersRevived.Domain.Physics
 
             this.EntityLocalId = entityLocalId;
             this.Enabled = true;
+        }
+
+        public void SetTransform(FixTransform2D transform)
+        {
+            AetherTransform aetherTransform = Unsafe.As<FixTransform2D, AetherTransform>(ref transform);
+
+            _aether.SetTransformIgnoreContacts(aetherTransform);
+            _aether.Awake = true;
         }
 
         public void SetTransform(FixVector2 position, Fix64 rotation)

@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>Transformed <see cref="Vector2"/>.</returns>
         public static FixVector2 Transform(FixVector2 position, FixTransform2D transform)
         {
-            return new FixVector2(position.X * transform.Cos + position.Y * -transform.Sin + transform.X, position.X * transform.Sin + position.Y * transform.Cos + transform.Y);
+            return new FixVector2(position.X * transform.Rotation.Real + position.Y * -transform.Rotation.Imaginary + transform.Position.X, position.X * transform.Rotation.Imaginary + position.Y * transform.Rotation.Real + transform.Position.Y);
         }
 
         /// <summary>

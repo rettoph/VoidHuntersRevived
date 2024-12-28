@@ -2,70 +2,58 @@
 
 namespace VoidHuntersRevived.Common.FixedPoint
 {
-    public struct FixTransform2D(Fix64 x, Fix64 y, Fix64 cos, Fix64 sin)
+    public struct FixTransform2D(FixComplex rotation, FixVector2 position)
     {
-        public Fix64 X = x;
-        public Fix64 Y = y;
+        public FixComplex Rotation = rotation;
 
-        public Fix64 Cos = cos;
-        public Fix64 Sin = sin;
+        public FixVector2 Position = position;
 
-        public Fix64 Rotation
+        public Fix64 Radians
         {
-            get
-            {
-                if (this.Sin == Fix64.Zero && this.Cos == Fix64.One)
-                {
-                    return Fix64.Zero;
-                }
-
-                return Fix64.Atan2(this.Sin, this.Cos);
-            }
-            set
-            {
-                this.Cos = Fix64.Cos(value);
-                this.Sin = Fix64.Sin(value);
-            }
+            get => this.Rotation.Phase;
+            set => this.Rotation.Phase = value;
         }
 
-        public FixTransform2D(Fix64 x, Fix64 y, Fix64 rotation) : this(x, y, Fix64.Cos(rotation), Fix64.Sin(rotation))
+        public FixTransform2D(Fix64 x, Fix64 y, Fix64 cos, Fix64 sin) : this(new FixComplex(cos, sin), new FixVector2(x, y))
         {
 
         }
-        public FixTransform2D(FixVector2 position, Fix64 rotation) : this(position.X, position.Y, Fix64.Cos(rotation), Fix64.Sin(rotation))
+        public FixTransform2D(Fix64 x, Fix64 y, Fix64 radians) : this(new FixComplex(radians), new FixVector2(x, y))
+        {
+
+        }
+        public FixTransform2D(FixVector2 position, Fix64 radians) : this(new FixComplex(radians), position)
         {
 
         }
 
-        public static readonly FixTransform2D Identity = new(
-            x: Fix64.Zero, y: Fix64.Zero,
-            cos: Fix64.One, sin: Fix64.Zero);
+        public static readonly FixTransform2D Identity = new(FixComplex.One, FixVector2.Zero);
 
         public static FixTransform2D Invert(FixTransform2D transform)
         {
-            Fix64 iSin = -transform.Sin;
-            Fix64 x = -(transform.X * transform.Cos) + (transform.Y * iSin);
-            Fix64 y = -(transform.X * iSin) - (transform.Y * transform.Cos);
+            Fix64 iImaginary = -transform.Rotation.Imaginary;
+            Fix64 x = -(transform.Position.X * transform.Rotation.Real) + (transform.Position.Y * iImaginary);
+            Fix64 y = -(transform.Position.X * iImaginary) - (transform.Position.Y * transform.Rotation.Real);
 
-            return new FixTransform2D(x: x, y: y, cos: transform.Cos, sin: iSin);
+            return new FixTransform2D(x: x, y: y, cos: transform.Rotation.Real, sin: iImaginary);
         }
 
         public static FixTransform2D operator *(FixTransform2D left, FixTransform2D right)
         {
             return new FixTransform2D(
-                x: (left.X * right.Cos) - (left.Y * right.Sin) + right.X,
-                y: (left.X * right.Sin) + (left.Y * right.Cos) + right.Y,
-                cos: (left.Cos * right.Cos) - (left.Sin * right.Sin),
-                sin: (left.Cos * right.Sin) + (left.Sin * right.Cos));
+                x: (left.Position.X * right.Rotation.Real) - (left.Position.Y * right.Rotation.Imaginary) + right.Position.X,
+                y: (left.Position.X * right.Rotation.Imaginary) + (left.Position.Y * right.Rotation.Real) + right.Position.Y,
+                cos: (left.Rotation.Real * right.Rotation.Real) - (left.Rotation.Imaginary * right.Rotation.Imaginary),
+                sin: (left.Rotation.Real * right.Rotation.Imaginary) + (left.Rotation.Imaginary * right.Rotation.Real));
         }
 
         public static FixTransform2D operator *(FixTransform2D left, FixVector2 right)
         {
             return new FixTransform2D(
-                x: left.X + right.X,
-                y: left.Y + right.Y,
-                cos: left.Cos,
-                sin: left.Sin);
+                x: left.Position.X + right.X,
+                y: left.Position.Y + right.Y,
+                cos: left.Rotation.Real,
+                sin: left.Rotation.Imaginary);
         }
 
         public override bool Equals(object? obj)
@@ -75,44 +63,39 @@ namespace VoidHuntersRevived.Common.FixedPoint
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.X, this.Y, this.Sin, this.Cos);
+            return HashCode.Combine(this.Position, this.Rotation);
         }
 
         public static bool operator ==(FixTransform2D left, FixTransform2D right)
         {
-            return left.X == right.X &&
-                   left.Y == right.Y &&
-                   left.Sin == right.Sin &&
-                   left.Cos == right.Cos;
+            return left.Position == right.Position &&
+                   left.Rotation == right.Rotation;
         }
 
         public static bool operator !=(FixTransform2D left, FixTransform2D right)
         {
-            return left.X != right.X ||
-                   left.Y != right.Y ||
-                   left.Sin != right.Sin ||
-                   left.Cos != right.Cos;
+            return left.Position != right.Position ||
+                   left.Rotation != right.Rotation;
         }
 
-        public static FixTransform2D CreateRotation(Fix64 rotation)
+        public static FixTransform2D CreateRotation(Fix64 radians)
         {
             return new FixTransform2D(
                 x: Fix64.Zero,
                 y: Fix64.Zero,
-                cos: Fix64.Cos(rotation),
-                sin: Fix64.Sin(rotation));
+                radians: radians);
         }
 
         public FixMatrix ToFixMatrix()
         {
             FixMatrix result = FixMatrix.Identity;
 
-            result.M11 = this.Cos;
-            result.M12 = this.Sin;
-            result.M21 = -this.Sin;
-            result.M22 = this.Cos;
-            result.M41 = this.X;
-            result.M42 = this.Y;
+            result.M11 = this.Rotation.Real;
+            result.M12 = this.Rotation.Imaginary;
+            result.M21 = -this.Rotation.Imaginary;
+            result.M22 = this.Rotation.Real;
+            result.M41 = this.Position.X;
+            result.M42 = this.Position.Y;
 
             return result;
         }
@@ -121,12 +104,12 @@ namespace VoidHuntersRevived.Common.FixedPoint
         {
             Matrix result = Matrix.Identity;
 
-            result.M11 = (float)this.Cos;
-            result.M12 = (float)this.Sin;
+            result.M11 = (float)this.Rotation.Real;
+            result.M12 = (float)this.Rotation.Imaginary;
             result.M21 = -result.M12;
             result.M22 = result.M11;
-            result.M41 = (float)this.X;
-            result.M42 = (float)this.Y;
+            result.M41 = (float)this.Position.X;
+            result.M42 = (float)this.Position.Y;
 
             return result;
         }

@@ -9,32 +9,40 @@
       "Items": [
         {
           "NodeTransform": {
-            "X": 1,
-            "Y": 0.5,
-            "Rotation": 0
+            "Position": {
+              "X": 1,
+              "Y": 0.5
+            },
+            "Radians": 0
           }
         },
         {
           "NodeTransform": {
-            "X": 0.5,
-            "Y": 1,
-            "Rotation": 1.5707963267
+            "Position": {
+              "X": 0.5,
+              "Y": 1
+            },
+            "Radians": 1.5707963267
           }
         },
         {
           "NodeTransform": {
-            "X": 0,
-            "Y": 0.5,
-            "Rotation": 3.1415926535
+            "Position": {
+              "X": 0,
+              "Y": 0.5
+            },
+            "Radians": 3.1415926535
           }
         }
       ]
     },
     "Plug": {
       "NodeTransform": {
-        "X": 0.5,
-        "Y": 0,
-        "Rotation": 1.5707963267
+        "Position": {
+          "X": 0.5,
+          "Y": 0
+        },
+        "Radians": 1.5707963267
       }
     },
     "Primitive.Visible": {

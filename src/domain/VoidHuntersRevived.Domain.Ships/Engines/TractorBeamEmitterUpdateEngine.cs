@@ -85,15 +85,15 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                     if (_socketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Value, out var openSocketNode))
                     {
                         FixTransform2D potentialTransform = FixTransform2D.Invert(targetHeadChildTransform) * openSocketNode.WorldTransform;
-                        FixVector2 potentialPosition = FixVector2.Transform(FixVector2.Zero, potentialTransform);
 
-                        targetBody.SetTransform(potentialPosition, potentialTransform.Rotation);
+                        targetBody.SetTransform(potentialTransform);
 
                         return;
                     }
 
                     FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, targetHeadChildTransform * FixTransform2D.CreateRotation(targetBody.Rotation));
-                    targetBody.SetTransform(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
+                    FixTransform2D transform = new(targetBody.Transform.Rotation, tactical.Value - targetHeadChildNodePosition);
+                    targetBody.SetTransform(transform);
                 }
             }
         }

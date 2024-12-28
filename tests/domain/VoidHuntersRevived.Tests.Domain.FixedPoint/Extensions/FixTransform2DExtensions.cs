@@ -13,10 +13,10 @@ namespace VoidHuntersRevived.Tests.Domain.FixedPoint.Extensions
         {
             var (targetX, targetY, targetCos, targetSin) = target;
 
-            float sourceX = (float)source.X;
-            float sourceY = (float)source.Y;
-            float sourceCos = (float)source.Cos;
-            float sourceSin = (float)source.Sin;
+            float sourceX = (float)source.Position.X;
+            float sourceY = (float)source.Position.Y;
+            float sourceCos = (float)source.Rotation.Real;
+            float sourceSin = (float)source.Rotation.Imaginary;
 
             sourceX.AssertWithinEpsilon(targetX, Epsilon);
             sourceY.AssertWithinEpsilon(targetY, Epsilon);

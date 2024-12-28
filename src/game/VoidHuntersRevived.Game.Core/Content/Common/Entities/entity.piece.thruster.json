@@ -7,9 +7,11 @@
     },
     "Plug": {
       "NodeTransform": {
-        "X": 0,
-        "Y": 0,
-        "Rotation": 3.1415926535
+        "Position": {
+          "X": 0,
+          "Y": 0
+        },
+        "Radians": 3.1415926535
       }
     },
     "Thrustable": {

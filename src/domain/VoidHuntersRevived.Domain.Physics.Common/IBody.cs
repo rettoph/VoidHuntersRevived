@@ -10,9 +10,9 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         ISpace? Space { get; }
 
         FixVector2 LocalCenter { get; }
+        FixTransform2D Transform { get; }
         FixVector2 Position { get; }
         Fix64 Rotation { get; }
-        FixMatrix Transformation { get; }
 
         FixVector2 LinearVelocity { get; }
         Fix64 AngularVelocity { get; }
@@ -29,6 +29,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         void Destroy(IFixture fixture)
             => this.Destroy(fixture.Id);
 
+        void SetTransform(FixTransform2D transform);
         void SetTransform(FixVector2 position, Fix64 rotation);
         void SetVelocity(FixVector2 linear, Fix64 angular);
 

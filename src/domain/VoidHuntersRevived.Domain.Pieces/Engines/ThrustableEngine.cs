@@ -131,7 +131,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     ref Node node = ref nodes[index];
 
                     body.ApplyForce(
-                        force: FixPolar.Rotate(thrustable.MaxImpulse, body.Rotation + node.LocalTransformation.Rotation).ToVector2(),
+                        force: FixPolar.Rotate(thrustable.MaxImpulse, body.Rotation + node.LocalTransformation.Radians).ToVector2(),
                         point: FixVector2.Transform(thrustable.ImpulsePoint, node.Transformation));
                 }
             }
@@ -146,7 +146,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             // The point acceleration is applied
             var ip = FixVector2.Transform(thrustable.ImpulsePoint, node.LocalTransformation);
             // The impulse to be applied...
-            var i = FixPolar.Rotate(thrustable.MaxImpulse, node.LocalTransformation.Rotation).ToVector2();
+            var i = FixPolar.Rotate(thrustable.MaxImpulse, node.LocalTransformation.Radians).ToVector2();
             // The point acceleration is targeting
             var it = ip + i;
 

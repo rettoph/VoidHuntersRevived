@@ -8,7 +8,8 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
     {
         public override FixTransform2D Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Fix64 x = default, y = default, rotation = default;
+            FixVector2 position = default;
+            FixComplex rotation = default;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -17,16 +18,13 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(FixTransform2D.X):
-                        x = JsonSerializer.Deserialize<Fix64>(ref reader, options);
+                    case nameof(FixTransform2D.Position):
+                        position = JsonSerializer.Deserialize<FixVector2>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(FixTransform2D.Y):
-                        y = JsonSerializer.Deserialize<Fix64>(ref reader, options);
-                        reader.Read();
-                        break;
-                    case nameof(FixTransform2D.Rotation):
-                        rotation = JsonSerializer.Deserialize<Fix64>(ref reader, options);
+                    case nameof(FixTransform2D.Radians):
+                        Fix64 radians = JsonSerializer.Deserialize<Fix64>(ref reader, options);
+                        rotation = new FixComplex(radians);
                         reader.Read();
                         break;
                 }
@@ -34,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new FixTransform2D(x, y, rotation);
+            return new FixTransform2D(rotation, position);
         }
 
         public override void Write(Utf8JsonWriter writer, FixTransform2D value, JsonSerializerOptions options)

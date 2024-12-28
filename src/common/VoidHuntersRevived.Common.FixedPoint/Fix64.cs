@@ -3,9 +3,9 @@ using FixedMath64 = FixedMath.NET.Fix64;
 
 namespace VoidHuntersRevived.Common.FixedPoint
 {
-    public struct Fix64
+    public readonly struct Fix64
     {
-        readonly long m_rawValue;
+        private readonly long m_rawValue;
 
         // Precision of this type is 2^-32, that is 2,3283064365386962890625E-10
         public static readonly decimal Precision = FixedMath64.Precision;
@@ -325,12 +325,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
 
         public override readonly bool Equals(object? obj)
         {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            return ((FixedMath64)obj).Equals(obj);
+            return obj is Fix64 fix64 && this.m_rawValue == fix64.m_rawValue;
         }
 
         public override readonly int GetHashCode()
@@ -375,7 +370,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// This is the constructor from raw value; it can only be used interally.
         /// </summary>
         /// <param name="rawValue"></param>
-        Fix64(long rawValue)
+        private Fix64(long rawValue)
         {
             m_rawValue = rawValue;
         }
