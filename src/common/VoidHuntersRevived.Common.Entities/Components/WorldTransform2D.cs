@@ -6,21 +6,23 @@ namespace VoidHuntersRevived.Common.Entities.Components
     public struct WorldTransform2D : IEntityComponent
     {
         private bool _dirty;
-        private FixVector2 _worldPosition;
+        private FixTransform2D _worldTransform;
         private FixTransform2D _localTransform;
         private FixTransform2D _value;
 
-        public FixVector2 WorldPosition
+        public FixTransform2D WorldTransform
         {
+            get => _worldTransform;
             set
             {
-                _worldPosition = value;
+                _worldTransform = value;
                 _dirty = true;
             }
         }
 
         public FixTransform2D LocalTransformation
         {
+            get => _localTransform;
             set
             {
                 _localTransform = value;
@@ -34,7 +36,7 @@ namespace VoidHuntersRevived.Common.Entities.Components
             {
                 if (_dirty)
                 {
-                    _value = _localTransform * _worldPosition;
+                    _value = _localTransform * _worldTransform;
                     _dirty = false;
                 }
 

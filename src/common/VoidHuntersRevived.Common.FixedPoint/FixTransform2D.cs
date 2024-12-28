@@ -1,4 +1,6 @@
-﻿namespace VoidHuntersRevived.Common.FixedPoint
+﻿using Microsoft.Xna.Framework;
+
+namespace VoidHuntersRevived.Common.FixedPoint
 {
     public struct FixTransform2D(Fix64 x, Fix64 y, Fix64 cos, Fix64 sin)
     {
@@ -27,6 +29,10 @@
         }
 
         public FixTransform2D(Fix64 x, Fix64 y, Fix64 rotation) : this(x, y, Fix64.Cos(rotation), Fix64.Sin(rotation))
+        {
+
+        }
+        public FixTransform2D(FixVector2 position, Fix64 rotation) : this(position.X, position.Y, Fix64.Cos(rotation), Fix64.Sin(rotation))
         {
 
         }
@@ -86,6 +92,43 @@
                    left.Y != right.Y ||
                    left.Sin != right.Sin ||
                    left.Cos != right.Cos;
+        }
+
+        public static FixTransform2D CreateRotation(Fix64 rotation)
+        {
+            return new FixTransform2D(
+                x: Fix64.Zero,
+                y: Fix64.Zero,
+                cos: Fix64.Cos(rotation),
+                sin: Fix64.Sin(rotation));
+        }
+
+        public FixMatrix ToFixMatrix()
+        {
+            FixMatrix result = FixMatrix.Identity;
+
+            result.M11 = this.Cos;
+            result.M12 = this.Sin;
+            result.M21 = -this.Sin;
+            result.M22 = this.Cos;
+            result.M41 = this.X;
+            result.M42 = this.Y;
+
+            return result;
+        }
+
+        public Matrix ToMatrix()
+        {
+            Matrix result = Matrix.Identity;
+
+            result.M11 = (float)this.Cos;
+            result.M12 = (float)this.Sin;
+            result.M21 = -result.M12;
+            result.M22 = result.M11;
+            result.M41 = (float)this.X;
+            result.M42 = (float)this.Y;
+
+            return result;
         }
     }
 }

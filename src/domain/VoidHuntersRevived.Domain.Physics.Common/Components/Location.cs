@@ -62,5 +62,10 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Components
         {
             _transformation = FixMatrix.Identity;
         }
+
+        public FixTransform2D ToFixTransform2D()
+        {
+            return new FixTransform2D(this.Position.X, this.Position.Y, this.Rotation);
+        }
     }
 }
