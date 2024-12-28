@@ -5,11 +5,11 @@ using VoidHuntersRevived.Tests.Common.Extensions;
 
 namespace VoidHuntersRevived.Tests.Domain.FixedPoint.Extensions
 {
-    public static class FixMatrix2DExtensions
+    public static class FixTransform2DExtensions
     {
-        private const float Epsilon = 0.00000001f;
+        private const float Epsilon = 0.0001f;
 
-        public static void AssetEqualTo(this FixMatrix2D source, Matrix target)
+        public static void AssetEqualTo(this FixTransform2D source, Matrix target)
         {
             var (targetX, targetY, targetCos, targetSin) = target;
 

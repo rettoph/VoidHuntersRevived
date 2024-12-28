@@ -66,14 +66,25 @@ namespace VoidHuntersRevived.Common.FixedPoint
         }
 
         /// <summary>
-        /// Creates a new <see cref="Vector2"/> that contains a transformation of 2d-vector by the specified <see cref="Matrix"/>.
+        /// Creates a new <see cref="Vector2"/> that contains a transformation of 2d-vector by the specified <see cref="FixMatrix"/>.
         /// </summary>
         /// <param name="position">Source <see cref="Vector2"/>.</param>
-        /// <param name="matrix">The transformation <see cref="Matrix"/>.</param>
+        /// <param name="matrix">The transformation <see cref="FixMatrix"/>.</param>
         /// <returns>Transformed <see cref="Vector2"/>.</returns>
         public static FixVector2 Transform(FixVector2 position, FixMatrix matrix)
         {
             return new FixVector2(position.X * matrix.M11 + position.Y * matrix.M21 + matrix.M41, position.X * matrix.M12 + position.Y * matrix.M22 + matrix.M42);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Vector2"/> that contains a transformation of 2d-vector by the specified <see cref="FixTransform2D"/>.
+        /// </summary>
+        /// <param name="position">Source <see cref="Vector2"/>.</param>
+        /// <param name="transform">The transformation <see cref="FixTransform2D"/>.</param>
+        /// <returns>Transformed <see cref="Vector2"/>.</returns>
+        public static FixVector2 Transform(FixVector2 position, FixTransform2D transform)
+        {
+            return new FixVector2(position.X * transform.Cos + position.Y * -transform.Sin + transform.X, position.X * transform.Sin + position.Y * transform.Cos + transform.Y);
         }
 
         /// <summary>

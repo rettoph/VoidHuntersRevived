@@ -5,6 +5,6 @@ namespace VoidHuntersRevived.Common.Entities.Components
 {
     public unsafe struct Transform2D : IEntityComponent
     {
-        public FixMatrix2D Value;
+        public FixTransform2D Value;
     }
 }

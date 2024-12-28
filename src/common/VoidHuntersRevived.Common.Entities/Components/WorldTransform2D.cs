@@ -3,12 +3,12 @@ using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Common.Entities.Components
 {
-    public struct CompositeTransform2D : IEntityComponent
+    public struct WorldTransform2D : IEntityComponent
     {
         private bool _dirty;
         private FixVector2 _worldPosition;
-        private FixMatrix2D _localTransform;
-        private FixMatrix2D _value;
+        private FixTransform2D _localTransform;
+        private FixTransform2D _value;
 
         public FixVector2 WorldPosition
         {
@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Common.Entities.Components
             }
         }
 
-        public FixMatrix2D LocalTransformation
+        public FixTransform2D LocalTransformation
         {
             set
             {
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Common.Entities.Components
             }
         }
 
-        public FixMatrix2D Value
+        public FixTransform2D Value
         {
             get
             {
