@@ -1,11 +1,13 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Physics.Common.Components
 {
-    public unsafe struct Body(Fix64 rotation, FixTransform2D transform) : IEntityComponent
+    public unsafe struct Body(EntityLocalId bodyLocalId, Fix64 rotation, FixTransform2D transform) : IEntityComponent, IHasMany<Fixture>
     {
-        public static readonly Body Default = new(Fix64.Zero, FixTransform2D.Identity);
+        public static readonly Body Default = new(default, Fix64.Zero, FixTransform2D.Identity);
 
         private Fix64 _rotation = rotation;
         private FixTransform2D _transform = transform;
@@ -26,11 +28,14 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Components
         }
         public readonly FixTransform2D Transform => _transform;
 
-        public Body(FixTransform2D transform) : this(transform.Rotation.Phase, transform)
+        public readonly EntityFilterId<Fixture> FixtureFilterId = new(bodyLocalId.Value);
+        EntityFilterId<Fixture> IHasMany<Fixture>.ChildrenFilterId => this.FixtureFilterId;
+
+        public Body(EntityLocalId bodyLocalId, FixTransform2D transform) : this(bodyLocalId, transform.Rotation.Phase, transform)
         {
 
         }
-        public Body(FixVector2 position, Fix64 rotation) : this(rotation, new FixTransform2D(position, rotation))
+        public Body(EntityLocalId bodyLocalId, FixVector2 position, Fix64 rotation) : this(bodyLocalId, rotation, new FixTransform2D(position, rotation))
         {
 
         }

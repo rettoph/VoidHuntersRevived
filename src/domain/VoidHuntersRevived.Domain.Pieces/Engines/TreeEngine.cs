@@ -19,7 +19,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         ILogger logger) : StrategyEngine,
         IOnSpawnEngine<Tree>,
         IOnDespawnEngine<Tree>,
-        IOnSpawnEngine<Node>,
         IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
@@ -71,12 +70,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     nodes[indices[i]].SetWorldTransform(body.Transform);
                 }
             }
-        }
-
-        [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, ref Entity<Node> entity)
-        {
-            throw new NotImplementedException();
         }
     }
 }

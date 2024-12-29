@@ -76,6 +76,16 @@ namespace VoidHuntersRevived.Game.Core.Modules
                     typeof(Collision)
                 ]
             });
+
+            builder.RegisterResource(Resources.EntityTemplates.Physics.FixtureEntityTemplate.Name, new EntityTemplateFragment()
+            {
+                Key = Resources.EntityTemplates.Physics.FixtureEntityTemplate,
+                Flags = EntityTemplateFlags.Partial,
+                Inherit = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
+                Components = [
+                    new Fixture()
+                ]
+            });
         }
 
         private void RegisterPiecesEntityTemplates(ContainerBuilder builder)
@@ -94,7 +104,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             {
                 Key = Resources.EntityTemplates.Piece.PieceEntityTemplate,
                 Flags = EntityTemplateFlags.Partial,
-                Inherit = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
+                Inherit = Resources.EntityTemplates.Physics.FixtureEntityTemplate,
                 Components = [
                     Plug.Default,
                     new Coupling(),

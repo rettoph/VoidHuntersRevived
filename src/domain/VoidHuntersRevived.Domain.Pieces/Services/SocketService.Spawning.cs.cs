@@ -4,6 +4,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
@@ -21,8 +22,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
             return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {
+                EntityLocalId bodyLocalId = entities.Query.GetLocalId(treeGlobalId);
+
                 entity.Initializer.Init(teamMember);
-                entity.Initializer.Init(new Node(entity.LocalId, entities.Query.GetLocalId(treeGlobalId)));
+                entity.Initializer.Init(new Node(entity.LocalId, bodyLocalId));
+                entity.Initializer.Init(new Fixture(bodyLocalId));
                 entity.Initializer.Init<Coupling>(new Coupling(
                     socketId: new NodeSocketLocalId(
                         nodeLocalId: entities.Query.GetLocalId(targetNodeSocketGlobalId.NodeGlobalId),

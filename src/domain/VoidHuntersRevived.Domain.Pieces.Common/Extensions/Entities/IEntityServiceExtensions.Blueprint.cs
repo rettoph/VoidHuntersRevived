@@ -3,6 +3,7 @@ using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
@@ -21,8 +22,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
         {
             return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {
+                EntityLocalId bodyLocalId = entities.Query.GetLocalId(treeId);
+
                 entity.Initializer.Init(team.TeamMemberComponent);
-                entity.Initializer.Init(new Node(entity.LocalId, entities.Query.GetLocalId(treeId)));
+                entity.Initializer.Init(new Node(entity.LocalId, bodyLocalId));
+                entity.Initializer.Init(new Fixture(bodyLocalId));
 
                 if (socketVhId != default)
                 {

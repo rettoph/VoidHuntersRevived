@@ -4,6 +4,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities;
@@ -19,8 +20,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             {
                 EntityLocalId headLocalId = entities.Spawn.Spawn(sourceId, headNodeTemplateKey, globalId.Value.Create(1).ToGlobalEntityId(), (IEntityService entities, in InitializingEntity entity) =>
                 {
+                    EntityLocalId bodyLocalId = entities.Query.GetLocalId(globalId);
+
                     entity.Initializer.Init(team.TeamMemberComponent);
-                    entity.Initializer.Init(new Node(entity.LocalId, entities.Query.GetLocalId(globalId)));
+                    entity.Initializer.Init(new Node(entity.LocalId, bodyLocalId));
+                    entity.Initializer.Init(new Fixture(bodyLocalId));
                 });
 
                 entity.Initializer.Init(team.TeamMemberComponent);

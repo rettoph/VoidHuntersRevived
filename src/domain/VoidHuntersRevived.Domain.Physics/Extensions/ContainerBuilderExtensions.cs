@@ -38,7 +38,8 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
                 builder.RegisterComponentSerializer<CollisionComponentSerializer>();
                 builder.RegisterComponentSerializer<EnabledComponentSerializer>();
                 builder.RegisterComponentSerializer<PhysicsBubbleComponentSerializer>();
-                builder.RegisterComponentSerializer<BodyLocationComponentSerializer>();
+                builder.RegisterComponentSerializer<BodyComponentSerializer>();
+                builder.RegisterComponentSerializer<FixtureComponentSerializer>();
             });
         }
     }

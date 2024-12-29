@@ -132,7 +132,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                             throw new ArgumentException($"Unable to locate {nameof(TractorBeamEmitter)} {data.TractorBeamEmitterGlobalId.Value}");
                         }
 
-                        entity.Initializer.Init<Body>(new Body(data.Transform));
+                        entity.Initializer.Init<Body>(new Body(entity.LocalId, data.Transform));
                         entity.Initializer.Init<Tractorable>(new Tractorable()
                         {
                             TractorBeamEmitterLocalId = tractorBeamEmitterLocalId
@@ -164,7 +164,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         nodes: data.TargetData,
                         initializer: (IEntityService entities, in InitializingEntity entity) =>
                         {
-                            entity.Initializer.Init<Body>(new Body(data.Transform));
+                            entity.Initializer.Init<Body>(new Body(entity.LocalId, data.Transform));
                             entity.Initializer.Init<Tractorable>(new Tractorable()
                             {
                                 TractorBeamEmitterLocalId = default

@@ -48,6 +48,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
 
                 builder.RegisterEngine<CouplingEngine>();
                 builder.RegisterEngine<NodeEngine>();
+                builder.RegisterEngine<NodeFixtureEngine>();
                 builder.RegisterEngine<RigidEngine>();
                 builder.RegisterEngine<SocketIdsEngine>();
                 builder.RegisterEngine<ThrustableEngine>();

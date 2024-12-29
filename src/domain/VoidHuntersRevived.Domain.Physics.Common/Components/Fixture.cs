@@ -1,9 +1,11 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Physics.Common.Components
 {
-    public unsafe struct Fixture() : IEntityComponent
+    public unsafe struct Fixture(EntityLocalId bodyLocalId) : IEntityComponent, IBelongsTo<Body, Fixture>
     {
         private Fix64? _worldRotation;
 
@@ -15,6 +17,9 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Components
         public FixTransform2D WorldTransform { get; private set; }
         public FixVector2 WorldPosition => this.WorldTransform.Position;
         public Fix64 WorldRotation => _worldRotation ??= this.WorldTransform.Rotation.Phase;
+
+        public readonly EntityFilterId<Fixture> BodyFilterId = new(bodyLocalId.Value);
+        EntityFilterId<Fixture> IBelongsTo<Body, Fixture>.ParentFilterId => this.BodyFilterId;
 
         public void SetLocalRotationTransform(Fix64 rotation, FixTransform2D transform)
         {

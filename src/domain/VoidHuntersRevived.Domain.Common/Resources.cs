@@ -62,6 +62,7 @@ namespace VoidHuntersRevived.Domain.Common
             public static class Physics
             {
                 public static readonly Key<IEntityTemplate> BodyEntityTemplate = Key<IEntityTemplate>.GetByName("Entity.Physics.BodyEntityTemplate");
+                public static readonly Key<IEntityTemplate> FixtureEntityTemplate = Key<IEntityTemplate>.GetByName("Entity.Physics.FixtureEntityTemplate");
             }
 
             public static class Piece
