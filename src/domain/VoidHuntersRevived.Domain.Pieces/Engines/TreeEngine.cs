@@ -28,10 +28,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tree> tree)
         {
-            ref BodyLocation transform = ref _entityQueryService.QueryByGroupIndex<BodyLocation>(tree.GroupIndex);
+            ref Body body = ref _entityQueryService.QueryByGroupIndex<Body>(tree.GroupIndex);
             ref var filter = ref _entityQueryService.GetFilter<Node>(tree.LocalId, Tree.NodeFilterContextId);
 
-            this.TransformNodes(ref transform, ref filter);
+            this.TransformNodes(ref body, ref filter);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((localIds, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, BodyLocation, Enabled, Awake>())
+            foreach (var ((localIds, bodies, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Body, Enabled, Awake>())
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
@@ -54,12 +54,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     }
 
                     ref var filter = ref _entityQueryService.GetFilter<Node>(localIds[treeIndex], Tree.NodeFilterContextId);
-                    this.TransformNodes(ref locations[treeIndex], ref filter);
+                    this.TransformNodes(ref bodies[treeIndex], ref filter);
                 }
             }
         }
 
-        private void TransformNodes(ref BodyLocation location, ref EntityFilterCollection filter)
+        private void TransformNodes(ref Body body, ref EntityFilterCollection filter)
         {
             foreach (var (indices, group) in filter)
             {
@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    nodes[indices[i]].SetWorldTransform(location.Transform);
+                    nodes[indices[i]].SetWorldTransform(body.Transform);
                 }
             }
         }

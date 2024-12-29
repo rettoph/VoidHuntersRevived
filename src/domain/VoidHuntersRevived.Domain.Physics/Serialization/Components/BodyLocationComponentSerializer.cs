@@ -3,7 +3,7 @@ using VoidHuntersRevived.Domain.Physics.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Physics.Serialization.Components
 {
-    public sealed class BodyLocationComponentSerializer : RawComponentSerializer<BodyLocation>
+    public sealed class BodyLocationComponentSerializer : RawComponentSerializer<Common.Components.Body>
     {
     }
 }

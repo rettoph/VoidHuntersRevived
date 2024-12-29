@@ -47,8 +47,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 ? HashBuilder<IReactOnAddEx<Node>, VhId, EntityGlobalId>.Instance.Calculate(dirtyEventId, node.GlobalId)
                 : HashBuilder<IReactOnAddEx<Node>, EntityGlobalId>.Instance.Calculate(node.GlobalId);
 
-            ref BodyLocation treeLocation = ref _entityQueryService.QueryByLocalId<BodyLocation>(node.Component.TreeLocalId);
-            this.SetLocalTransformation(ref node, in treeLocation);
+            ref Body treeBody = ref _entityQueryService.QueryByLocalId<Body>(node.Component.TreeLocalId);
+            this.SetLocalTransformation(ref node, in treeBody);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
@@ -83,11 +83,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        private void SetLocalTransformation(ref Entity<Node> node, in BodyLocation treeLocation)
+        private void SetLocalTransformation(ref Entity<Node> node, in Body treeBody)
         {
             _logger.Verbose("Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(Node.LocalTransformation), nameof(Node), node.LocalId);
 
-            node.Component.SetWorldTransform(treeLocation.Transform);
+            node.Component.SetWorldTransform(treeBody.Transform);
 
             if (!_entityQueryService.TryQueryByGroupIndex<Coupling>(node.GroupIndex, out Coupling coupling) || coupling.SocketId == NodeSocketLocalId.Empty)
             {

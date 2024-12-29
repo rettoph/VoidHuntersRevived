@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
 
-        [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
+        [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group02)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<TBelongsTo> belongsTo)
         {
             if (belongsTo.Component.ParentFilterId == default)

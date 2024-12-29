@@ -7,6 +7,7 @@ using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using BodyComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Body;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
@@ -29,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((localIds, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, BodyLocation, Enabled, Awake>())
+            foreach (var ((localIds, bodyComponents, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, BodyComponent, Enabled, Awake>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -39,18 +40,18 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                     }
 
                     EntityLocalId localId = localIds[i];
-                    IBody body = _space.GetBody(localId);
+                    IBody bodyInstance = _space.GetBody(localId);
 
-                    ref BodyLocation location = ref locations[i];
-                    location.SetRotationTransform(body.Rotation, body.Transform);
+                    ref BodyComponent bodyComponent = ref bodyComponents[i];
+                    bodyComponent.SetRotationTransform(bodyInstance.Rotation, bodyInstance.Transform);
                 }
             }
         }
 
-        private void HandleBodyEnabled(IBody body)
+        private void HandleBodyEnabled(IBody bodyInstance)
         {
-            ref BodyLocation location = ref _entityQueryService.QueryByLocalId<BodyLocation>(body.EntityLocalId);
-            body.SetTransform(location.Transform);
+            ref BodyComponent bodyComponent = ref _entityQueryService.QueryByLocalId<Common.Components.Body>(bodyInstance.EntityLocalId);
+            bodyInstance.SetTransform(bodyComponent.Transform);
         }
     }
 }

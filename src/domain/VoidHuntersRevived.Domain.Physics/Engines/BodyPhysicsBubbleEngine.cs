@@ -12,6 +12,7 @@ using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using BodyComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Body;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
@@ -28,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         public void OnStep(Step step)
         {
             _bubbleBufferCount = 0;
-            foreach (var ((bubbles, locations, count), _) in _entityQueryService.QueryEntities<PhysicsBubble, BodyLocation>())
+            foreach (var ((bubbles, bodyComponents, count), _) in _entityQueryService.QueryEntities<PhysicsBubble, BodyComponent>())
             {
                 this.EnsureBubbleBufferCapacity(count);
 
@@ -38,13 +39,13 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
                     if (physicsBubble.Enabled)
                     {
-                        BodyLocation location = locations[i];
+                        BodyComponent bodyComponent = bodyComponents[i];
                         Fix64 diameter = physicsBubble.Radius * Two;
 
                         _bubbleBuffer[_bubbleBufferCount++] = new FixRectangle()
                         {
-                            X = location.Transform.Position.X - physicsBubble.Radius,
-                            Y = location.Transform.Position.Y - physicsBubble.Radius,
+                            X = bodyComponent.Transform.Position.X - physicsBubble.Radius,
+                            Y = bodyComponent.Transform.Position.Y - physicsBubble.Radius,
                             Width = diameter,
                             Height = diameter
                         };
@@ -52,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 }
             }
 
-            foreach (var ((localIds, enableds, locations, statuses, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Enabled, BodyLocation, EntityStatus>())
+            foreach (var ((localIds, enableds, bodyComponents, statuses, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Enabled, BodyComponent, EntityStatus>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -60,9 +61,9 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                     if (status.IsSpawned)
                     {
                         ref Enabled enabled = ref enableds[i];
-                        BodyLocation location = locations[i];
+                        BodyComponent bodyComponent = bodyComponents[i];
 
-                        bool withinPhysicsBubble = this.WithinPhysicsBubble(location);
+                        bool withinPhysicsBubble = this.WithinPhysicsBubble(bodyComponent);
 
                         if (enabled.Value == withinPhysicsBubble)
                         { // No change needed
@@ -98,11 +99,11 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             Array.Resize<FixRectangle>(ref _bubbleBuffer, requiredLength);
         }
 
-        private bool WithinPhysicsBubble(BodyLocation location)
+        private bool WithinPhysicsBubble(BodyComponent bodyComponent)
         {
             for (int i = 0; i < _bubbleBufferCount; i++)
             {
-                if (_bubbleBuffer[i].Contains(location.Position) == false)
+                if (_bubbleBuffer[i].Contains(bodyComponent.Position) == false)
                 {
                     continue;
                 }

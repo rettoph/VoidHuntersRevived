@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
                 Flags = EntityTemplateFlags.Partial,
                 Inherit = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
                 Components = [
-                    BodyLocation.Identity,
+                    Body.Default,
                     new Enabled(),
                     new Awake(true)
                 ],

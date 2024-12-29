@@ -93,11 +93,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ref var filter = ref _entitieQueryService.GetFilter<EntityLocalId, IUser>(currentUserId);
             foreach (var (indices, group) in filter)
             {
-                var (locations, _) = _entitieQueryService.QueryEntities<BodyLocation>(group);
+                var (locations, _) = _entitieQueryService.QueryEntities<Body>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    BodyLocation location = locations[indices[i]];
+                    Body location = locations[indices[i]];
 
                     count++;
                     sum += location.Transform.Position.ToXna();

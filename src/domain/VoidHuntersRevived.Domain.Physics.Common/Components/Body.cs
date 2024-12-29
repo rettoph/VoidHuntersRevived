@@ -3,9 +3,9 @@ using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Physics.Common.Components
 {
-    public unsafe struct BodyLocation(Fix64 rotation, FixTransform2D transform) : IEntityComponent
+    public unsafe struct Body(Fix64 rotation, FixTransform2D transform) : IEntityComponent
     {
-        public static readonly BodyLocation Identity = new(Fix64.Zero, FixTransform2D.Identity);
+        public static readonly Body Default = new(Fix64.Zero, FixTransform2D.Identity);
 
         private Fix64 _rotation = rotation;
         private FixTransform2D _transform = transform;
@@ -26,11 +26,11 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Components
         }
         public readonly FixTransform2D Transform => _transform;
 
-        public BodyLocation(FixTransform2D transform) : this(transform.Rotation.Phase, transform)
+        public Body(FixTransform2D transform) : this(transform.Rotation.Phase, transform)
         {
 
         }
-        public BodyLocation(FixVector2 position, Fix64 rotation) : this(rotation, new FixTransform2D(position, rotation))
+        public Body(FixVector2 position, Fix64 rotation) : this(rotation, new FixTransform2D(position, rotation))
         {
 
         }
