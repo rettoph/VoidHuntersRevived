@@ -3,13 +3,13 @@ using Guppy.Core.Common.Collections;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Events;
@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             _logger.Verbose("Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(Node.LocalTransformation), nameof(Node), node.LocalId);
 
-            node.Component.SetWorldTransform(treeLocation.ToFixTransform2D());
+            node.Component.SetWorldTransform(treeLocation.Transform);
 
             if (!_entityQueryService.TryQueryByGroupIndex<Coupling>(node.GroupIndex, out Coupling coupling) || coupling.SocketId == NodeSocketLocalId.Empty)
             {

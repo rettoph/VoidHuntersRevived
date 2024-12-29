@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\Aether.Physics2D\Physics2D\Aether.Physics2D.NETSTANDARD2_0.csproj" PrivateAssets="compile" />
+    <ProjectReference Include="..\..\common\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations.Common\VoidHuntersRevived.Domain.Simulations.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Physics.Common\VoidHuntersRevived.Domain.Physics.Common.csproj" />
   </ItemGroup>

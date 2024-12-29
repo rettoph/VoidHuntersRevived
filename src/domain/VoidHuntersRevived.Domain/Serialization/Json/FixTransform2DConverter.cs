@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
                         position = JsonSerializer.Deserialize<FixVector2>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(FixTransform2D.Radians):
+                    case nameof(FixTransform2D.Rotation):
                         Fix64 radians = JsonSerializer.Deserialize<Fix64>(ref reader, options);
                         rotation = new FixComplex(radians);
                         reader.Read();

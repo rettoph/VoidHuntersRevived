@@ -1,13 +1,12 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Physics.Common.Extensions.FixedPoint;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
@@ -50,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 {
                     TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
                     TargetData = _entitySerializationService.Serialize(nodeGroupIndex.GroupID, nodeGroupIndex.Index, SerializationOptions.Default),
-                    Location = node.Transformation.ToLocation()
+                    Transform = node.Transformation
                 });
 
 
@@ -77,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             ref var filter = ref this.GetTractorableFilter(tracorBeamEmitterLocalId);
             foreach (var (indices, groupId) in filter)
             {
-                var (localIds, statuses, trees, locations, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Tree, Location>(groupId);
+                var (localIds, statuses, trees, transforms, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Tree, Location>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
@@ -91,7 +90,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     }
 
 
-                    _deselecteds.Enqueue((localId, trees[index].HeadLocalId, locations[index]));
+                    _deselecteds.Enqueue((localId, trees[index].HeadLocalId, transforms[index]));
 
                     filter.Remove(localId);
                 }
@@ -108,7 +107,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     {
                         TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
                         TargetData = _entitySerializationService.Serialize(deselected.headLocalId, SerializationOptions.Default),
-                        Location = deselected.location,
+                        Transform = deselected.location.Transform,
                         AttachToSocketVhId = attachToSocketVhId
                     }
                 });
@@ -133,7 +132,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                             throw new ArgumentException($"Unable to locate {nameof(TractorBeamEmitter)} {data.TractorBeamEmitterGlobalId.Value}");
                         }
 
-                        entity.Initializer.Init<Location>(data.Location);
+                        entity.Initializer.Init<Location>(new Location(data.Transform));
                         entity.Initializer.Init<Tractorable>(new Tractorable()
                         {
                             TractorBeamEmitterLocalId = tractorBeamEmitterLocalId
@@ -165,7 +164,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         nodes: data.TargetData,
                         initializer: (IEntityService entities, in InitializingEntity entity) =>
                         {
-                            entity.Initializer.Init<Location>(data.Location);
+                            entity.Initializer.Init<Location>(new Location(data.Transform));
                             entity.Initializer.Init<Tractorable>(new Tractorable()
                             {
                                 TractorBeamEmitterLocalId = default

@@ -36,7 +36,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
                 builder.RegisterJsonConverter<ShapeJsonConverter>();
                 builder.RegisterJsonConverter<SocketsJsonConverter>();
                 builder.RegisterJsonConverter<SocketJsonConverter>();
-                builder.RegisterJsonConverter<LocationJsonConverter>();
                 builder.RegisterJsonConverter<PlugJsonConverter>();
                 builder.RegisterJsonConverter<ThrustableJsonConverter>();
 

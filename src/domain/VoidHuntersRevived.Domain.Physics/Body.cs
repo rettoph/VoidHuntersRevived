@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Physics
             get
             {
                 var trans = _aether.GetTransform();
-                var output = new FixTransform2D(_aether.Position.X, _aether.Position.Y, _aether.Rotation);
+                var output = new FixTransform2D(_aether.Position.X, _aether.Position.Y, trans.q.R, trans.q.i);
 
                 return output;
             }

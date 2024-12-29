@@ -92,7 +92,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                     }
 
                     FixVector2 targetHeadChildNodePosition = FixVector2.Transform(FixVector2.Zero, targetHeadChildTransform * FixTransform2D.CreateRotation(targetBody.Rotation));
-                    FixTransform2D transform = new(targetBody.Transform.Rotation, tactical.Value - targetHeadChildNodePosition);
+                    FixTransform2D transform = new(tactical.Value - targetHeadChildNodePosition, targetBody.Rotation);
                     targetBody.SetTransform(transform);
                 }
             }

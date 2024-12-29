@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
@@ -10,12 +11,12 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
-    public sealed class BodyLocationEngine : StrategyEngine, IOnStepEngine
+    public sealed class BodyTransformEngine : StrategyEngine, IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
 
-        public BodyLocationEngine(
+        public BodyTransformEngine(
             IEntityQueryService entityQueryService,
             ISpace space)
         {
@@ -42,8 +43,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                     IBody body = _space.GetBody(localId);
 
                     ref Location location = ref locations[i];
-                    location.Position = body.Position;
-                    location.Rotation = body.Rotation;
+                    location.Update(body.Rotation, body.Transform);
                 }
             }
         }
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         private void HandleBodyEnabled(IBody body)
         {
             ref Location location = ref _entityQueryService.QueryByLocalId<Location>(body.EntityLocalId);
-            body.SetTransform(location.Position, location.Rotation);
+            body.SetTransform(location.Transform);
         }
     }
 }

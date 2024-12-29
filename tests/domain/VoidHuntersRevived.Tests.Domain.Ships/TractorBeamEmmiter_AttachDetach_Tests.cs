@@ -1,6 +1,7 @@
 using Autofac;
 using Guppy.Core.Resources.Common;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Common.Constants;
@@ -333,7 +334,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                         new Sockets()
                         {
                             Items = new Socket[] {
-                                new(new Location(new FixVector2(1, 0.5), Fix64.Zero))
+                                new(new FixTransform2D(new FixVector2(1, 0.5), Fix64.Zero))
                             }.ToNativeDynamicArray()
                         }
                     ]

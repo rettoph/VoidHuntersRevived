@@ -7,6 +7,7 @@ using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Engines;
@@ -14,6 +15,7 @@ using VoidHuntersRevived.Domain.Entities.Providers;
 using VoidHuntersRevived.Domain.Entities.ResourceTypes;
 using VoidHuntersRevived.Domain.Entities.Serialization.Json;
 using VoidHuntersRevived.Domain.Entities.Services;
+using VoidHuntersRevived.Domain.Physics.Serialization.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Extensions
 {
@@ -43,6 +45,8 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                 builder.RegisterJsonConverter<EntityTemplateConverter>();
                 builder.RegisterJsonConverter<ResourceComponentConverter>();
                 builder.RegisterJsonConverter<DictionaryPolymorphicConverter<IEntityComponent>>();
+
+                builder.RegisterComponentSerializer<Transform2DComponentSerializer>();
 
                 builder.RegisterResourceType<EntityTemplateFragmentResourceType>();
 

@@ -4,15 +4,11 @@ namespace VoidHuntersRevived.Common.FixedPoint
 {
     public struct FixTransform2D(FixComplex rotation, FixVector2 position)
     {
+        public static readonly FixTransform2D Identity = new(FixComplex.One, FixVector2.Zero);
+
         public FixComplex Rotation = rotation;
 
         public FixVector2 Position = position;
-
-        public Fix64 Radians
-        {
-            get => this.Rotation.Phase;
-            set => this.Rotation.Phase = value;
-        }
 
         public FixTransform2D(Fix64 x, Fix64 y, Fix64 cos, Fix64 sin) : this(new FixComplex(cos, sin), new FixVector2(x, y))
         {
@@ -26,8 +22,6 @@ namespace VoidHuntersRevived.Common.FixedPoint
         {
 
         }
-
-        public static readonly FixTransform2D Identity = new(FixComplex.One, FixVector2.Zero);
 
         public static FixTransform2D Invert(FixTransform2D transform)
         {

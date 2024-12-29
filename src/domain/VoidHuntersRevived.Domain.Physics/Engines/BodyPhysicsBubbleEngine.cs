@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -43,8 +44,8 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
                         _bubbleBuffer[_bubbleBufferCount++] = new FixRectangle()
                         {
-                            X = location.Position.X - physicsBubble.Radius,
-                            Y = location.Position.Y - physicsBubble.Radius,
+                            X = location.Transform.Position.X - physicsBubble.Radius,
+                            Y = location.Transform.Position.Y - physicsBubble.Radius,
                             Width = diameter,
                             Height = diameter
                         };

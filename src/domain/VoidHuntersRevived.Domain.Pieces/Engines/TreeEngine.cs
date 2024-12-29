@@ -2,6 +2,7 @@
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
@@ -28,10 +29,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tree> tree)
         {
-            ref Location location = ref _entityQueryService.QueryByGroupIndex<Location>(tree.GroupIndex);
+            ref Location transform = ref _entityQueryService.QueryByGroupIndex<Location>(tree.GroupIndex);
             ref var filter = ref _entityQueryService.GetFilter<Node>(tree.LocalId, Tree.NodeFilterContextId);
 
-            this.TransformNodes(ref location, ref filter);
+            this.TransformNodes(ref transform, ref filter);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
@@ -67,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    nodes[indices[i]].SetWorldTransform(location.ToFixTransform2D());
+                    nodes[indices[i]].SetWorldTransform(location.Transform);
                 }
             }
         }
