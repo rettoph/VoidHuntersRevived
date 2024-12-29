@@ -76,11 +76,11 @@ namespace VoidHuntersRevived.Domain.Entities
             List<ComponentEngineInvoker> onDespawnEngineInvokers = [];
             List<ComponentEngineInvoker> onSpawnEngineInvokers = [];
 
-            foreach (Type componentType in this.Components.Keys)
-            {
-                onDespawnEngineInvokers.AddRange(ComponentEngineInvoker.Create(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), componentType, engineService, _entitiesDB));
-                onSpawnEngineInvokers.AddRange(ComponentEngineInvoker.Create(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), componentType, engineService, _entitiesDB));
-            }
+            onDespawnEngineInvokers.AddRange(ComponentEngineInvoker.Create<OnDespawnSequenceGroupEnum>(typeof(OnDespawnEngineInvoker<>), typeof(IOnDespawnEngine<>), this.Components.Keys, engineService, _entitiesDB, x => x.GetMethod("OnDespawn") ?? throw new NotImplementedException()).ToList());
+            onDespawnEngineInvokers.AddRange(ComponentEngineInvoker.Create<OnDespawnSequenceGroupEnum>(typeof(OnDespawnEngineInvoker<,>), typeof(IOnDespawnEngine<,>), this.Components.Keys, engineService, _entitiesDB, x => x.GetMethod("OnDespawn") ?? throw new NotImplementedException()).ToList());
+
+            onSpawnEngineInvokers.AddRange(ComponentEngineInvoker.Create<OnSpawnSequenceGroupEnum>(typeof(OnSpawnEngineInvoker<>), typeof(IOnSpawnEngine<>), this.Components.Keys, engineService, _entitiesDB, x => x.GetMethod("OnSpawn") ?? throw new NotImplementedException()).ToList());
+            onSpawnEngineInvokers.AddRange(ComponentEngineInvoker.Create<OnSpawnSequenceGroupEnum>(typeof(OnSpawnEngineInvoker<,>), typeof(IOnSpawnEngine<,>), this.Components.Keys, engineService, _entitiesDB, x => x.GetMethod("OnSpawn") ?? throw new NotImplementedException()).ToList());
 
             _onDespawnEngineInvokers.Add(onDespawnEngineInvokers);
             _onSpawnEngineInvokers.Add(onSpawnEngineInvokers);

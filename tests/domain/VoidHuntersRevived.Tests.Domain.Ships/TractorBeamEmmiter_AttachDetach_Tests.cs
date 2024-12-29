@@ -1,7 +1,6 @@
 using Autofac;
 using Guppy.Core.Resources.Common;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Common.Constants;

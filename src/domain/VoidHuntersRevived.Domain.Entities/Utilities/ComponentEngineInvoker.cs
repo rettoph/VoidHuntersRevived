@@ -3,6 +3,8 @@ using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Interfaces;
 using Svelto.ECS;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
@@ -10,6 +12,28 @@ using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Utilities
 {
+    public class ComponentEngineInvokerContext<TSequenceGroup>(
+        Type[] type,
+        SequenceGroup<TSequenceGroup> sequenceGroup)
+            where TSequenceGroup : unmanaged, Enum
+    {
+        public readonly Type[] Types = type;
+        public readonly SequenceGroup<TSequenceGroup> SequenceGroup = sequenceGroup;
+
+        public override bool Equals(object? obj)
+        {
+            return obj is ComponentEngineInvokerContext<TSequenceGroup> context &&
+                   Enumerable.SequenceEqual(this.Types, context.Types) &&
+                   this.SequenceGroup == context.SequenceGroup;
+        }
+
+        public override int GetHashCode()
+        {
+            int typesHash = this.Types.Aggregate(0, (ag, t) => ag + t.GetHashCode());
+            return HashCode.Combine(typesHash, SequenceGroup);
+        }
+    }
+
     public abstract class ComponentEngineInvoker
     {
         public delegate void ComponentEngineInvokerDelegate(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity);
@@ -26,73 +50,130 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             }
         }
 
-
         public abstract void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity);
 
-        public static IEnumerable<ComponentEngineInvoker> Create(Type componentEngineInvokerType, Type engineType, Type componentType, IEnumerable<IEngine> engines, EntitiesDB entitiesDB)
+        public static IEnumerable<ComponentEngineInvoker> Create<TSequenceGroup>(
+            Type componentEngineInvokerType,
+            Type engineType,
+            IEnumerable<Type> componentTypes,
+            IEnumerable<IEngine> engines,
+            EntitiesDB entitiesDB,
+            Func<Type, MethodInfo> method
+        )
+            where TSequenceGroup : unmanaged, Enum
         {
-            List<IEngine> onComponentEngines = [];
+            Dictionary<ComponentEngineInvokerContext<TSequenceGroup>, List<IEngine>> validEngines = [];
 
             foreach (IEngine engine in engines)
-            {
+            { // Iterate through all engines...
                 foreach (Type onComponentEngineType in engine.GetType().GetConstructedGenericTypes(engineType))
-                {
-                    if (componentType == onComponentEngineType.GenericTypeArguments[0])
-                    {
-                        onComponentEngines.Add(engine);
-                        continue;
+                { // Select engines that specificaly implement the given engine interface...
+                    if (componentTypes.Intersect(onComponentEngineType.GenericTypeArguments).Count() == onComponentEngineType.GenericTypeArguments.Length)
+                    { // Only look at engine types that utilize the given list of components...
+                        if (method(onComponentEngineType).TryGetSequenceGroup(engine, true, out SequenceGroup<TSequenceGroup> sequenceGroup) == true)
+                        { // Only look at engines with a defined sequence group
+                            ComponentEngineInvokerContext<TSequenceGroup> context = new(onComponentEngineType.GenericTypeArguments, sequenceGroup);
+
+                            ref List<IEngine>? validEngineList = ref CollectionsMarshal.GetValueRefOrAddDefault(validEngines, context, out bool exists);
+                            validEngineList ??= [];
+
+                            validEngineList.Add(engine);
+                        }
                     }
                 }
             }
 
-            if (onComponentEngines.Count == 0)
+            List<ComponentEngineInvoker> invokers = [];
+            foreach (var (context, engineList) in validEngines)
             {
-                yield break;
+                Type invokerType = componentEngineInvokerType.MakeGenericType(context.Types);
+                ComponentEngineInvoker invoker = (ComponentEngineInvoker)Activator.CreateInstance(invokerType, context.SequenceGroup, engines, entitiesDB)!;
+                invokers.Add(invoker);
             }
 
-            Type invokerType = componentEngineInvokerType.MakeGenericType(componentType);
+            return invokers;
+        }
+    }
 
-            foreach (IEngine onComponentEngine in onComponentEngines)
+    public class OnSpawnEngineInvoker<TComponent>(SequenceGroup<OnSpawnSequenceGroupEnum> sequenceGroup, IEnumerable<IEngine> engines, EntitiesDB entitiesDB) : ComponentEngineInvoker, IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>
+        where TComponent : unmanaged, IEntityComponent
+    {
+        private readonly EntitiesDB _entitiesDB = entitiesDB;
+        private readonly IOnSpawnEngine<TComponent>[] _engines = engines.OfType<IOnSpawnEngine<TComponent>>().ToArray();
+
+        SequenceGroup<OnSpawnSequenceGroupEnum> IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
+
+        public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
+        {
+            ref TComponent component = ref _entitiesDB.QueryEntityByIndex<TComponent>(entity.Index, entity.Group);
+            Entity<TComponent> entityC = new(in entity, ref component);
+
+            foreach (IOnSpawnEngine<TComponent> engine in _engines)
             {
-                ComponentEngineInvoker invoker = (ComponentEngineInvoker)Activator.CreateInstance(invokerType, onComponentEngine, entitiesDB)!;
-                yield return invoker;
+                engine.OnSpawn(sourceEventId, entityTemplate, ref entityC);
             }
         }
     }
 
-    public class OnSpawnEngineInvoker<T>(IOnSpawnEngine<T> engine, EntitiesDB entitiesDB) : ComponentEngineInvoker, IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>
-        where T : unmanaged, IEntityComponent
+    public class OnSpawnEngineInvoker<TComponent1, TComponent2>(SequenceGroup<OnSpawnSequenceGroupEnum> sequenceGroup, IEnumerable<IEngine> engines, EntitiesDB entitiesDB) : ComponentEngineInvoker, IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>
+        where TComponent1 : unmanaged, IEntityComponent
+        where TComponent2 : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnSpawnEngine<T> _engine = engine;
+        private readonly IOnSpawnEngine<TComponent1, TComponent2>[] _engines = engines.OfType<IOnSpawnEngine<TComponent1, TComponent2>>().ToArray();
 
-        SequenceGroup<OnSpawnSequenceGroupEnum> IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>.Value { get; } = engine.GetType()!.GetMethod(nameof(IOnSpawnEngine<T>.OnSpawn))!.TryGetSequenceGroup<OnSpawnSequenceGroupEnum>(engine, true, out var sequenceGroup)
-            ? sequenceGroup : throw new NotImplementedException();
+        SequenceGroup<OnSpawnSequenceGroupEnum> IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
         public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
         {
-            ref T component = ref _entitiesDB.QueryEntityByIndex<T>(entity.Index, entity.Group);
-            Entity<T> entityC = new(in entity, ref component);
+            var (component1s, component2s, _) = _entitiesDB.QueryEntities<TComponent1, TComponent2>(entity.Group);
+            Entity<TComponent1, TComponent2> entityC = new(in entity, ref component1s[entity.Index], ref component2s[entity.Index]);
 
-            _engine.OnSpawn(sourceEventId, entityTemplate, ref entityC);
+            foreach (IOnSpawnEngine<TComponent1, TComponent2> engine in _engines)
+            {
+                engine.OnSpawn(sourceEventId, entityTemplate, ref entityC);
+            }
         }
     }
 
-    public class OnDespawnEngineInvoker<T>(IOnDespawnEngine<T> engine, EntitiesDB entitiesDB) : ComponentEngineInvoker, IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>
-        where T : unmanaged, IEntityComponent
+    public class OnDespawnEngineInvoker<TComponent>(SequenceGroup<OnDespawnSequenceGroupEnum> sequenceGroup, IEnumerable<IEngine> engines, EntitiesDB entitiesDB) : ComponentEngineInvoker, IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>
+        where TComponent : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnDespawnEngine<T> _engine = engine;
+        private readonly IOnDespawnEngine<TComponent>[] _engines = engines.OfType<IOnDespawnEngine<TComponent>>().ToArray();
 
-        SequenceGroup<OnDespawnSequenceGroupEnum> IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>.Value { get; } = engine.GetType()!.GetMethod(nameof(IOnDespawnEngine<T>.OnDespawn))!.TryGetSequenceGroup<OnDespawnSequenceGroupEnum>(engine, true, out var sequenceGroup)
-            ? sequenceGroup : throw new NotImplementedException();
+        SequenceGroup<OnDespawnSequenceGroupEnum> IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
         public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
         {
-            ref T component = ref _entitiesDB.QueryEntityByIndex<T>(entity.Index, entity.Group);
-            Entity<T> entityC = new(in entity, ref component);
+            ref TComponent component = ref _entitiesDB.QueryEntityByIndex<TComponent>(entity.Index, entity.Group);
+            Entity<TComponent> entityC = new(in entity, ref component);
 
-            _engine.OnDespawn(sourceEventId, entityTemplate, ref entityC);
+            foreach (IOnDespawnEngine<TComponent> engine in _engines)
+            {
+                engine.OnDespawn(sourceEventId, entityTemplate, ref entityC);
+            }
+        }
+    }
+
+    public class OnDespawnEngineInvoker<TComponent1, TComponent2>(SequenceGroup<OnDespawnSequenceGroupEnum> sequenceGroup, IEnumerable<IEngine> engines, EntitiesDB entitiesDB) : ComponentEngineInvoker, IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>
+        where TComponent1 : unmanaged, IEntityComponent
+        where TComponent2 : unmanaged, IEntityComponent
+    {
+        private readonly EntitiesDB _entitiesDB = entitiesDB;
+        private readonly IOnDespawnEngine<TComponent1, TComponent2>[] _engines = engines.OfType<IOnDespawnEngine<TComponent1, TComponent2>>().ToArray();
+
+        SequenceGroup<OnDespawnSequenceGroupEnum> IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
+
+        public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
+        {
+            var (component1s, component2s, _) = _entitiesDB.QueryEntities<TComponent1, TComponent2>(entity.Group);
+            Entity<TComponent1, TComponent2> entityC = new(in entity, ref component1s[entity.Index], ref component2s[entity.Index]);
+
+            foreach (IOnDespawnEngine<TComponent1, TComponent2> engine in _engines)
+            {
+                engine.OnDespawn(sourceEventId, entityTemplate, ref entityC);
+            }
         }
     }
 }

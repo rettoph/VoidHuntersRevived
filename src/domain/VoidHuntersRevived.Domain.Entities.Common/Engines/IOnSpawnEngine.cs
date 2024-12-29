@@ -11,4 +11,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Engines
         [RequireSequenceGroup<OnSpawnSequenceGroupEnum>]
         void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, ref Entity<T> entity);
     }
+
+    public interface IOnSpawnEngine<T1, T2>
+        where T1 : unmanaged, IEntityComponent
+        where T2 : unmanaged, IEntityComponent
+    {
+        [RequireSequenceGroup<OnSpawnSequenceGroupEnum>]
+        void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, ref Entity<T1, T2> entity);
+    }
 }
