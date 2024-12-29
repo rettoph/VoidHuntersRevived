@@ -8,6 +8,7 @@ using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using BodyComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Body;
+using FixtureComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Fixture;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
@@ -44,6 +45,18 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
                     ref BodyComponent bodyComponent = ref bodyComponents[i];
                     bodyComponent.SetRotationTransform(bodyInstance.Rotation, bodyInstance.Transform);
+
+                    ref var fixtureFilter = ref _entityQueryService.GetFilter(bodyComponent.FixtureFilterId);
+                    foreach (var (indices, group) in fixtureFilter)
+                    {
+                        var (fixtures, _) = _entityQueryService.QueryEntities<FixtureComponent>(group);
+
+                        for (int j = 0; j < indices.count; j++)
+                        {
+                            ref FixtureComponent fixture = ref fixtures[indices[j]];
+                            fixture.SetBodyTransform(bodyComponent.Transform);
+                        }
+                    }
                 }
             }
         }

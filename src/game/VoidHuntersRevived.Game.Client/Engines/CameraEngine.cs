@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
     {
         private readonly ICamera2D _camera;
         private readonly IScreen _screen;
-        private readonly IEntityQueryService _entitieQueryService;
+        private readonly IEntityQueryService _entityQueryService;
         private readonly INetScope<IStrategy> _netScope;
         private Vector2 _offset;
 
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             _zoom = 100;
 
             _screen = screen;
-            _entitieQueryService = entityQueryService;
+            _entityQueryService = entityQueryService;
             _netScope = netScope;
         }
 
@@ -90,17 +90,17 @@ namespace VoidHuntersRevived.Game.Client.Engines
             int count = 0;
 
             int currentUserId = _netScope.Group.Peer.Users.Current.Id;
-            ref var filter = ref _entitieQueryService.GetFilter<EntityLocalId, IUser>(currentUserId);
+            ref var filter = ref _entityQueryService.GetFilter<EntityLocalId, IUser>(currentUserId);
             foreach (var (indices, group) in filter)
             {
-                var (locations, _) = _entitieQueryService.QueryEntities<Body>(group);
+                var (bodies, _) = _entityQueryService.QueryEntities<Body>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    Body location = locations[indices[i]];
+                    Body body = bodies[indices[i]];
 
                     count++;
-                    sum += location.Transform.Position.ToXna();
+                    sum += body.Transform.Position.ToXna();
                 }
             }
 

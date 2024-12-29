@@ -107,5 +107,10 @@ namespace VoidHuntersRevived.Common.FixedPoint
 
             return result;
         }
+
+        public override string ToString()
+        {
+            return $"{{ Position = {this.Position}, Rotation = {this.Rotation} }}";
+        }
     }
 }

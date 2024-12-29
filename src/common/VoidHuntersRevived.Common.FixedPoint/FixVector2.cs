@@ -51,6 +51,11 @@ namespace VoidHuntersRevived.Common.FixedPoint
             );
         }
 
+        public override string ToString()
+        {
+            return $"{{ X = {this.X}, Y = {this.Y} }}";
+        }
+
         /// <summary>
         /// Creates a new <see cref="AetherVector2"/> that contains linear interpolation of the specified vectors.
         /// </summary>

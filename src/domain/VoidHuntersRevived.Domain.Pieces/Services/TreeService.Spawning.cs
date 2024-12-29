@@ -1,4 +1,5 @@
 ﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
@@ -16,20 +17,21 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         public EntityLocalId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Key<IEntityTemplate> headNodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
-            return _entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
+            return _entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity tree) =>
             {
                 EntityLocalId headLocalId = entities.Spawn.Spawn(sourceId, headNodeTemplateKey, globalId.Value.Create(1).ToGlobalEntityId(), (IEntityService entities, in InitializingEntity entity) =>
                 {
-                    EntityLocalId bodyLocalId = entities.Query.GetLocalId(globalId);
+                    EntityLocalId treeLocalId = entities.Query.GetLocalId(globalId);
 
                     entity.Initializer.Init(team.TeamMemberComponent);
-                    entity.Initializer.Init(new Node(entity.LocalId, bodyLocalId));
-                    entity.Initializer.Init(new Fixture(bodyLocalId));
+                    entity.Initializer.Init(new Node(entity.LocalId, treeLocalId));
+                    entity.Initializer.Init(new Fixture(treeLocalId));
                 });
 
-                entity.Initializer.Init(team.TeamMemberComponent);
-                entity.Initializer.Init(new Tree(entity.LocalId, headLocalId));
-                initializerDelegate?.Invoke(entities, in entity);
+                tree.Initializer.Init(team.TeamMemberComponent);
+                tree.Initializer.Init(new Tree(tree.LocalId, headLocalId));
+                tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
+                initializerDelegate?.Invoke(entities, in tree);
             });
         }
 
@@ -52,6 +54,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
                 tree.Initializer.Init(team.TeamMemberComponent);
                 tree.Initializer.Init<Tree>(new Tree(tree.LocalId, headLocalId));
+                tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
                 initializerDelegate(entities, in tree);
             });
         }
@@ -64,6 +67,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
                 tree.Initializer.Init(team.TeamMemberComponent);
                 tree.Initializer.Init(new Tree(tree.LocalId, headId));
+                tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
                 initializerDelegate?.Invoke(entities, in tree);
             });
         }

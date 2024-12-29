@@ -37,6 +37,11 @@ namespace VoidHuntersRevived.Common.FixedPoint
             }
         }
 
+        public override string ToString()
+        {
+            return $"{{ Real = {this.Real}, Imaginary = {this.Imaginary} }}";
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is FixComplex complex && complex == this;
