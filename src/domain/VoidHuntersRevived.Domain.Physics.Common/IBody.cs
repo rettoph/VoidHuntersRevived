@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common
 
         FixVector2 LocalCenter { get; }
         FixTransform2D Transform { get; }
-        FixVector2 Position { get; }
+        FixVector2 Position { get; set; }
         Fix64 Rotation { get; }
 
         FixVector2 LinearVelocity { get; }

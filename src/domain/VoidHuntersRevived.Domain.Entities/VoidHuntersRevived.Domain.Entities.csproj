@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\common\VoidHuntersRevived.Common.Entities\VoidHuntersRevived.Common.Entities.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities.Common\VoidHuntersRevived.Domain.Entities.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Simulations.Common\VoidHuntersRevived.Domain.Simulations.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Teams.Common\VoidHuntersRevived.Domain.Teams.Common.csproj" />

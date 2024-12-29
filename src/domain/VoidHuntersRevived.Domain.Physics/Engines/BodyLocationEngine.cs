@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
@@ -11,12 +10,12 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Physics.Engines
 {
-    public sealed class BodyTransformEngine : StrategyEngine, IOnStepEngine
+    public sealed class BodyLocationEngine : StrategyEngine, IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
 
-        public BodyTransformEngine(
+        public BodyLocationEngine(
             IEntityQueryService entityQueryService,
             ISpace space)
         {
@@ -30,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((localIds, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Location, Enabled, Awake>())
+            foreach (var ((localIds, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, BodyLocation, Enabled, Awake>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -42,15 +41,15 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                     EntityLocalId localId = localIds[i];
                     IBody body = _space.GetBody(localId);
 
-                    ref Location location = ref locations[i];
-                    location.Update(body.Rotation, body.Transform);
+                    ref BodyLocation location = ref locations[i];
+                    location.SetRotationTransform(body.Rotation, body.Transform);
                 }
             }
         }
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Location location = ref _entityQueryService.QueryByLocalId<Location>(body.EntityLocalId);
+            ref BodyLocation location = ref _entityQueryService.QueryByLocalId<BodyLocation>(body.EntityLocalId);
             body.SetTransform(location.Transform);
         }
     }

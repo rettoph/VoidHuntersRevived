@@ -3,13 +3,13 @@ using Guppy.Core.Common.Collections;
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Events;
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 ? HashBuilder<IReactOnAddEx<Node>, VhId, EntityGlobalId>.Instance.Calculate(dirtyEventId, node.GlobalId)
                 : HashBuilder<IReactOnAddEx<Node>, EntityGlobalId>.Instance.Calculate(node.GlobalId);
 
-            ref Location treeLocation = ref _entityQueryService.QueryByLocalId<Location>(node.Component.TreeLocalId);
+            ref BodyLocation treeLocation = ref _entityQueryService.QueryByLocalId<BodyLocation>(node.Component.TreeLocalId);
             this.SetLocalTransformation(ref node, in treeLocation);
         }
 
@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        private void SetLocalTransformation(ref Entity<Node> node, in Location treeLocation)
+        private void SetLocalTransformation(ref Entity<Node> node, in BodyLocation treeLocation)
         {
             _logger.Verbose("Preparing to set {LocalTransformation} for {Node} {NodeId}", nameof(Node.LocalTransformation), nameof(Node), node.LocalId);
 

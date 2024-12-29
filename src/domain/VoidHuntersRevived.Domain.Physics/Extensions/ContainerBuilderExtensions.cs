@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
 
                 builder.RegisterEngine<BodyAwakeEngine>();
                 builder.RegisterEngine<BodyCollisionEngine>();
-                builder.RegisterEngine<BodyTransformEngine>();
+                builder.RegisterEngine<BodyLocationEngine>();
                 builder.RegisterEngine<BodyLocationPredictiveSynchronizationEngine>();
                 builder.RegisterEngine<BodyPhysicsBubbleEngine>();
                 builder.RegisterEngine<SpaceEngine>();
@@ -38,6 +38,7 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
                 builder.RegisterComponentSerializer<CollisionComponentSerializer>();
                 builder.RegisterComponentSerializer<EnabledComponentSerializer>();
                 builder.RegisterComponentSerializer<PhysicsBubbleComponentSerializer>();
+                builder.RegisterComponentSerializer<BodyLocationComponentSerializer>();
             });
         }
     }

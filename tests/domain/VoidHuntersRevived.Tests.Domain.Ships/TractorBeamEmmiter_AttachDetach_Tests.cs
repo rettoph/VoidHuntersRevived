@@ -309,7 +309,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     Key = Resources.EntityTemplates.Ship.ChainEntityTemplate,
                     Components = [
                         new TeamMember(),
-                        new Location(),
+                        new BodyLocation(),
                         new Enabled(),
                         new Awake(true),
                         new Collision()
@@ -344,7 +344,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     Key = Resources.EntityTemplates.Ship.UserShipEntityTemplate,
                     Components = [
                         new TeamMember(),
-                        new Location(),
+                        new BodyLocation(),
                         new Enabled(),
                         new Tree(),
                         new Helm(),

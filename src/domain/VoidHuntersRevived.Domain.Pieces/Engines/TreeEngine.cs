@@ -2,7 +2,6 @@
 using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
@@ -29,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tree> tree)
         {
-            ref Location transform = ref _entityQueryService.QueryByGroupIndex<Location>(tree.GroupIndex);
+            ref BodyLocation transform = ref _entityQueryService.QueryByGroupIndex<BodyLocation>(tree.GroupIndex);
             ref var filter = ref _entityQueryService.GetFilter<Node>(tree.LocalId, Tree.NodeFilterContextId);
 
             this.TransformNodes(ref transform, ref filter);
@@ -45,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((localIds, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Location, Enabled, Awake>())
+            foreach (var ((localIds, locations, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, BodyLocation, Enabled, Awake>())
             {
                 for (uint treeIndex = 0; treeIndex < count; treeIndex++)
                 {
@@ -60,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        private void TransformNodes(ref Location location, ref EntityFilterCollection filter)
+        private void TransformNodes(ref BodyLocation location, ref EntityFilterCollection filter)
         {
             foreach (var (indices, group) in filter)
             {

@@ -1,8 +1,6 @@
 ﻿using Guppy.Core.Network.Common;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
-using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
@@ -43,7 +41,6 @@ namespace VoidHuntersRevived.Game.Core.Engines
             Blueprint blueprint = _blueprintService.GetAll().First();
             _treeService.Spawn(eventId, eventId.Create(1).ToGlobalEntityId(), _teamService.GetOpenTeam(), Resources.EntityTemplates.Ship.UserShipEntityTemplate, blueprint, (IEntityService entities, in InitializingEntity entity) =>
             {
-                entity.Initializer.Init(new Location(Fix64.Zero, FixTransform2D.Identity));
                 entity.Initializer.Init(new UserId(data.UserDto.Id));
             });
         }

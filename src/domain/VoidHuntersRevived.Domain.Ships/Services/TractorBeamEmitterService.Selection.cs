@@ -1,12 +1,12 @@
 ﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
         }
 
-        private readonly Queue<(EntityLocalId localId, EntityLocalId headLocalId, Location location)> _deselecteds = new();
+        private readonly Queue<(EntityLocalId localId, EntityLocalId headLocalId, BodyLocation location)> _deselecteds = new();
         public void Deselect(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, NodeSocketGlobalId? attachToSocketVhId)
         {
             if (_entityQueryService.TryGetLocalId(tractorBeamEmitterGlobalId, out EntityLocalId tracorBeamEmitterLocalId) == false)
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             ref var filter = ref this.GetTractorableFilter(tracorBeamEmitterLocalId);
             foreach (var (indices, groupId) in filter)
             {
-                var (localIds, statuses, trees, transforms, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Tree, Location>(groupId);
+                var (localIds, statuses, trees, transforms, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Tree, BodyLocation>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
@@ -97,7 +97,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
 
             VhId nextSourceId = NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId);
-            while (_deselecteds.TryDequeue(out (EntityLocalId localId, EntityLocalId headLocalId, Location location) deselected))
+            while (_deselecteds.TryDequeue(out (EntityLocalId localId, EntityLocalId headLocalId, BodyLocation location) deselected))
             {
                 _logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterLocalId}", deselected.localId, tractorBeamEmitterGlobalId);
                 this.Strategy.Publish(new EventDto()
@@ -132,7 +132,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                             throw new ArgumentException($"Unable to locate {nameof(TractorBeamEmitter)} {data.TractorBeamEmitterGlobalId.Value}");
                         }
 
-                        entity.Initializer.Init<Location>(new Location(data.Transform));
+                        entity.Initializer.Init<BodyLocation>(new BodyLocation(data.Transform));
                         entity.Initializer.Init<Tractorable>(new Tractorable()
                         {
                             TractorBeamEmitterLocalId = tractorBeamEmitterLocalId
@@ -164,7 +164,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         nodes: data.TargetData,
                         initializer: (IEntityService entities, in InitializingEntity entity) =>
                         {
-                            entity.Initializer.Init<Location>(new Location(data.Transform));
+                            entity.Initializer.Init<BodyLocation>(new BodyLocation(data.Transform));
                             entity.Initializer.Init<Tractorable>(new Tractorable()
                             {
                                 TractorBeamEmitterLocalId = default

@@ -6,9 +6,9 @@ using Guppy.Game.Input.Common.Messages;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Svelto.ECS;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -93,11 +93,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
             ref var filter = ref _entitieQueryService.GetFilter<EntityLocalId, IUser>(currentUserId);
             foreach (var (indices, group) in filter)
             {
-                var (locations, _) = _entitieQueryService.QueryEntities<Location>(group);
+                var (locations, _) = _entitieQueryService.QueryEntities<BodyLocation>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {
-                    Location location = locations[indices[i]];
+                    BodyLocation location = locations[indices[i]];
 
                     count++;
                     sum += location.Transform.Position.ToXna();

@@ -39,7 +39,16 @@ namespace VoidHuntersRevived.Domain.Physics
                 return output;
             }
         }
-        public FixVector2 Position => _aether.Position.AsFixVector2();
+        public FixVector2 Position
+        {
+            get => _aether.Position.AsFixVector2();
+            set
+            {
+                AetherVector2 aetherPosition = Unsafe.As<FixVector2, AetherVector2>(ref value);
+                _aether.SetPositionIgnoreContact(ref aetherPosition);
+                _aether.Awake = true;
+            }
+        }
         public Fix64 Rotation => _aether.Rotation;
 
         public CollisionGroup CollisionCategories

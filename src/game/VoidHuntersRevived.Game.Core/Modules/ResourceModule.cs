@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -69,7 +68,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
                 Flags = EntityTemplateFlags.Partial,
                 Inherit = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
                 Components = [
-                    new Location(),
+                    BodyLocation.Identity,
                     new Enabled(),
                     new Awake(true)
                 ],

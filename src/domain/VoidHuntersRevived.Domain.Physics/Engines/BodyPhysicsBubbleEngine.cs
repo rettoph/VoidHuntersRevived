@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.Entities.Components;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -29,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         public void OnStep(Step step)
         {
             _bubbleBufferCount = 0;
-            foreach (var ((bubbles, locations, count), _) in _entityQueryService.QueryEntities<PhysicsBubble, Location>())
+            foreach (var ((bubbles, locations, count), _) in _entityQueryService.QueryEntities<PhysicsBubble, BodyLocation>())
             {
                 this.EnsureBubbleBufferCapacity(count);
 
@@ -39,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
                     if (physicsBubble.Enabled)
                     {
-                        Location location = locations[i];
+                        BodyLocation location = locations[i];
                         Fix64 diameter = physicsBubble.Radius * Two;
 
                         _bubbleBuffer[_bubbleBufferCount++] = new FixRectangle()
@@ -53,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 }
             }
 
-            foreach (var ((localIds, enableds, locations, statuses, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Enabled, Location, EntityStatus>())
+            foreach (var ((localIds, enableds, locations, statuses, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Enabled, BodyLocation, EntityStatus>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -61,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                     if (status.IsSpawned)
                     {
                         ref Enabled enabled = ref enableds[i];
-                        Location location = locations[i];
+                        BodyLocation location = locations[i];
 
                         bool withinPhysicsBubble = this.WithinPhysicsBubble(location);
 
@@ -99,7 +98,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             Array.Resize<FixRectangle>(ref _bubbleBuffer, requiredLength);
         }
 
-        private bool WithinPhysicsBubble(Location location)
+        private bool WithinPhysicsBubble(BodyLocation location)
         {
             for (int i = 0; i < _bubbleBufferCount; i++)
             {

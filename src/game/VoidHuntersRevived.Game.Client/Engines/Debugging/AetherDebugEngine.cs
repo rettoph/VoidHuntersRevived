@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
             _imgui.KeyValue("Contacts", _world.ContactCount.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
 
 
-            Resource<ImStyle> buttonStyle = _debugViewEnabled ? _buttonRedStyle : _buttonRedStyle;
+            Resource<ImStyle> buttonStyle = _debugViewEnabled ? _buttonGreenStyle : _buttonRedStyle;
 
             using (_imgui.Apply(buttonStyle))
             {

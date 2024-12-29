@@ -18,8 +18,8 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     /// 
     /// Instances of this engine are automatically created within the <see cref="Providers.BelongsToEngineProvider"/>
     /// </summary>
+    /// <typeparam name="TBelongsTo"></typeparam>
     /// <typeparam name="TParent"></typeparam>
-    /// <typeparam name="TItems"></typeparam>
     internal sealed class BelongsToEngine<TBelongsTo, TParent>(IEntityQueryService entityQueryService, ILogger logger) : StrategyEngine, IOnSpawnEngine<TBelongsTo>
         where TBelongsTo : unmanaged, IBelongsTo<TParent, TBelongsTo>
         where TParent : unmanaged, IHasMany<TBelongsTo>
