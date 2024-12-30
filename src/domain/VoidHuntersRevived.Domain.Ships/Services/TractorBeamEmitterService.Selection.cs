@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 throw new NotImplementedException();
             }
 
-            ref var filter = ref this.GetTractorableFilter(tracorBeamEmitterLocalId);
+            ref var filter = ref _entityQueryService.GetFilter<TractorBeamEmitter, Tractorable>(tracorBeamEmitterLocalId);
             foreach (var (indices, groupId) in filter)
             {
                 var (localIds, statuses, trees, transforms, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Tree, Body>(groupId);
@@ -139,10 +139,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         }
 
                         entity.Initializer.Init<Body>(new Body(entity.LocalId, data.Transform));
-                        entity.Initializer.Init<Tractorable>(new Tractorable()
-                        {
-                            TractorBeamEmitterLocalId = tractorBeamEmitterLocalId
-                        });
+                        entity.Initializer.Init<Tractorable>(new Tractorable(tractorBeamEmitterLocalId));
                     });
             }
             catch (Exception ex)
@@ -171,10 +168,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         initializer: (IEntityService entities, in InitializingEntity entity) =>
                         {
                             entity.Initializer.Init<Body>(new Body(entity.LocalId, data.Transform));
-                            entity.Initializer.Init<Tractorable>(new Tractorable()
-                            {
-                                TractorBeamEmitterLocalId = default
-                            });
+                            entity.Initializer.Init<Tractorable>(new Tractorable(default));
                         });
                 }
             }

@@ -167,10 +167,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
                     },
                     new Helm(),
                     new Tactical(),
-                    new TractorBeamEmitter()
-                    {
-                        Active = false
-                    }
+                    new TractorBeamEmitter(default)
                 ]
             });
 

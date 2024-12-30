@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Components
         public FixVector2 WorldPosition => this.WorldTransform.Position;
         public Fix64 WorldRotation => _worldRotation ??= this.WorldTransform.Rotation.Phase;
 
-        public readonly EntityFilterId<Fixture> BodyFilterId = new(bodyLocalId.Value);
+        public readonly EntityFilterId<Fixture> BodyFilterId = EntityFilterId<Fixture>.Create<Body>(bodyLocalId);
         EntityFilterId<Fixture> IBelongsTo<Body, Fixture>.ParentFilterId => this.BodyFilterId;
 
         public void SetLocalRotationTransform(Fix64 rotation, FixTransform2D transform)

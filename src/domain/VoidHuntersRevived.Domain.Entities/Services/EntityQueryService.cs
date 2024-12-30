@@ -487,26 +487,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return false;
         }
 
-        public ref EntityFilterCollection GetFilter<T>(EGID egid, FilterContextID filterContext)
-            where T : unmanaged, IEntityComponent
-        {
-            ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(unchecked((int)egid.entityID), filterContext);
-
-            return ref filter;
-        }
-
         public ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
             where T : unmanaged, IEntityComponent
         {
             ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(filterId);
-
-            return ref filter;
-        }
-
-        public ref EntityFilterCollection GetFilter<T>(EntityFilterId<T> filterId)
-            where T : unmanaged, IEntityComponent
-        {
-            ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(filterId.CombinedFilterId);
 
             return ref filter;
         }

@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 return;
             }
 
-            ref var filter = ref _entityQueryService.GetFilter<Thrustable>(node.TreeLocalId, Helm.ThrustableFilterContextId);
+            ref var filter = ref _entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(node.TreeLocalId);
             filter.Add(thrustable.LocalId, thrustable.Index);
         }
 
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 return;
             }
 
-            ref var filter = ref _entityQueryService.GetFilter<Thrustable>(node.TreeLocalId, Helm.ThrustableFilterContextId);
+            ref var filter = ref _entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(node.TreeLocalId);
             filter.Remove(thrustable.LocalId);
         }
 
@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
 
             IBody treeBody = _space.GetBody(treeLocalId);
-            ref var filter = ref _entityQueryService.GetFilter<Thrustable>(treeLocalId, Helm.ThrustableFilterContextId);
+            ref var filter = ref _entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(treeLocalId);
 
             foreach (var (thrustableIndices, group) in filter)
             {
@@ -105,7 +105,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     }
 
                     IBody body = _space.GetBody(helmLocalId);
-                    ref var filter = ref _entityQueryService.GetFilter<Thrustable>(helmLocalId, Helm.ThrustableFilterContextId);
+                    ref var filter = ref _entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(helmLocalId);
 
                     this.TryApplyImpulse(step, body, helm.Direction, ref filter);
                 }

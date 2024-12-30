@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 ? HashBuilder<IReactOnAddEx<Node>, VhId, EntityGlobalId>.Instance.Calculate(dirtyEventId, entity.GlobalId)
                 : HashBuilder<IReactOnAddEx<Node>, EntityGlobalId>.Instance.Calculate(entity.GlobalId);
 
-            ref Body body = ref _entityQueryService.QueryByEGID<Body>(entity.Second.BodyFilterId.Id);
+            ref Body body = ref _entityQueryService.QueryByEGID<Body>(entity.Second.BodyFilterId.EGID);
             this.SetLocalTransformation(ref entity, in body);
         }
 

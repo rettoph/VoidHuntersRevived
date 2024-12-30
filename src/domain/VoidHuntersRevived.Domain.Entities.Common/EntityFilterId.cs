@@ -3,15 +3,32 @@ using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public readonly struct EntityFilterId<T>(EGID id, FilterContextID? context = null)
-        where T : unmanaged, IEntityComponent
+    public readonly struct EntityFilterId<TChild>
+        where TChild : unmanaged, IEntityComponent
     {
-        public readonly EGID Id = id;
-        public readonly CombinedFilterID CombinedFilterId = new(unchecked((int)id.entityID), context ?? FilterContextHelper.GetFilterContext<T, EGID>());
+        public readonly EGID EGID;
+        public readonly CombinedFilterID CombinedFilterId;
+
+        private EntityFilterId(EGID egid, CombinedFilterID combinedFilterId)
+        {
+            this.EGID = egid;
+            this.CombinedFilterId = combinedFilterId;
+        }
+
+        public static EntityFilterId<TChild> Create<TParent>(EGID egid)
+            where TParent : unmanaged, IEntityComponent
+        {
+            return new EntityFilterId<TChild>(egid, new(unchecked((int)egid.entityID), FilterContextHelper.GetFilterContext<TParent, TChild>()));
+        }
+        public static EntityFilterId<TChild> Create<TParent>(EntityLocalId localId)
+            where TParent : unmanaged, IEntityComponent
+        {
+            return EntityFilterId<TChild>.Create<TParent>(localId.Value);
+        }
 
         public override bool Equals(object? obj)
         {
-            return obj is EntityFilterId<T> id
+            return obj is EntityFilterId<TChild> id
                 && CombinedFilterId.filterID == id.CombinedFilterId.filterID
                 && CombinedFilterId.contextID.id == id.CombinedFilterId.contextID.id;
         }
@@ -21,13 +38,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return HashCode.Combine(CombinedFilterId);
         }
 
-        public static bool operator ==(EntityFilterId<T> f1, EntityFilterId<T> f2)
+        public static bool operator ==(EntityFilterId<TChild> f1, EntityFilterId<TChild> f2)
         {
             return f1.CombinedFilterId.filterID == f2.CombinedFilterId.filterID
                 && f1.CombinedFilterId.contextID.id == f2.CombinedFilterId.contextID.id;
         }
 
-        public static bool operator !=(EntityFilterId<T> f1, EntityFilterId<T> f2)
+        public static bool operator !=(EntityFilterId<TChild> f1, EntityFilterId<TChild> f2)
         {
             return f1.CombinedFilterId.filterID != f2.CombinedFilterId.filterID
                 || f1.CombinedFilterId.contextID.id != f2.CombinedFilterId.contextID.id;

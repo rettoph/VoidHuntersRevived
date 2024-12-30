@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             ref Node node = ref _entityQueryService.QueryByLocalId<Node>(nodeSocketLocalId.NodeLocalId, out GroupIndex groupIndex);
             var (fixtures, sockets, _) = _entityQueryService.QueryEntities<Fixture, Sockets>(groupIndex.GroupID);
             NodeSocket nodeSocket = new(
-                bodyLocalId: fixtures[groupIndex.Index].BodyFilterId.Id.ToEntityLocalId(),
+                bodyLocalId: fixtures[groupIndex.Index].BodyFilterId.EGID.ToEntityLocalId(),
                 localId: nodeSocketLocalId,
                 node: node,
                 fixture: fixtures[groupIndex.Index],
@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
             var (fixtures, sockets, _) = _entityQueryService.QueryEntities<Fixture, Sockets>(groupIndex.GroupID);
             nodeSocket = new(
-                bodyLocalId: fixtures[groupIndex.Index].BodyFilterId.Id.ToEntityLocalId(),
+                bodyLocalId: fixtures[groupIndex.Index].BodyFilterId.EGID.ToEntityLocalId(),
                 localId: nodeSocketLocalId,
                 node: node,
                 fixture: fixtures[groupIndex.Index],
@@ -117,7 +117,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 for (int i = 0; i < indeces.count; i++)
                 {
                     uint index = indeces[i];
-                    NodeSockets nodeSockets = new(fixtures[index].BodyFilterId.Id.ToEntityLocalId(), index, nodes, fixtures, sockets);
+                    NodeSockets nodeSockets = new(fixtures[index].BodyFilterId.EGID.ToEntityLocalId(), index, nodes, fixtures, sockets);
                     if (statuses[index].IsSpawned
                         && this.TryGetClosestOpenSocketOnNode(worldPosition, ref nodeSockets, out Fix64 closestOpenSocketOnNodeDistance, out NodeSocket closestOpenSocketOnNode)
                         && closestOpenSocketOnNodeDistance < closestOpenSocketDistance)

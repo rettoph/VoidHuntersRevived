@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
                 ref Common.Components.Primitive<TVertex> primitive = ref primitives[i];
 
                 ref TeamMember teamMember = ref teamMembers[i];
-                if (_entityQueryService.TryQueryByEGID<PrimitiveSequenceGroup<TVertex>>(teamMember.ParentFilterId.Id, out PrimitiveSequenceGroup<TVertex> teamSequenceGroup) && teamSequenceGroup.IsDefault() == false)
+                if (_entityQueryService.TryQueryByEGID<PrimitiveSequenceGroup<TVertex>>(teamMember.ParentFilterId.EGID, out PrimitiveSequenceGroup<TVertex> teamSequenceGroup) && teamSequenceGroup.IsDefault() == false)
                 {
                     primitive = new Common.Components.Primitive<TVertex>(primitive.Type, teamSequenceGroup.Value);
                 }

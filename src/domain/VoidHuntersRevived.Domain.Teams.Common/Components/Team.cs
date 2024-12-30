@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Components
         {
             this.Id = Id<Team>.FromString(name.Name);
             this.Name = name;
-            this.ChildrenFilterId = new EntityFilterId<TeamMember>();
+            this.ChildrenFilterId = EntityFilterId<TeamMember>.Create<Team>(localId);
             this.TeamMemberComponent = new TeamMember(localId);
         }
     }

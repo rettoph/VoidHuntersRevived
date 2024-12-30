@@ -7,6 +7,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
+using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
@@ -41,6 +42,7 @@ namespace VoidHuntersRevived.Game.Core.Engines
             Blueprint blueprint = _blueprintService.GetAll().First();
             _treeService.Spawn(eventId, eventId.Create(1).ToGlobalEntityId(), _teamService.GetOpenTeam(), Resources.EntityTemplates.Ship.UserShipEntityTemplate, blueprint, (IEntityService entities, in InitializingEntity entity) =>
             {
+                entity.Initializer.Init(new TractorBeamEmitter(entity.LocalId));
                 entity.Initializer.Init(new UserId(data.UserDto.Id));
             });
         }

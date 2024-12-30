@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
         private void UpdateTractorBeamEmitterTractorables(in EntityLocalId tractorBeamEmitterLocalId, ref Tactical tactical, ref TractorBeamEmitter tractorBeamEmitter)
         {
-            ref var filter = ref _tractorBeamEmitterService.GetTractorableFilter(tractorBeamEmitterLocalId);
+            ref var filter = ref _entityQueryService.GetFilter(tractorBeamEmitter.TractorableFilterId);
             foreach (var (indices, groupId) in filter)
             {
                 var (localIds, statuses, enableds, trees, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Enabled, Tree>(groupId);

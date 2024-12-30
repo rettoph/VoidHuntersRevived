@@ -5,6 +5,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions.Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
@@ -28,32 +29,32 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tractorable> tractorable)
         {
-            if (tractorable.Component.TractorBeamEmitterLocalId == default)
+            if (tractorable.Component.TractorBeamEmitterFilterId.EGID == default)
             {
                 return;
             }
 
             // Add the tractorable to its owning tractor beam emitter's filter
-            ref var filter = ref _tractorBeamEmitterService.GetTractorableFilter(tractorable.Component.TractorBeamEmitterLocalId);
+            ref var filter = ref _entityQueryService.GetFilter(tractorable.Component.TractorBeamEmitterFilterId);
             filter.Add(in tractorable.LocalId, in tractorable.Index);
 
-            _tacticalService.AddUse(tractorable.Component.TractorBeamEmitterLocalId);
-            _logger.Verbose("Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", tractorable.LocalId, tractorable.Component.TractorBeamEmitterLocalId);
+            _tacticalService.AddUse(tractorable.Component.TractorBeamEmitterFilterId.EGID.ToEntityLocalId());
+            _logger.Verbose("Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", tractorable.LocalId, tractorable.Component.TractorBeamEmitterFilterId);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Tractorable> tractorable)
         {
-            if (tractorable.Component.TractorBeamEmitterLocalId == default)
+            if (tractorable.Component.TractorBeamEmitterFilterId.EGID == default)
             {
                 return;
             }
 
-            ref var filter = ref _tractorBeamEmitterService.GetTractorableFilter(tractorable.Component.TractorBeamEmitterLocalId);
+            ref var filter = ref _entityQueryService.GetFilter(tractorable.Component.TractorBeamEmitterFilterId);
             filter.Remove(tractorable.LocalId);
 
-            _tacticalService.RemoveUse(tractorable.Component.TractorBeamEmitterLocalId);
-            _logger.Verbose("Removed tractorable {TractorableId} from emitter {TractorBeamEmitterId}", tractorable.LocalId, tractorable.Component.TractorBeamEmitterLocalId);
+            _tacticalService.RemoveUse(tractorable.Component.TractorBeamEmitterFilterId.EGID.ToEntityLocalId());
+            _logger.Verbose("Removed tractorable {TractorableId} from emitter {TractorBeamEmitterId}", tractorable.LocalId, tractorable.Component.TractorBeamEmitterFilterId);
         }
     }
 }

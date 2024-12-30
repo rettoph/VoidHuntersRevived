@@ -349,10 +349,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                         new Tree(),
                         new Helm(),
                         new Tactical(),
-                        new TractorBeamEmitter()
-                        {
-                            Active = false
-                        },
+                        new TractorBeamEmitter(default),
                         new Awake(sleepingAllowed: false),
                         new Collision()
                         {

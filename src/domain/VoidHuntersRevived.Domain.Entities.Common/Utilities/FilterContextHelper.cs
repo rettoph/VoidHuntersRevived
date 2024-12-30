@@ -4,30 +4,24 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 {
     public static class FilterContextHelper
     {
-        private static class FilterContext<TComponent, TFilter>
-            where TComponent : unmanaged, IEntityComponent
+        private static class FilterContext<T1, T2>
         {
             public static FilterContextID Value = FilterContextID.GetNewContextID();
         }
 
-        private static class FilterContext<TComponent1, TComponent2, TFilter>
-            where TComponent1 : unmanaged, IEntityComponent
-            where TComponent2 : unmanaged, IEntityComponent
+        private static class FilterContext<T1, T2, T3>
         {
             public static FilterContextID Value = FilterContextID.GetNewContextID();
         }
 
-        public static FilterContextID GetFilterContext<TComponent, TFilter>()
-            where TComponent : unmanaged, IEntityComponent
+        public static FilterContextID GetFilterContext<T1, T2>()
         {
-            return FilterContext<TComponent, TFilter>.Value;
+            return FilterContext<T1, T2>.Value;
         }
 
-        public static FilterContextID GetFilterContext<TComponent1, TComponent2, TFilter>()
-            where TComponent1 : unmanaged, IEntityComponent
-            where TComponent2 : unmanaged, IEntityComponent
+        public static FilterContextID GetFilterContext<T1, T2, T3>()
         {
-            return FilterContext<TComponent1, TComponent2, TFilter>.Value;
+            return FilterContext<T1, T2, T3>.Value;
         }
     }
 }

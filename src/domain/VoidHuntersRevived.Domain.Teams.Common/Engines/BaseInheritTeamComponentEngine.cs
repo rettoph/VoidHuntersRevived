@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Engines
                 ref TComponent instanceComponent = ref instanceComponents[i];
 
                 ref TeamMember teamMember = ref teamMembers[i];
-                if (_entityQueryService.TryQueryByEGID<TComponent>(teamMember.ParentFilterId.Id, out TComponent teamComponent) && teamComponent.IsDefault() == false)
+                if (_entityQueryService.TryQueryByEGID<TComponent>(teamMember.ParentFilterId.EGID, out TComponent teamComponent) && teamComponent.IsDefault() == false)
                 {
                     instanceComponent = teamComponent;
                     continue;

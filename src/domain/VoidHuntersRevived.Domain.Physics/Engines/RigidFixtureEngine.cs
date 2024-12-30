@@ -62,18 +62,18 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             ref var rigidFixtureFilter = ref _entityQueryService.GetCompositeFilter<BodyComponent, FixtureComponent, Rigid>(entity.Second);
             rigidFixtureFilter.Add(in entity.LocalId, in entity.Index);
 
-            if (_entityQueryService.TryQueryByEGID<Enabled>(entity.Second.BodyFilterId.Id, out Enabled enabled) == true)
+            if (_entityQueryService.TryQueryByEGID<Enabled>(entity.Second.BodyFilterId.EGID, out Enabled enabled) == true)
             {
                 if (enabled)
                 {
-                    EntityLocalId bodyLocalId = entity.Second.BodyFilterId.Id.ToEntityLocalId();
+                    EntityLocalId bodyLocalId = entity.Second.BodyFilterId.EGID.ToEntityLocalId();
                     IBody body = _space.GetBody(bodyLocalId);
                     this.CreateFixtures(body, entity);
                 }
             }
             else
             {
-                _logger.Warning("Unable to create rigid fixture {RigidLocalId} on body {BodyEGID}.", entity.LocalId, entity.Second.BodyFilterId.Id);
+                _logger.Warning("Unable to create rigid fixture {RigidLocalId} on body {BodyEGID}.", entity.LocalId, entity.Second.BodyFilterId.EGID);
             }
         }
 
@@ -83,11 +83,11 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             ref var rigidFixtureFilter = ref _entityQueryService.GetCompositeFilter<BodyComponent, FixtureComponent, Rigid>(entity.Second);
             rigidFixtureFilter.Remove(in entity.LocalId);
 
-            if (_entityQueryService.TryQueryByEGID<Enabled>(entity.Second.BodyFilterId.Id, out Enabled enabled) == true)
+            if (_entityQueryService.TryQueryByEGID<Enabled>(entity.Second.BodyFilterId.EGID, out Enabled enabled) == true)
             {
                 if (enabled)
                 {
-                    EntityLocalId bodyLocalId = entity.Second.BodyFilterId.Id.ToEntityLocalId();
+                    EntityLocalId bodyLocalId = entity.Second.BodyFilterId.EGID.ToEntityLocalId();
                     if (_space.TryGetBody(bodyLocalId, out IBody? body) == true)
                     {
                         this.DestroyFixtures(body, entity);
@@ -101,7 +101,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             }
             else
             {
-                _logger.Warning("Unable to destroy rigid fixture {RigidLocalId} on body {BodyEGID}. Body egid not found.", entity.LocalId, entity.Second.BodyFilterId.Id);
+                _logger.Warning("Unable to destroy rigid fixture {RigidLocalId} on body {BodyEGID}. Body egid not found.", entity.LocalId, entity.Second.BodyFilterId.EGID);
             }
         }
 
