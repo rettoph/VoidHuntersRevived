@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Pieces.Common.Components;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -39,13 +39,13 @@ namespace VoidHuntersRevived.Game.Client.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group05)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, ref Entity<VertexVisible> vertexVisible)
         {
-            var (vertices, colorSchemes, nodes, _, _) = _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Node>(vertexVisible.Group);
+            var (vertices, colorSchemes, fixtures, _, _) = _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Fixture>(vertexVisible.Group);
 
             ref VertexVisible vertex = ref vertices[vertexVisible.Index];
             ref ColorScheme colorScheme = ref colorSchemes[vertexVisible.Index];
-            ref Node node = ref nodes[vertexVisible.Index];
+            ref Fixture fixture = ref fixtures[vertexVisible.Index];
 
-            vertex.LocalTransformation = node.Transformation.ToMatrix();
+            vertex.LocalTransformation = fixture.WorldTransform.ToMatrix();
             vertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
             vertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
         }
@@ -57,15 +57,15 @@ namespace VoidHuntersRevived.Game.Client.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((vertices, colorSchemes, nodes, _, count), _) in _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Node>())
+            foreach (var ((vertices, colorSchemes, fixtures, _, count), _) in _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Fixture>())
             {
                 for (int i = 0; i < count; i++)
                 {
                     ref VertexVisible vertex = ref vertices[i];
                     ref ColorScheme colorScheme = ref colorSchemes[i];
-                    ref Node node = ref nodes[i];
+                    ref Fixture fixture = ref fixtures[i];
 
-                    vertex.LocalTransformation = node.Transformation.ToMatrix();
+                    vertex.LocalTransformation = fixture.WorldTransform.ToMatrix();
                     vertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
                     vertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
                 }

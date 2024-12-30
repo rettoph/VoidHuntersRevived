@@ -328,6 +328,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                         Plug.Default,
                         new Coupling(),
                         new Node(),
+                        new Fixture(),
                         new ColorScheme(TestResources.Colors.TestColor, TestResources.Colors.TestColor),
                         new Rigid(TestResources.BodyTemplates.TestSquareBodyTemplate),
                         new Sockets()

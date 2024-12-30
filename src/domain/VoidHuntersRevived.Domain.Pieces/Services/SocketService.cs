@@ -4,7 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Extensions.Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
@@ -46,9 +48,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             _logger.Verbose("GetNodeSocket - NodeSocketLocalId = {NodeSocketLocalId}", nodeSocketLocalId);
 
             ref Node node = ref _entityQueryService.QueryByLocalId<Node>(nodeSocketLocalId.NodeLocalId, out GroupIndex groupIndex);
-            var (sockets, _) = _entityQueryService.QueryEntities<Sockets>(groupIndex.GroupID);
-
-            NodeSocket nodeSocket = new(nodeSocketLocalId, node, sockets[groupIndex.Index].Items[nodeSocketLocalId.SocketIndex]);
+            var (fixtures, sockets, _) = _entityQueryService.QueryEntities<Fixture, Sockets>(groupIndex.GroupID);
+            NodeSocket nodeSocket = new(
+                bodyLocalId: fixtures[groupIndex.Index].BodyFilterId.Id.ToEntityLocalId(),
+                localId: nodeSocketLocalId,
+                node: node,
+                fixture: fixtures[groupIndex.Index],
+                socket: sockets[groupIndex.Index].Items[nodeSocketLocalId.SocketIndex]);
 
             return nodeSocket;
         }
@@ -75,9 +81,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 return false;
             }
 
-            var (sockets, _) = _entityQueryService.QueryEntities<Sockets>(groupIndex.GroupID);
+            var (fixtures, sockets, _) = _entityQueryService.QueryEntities<Fixture, Sockets>(groupIndex.GroupID);
+            nodeSocket = new(
+                bodyLocalId: fixtures[groupIndex.Index].BodyFilterId.Id.ToEntityLocalId(),
+                localId: nodeSocketLocalId,
+                node: node,
+                fixture: fixtures[groupIndex.Index],
+                socket: sockets[groupIndex.Index].Items[nodeSocketLocalId.SocketIndex]);
 
-            nodeSocket = new(nodeSocketLocalId, node, sockets[groupIndex.Index].Items[nodeSocketLocalId.SocketIndex]);
             return true;
         }
 
@@ -94,7 +105,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         public bool TryGetClosestOpenNodeSocket(EntityLocalId treeLocalId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket)
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
-            ref var filter = ref _entityQueryService.GetFilter<Node>(treeLocalId, Tree.NodeFilterContextId);
+            ref var filter = ref _entityQueryService.GetFilter<Node>(treeLocalId);
             Fix64 closestOpenSocketDistance = OpenNodemaximumDistance;
             nodeSocket = default!;
             bool result = false;
@@ -106,12 +117,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                     continue;
                 }
 
-                var (statuses, nodes, sockets, _) = _entityQueryService.QueryEntities<EntityStatus, Node, Sockets>(group);
+                var (statuses, nodes, fixtures, sockets, _) = _entityQueryService.QueryEntities<EntityStatus, Node, Fixture, Sockets>(group);
 
                 for (int i = 0; i < indeces.count; i++)
                 {
                     uint index = indeces[i];
-                    NodeSockets nodeSockets = new(index, nodes, sockets);
+                    NodeSockets nodeSockets = new(fixtures[index].BodyFilterId.Id.ToEntityLocalId(), index, nodes, fixtures, sockets);
                     if (statuses[index].IsSpawned
                         && this.TryGetClosestOpenSocketOnNode(worldPosition, ref nodeSockets, out Fix64 closestOpenSocketOnNodeDistance, out NodeSocket closestOpenSocketOnNode)
                         && closestOpenSocketOnNodeDistance < closestOpenSocketDistance)

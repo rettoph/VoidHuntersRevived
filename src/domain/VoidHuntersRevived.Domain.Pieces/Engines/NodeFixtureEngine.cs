@@ -25,6 +25,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         INodeSocketService socketService,
         ILogger logger) : StrategyEngine,
             IOnSpawnEngine<Node, Fixture>,
+            IOnDespawnEngine<Node, Fixture>,
             IOnStepEngine
     {
         private readonly INodeSocketService _socketService = socketService;
@@ -45,6 +46,17 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             ref Body body = ref _entityQueryService.QueryByEGID<Body>(entity.Second.BodyFilterId.Id);
             this.SetLocalTransformation(ref entity, in body);
+        }
+
+        [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node, Fixture> entity)
+        {
+            _logger.Verbose("OnSpawn - NodeGlobalId = {NodeGlobalId}", entity.GlobalId);
+
+            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(entity.First.TreeLocalId, out bool alreadyDirty);
+            dirtyEventId = alreadyDirty
+                ? HashBuilder<IReactOnRemoveEx<Node>, VhId, EntityGlobalId>.Instance.Calculate(dirtyEventId, entity.GlobalId)
+                : HashBuilder<IReactOnRemoveEx<Node>, EntityGlobalId>.Instance.Calculate(entity.GlobalId);
         }
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
@@ -98,7 +110,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
                 var localId = _entityQueryService.QueryByGroupIndex<EntityLocalId>(node.GroupIndex);
                 _logger.Error(ex, "There was a fatal error attempting to set node transformation for node {NodeLocalId}.", localId);
-                _entitySpawnService.Despawn(NameSpace<NodeEngine>.Instance, localId);
+                _entitySpawnService.Despawn(NameSpace<NodeFixtureEngine>.Instance, localId);
 #if DEBUG
                 throw;
 #endif

@@ -7,7 +7,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         where T : unmanaged, IEntityComponent
     {
         public readonly EGID Id = id;
-        public readonly CombinedFilterID CombinedFilterId = new(unchecked((int)id.entityID), context ?? FilterContextHelper.GetFilterContext<T, EntityLocalId>());
+        public readonly CombinedFilterID CombinedFilterId = new(unchecked((int)id.entityID), context ?? FilterContextHelper.GetFilterContext<T, EGID>());
 
         public override bool Equals(object? obj)
         {

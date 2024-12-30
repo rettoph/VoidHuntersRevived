@@ -36,6 +36,12 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 return;
             }
 
+            if (_entityQueryService.TryQueryByGroupIndex<Fixture>(nodeGroupIndex, out Fixture fixture) == false)
+            {
+                _logger.Warning("Node {NodeGlobalId} is not a valid Fixture", nodeGlobalId);
+                return;
+            }
+
             if (_entityQueryService.IsSpawned(node.TreeLocalId) == false)
             {
                 _logger.Warning("Node {NodeGlobalId} Tree {TreeLocalId} does not exist", nodeGlobalId, node.TreeLocalId);
@@ -49,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 {
                     TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
                     TargetData = _entitySerializationService.Serialize(nodeGroupIndex.GroupID, nodeGroupIndex.Index, SerializationOptions.Default),
-                    Transform = node.Transformation
+                    Transform = fixture.WorldTransform
                 });
 
 

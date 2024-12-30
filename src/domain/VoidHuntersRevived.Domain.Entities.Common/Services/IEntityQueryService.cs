@@ -215,6 +215,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         ref EntityFilterCollection GetFilter<T, TFilter>(EntityLocalId localId)
             where T : unmanaged, IEntityComponent
                 => ref this.GetFilter<T>(localId.Value, FilterContextHelper.GetFilterContext<T, TFilter>());
+        ref EntityFilterCollection GetFilter<T, TFilter>(EGID egid)
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(egid, FilterContextHelper.GetFilterContext<T, TFilter>());
+        ref EntityFilterCollection GetFilter<T>(EntityLocalId localId)
+            where T : unmanaged, IEntityComponent
+                => ref this.GetFilter<T>(localId, FilterContextHelper.GetFilterContext<T, EGID>());
 
         ref EntityFilterCollection GetFilter<T>(CombinedFilterID combinedFilterId)
             where T : unmanaged, IEntityComponent;

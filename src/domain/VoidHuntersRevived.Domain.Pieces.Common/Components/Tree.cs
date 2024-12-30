@@ -6,8 +6,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 {
     public readonly struct Tree(EntityLocalId treeLocalId, EntityLocalId headLocalId) : IEntityComponent, IHasMany<Node>
     {
-        public static readonly FilterContextID NodeFilterContextId = FilterContextID.GetNewContextID();
-
         public readonly EntityLocalId HeadLocalId = headLocalId;
 
         public EntityFilterId<Node> ChildrenFilterId { get; } = new EntityFilterId<Node>(treeLocalId.Value);

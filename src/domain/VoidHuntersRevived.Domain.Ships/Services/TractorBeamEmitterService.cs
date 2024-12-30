@@ -4,6 +4,7 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
@@ -53,8 +54,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                 {
                     ref Node queryNode = ref _entityQueryService.QueryByLocalId<Node>(fixture.Id.EntityLocalId, out GroupIndex nodeGroupIndex);
                     ref Rigid queryRigid = ref _entityQueryService.QueryByGroupIndex<Rigid>(nodeGroupIndex);
+                    ref Fixture queryFixture = ref _entityQueryService.QueryByGroupIndex<Fixture>(nodeGroupIndex);
 
-                    FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Template.Value.Centeroid, queryNode.Transformation);
+                    FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Template.Value.Centeroid, queryFixture.WorldTransform);
                     FixVector2.Distance(ref target, ref queryNodePosition, out Fix64 queryNodeDistance);
 
                     if (queryNodeDistance > minDistance)

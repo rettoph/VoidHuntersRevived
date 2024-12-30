@@ -47,7 +47,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
                 builder.RegisterPolymorphicJsonType<PrimitiveSequenceGroup<VertexVisible>, IEntityComponent>("PrimitiveSequenceGroup.Visible");
 
                 builder.RegisterEngine<CouplingEngine>();
-                builder.RegisterEngine<NodeEngine>();
                 builder.RegisterEngine<NodeFixtureEngine>();
                 builder.RegisterEngine<RigidEngine>();
                 builder.RegisterEngine<SocketIdsEngine>();

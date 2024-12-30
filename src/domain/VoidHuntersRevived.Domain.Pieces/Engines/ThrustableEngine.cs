@@ -78,12 +78,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             foreach (var (thrustableIndices, group) in filter)
             {
-                var (thrustables, nodes, _) = _entityQueryService.QueryEntities<Thrustable, Node>(group);
+                var (thrustables, fixtures, _) = _entityQueryService.QueryEntities<Thrustable, Fixture>(group);
 
                 for (int i = 0; i < thrustableIndices.count; i++)
                 {
                     uint index = thrustableIndices[i];
-                    this.CleanThrustable(treeBody, ref thrustables[index], ref nodes[index]);
+                    this.CleanThrustable(treeBody, ref thrustables[index], ref fixtures[index]);
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             foreach (var (indices, group) in filter)
             {
-                var (thrustables, nodes, _) = _entityQueryService.QueryEntities<Thrustable, Node>(group);
+                var (thrustables, fixtures, _) = _entityQueryService.QueryEntities<Thrustable, Fixture>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {
@@ -128,25 +128,25 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                         continue;
                     }
 
-                    ref Node node = ref nodes[index];
+                    ref Fixture fixture = ref fixtures[index];
 
                     body.ApplyForce(
-                        force: FixPolar.Rotate(thrustable.MaxImpulse, body.Rotation + node.LocalTransformation.Rotation.Phase).ToVector2(),
-                        point: FixVector2.Transform(thrustable.ImpulsePoint, node.Transformation));
+                        force: FixPolar.Rotate(thrustable.MaxImpulse, fixture.WorldRotation).ToVector2(),
+                        point: FixVector2.Transform(thrustable.ImpulsePoint, fixture.WorldTransform));
                 }
             }
         }
 
-        private void CleanThrustable(IBody treeBody, ref Thrustable thrustable, ref Node node)
+        private void CleanThrustable(IBody treeBody, ref Thrustable thrustable, ref Fixture fixture)
         {
             thrustable.Direction = Direction.None;
 
             // The chain's center of mass
             var com = treeBody.LocalCenter;
             // The point acceleration is applied
-            var ip = FixVector2.Transform(thrustable.ImpulsePoint, node.LocalTransformation);
+            var ip = FixVector2.Transform(thrustable.ImpulsePoint, fixture.LocalTransform);
             // The impulse to be applied...
-            var i = FixPolar.Rotate(thrustable.MaxImpulse, node.LocalTransformation.Rotation.Phase).ToVector2();
+            var i = FixPolar.Rotate(thrustable.MaxImpulse, fixture.LocalRotation).ToVector2();
             // The point acceleration is targeting
             var it = ip + i;
 
