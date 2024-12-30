@@ -1,5 +1,4 @@
 ﻿using Serilog;
-using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -36,11 +35,6 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         private readonly ITeamService _teamService = teamService;
         private readonly INodeSocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
-
-        public ref EntityFilterCollection GetTractorableFilter(EntityLocalId tractorBeamEmitterLocalId)
-        {
-            return ref _entityQueryService.GetFilter<TractorBeamEmitter, Tractorable>(tractorBeamEmitterLocalId);
-        }
 
         public bool Query(EntityLocalId tractorBeamEmitterLocalId, FixVector2 target, out Node targetNode)
         {
