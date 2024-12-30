@@ -34,8 +34,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref BodyComponent bodyComponent = ref _entityQueryService.QueryByLocalId<BodyComponent>(body.EntityLocalId);
-            ref var rigidFixtureFilter = ref _entityQueryService.GetFilter<FixtureComponent, RigidFixtureEngine>(bodyComponent.FixtureFilterId.Id);
+            ref var rigidFixtureFilter = ref _entityQueryService.GetCompositeFilter<BodyComponent, FixtureComponent, Rigid>(body.EntityLocalId);
 
             foreach (var (indices, group) in rigidFixtureFilter)
             {
@@ -60,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group05)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Rigid, FixtureComponent> entity)
         {
-            ref var rigidFixtureFilter = ref _entityQueryService.GetFilter<FixtureComponent, RigidFixtureEngine>(entity.Second.BodyFilterId.Id);
+            ref var rigidFixtureFilter = ref _entityQueryService.GetCompositeFilter<BodyComponent, FixtureComponent, Rigid>(entity.Second);
             rigidFixtureFilter.Add(in entity.LocalId, in entity.Index);
 
             if (_entityQueryService.TryQueryByEGID<Enabled>(entity.Second.BodyFilterId.Id, out Enabled enabled) == true)
@@ -81,7 +80,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group05)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Rigid, FixtureComponent> entity)
         {
-            ref var rigidFixtureFilter = ref _entityQueryService.GetFilter<FixtureComponent, RigidFixtureEngine>(entity.Second.BodyFilterId.Id);
+            ref var rigidFixtureFilter = ref _entityQueryService.GetCompositeFilter<BodyComponent, FixtureComponent, Rigid>(entity.Second);
             rigidFixtureFilter.Remove(in entity.LocalId);
 
             if (_entityQueryService.TryQueryByEGID<Enabled>(entity.Second.BodyFilterId.Id, out Enabled enabled) == true)

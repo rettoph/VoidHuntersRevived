@@ -18,25 +18,26 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     /// 
     /// Instances of this engine are automatically created within the <see cref="Providers.BelongsToEngineProvider"/>
     /// </summary>
-    /// <typeparam name="TBelongsTo"></typeparam>
+    /// <typeparam name="TSecondary"></typeparam>
     /// <typeparam name="TParent"></typeparam>
-    internal sealed class BelongsToEngine<TParent, TBelongsTo>(IEntityQueryService entityQueryService, ILogger logger) : StrategyEngine, IOnSpawnEngine<TBelongsTo>
-        where TParent : unmanaged, IHasMany<TBelongsTo>
-        where TBelongsTo : unmanaged, IBelongsTo<TParent, TBelongsTo>
+    internal sealed class CompositeBelongsToEngine<TParent, TPrimary, TSecondary>(IEntityQueryService entityQueryService, ILogger logger) : StrategyEngine, IOnSpawnEngine<TPrimary, TSecondary>
+        where TParent : unmanaged, IHasMany<TPrimary>
+        where TPrimary : unmanaged, IBelongsTo<TParent, TPrimary>
+        where TSecondary : unmanaged, ICompositeBelongsTo<TParent, TPrimary, TSecondary>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group02)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<TBelongsTo> belongsTo)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<TPrimary, TSecondary> entity)
         {
-            if (belongsTo.Component.ParentFilterId == default)
+            if (entity.First.ParentFilterId == default)
             {
-                _logger.Warning("{0}::{1} - Empty {2}", typeof(BelongsToEngine<TParent, TBelongsTo>).GetFormattedName(), nameof(BelongsToEngine<TParent, TBelongsTo>.OnSpawn), nameof(belongsTo.Component.ParentFilterId));
+                _logger.Warning("{0}::{1} - Empty {2}", typeof(CompositeBelongsToEngine<TParent, TPrimary, TSecondary>).GetFormattedName(), nameof(CompositeBelongsToEngine<TParent, TPrimary, TSecondary>.OnSpawn), nameof(entity.First.ParentFilterId));
                 return;
             }
 
-            _entityQueryService.GetFilter(belongsTo.Component.ParentFilterId).Add(in belongsTo.LocalId, in belongsTo.Index);
+            _entityQueryService.GetCompositeFilter<TParent, TPrimary, TSecondary>(entity.First).Add(in entity.LocalId, in entity.Index);
         }
     }
 }

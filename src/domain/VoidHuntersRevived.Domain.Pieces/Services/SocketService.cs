@@ -105,18 +105,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         public bool TryGetClosestOpenNodeSocket(EntityLocalId treeLocalId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket)
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
-            ref var filter = ref _entityQueryService.GetFilter<Node>(treeLocalId);
+            ref var filter = ref _entityQueryService.GetCompositeFilter<Body, Fixture, Sockets>(treeLocalId);
             Fix64 closestOpenSocketDistance = OpenNodemaximumDistance;
             nodeSocket = default!;
             bool result = false;
 
             foreach (var (indeces, group) in filter)
             {
-                if (!_entityQueryService.Has<Sockets>(group))
-                {
-                    continue;
-                }
-
                 var (statuses, nodes, fixtures, sockets, _) = _entityQueryService.QueryEntities<EntityStatus, Node, Fixture, Sockets>(group);
 
                 for (int i = 0; i < indeces.count; i++)

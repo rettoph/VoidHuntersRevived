@@ -27,15 +27,21 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
                         continue;
                     }
 
-                    if (interfaceType.GetGenericTypeDefinition() != typeof(IBelongsTo<,>))
+                    if (interfaceType.GetGenericTypeDefinition() == typeof(IBelongsTo<,>))
                     {
-                        continue;
+                        Type belongsToEngineType = typeof(BelongsToEngine<,>).MakeGenericType(interfaceType.GenericTypeArguments);
+                        IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, new object[] { _entityQueryService, _logger }) ?? throw new NotImplementedException();
+
+                        yield return belongsToEngine;
                     }
 
-                    Type belongsToEngineType = typeof(BelongsToEngine<,>).MakeGenericType(componentType, interfaceType.GenericTypeArguments[0]);
-                    IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, new object[] { _entityQueryService, _logger }) ?? throw new NotImplementedException();
+                    if (interfaceType.GetGenericTypeDefinition() == typeof(ICompositeBelongsTo<,,>))
+                    {
+                        Type belongsToEngineType = typeof(CompositeBelongsToEngine<,,>).MakeGenericType(interfaceType.GenericTypeArguments);
+                        IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, new object[] { _entityQueryService, _logger }) ?? throw new NotImplementedException();
 
-                    yield return belongsToEngine;
+                        yield return belongsToEngine;
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using Svelto.DataStructures;
 using Svelto.ECS;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
@@ -206,21 +207,15 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
             => this.IsDespawned(this.GetLocalId(globalId).Value, out groupIndex);
 
 
-        ref EntityFilterCollection GetFilter<T>(EGID egid, FilterContextID filterContext)
+        ref EntityFilterCollection GetFilter<T>(EGID filterEGID, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent;
 
-        ref EntityFilterCollection GetFilter<T>(EntityLocalId localId, FilterContextID filterContext)
+        ref EntityFilterCollection GetFilter<T>(EntityLocalId filterLocalId, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent
-                => ref this.GetFilter<T>(localId.Value, filterContext);
-        ref EntityFilterCollection GetFilter<T, TFilter>(EntityLocalId localId)
+                => ref this.GetFilter<T>(filterLocalId.Value, filterContext);
+        ref EntityFilterCollection GetFilter<T, TFilter>(EntityLocalId filterLocalId)
             where T : unmanaged, IEntityComponent
-                => ref this.GetFilter<T>(localId.Value, FilterContextHelper.GetFilterContext<T, TFilter>());
-        ref EntityFilterCollection GetFilter<T, TFilter>(EGID egid)
-            where T : unmanaged, IEntityComponent
-                => ref this.GetFilter<T>(egid, FilterContextHelper.GetFilterContext<T, TFilter>());
-        ref EntityFilterCollection GetFilter<T>(EntityLocalId localId)
-            where T : unmanaged, IEntityComponent
-                => ref this.GetFilter<T>(localId, FilterContextHelper.GetFilterContext<T, EGID>());
+                => ref this.GetFilter<T>(filterLocalId.Value, FilterContextHelper.GetFilterContext<T, TFilter>());
 
         ref EntityFilterCollection GetFilter<T>(CombinedFilterID combinedFilterId)
             where T : unmanaged, IEntityComponent;
@@ -233,5 +228,22 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 
         ref EntityFilterCollection GetFilter<T>(EntityFilterId<T> filterId)
             where T : unmanaged, IEntityComponent;
+
+        ref EntityFilterCollection GetCompositeFilter<TParent, TPrimary, TSecondary>(EntityLocalId filterLocalId)
+             where TParent : unmanaged, IEntityComponent, IHasMany<TPrimary>
+            where TPrimary : unmanaged, IEntityComponent, IBelongsTo<TParent, TPrimary>
+            where TSecondary : unmanaged, IEntityComponent, ICompositeBelongsTo<TParent, TPrimary, TSecondary>
+                => ref this.GetFilter<TSecondary>(filterLocalId, FilterContextHelper.GetFilterContext<TPrimary, TSecondary>());
+        ref EntityFilterCollection GetCompositeFilter<TParent, TPrimary, TSecondary>(TParent parent)
+            where TParent : unmanaged, IEntityComponent, IHasMany<TPrimary>
+            where TPrimary : unmanaged, IEntityComponent, IBelongsTo<TParent, TPrimary>
+            where TSecondary : unmanaged, IEntityComponent, ICompositeBelongsTo<TParent, TPrimary, TSecondary>
+                => ref this.GetFilter<TSecondary>(parent.ChildrenFilterId.Id, FilterContextHelper.GetFilterContext<TPrimary, TSecondary>());
+
+        ref EntityFilterCollection GetCompositeFilter<TParent, TPrimary, TSecondary>(TPrimary parent)
+            where TParent : unmanaged, IEntityComponent, IHasMany<TPrimary>
+            where TPrimary : unmanaged, IEntityComponent, IBelongsTo<TParent, TPrimary>
+            where TSecondary : unmanaged, IEntityComponent, ICompositeBelongsTo<TParent, TPrimary, TSecondary>
+                => ref this.GetFilter<TSecondary>(parent.ParentFilterId.Id, FilterContextHelper.GetFilterContext<TPrimary, TSecondary>());
     }
 }
