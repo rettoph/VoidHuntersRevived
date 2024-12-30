@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 SourceId = eventId,
                 Data = new SoftSpawnEntity()
                 {
-                    IsPrivate = data.IsPrivate,
+                    IsPrivate = true,
                     GlobalId = data.GlobalId
                 }
             });
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 SourceId = eventId,
                 Data = new HardSpawnEntity()
                 {
-                    IsPrivate = data.IsPrivate,
+                    IsPrivate = true,
                     GlobalId = data.GlobalId,
                     TemplateKey = data.TemplateKey
                 }
@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 SourceId = eventId,
                 Data = new SoftSpawnEntity()
                 {
-                    IsPrivate = data.IsPrivate,
+                    IsPrivate = true,
                     GlobalId = data.GlobalId
                 }
             });
@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 SourceId = eventId,
                 Data = new HardSpawnEntity<EntityInitializerDelegate>()
                 {
-                    IsPrivate = data.IsPrivate,
+                    IsPrivate = true,
                     GlobalId = data.GlobalId,
                     TemplateKey = data.TemplateKey,
                     Initializer = data.Initializer
@@ -165,22 +165,20 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             int spawnCount = 0;
-            if ((spawnCount = status.Increment(EntityModificationTypeEnum.Despawned)) == 0)
-            {
-                this.Strategy.Enqueue(new EventDto()
-                {
-                    SourceId = eventId,
-                    Data = new SoftDespawnEntity()
-                    {
-                        IsPrivate = true,
-                        GlobalId = data.GlobalId
-                    }
-                });
-            }
-            else
+            if ((spawnCount = status.Increment(EntityModificationTypeEnum.Despawned)) != 0)
             {
                 _logger.Warning("{ClassName}::{MethdName}<{GenericType}> - LocalId = {LocalId}, Exists = {Exists}, Status = {Status}, SpawnCount = {SpawnCount}", nameof(EntitySpawnService), nameof(InternalRevert), nameof(SpawnEntity), localId, exists, exists ? status.Value : null, spawnCount);
             }
+
+            this.Strategy.Enqueue(new EventDto()
+            {
+                SourceId = eventId,
+                Data = new SoftDespawnEntity()
+                {
+                    IsPrivate = true,
+                    GlobalId = data.GlobalId
+                }
+            });
 
             // TODO: Investigate why the HardDespawn event is published despite the SoftDespawn being locked behind the Despawn counter
             // I dont remember if this was by design or if its just a bug
@@ -220,7 +218,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 SourceId = eventId,
                 Data = new SoftDespawnEntity()
                 {
-                    IsPrivate = data.IsPrivate,
+                    IsPrivate = true,
                     GlobalId = data.GlobalId
                 }
             });
@@ -231,7 +229,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Data = new HardDespawnEntity()
                 {
                     IsPrivate = data.IsPrivate,
-                    IsPredictable = false,
+                    IsPredictable = data.IsPrivate,
                     GlobalId = data.GlobalId
                 }
             });
@@ -279,17 +277,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
 
             Key<IEntityTemplate> templateKey = _entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(groupIndex).Key;
-            IEntityTemplate descriptorEngine = _entityTemplateService.GetByKey(templateKey);
+            IEntityTemplate template = _entityTemplateService.GetByKey(templateKey);
             Entity entity = new(groupIndex.Index, localId, data.GlobalId);
 
             if (status.Value < EntityStatusEnum.SoftDespawned)
             { // Ensure an entity gets soft despawned if it hasn't been already
-                descriptorEngine.SoftDespawnInstanceEntity(in eventId, in entity, ref status);
+                template.SoftDespawnInstanceEntity(in eventId, in entity, ref status);
                 status.Value = EntityStatusEnum.SoftDespawned;
             }
 
             _logger.Verbose("HardDespawnInstanceEntity - GlobalId = {GlobalId}, Template = {Template}", data.GlobalId, templateKey.Name);
-            descriptorEngine.HardDespawnInstanceEntity(in eventId, in entity, ref status);
+            template.HardDespawnInstanceEntity(in eventId, in entity, ref status);
             _entityQueryService.Remove(data.GlobalId);
             status.Value = EntityStatusEnum.HardDespawned;
         }

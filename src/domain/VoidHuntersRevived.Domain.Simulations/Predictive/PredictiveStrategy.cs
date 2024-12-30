@@ -89,13 +89,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         public override void Input(VhId sourceId, IInputData data)
         {
-            this.Publish(sourceId, data);
+            this.Publish(new EventDto()
+            {
+                SourceId = sourceId,
+                Data = data
+            });
         }
 
         public override void Publish(EventDto @event)
         {
-            if (!@event.Data.IsPredictable)
-            {
+            if (@event.Data.IsPredictable == false && @event.Data.IsPrivate == false)
+            { // The event must be both non-predictable and public in order for us to skip it
+                // What would it even mean for a private event to be non predictable? 
+                // It wouldnt happen on the predictive strategy and never get synced by the lockstep
                 this.logger.Verbose("Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", @event.Data.GetType().Name, @event.Id.Value, @event.Data.IsPredictable);
                 return;
             }

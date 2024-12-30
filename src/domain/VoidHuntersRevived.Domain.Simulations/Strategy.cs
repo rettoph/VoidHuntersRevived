@@ -120,15 +120,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             _publishers[@event.Data.GetType()].Publish(@event);
         }
 
-        public void Publish(VhId sourceId, IEventData data)
-        {
-            this.Publish(new EventDto()
-            {
-                SourceId = sourceId,
-                Data = data
-            });
-        }
-
         public abstract void Input(VhId sourceId, IInputData data);
 
         public void Enqueue(VhId sourceId, IEventData data)
