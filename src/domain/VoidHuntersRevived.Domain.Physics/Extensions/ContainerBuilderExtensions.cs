@@ -2,8 +2,10 @@
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Extensions;
+using Svelto.ECS;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
+using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Physics.Engines;
 using VoidHuntersRevived.Domain.Physics.ResourceTypes;
 using VoidHuntersRevived.Domain.Physics.Serialization.Components;
@@ -29,10 +31,12 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
                 builder.RegisterEngine<BodyLocationPredictiveSynchronizationEngine>();
                 builder.RegisterEngine<BodyPhysicsBubbleEngine>();
                 builder.RegisterEngine<SpaceEngine>();
+                builder.RegisterEngine<RigidFixtureEngine>();
                 builder.RegisterEngine<Space>();
 
                 builder.RegisterJsonConverter<PolygonConverter>();
                 builder.RegisterJsonConverter<BodyTemplateConverter>();
+                builder.RegisterJsonConverter<RigidJsonConverter>();
 
                 builder.RegisterComponentSerializer<AwakeComponentSerializer>();
                 builder.RegisterComponentSerializer<CollisionComponentSerializer>();
@@ -40,6 +44,8 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
                 builder.RegisterComponentSerializer<PhysicsBubbleComponentSerializer>();
                 builder.RegisterComponentSerializer<BodyComponentSerializer>();
                 builder.RegisterComponentSerializer<FixtureComponentSerializer>();
+
+                builder.RegisterPolymorphicJsonType<Rigid, IEntityComponent>(nameof(Rigid));
             });
         }
     }

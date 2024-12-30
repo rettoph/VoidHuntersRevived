@@ -9,20 +9,21 @@ using VoidHuntersRevived.Domain.Entities.Common.Extensions.Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using BodyComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Body;
+using FixtureComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Fixture;
 
-namespace VoidHuntersRevived.Domain.Pieces.Engines
+namespace VoidHuntersRevived.Domain.Physics.Engines
 {
-    public sealed class RigidEngine : StrategyEngine,
-        IOnSpawnEngine<Rigid, Fixture>,
-        IOnDespawnEngine<Rigid, Fixture>
+    public sealed class RigidFixtureEngine : StrategyEngine,
+        IOnSpawnEngine<Rigid, FixtureComponent>,
+        IOnDespawnEngine<Rigid, FixtureComponent>
     {
         private readonly ISpace _space;
         private readonly IEntityQueryService _entityQueryService;
         private readonly ILogger _logger;
 
-        public RigidEngine(ISpace space, IEntityQueryService entityQueryService, ILogger logger)
+        public RigidFixtureEngine(ISpace space, IEntityQueryService entityQueryService, ILogger logger)
         {
             _space = space;
             _entityQueryService = entityQueryService;
@@ -33,18 +34,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Body bodyComponent = ref _entityQueryService.QueryByLocalId<Body>(body.EntityLocalId);
-            ref var rigidFixtureFilter = ref _entityQueryService.GetFilter<Fixture, RigidEngine>(bodyComponent.FixtureFilterId.Id);
+            ref BodyComponent bodyComponent = ref _entityQueryService.QueryByLocalId<BodyComponent>(body.EntityLocalId);
+            ref var rigidFixtureFilter = ref _entityQueryService.GetFilter<FixtureComponent, RigidFixtureEngine>(bodyComponent.FixtureFilterId.Id);
 
             foreach (var (indices, group) in rigidFixtureFilter)
             {
-                var (localIds, globalIds, rigids, fixtures, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityGlobalId, Rigid, Fixture>(group);
+                var (localIds, globalIds, rigids, fixtures, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityGlobalId, Rigid, FixtureComponent>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {
                     uint index = indices[i];
 
-                    Entity<Rigid, Fixture> entity = new(
+                    Entity<Rigid, FixtureComponent> entity = new(
                         index: index,
                         localId: localIds[index],
                         globalId: globalIds[index],
@@ -57,9 +58,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         }
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group05)]
-        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Rigid, Fixture> entity)
+        public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Rigid, FixtureComponent> entity)
         {
-            ref var rigidFixtureFilter = ref _entityQueryService.GetFilter<Fixture, RigidEngine>(entity.Second.BodyFilterId.Id);
+            ref var rigidFixtureFilter = ref _entityQueryService.GetFilter<FixtureComponent, RigidFixtureEngine>(entity.Second.BodyFilterId.Id);
             rigidFixtureFilter.Add(in entity.LocalId, in entity.Index);
 
             if (_entityQueryService.TryQueryByEGID<Enabled>(entity.Second.BodyFilterId.Id, out Enabled enabled) == true)
@@ -78,9 +79,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group05)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Rigid, Fixture> entity)
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Rigid, FixtureComponent> entity)
         {
-            ref var rigidFixtureFilter = ref _entityQueryService.GetFilter<Fixture, RigidEngine>(entity.Second.BodyFilterId.Id);
+            ref var rigidFixtureFilter = ref _entityQueryService.GetFilter<FixtureComponent, RigidFixtureEngine>(entity.Second.BodyFilterId.Id);
             rigidFixtureFilter.Remove(in entity.LocalId);
 
             if (_entityQueryService.TryQueryByEGID<Enabled>(entity.Second.BodyFilterId.Id, out Enabled enabled) == true)
@@ -105,7 +106,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        private void CreateFixtures(IBody body, Entity<Rigid, Fixture> entity)
+        private void CreateFixtures(IBody body, Entity<Rigid, FixtureComponent> entity)
         {
             for (uint i = 0; i < entity.First.Template.Value.Shapes.Length; i++)
             {
@@ -115,7 +116,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        private void DestroyFixtures(IBody body, Entity<Rigid, Fixture> entity)
+        private void DestroyFixtures(IBody body, Entity<Rigid, FixtureComponent> entity)
         {
             for (uint i = 0; i < entity.First.Template.Value.Shapes.Length; i++)
             {

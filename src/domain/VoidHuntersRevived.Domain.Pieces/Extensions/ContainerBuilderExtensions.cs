@@ -32,7 +32,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
 
                 builder.RegisterJsonConverter<BlueprintConverter>();
                 builder.RegisterJsonConverter<BlueprintPieceConverter>();
-                builder.RegisterJsonConverter<RigidJsonConverter>();
                 builder.RegisterJsonConverter<ShapeJsonConverter>();
                 builder.RegisterJsonConverter<SocketsJsonConverter>();
                 builder.RegisterJsonConverter<SocketJsonConverter>();
@@ -40,7 +39,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
                 builder.RegisterJsonConverter<ThrustableJsonConverter>();
 
                 builder.RegisterPolymorphicJsonType<Plug, IEntityComponent>(nameof(Plug));
-                builder.RegisterPolymorphicJsonType<Rigid, IEntityComponent>(nameof(Rigid));
                 builder.RegisterPolymorphicJsonType<Sockets, IEntityComponent>(nameof(Sockets));
                 builder.RegisterPolymorphicJsonType<Thrustable, IEntityComponent>(nameof(Thrustable));
                 builder.RegisterPolymorphicJsonType<Primitive<VertexVisible>, IEntityComponent>("Primitive.Visible");
@@ -48,7 +46,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
 
                 builder.RegisterEngine<CouplingEngine>();
                 builder.RegisterEngine<NodeFixtureEngine>();
-                builder.RegisterEngine<RigidEngine>();
                 builder.RegisterEngine<SocketIdsEngine>();
                 builder.RegisterEngine<ThrustableEngine>();
                 builder.RegisterEngine<TractorableEngine>();
