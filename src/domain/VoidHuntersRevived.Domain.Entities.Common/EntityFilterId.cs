@@ -15,6 +15,18 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             this.CombinedFilterId = combinedFilterId;
         }
 
+        private static class FilterContextId<TParent>
+            where TParent : unmanaged, IEntityComponent
+        {
+            public static readonly FilterContextID Value = FilterContextHelper.GetFilterContext<TParent, TChild>();
+        }
+
+        public bool IsDefault<TParent>()
+            where TParent : unmanaged, IEntityComponent
+        {
+            return this.EGID == default && this.CombinedFilterId.contextID.id == FilterContextId<TParent>.Value.id;
+        }
+
         public static EntityFilterId<TChild> Create<TParent>(EGID egid)
             where TParent : unmanaged, IEntityComponent
         {

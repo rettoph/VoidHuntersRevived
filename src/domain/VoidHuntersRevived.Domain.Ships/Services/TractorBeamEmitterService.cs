@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                     }
 
                     ref Tree tree = ref _entityQueryService.QueryByLocalId<Tree>(queryNode.TreeLocalId, out GroupIndex treeGroupIndex);
-                    if (_entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitterFilterId == default)
+                    if (_entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitterFilterId.IsDefault<TractorBeamEmitter>())
                     { // Target resides within a tractorable tree, so we want to grab the head
                         callbackTargetNode = tree.HeadLocalId == queryNode.LocalId ? queryNode : _entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
                     }

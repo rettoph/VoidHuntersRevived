@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group02)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<TBelongsTo> belongsTo)
         {
-            if (belongsTo.Component.ParentFilterId == default)
+            if (belongsTo.Component.ParentFilterId.IsDefault<TParent>())
             {
                 _logger.Warning("{0}::{1} - Empty {2}", typeof(BelongsToEngine<TParent, TBelongsTo>).GetFormattedName(), nameof(BelongsToEngine<TParent, TBelongsTo>.OnSpawn), nameof(belongsTo.Component.ParentFilterId));
                 return;

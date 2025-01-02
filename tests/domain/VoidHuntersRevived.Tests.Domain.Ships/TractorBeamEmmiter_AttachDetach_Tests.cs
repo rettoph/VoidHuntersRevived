@@ -62,6 +62,115 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
         }
 
         [Fact]
+        public void SelectDeslectReselectAttach_Test()
+        {
+            var simulation = CreateSimulationMocker();
+            var readTractorbeamEmitterService = simulation.Resolve<PredictiveStrategy, ITractorBeamEmitterService>();
+            var readEntityQueryService = simulation.Resolve<PredictiveStrategy, IEntityQueryService>();
+            var readTreeService = simulation.Resolve<PredictiveStrategy, ITreeService>();
+
+            EntityGlobalId shipGlobalId = VhId.NewId().ToGlobalEntityId();
+
+            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
+            {
+                ITeamService teamService = strategy.Scope.Resolve<ITeamService>();
+                ITreeService treeService = strategy.Scope.Resolve<ITreeService>();
+                INodeSocketService socketService = strategy.Scope.Resolve<INodeSocketService>();
+
+                // Spawn a test ship
+                Team team = teamService.GetOpenTeam();
+                EntityLocalId shipLocalId = treeService.Spawn(
+                    sourceId: vhids.Next(),
+                    globalId: shipGlobalId,
+                    team: team,
+                    treeTemplateKey: Resources.EntityTemplates.Ship.UserShipEntityTemplate,
+                    headNodeTemplateKey: TestSquareEntityTemplateKey);
+
+                yield return 100;
+
+                // Spawn a test square attached to the test ship
+                Node head = treeService.GetHead(shipLocalId);
+                bool result = socketService.TryGetNodeSocket(new NodeSocketLocalId(head.LocalId, 0), out NodeSocket nodeSocket);
+                Assert.True(result);
+
+                EntityLocalId squareLocalId = socketService.Spawn(
+                    sourceId: vhids.Next(),
+                    targetSocketNode: nodeSocket,
+                    globalId: vhids.Next().ToGlobalEntityId(),
+                    nodeTemplateKey: TestSquareEntityTemplateKey);
+
+                yield return 100;
+
+                // Verify setup
+                strategy.AssertBodyCount(1).AssertEntityCount<Tree>(1).AssertEntityCount<Node>(2);
+            }
+
+            // Setup test (create ship with piece attached)
+            simulation.RunCoroutine(
+                interval: TimeSpan.FromMilliseconds(16),
+                coroutineId: VhId.HashString(nameof(SetupStrategy)),
+                coroutine: SetupStrategy);
+            EntityLocalId shipLocalId = readEntityQueryService.GetLocalId(shipGlobalId);
+            EntityLocalId bridgeLocalId = readTreeService.GetHead(shipLocalId).LocalId;
+            EntityGlobalId bridgeGlobalId = readEntityQueryService.GetGlobalId(bridgeLocalId);
+
+            // Begin Tests
+            VhIdProvider sourceIdProvider = new(VhId.HashString(nameof(SpamSelectDeselectWithAttach_Tests)));
+
+            // Query for the available piece
+            bool result = readTractorbeamEmitterService.Query(shipLocalId, FixVector2.Zero, out Node targetNode);
+            Assert.True(result);
+
+            EntityGlobalId targetNodeGlobalId = readEntityQueryService.GetGlobalId(targetNode.LocalId);
+
+            // "Select" piece, detaching it from the ship
+            simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
+            {
+                TractorBeamEmitterGlobalId = shipGlobalId,
+                TargetNodeGlobalId = targetNodeGlobalId
+            }, true).Update(TimeSpan.FromMilliseconds(16), 10);
+
+            // Verify state
+            simulation.AssertBodyCount(2).AssertEntityCount<Tree>(2).AssertEntityCount<Node>(2);
+
+            // "Deselect" the piece, allowing it to float in free space
+            simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
+            {
+                TractorBeamEmitterGlobalId = shipGlobalId,
+                AttachToNodeSocketGlobalId = null
+            }, true).Update(TimeSpan.FromMilliseconds(16), 10);
+
+            // Verify state
+            simulation.AssertBodyCount(2).AssertEntityCount<Tree>(2).AssertEntityCount<Node>(2);
+
+            // Query for the available piece
+            result = readTractorbeamEmitterService.Query(shipLocalId, FixVector2.Zero, out targetNode);
+            Assert.True(result);
+
+            targetNodeGlobalId = readEntityQueryService.GetGlobalId(targetNode.LocalId);
+
+            // "Select" piece, removing it from free space
+            simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Select()
+            {
+                TractorBeamEmitterGlobalId = shipGlobalId,
+                TargetNodeGlobalId = targetNodeGlobalId
+            }, true).Update(TimeSpan.FromMilliseconds(16), 10);
+
+            // Verify state
+            simulation.AssertBodyCount(2).AssertEntityCount<Tree>(2).AssertEntityCount<Node>(2);
+
+            // "Deselect" the piece, attaching it back onto the ship
+            simulation.Input(sourceIdProvider.Next(), new Input_TractorBeamEmitter_Deselect()
+            {
+                TractorBeamEmitterGlobalId = shipGlobalId,
+                AttachToNodeSocketGlobalId = new NodeSocketGlobalId(bridgeGlobalId, 0)
+            }, true).Update(TimeSpan.FromMilliseconds(16), 10);
+
+            // Verify state
+            simulation.AssertBodyCount(1).AssertEntityCount<Tree>(1).AssertEntityCount<Node>(2);
+        }
+
+        [Fact]
         public void SpamSelectDeselectWithAttach_Tests()
         {
             var simulation = CreateSimulationMocker();
