@@ -31,13 +31,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             this.Input(VhId.NewId(), new Simulation_Begin());
         }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            _bus.Unsubscribe(this);
-        }
-
         protected override void DoStep(Step step)
         {
             base.DoStep(step);
