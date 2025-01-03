@@ -49,17 +49,5 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         {
             return HashCode.Combine(CombinedFilterId);
         }
-
-        public static bool operator ==(EntityFilterId<TChild> f1, EntityFilterId<TChild> f2)
-        {
-            return f1.CombinedFilterId.filterID == f2.CombinedFilterId.filterID
-                && f1.CombinedFilterId.contextID.id == f2.CombinedFilterId.contextID.id;
-        }
-
-        public static bool operator !=(EntityFilterId<TChild> f1, EntityFilterId<TChild> f2)
-        {
-            return f1.CombinedFilterId.filterID != f2.CombinedFilterId.filterID
-                || f1.CombinedFilterId.contextID.id != f2.CombinedFilterId.contextID.id;
-        }
     }
 }
