@@ -57,13 +57,13 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
                     if (statuses[index].IsDespawned == true)
                     {
-                        _logger.Warning("Despanwed - TractorBeamEmitter = {TractorBeamEmitterId}, TractorBeamEmitterLocalId = {TractorBeamEmitterLocalId}, IsDespawned = {IsDespawned}.", tractorBeamEmitterLocalId, targetId, statuses[index].IsDespawned);
+                        _logger.Warning("Despawned. TractorBeamEmitter = {TractorBeamEmitterId}, TractorBeamEmitterLocalId = {TractorBeamEmitterLocalId}, IsDespawned = {IsDespawned}.", tractorBeamEmitterLocalId, targetId, statuses[index].IsDespawned);
                         continue;
                     }
 
                     if (enableds[index] == false)
                     {
-                        _logger.Warning("Not Enabled - TractorBeamEmitter = {TractorBeamEmitterId}, TractorBeamEmitterLocalId = {TractorBeamEmitterLocalId}, Enabled = {Enabled}.", tractorBeamEmitterLocalId, targetId, enableds[index].Value);
+                        _logger.Warning("Not Enabled. TractorBeamEmitter = {TractorBeamEmitterId}, TractorBeamEmitterLocalId = {TractorBeamEmitterLocalId}, Enabled = {Enabled}.", tractorBeamEmitterLocalId, targetId, enableds[index].Value);
                         throw new NotImplementedException();
 
                         // What to do here?

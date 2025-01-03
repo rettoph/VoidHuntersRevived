@@ -28,8 +28,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             base.Initialize(simulation);
 
-            _bus.Subscribe(this);
-
             this.Input(VhId.NewId(), new Simulation_Begin());
         }
 

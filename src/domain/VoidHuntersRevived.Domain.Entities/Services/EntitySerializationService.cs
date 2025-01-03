@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityLocalId Deserialize(VhId sourceId, DeserializationOptions options, EntityData data, EntityInitializerDelegate initializer)
         {
-            _logger.Verbose("Starting Deserialization - Id = {Id}, OwnerId = {OwnerId}, Seed = {Seed}", data.Id, options.Owner, options.Seed);
+            _logger.Verbose("Starting Deserialization. Id = {Id}, OwnerId = {OwnerId}, Seed = {Seed}", data.Id, options.Owner, options.Seed);
 
             EntityLocalId entityLocalId = this.InternalDeserialize(sourceId, data, 0, options, initializer);
             for (int i = 1; i < data.IndexCount; i++)
@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 throw new NotImplementedException();
             }
 
-            _logger.Verbose("Starting Serialization - LocalId = {LocalId}", entity.LocalId);
+            _logger.Verbose("Starting Serialization. GlobalId = {GlobalId}, LocalId = {LocalId}", entity.GlobalId, entity.LocalId);
 
 
             try
@@ -120,7 +120,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             writer.Write(entity.GlobalId);
             writer.Write(templateKey.Id);
 
-            _logger.Verbose("Preparing to serialize {EntityLocalId} of type {EntityTemplate}", entity.LocalId, templateKey);
+            _logger.Verbose("Preparing to serialize. GlobalId = {GlobalId}, LocalId = {LocaLId}, Template = {EntityTemplate}", entity.GlobalId, entity.LocalId, templateKey);
 
             _entityTemplateService.GetByKey(templateKey).SerializeInstanceEntity(ref writer, in entity, in options);
         }
@@ -139,7 +139,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EntityGlobalId entityGlobalId = reader.ReadGlobalEntityId();
             Key<IEntityTemplate> entityTemplateKey = Key<IEntityTemplate>.GetById(reader.Read<VhId>());
 
-            _logger.Verbose("Preparing to deserialize - EntityId = {EntityId}, Seed = {Seed}, Index = {Index}, DataId = {DataId}", entityGlobalId.Value, options.Seed.Value, index, data.Id);
+            _logger.Verbose("Preparing to deserialize. GlobalId = {GlobalId}, Template = {Template}, Seed = {Seed}, Index = {Index}, DataId = {DataId}", entityGlobalId.Value, entityTemplateKey.Name, options.Seed.Value, index, data.Id);
 
             return _entitySpawnService.Spawn(sourceId, entityTemplateKey, entityGlobalId, (IEntityService entities, in InitializingEntity entity) =>
             {

@@ -145,6 +145,9 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             catch (Exception ex)
             {
                 _logger.Error(ex, "Exception thrown");
+#if DEBUG
+                throw;
+#endif
                 throw new SimulationOutOfSyncException(ex.Message, ex);
             }
         }
