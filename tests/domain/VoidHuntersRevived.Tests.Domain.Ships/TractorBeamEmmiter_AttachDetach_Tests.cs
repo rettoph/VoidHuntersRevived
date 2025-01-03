@@ -292,7 +292,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             // [Square:W] was created out of phase and should be reverted
             // This works, but we had a bug where the deserization method had
             // a reference to a lockstep scoped entity (service references in an entity serializer)
-            // this caused inorrect deserialize data - a predictive node would attempt to attach to a
+            // this caused incorrect deserialize data - a predictive node would attempt to attach to a
             // lockstep tree
 
             var simulation = CreateSimulationMocker();
