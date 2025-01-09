@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
                 EntityGlobalId globalNodeId = reader.ReadGlobalEntityId();
                 byte index = reader.ReadByte();
 
-                if (_entityQueryService.TryGetLocalId(globalNodeId, out EntityLocalId nodeLocalId))
+                if (this._entityQueryService.TryGetLocalId(globalNodeId, out EntityLocalId nodeLocalId))
                 {
                     return new Coupling(
                         socketId: new NodeSocketLocalId(
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
         {
             if (writer.WriteIf(instance.SocketId != NodeSocketLocalId.Empty))
             {
-                EntityGlobalId nodeGlobalId = _entityQueryService.GetGlobalId(instance.SocketId.NodeLocalId);
+                EntityGlobalId nodeGlobalId = this._entityQueryService.GetGlobalId(instance.SocketId.NodeLocalId);
 
                 writer.Write(nodeGlobalId);
                 writer.Write(instance.SocketId.SocketIndex);

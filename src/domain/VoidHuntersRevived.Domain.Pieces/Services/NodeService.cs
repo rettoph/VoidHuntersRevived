@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public ref Tree GetTree(in Node node)
         {
-            return ref _entityQueryService.QueryByLocalId<Tree>(node.TreeLocalId);
+            return ref this._entityQueryService.QueryByLocalId<Tree>(node.TreeLocalId);
         }
 
         public bool IsHead(in Node node)
@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public bool IsHead(in Node node, in GroupIndex treeGroupIndex)
         {
-            if (_entityQueryService.TryQueryByGroupIndex<Tree>(treeGroupIndex, out Tree tree))
+            if (this._entityQueryService.TryQueryByGroupIndex<Tree>(treeGroupIndex, out Tree tree))
             {
                 return tree.HeadLocalId == node.LocalId;
             }

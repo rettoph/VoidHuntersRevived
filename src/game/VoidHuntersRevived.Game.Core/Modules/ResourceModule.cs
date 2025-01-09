@@ -20,13 +20,13 @@ namespace VoidHuntersRevived.Game.Core.Modules
         {
             base.Load(builder);
 
-            this.RegisterTeamEntityTemplates(builder);
-            this.RegisterPhysicsEntityTemplates(builder);
-            this.RegisterPiecesEntityTemplates(builder);
-            this.RegisterShipsEntityTemplates(builder);
+            RegisterTeamEntityTemplates(builder);
+            RegisterPhysicsEntityTemplates(builder);
+            RegisterPiecesEntityTemplates(builder);
+            RegisterShipsEntityTemplates(builder);
         }
 
-        private void RegisterTeamEntityTemplates(ContainerBuilder builder)
+        private static void RegisterTeamEntityTemplates(ContainerBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Team.TeamEntityTemplate.Name, new EntityTemplateFragment()
             {
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             });
         }
 
-        private void RegisterPhysicsEntityTemplates(ContainerBuilder builder)
+        private static void RegisterPhysicsEntityTemplates(ContainerBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Physics.BodyEntityTemplate.Name, new EntityTemplateFragment()
             {
@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             });
         }
 
-        private void RegisterPiecesEntityTemplates(ContainerBuilder builder)
+        private static void RegisterPiecesEntityTemplates(ContainerBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Piece.TreeEntityTemplate.Name, new EntityTemplateFragment()
             {
@@ -139,7 +139,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             });
         }
 
-        private void RegisterShipsEntityTemplates(ContainerBuilder builder)
+        private static void RegisterShipsEntityTemplates(ContainerBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Ship.ChainEntityTemplate.Name, new EntityTemplateFragment()
             {

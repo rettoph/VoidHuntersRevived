@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
 {
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
     [StructLayout(LayoutKind.Explicit)]
     public struct VertexStaticVisible : IVertexType
     {
-        VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
+        readonly VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
 
         private static readonly VertexDeclaration VertexDeclaration = new(
             new VertexElement(0, VertexElementFormat.Byte4, VertexElementUsage.BlendIndices, 0),

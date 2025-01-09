@@ -7,7 +7,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
     internal class CloneableComponentBuilder<T>(T instance) : IComponentBuilder, IDisposable
         where T : unmanaged, ICloneableComponent<T>
     {
-        private readonly ComponentBuilder<T> _builder = new ComponentBuilder<T>(instance);
+        private readonly ComponentBuilder<T> _builder = new(instance);
         private readonly T _instance = instance;
 
         bool IComponentBuilder.isUnmanaged => true;
@@ -16,12 +16,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         void IComponentBuilder.BuildEntityAndAddToList(ITypeSafeDictionary dictionary, EGID egid, IEnumerable<object> implementors)
         {
             var castedDic = dictionary as ITypeSafeDictionary<T>;
-            castedDic!.Add(egid.entityID, _instance.Clone());
+            castedDic!.Add(egid.entityID, this._instance.Clone());
         }
 
         ITypeSafeDictionary IComponentBuilder.CreateDictionary(uint size)
         {
-            return _builder.CreateDictionary(size);
+            return this._builder.CreateDictionary(size);
         }
 
         Type IComponentBuilder.GetEntityComponentType()
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 
         void IDisposable.Dispose()
         {
-            if (_instance is IDisposable disposable)
+            if (this._instance is IDisposable disposable)
             {
                 disposable.Dispose();
             }

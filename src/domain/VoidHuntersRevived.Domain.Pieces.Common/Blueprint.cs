@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
     {
         private Id<Blueprint>? _id;
 
-        public Id<Blueprint> Id => _id ??= HashBuilder<Blueprint, VhId, VhId>.Instance.CalculateId(VhId.HashString(this.Name), this.Head.CalculateHash());
+        public Id<Blueprint> Id => this._id ??= HashBuilder<Blueprint, VhId, VhId>.Instance.CalculateId(VhId.HashString(this.Name), this.Head.CalculateHash());
         public readonly string Name = name;
         public readonly IBlueprintPiece Head = head;
     }

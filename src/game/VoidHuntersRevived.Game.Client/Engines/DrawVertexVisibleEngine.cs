@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group05)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, ref Entity<VertexVisible> vertexVisible)
         {
-            var (vertices, colorSchemes, fixtures, _, _) = _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Fixture>(vertexVisible.Group);
+            var (vertices, colorSchemes, fixtures, _, _) = this._entityQueryService.QueryEntities<VertexVisible, ColorScheme, Fixture>(vertexVisible.Group);
 
             ref VertexVisible vertex = ref vertices[vertexVisible.Index];
             ref ColorScheme colorScheme = ref colorSchemes[vertexVisible.Index];
@@ -57,7 +57,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((vertices, colorSchemes, fixtures, _, count), _) in _entityQueryService.QueryEntities<VertexVisible, ColorScheme, Fixture>())
+            foreach (var ((vertices, colorSchemes, fixtures, _, count), _) in this._entityQueryService.QueryEntities<VertexVisible, ColorScheme, Fixture>())
             {
                 for (int i = 0; i < count; i++)
                 {

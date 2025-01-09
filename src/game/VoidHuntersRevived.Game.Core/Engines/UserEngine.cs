@@ -39,8 +39,8 @@ namespace VoidHuntersRevived.Game.Core.Engines
             //_trees.Spawn(shipId, Teams.TeamOne, EntityTemplates.UserShip, hull.EntityTemplate);
             // _treeFactory.Create(id.Create(1), EntityTemplates.Chain, PieceTypes.HullSquare);
 
-            Blueprint blueprint = _blueprintService.GetAll().First();
-            _treeService.Spawn(eventId, eventId.Create(1).ToGlobalEntityId(), _teamService.GetOpenTeam(), Resources.EntityTemplates.Ship.UserShipEntityTemplate, blueprint, (IEntityService entities, in InitializingEntity entity) =>
+            Blueprint blueprint = this._blueprintService.GetAll().First();
+            this._treeService.Spawn(eventId, eventId.Create(1).ToGlobalEntityId(), this._teamService.GetOpenTeam(), Resources.EntityTemplates.Ship.UserShipEntityTemplate, blueprint, (IEntityService entities, in InitializingEntity entity) =>
             {
                 entity.Initializer.Init(new TractorBeamEmitter(entity.LocalId));
                 entity.Initializer.Init(new UserId(data.UserDto.Id));

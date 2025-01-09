@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Common.Providers;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common.Providers;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
-using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -22,9 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     {
         private readonly INetScope<IStrategy> _netScope = netScope;
 
-        private readonly TickBuffer _tickBuffer = ticks;
-
-        public TickBuffer TickBuffer => _tickBuffer;
+        public TickBuffer TickBuffer { get; } = ticks;
 
         public override void Update(GameTime realTime)
         {
@@ -50,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return false;
             }
 
-            if (this.TimeSinceStep < this.StepTimeSpan && _tickBuffer.Count == 0)
+            if (this.TimeSinceStep < this.StepTimeSpan && this.TickBuffer.Count == 0)
             {
                 return false;
             }
@@ -71,12 +69,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return false;
             }
 
-            return _tickBuffer.TryPop(current.Id + 1, out next);
+            return this.TickBuffer.TryPop(current.Id + 1, out next);
         }
 
         public override void Input(VhId sourceId, IInputData data)
         {
-            _netScope.CreateMessage(new EventDto()
+            this._netScope.CreateMessage(new EventDto()
             {
                 SourceId = sourceId,
                 Data = data

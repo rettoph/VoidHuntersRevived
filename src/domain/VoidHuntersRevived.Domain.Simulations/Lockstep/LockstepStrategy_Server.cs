@@ -1,9 +1,9 @@
-﻿using Guppy.Core.Common.Providers;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common.Providers;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
-using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public override void Input(VhId sourceId, IInputData data)
         {
-            _inputs.Add(new EventDto()
+            this._inputs.Add(new EventDto()
             {
                 SourceId = sourceId,
                 Data = data
@@ -75,8 +75,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return false;
             }
 
-            next = current.Next(_inputs.ToArray());
-            _inputs.Clear();
+            next = current.Next([.. this._inputs]);
+            this._inputs.Clear();
 
             return true;
         }

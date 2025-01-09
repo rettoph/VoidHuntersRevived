@@ -27,13 +27,13 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         [SequenceGroup<DebugSequenceGroup>("Strategy")]
         public void OnDebug(GameTime gameTime)
         {
-            var buttonStyle = _historyViewerEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed;
+            var buttonStyle = this._historyViewerEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed;
 
-            using (_imgui.Apply(buttonStyle))
+            using (this._imgui.Apply(buttonStyle))
             {
-                if (_imgui.Button($"{(_historyViewerEnabled ? "Disable" : "Enable")} Tick History Explorer"))
+                if (this._imgui.Button($"{(this._historyViewerEnabled ? "Disable" : "Enable")} Tick History Explorer"))
                 {
-                    _historyViewerEnabled = !_historyViewerEnabled;
+                    this._historyViewerEnabled = !this._historyViewerEnabled;
                 }
             }
         }
@@ -41,20 +41,20 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
-            if (_historyViewerEnabled == false)
+            if (this._historyViewerEnabled == false)
             {
                 return;
             }
 
-            _imgui.Begin($"Tick History Explorer - {Strategy.Type}, {_scene.Name} {_scene.Id}", ref _historyViewerEnabled);
-            _imgui.InputText("Filter", ref _filter, 255);
+            this._imgui.Begin($"Tick History Explorer - {this.Strategy.Type}, {this._scene.Name} {this._scene.Id}", ref this._historyViewerEnabled);
+            this._imgui.InputText("Filter", ref this._filter, 255);
 
-            using (_imgui.ApplyID(nameof(ILockstepStrategy.History)))
+            using (this._imgui.ApplyID(nameof(ILockstepStrategy.History)))
             {
-                _objectExplorer.DrawObjectExplorer(Strategy.History, _filter, 8);
+                this._objectExplorer.DrawObjectExplorer(this.Strategy.History, this._filter, 8);
             }
 
-            _imgui.End();
+            this._imgui.End();
         }
     }
 }

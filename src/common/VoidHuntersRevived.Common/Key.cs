@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common.Collections;
+﻿using System.Diagnostics;
+using Guppy.Core.Common.Collections;
 using Guppy.Core.Resources.Common;
-using System.Diagnostics;
 
 namespace VoidHuntersRevived.Common
 {
@@ -69,12 +69,12 @@ namespace VoidHuntersRevived.Common
         public override bool Equals(object? obj)
         {
             return obj is Key<T> key &&
-                   Id.Equals(key.Id);
+                   this.Id.Equals(key.Id);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id);
+            return HashCode.Combine(this.Id);
         }
 
         public static implicit operator Key<T>(ResourceKey<T> resource)

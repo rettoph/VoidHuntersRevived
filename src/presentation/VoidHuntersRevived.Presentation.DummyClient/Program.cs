@@ -14,8 +14,8 @@ try
 
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
     //GC.TryStartNoGCRegion(256 * 1024 * 1024);
-    using (var game = new VoidHuntersGame())
-        game.Run();
+    using var game = new VoidHuntersGame();
+    game.Run();
 }
 finally
 {

@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Components
 
         protected override BodyComponent Read(in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
-            _logger.Verbose("Deserializing Body - Id = {Id}, BodyLocalId = {BodyLocalId}", entity.GlobalId, entity.LocalId);
+            this._logger.Verbose("Deserializing Body - Id = {Id}, BodyLocalId = {BodyLocalId}", entity.GlobalId, entity.LocalId);
 
             Fix64 rotation = reader.Read<Fix64>();
             FixTransform2D transform = reader.Read<FixTransform2D>();

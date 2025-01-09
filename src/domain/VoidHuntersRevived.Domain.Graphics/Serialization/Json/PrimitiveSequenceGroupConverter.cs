@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 

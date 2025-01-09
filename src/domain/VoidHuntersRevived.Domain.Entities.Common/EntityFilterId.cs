@@ -41,13 +41,23 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public override bool Equals(object? obj)
         {
             return obj is EntityFilterId<TChild> id
-                && CombinedFilterId.filterID == id.CombinedFilterId.filterID
-                && CombinedFilterId.contextID.id == id.CombinedFilterId.contextID.id;
+                && this.CombinedFilterId.filterID == id.CombinedFilterId.filterID
+                && this.CombinedFilterId.contextID.id == id.CombinedFilterId.contextID.id;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(CombinedFilterId);
+            return HashCode.Combine(this.CombinedFilterId);
+        }
+
+        public static bool operator ==(EntityFilterId<TChild> left, EntityFilterId<TChild> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(EntityFilterId<TChild> left, EntityFilterId<TChild> right)
+        {
+            return !(left == right);
         }
     }
 }

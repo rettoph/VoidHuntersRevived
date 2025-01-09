@@ -9,15 +9,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     {
         public static readonly Fix64 Lifetime = (Fix64)5; // Represent 5 seconds
 
-        private EventDto _event = null!;
-
-        public EventDto Event => _event;
+        public EventDto Event { get; private set; } = null!;
         public PredictedEventStatus Status { get; set; }
         public Fix64 PublishedAt { get; private set; }
 
         public void SetEvent(EventDto @event, Step currentStep)
         {
-            _event = @event;
+            this.Event = @event;
             this.PublishedAt = currentStep.TotalTime;
         }
 

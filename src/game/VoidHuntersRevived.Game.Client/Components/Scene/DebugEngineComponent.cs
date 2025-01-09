@@ -17,21 +17,21 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IStrategy strategy)
         {
-            _debugActions.Add(strategy.Engines);
+            this._debugActions.Add(strategy.Engines);
         }
 
         [SequenceGroup<DebugSequenceGroup>(DebugSequenceGroup.Debug)]
         public void DrawDebug(GameTime gameTime)
         {
-            foreach ((var group, var groupedDebugActions) in _debugActions.Grouped)
+            foreach ((var group, var groupedDebugActions) in this._debugActions.Grouped)
             {
-                if (_imgui.CollapsingHeader(group.Name))
+                if (this._imgui.CollapsingHeader(group.Name))
                 {
-                    _imgui.Indent();
+                    this._imgui.Indent();
 
                     groupedDebugActions?.Invoke(gameTime);
 
-                    _imgui.Unindent();
+                    this._imgui.Unindent();
                 }
             }
         }

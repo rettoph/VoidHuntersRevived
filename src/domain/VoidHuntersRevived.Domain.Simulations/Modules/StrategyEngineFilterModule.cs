@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Modules
         {
             base.Load(builder);
 
-            foreach (Type strategyType in _assemblyService.GetTypes<IStrategy>())
+            foreach (Type strategyType in this._assemblyService.GetTypes<IStrategy>())
             {
                 Type strategyEngineType = typeof(StrategyEngine<>).MakeGenericType(strategyType);
 

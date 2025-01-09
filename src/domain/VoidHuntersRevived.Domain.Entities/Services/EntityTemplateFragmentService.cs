@@ -13,16 +13,16 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityTemplateFragmentService(IResourceService resources)
         {
-            _fragments = resources.GetAll<EntityTemplateFragment>()
+            this._fragments = resources.GetAll<EntityTemplateFragment>()
                 .Where(x => x.HasValue)
                 .Select(x => x.Value)
                 .ToArray();
 
-            _fragmentsByKey = _fragments
+            this._fragmentsByKey = this._fragments
                 .GroupBy(x => x.Key)
                 .ToDictionary(x => x.Key, x => x.ToArray());
 
-            _distinctComponentTypes = _fragments
+            this._distinctComponentTypes = this._fragments
                 .SelectMany(x => x.Components.Select(c => c.GetType()))
                 .Distinct()
                 .ToArray();
@@ -30,17 +30,17 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public virtual IReadOnlyDictionary<Key<IEntityTemplate>, EntityTemplateFragment[]> GetAll()
         {
-            return _fragmentsByKey;
+            return this._fragmentsByKey;
         }
 
         public EntityTemplateFragment[] GetByKey(Key<IEntityTemplate> key)
         {
-            return _fragmentsByKey[key];
+            return this._fragmentsByKey[key];
         }
 
         public Type[] GetAllDistinctComponentTypes()
         {
-            return _distinctComponentTypes;
+            return this._distinctComponentTypes;
         }
     }
 }

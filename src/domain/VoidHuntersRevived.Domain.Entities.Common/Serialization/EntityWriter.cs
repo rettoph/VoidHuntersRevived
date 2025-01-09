@@ -13,7 +13,7 @@
 
             foreach (byte b in span)
             {
-                _data.Add(b);
+                this._data.Add(b);
             }
         }
 
@@ -21,13 +21,13 @@
         {
             for (int i = 0; i < count; i++)
             {
-                _data.Add(data[i]);
+                this._data.Add(data[i]);
             }
         }
 
         public void Push(EntityLocalId localId)
         {
-            _nested.Push(localId);
+            this._nested.Push(localId);
         }
 
         public bool WriteIf(bool condition)

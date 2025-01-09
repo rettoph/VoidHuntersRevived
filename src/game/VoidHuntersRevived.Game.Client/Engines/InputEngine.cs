@@ -44,16 +44,16 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private ITractorBeamEmitterService _readTractorBeamEmitterService = null!;
         private INodeSocketService _readSocketService = null!;
 
-        private Vector2 CurrentTargetPosition => _camera.Unproject(Mouse.GetState().Position.ToVector2());
+        private Vector2 CurrentTargetPosition => this._camera.Unproject(Mouse.GetState().Position.ToVector2());
 
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
         public void OnInitialize(IStrategy strategy)
         {
             IStrategy readStrategy = this.Strategy.Simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
 
-            _readEntityQueryService = readStrategy.Engines.Get<IEntityService>().Query;
-            _readTractorBeamEmitterService = readStrategy.Engines.Get<ITractorBeamEmitterService>();
-            _readSocketService = readStrategy.Engines.Get<INodeSocketService>();
+            this._readEntityQueryService = readStrategy.Engines.Get<IEntityService>().Query;
+            this._readTractorBeamEmitterService = readStrategy.Engines.Get<ITractorBeamEmitterService>();
+            this._readSocketService = readStrategy.Engines.Get<INodeSocketService>();
         }
 
         public void Process(in Guid messageId, Input_Helm_SetDirection message)
@@ -81,12 +81,12 @@ namespace VoidHuntersRevived.Game.Client.Engines
             {
                 if (message.Value)
                 {
-                    if (_readTractorBeamEmitterService.Query(tractorBeamEmitterLocalId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
+                    if (this._readTractorBeamEmitterService.Query(tractorBeamEmitterLocalId, (FixVector2)this.CurrentTargetPosition, out Node targetNode) == false)
                     {
                         return;
                     }
 
-                    EntityGlobalId targetNodeGlobalId = _readEntityQueryService.GetGlobalId(targetNode.LocalId);
+                    EntityGlobalId targetNodeGlobalId = this._readEntityQueryService.GetGlobalId(targetNode.LocalId);
 
                     this.Strategy.Simulation.Input(
                         sourceId: sourceId,
@@ -107,9 +107,9 @@ namespace VoidHuntersRevived.Game.Client.Engines
                 }
                 else
                 {
-                    ref Tactical tactical = ref _readEntityQueryService.QueryByLocalId<Tactical>(tractorBeamEmitterLocalId);
-                    NodeSocketGlobalId? attachToSocketLocalId = _readSocketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Target, out NodeSocket nodeSocket)
-                                ? _readSocketService.GetGlobalId(nodeSocket.LocalId) : null;
+                    ref Tactical tactical = ref this._readEntityQueryService.QueryByLocalId<Tactical>(tractorBeamEmitterLocalId);
+                    NodeSocketGlobalId? attachToSocketLocalId = this._readSocketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Target, out NodeSocket nodeSocket)
+                                ? this._readSocketService.GetGlobalId(nodeSocket.LocalId) : null;
 
                     this.Strategy.Simulation.Input(
                         sourceId: sourceId,
@@ -125,7 +125,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         [SequenceGroup<OnTickSequenceGroup>(OnTickSequenceGroup.InputEvents)]
         public void OnTick(Tick tick)
         {
-            if (_spamClick)
+            if (this._spamClick)
             {
                 this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
                 this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(false));
@@ -139,7 +139,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
             this.ForEachCurrentUserEntity((shipLocalId, shipGlobalId) =>
             {
-                ref Tactical tactical = ref _readEntityQueryService.QueryByLocalId<Tactical>(shipLocalId);
+                ref Tactical tactical = ref this._readEntityQueryService.QueryByLocalId<Tactical>(shipLocalId);
                 if (tactical.Uses == 0)
                 {
                     return;
@@ -158,16 +158,16 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Process(in Guid messageId, Input_Spam_Click message)
         {
-            _spamClick = message.Value;
+            this._spamClick = message.Value;
         }
 
         private void ForEachCurrentUserEntity(Action<EntityLocalId, EntityGlobalId> input)
         {
-            int currentUserId = _netScope.Group.Peer.Users.Current.Id;
-            ref var filter = ref _readEntityQueryService.GetFilter<EntityLocalId, IUser>(currentUserId);
+            int currentUserId = this._netScope.Group.Peer.Users.Current.Id;
+            ref var filter = ref this._readEntityQueryService.GetFilter<EntityLocalId, IUser>(currentUserId);
             foreach (var (indices, group) in filter)
             {
-                var (localIds, globalIds, _) = _readEntityQueryService.QueryEntities<EntityLocalId, EntityGlobalId>(group);
+                var (localIds, globalIds, _) = this._readEntityQueryService.QueryEntities<EntityLocalId, EntityGlobalId>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {

@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
         {
             base.Initialize(serializers);
 
-            _userDtoSerializer = serializers.Get<UserDto>();
+            this._userDtoSerializer = serializers.Get<UserDto>();
         }
 
 
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
         {
             UserJoined instance = new()
             {
-                UserDto = _userDtoSerializer.Deserialize(reader)
+                UserDto = this._userDtoSerializer.Deserialize(reader)
             };
 
             return instance;
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 
         public override void Serialize(NetDataWriter writer, in UserJoined instance)
         {
-            _userDtoSerializer.Serialize(writer, instance.UserDto);
+            this._userDtoSerializer.Serialize(writer, instance.UserDto);
         }
     }
 }

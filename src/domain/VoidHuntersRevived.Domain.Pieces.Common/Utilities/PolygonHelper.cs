@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Utilities

@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SubmitChanges)]
         public void OnStep(Step step)
         {
-            _scheduler.SubmitEntities();
+            this._scheduler.SubmitEntities();
         }
     }
 }

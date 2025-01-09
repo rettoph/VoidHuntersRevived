@@ -19,14 +19,14 @@
 
         public AABB(ref FixVector2 min, ref FixVector2 max)
         {
-            LowerBound = min;
-            UpperBound = max;
+            this.LowerBound = min;
+            this.UpperBound = max;
         }
 
         public AABB(FixVector2 center, Fix64 width, Fix64 height)
         {
-            LowerBound = center - new FixVector2(width / (Fix64)2, height / (Fix64)2);
-            UpperBound = center + new FixVector2(width / (Fix64)2, height / (Fix64)2);
+            this.LowerBound = center - new FixVector2(width / (Fix64)2, height / (Fix64)2);
+            this.UpperBound = center + new FixVector2(width / (Fix64)2, height / (Fix64)2);
         }
     }
 }

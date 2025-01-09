@@ -21,51 +21,51 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public ShaderAntiAliasingEngine(GraphicsDevice graphics, SpriteBatch spriteBatch, GameWindow window, ShaderAntiAliasingEffect effect_aa, ContentManager content)
         {
-            _graphics = graphics;
-            _spriteBatch = spriteBatch;
-            _window = window;
-            _effect_aa = effect_aa;
+            this._graphics = graphics;
+            this._spriteBatch = spriteBatch;
+            this._window = window;
+            this._effect_aa = effect_aa;
 
-            _target_aa = this.BuildRenderTarget();
-            _target_bindings = Array.Empty<RenderTargetBinding>();
+            this._target_aa = this.BuildRenderTarget();
+            this._target_bindings = [];
 
-            _window.ClientSizeChanged += this.HandleClientSizeChanged;
+            this._window.ClientSizeChanged += this.HandleClientSizeChanged;
         }
 
         public void Dispose()
         {
-            _target_aa?.Dispose();
+            this._target_aa?.Dispose();
         }
 
         private RenderTarget2D BuildRenderTarget()
         {
-            _effect_aa.Pixel = new Vector2(1f / _graphics.Viewport.Width, 1f / _graphics.Viewport.Height);
-            return new RenderTarget2D(_graphics, _graphics.Viewport.Width, _graphics.Viewport.Height, true, SurfaceFormat.Color, DepthFormat.None, _graphics.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
+            this._effect_aa.Pixel = new Vector2(1f / this._graphics.Viewport.Width, 1f / this._graphics.Viewport.Height);
+            return new RenderTarget2D(this._graphics, this._graphics.Viewport.Width, this._graphics.Viewport.Height, true, SurfaceFormat.Color, DepthFormat.None, this._graphics.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
         }
 
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
         public void PreDraw(GameTime gameTime)
         {
-            _target_bindings = _graphics.GetRenderTargets();
+            this._target_bindings = this._graphics.GetRenderTargets();
 
-            _graphics.SetRenderTarget(_target_aa);
-            _graphics.Clear(Color.Transparent);
+            this._graphics.SetRenderTarget(this._target_aa);
+            this._graphics.Clear(Color.Transparent);
         }
 
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PostDraw)]
         public void PostDraw(GameTime gameTime)
         {
-            _graphics.SetRenderTargets(_target_bindings);
+            this._graphics.SetRenderTargets(this._target_bindings);
 
-            _spriteBatch.Begin(effect: _effect_aa);
-            _spriteBatch.Draw(_target_aa, Vector2.Zero, Color.White);
-            _spriteBatch.End();
+            this._spriteBatch.Begin(effect: this._effect_aa);
+            this._spriteBatch.Draw(this._target_aa, Vector2.Zero, Color.White);
+            this._spriteBatch.End();
         }
 
         private void HandleClientSizeChanged(object? sender, EventArgs e)
         {
-            _target_aa?.Dispose();
-            _target_aa = this.BuildRenderTarget();
+            this._target_aa?.Dispose();
+            this._target_aa = this.BuildRenderTarget();
         }
     }
 }

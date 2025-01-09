@@ -5,25 +5,25 @@ namespace VoidHuntersRevived.Common.Utilities
     public class HashCache<T>(TimeSpan maximumAge)
         where T : struct
     {
-        private struct Cached(in T value)
+        private readonly struct Cached(in T value)
         {
             public readonly T Value = value;
             public readonly DateTime CachedAt = DateTime.Now;
         }
 
         private readonly TimeSpan _maximumAge = maximumAge;
-        private readonly Queue<Cached> _cached = new Queue<Cached>();
+        private readonly Queue<Cached> _cached = new();
         private readonly Dictionary<T, int> _count = [];
         private Cached _item;
 
         public IEnumerable<T> Prune()
         {
-            while (_cached.Count > 0 && DateTime.Now - _cached.Peek().CachedAt > _maximumAge)
+            while (this._cached.Count > 0 && DateTime.Now - this._cached.Peek().CachedAt > this._maximumAge)
             {
-                _item = _cached.Dequeue();
-                if (_count.Remove(_item.Value))
+                this._item = this._cached.Dequeue();
+                if (this._count.Remove(this._item.Value))
                 {
-                    yield return _item.Value;
+                    yield return this._item.Value;
                 }
             }
         }
@@ -45,10 +45,10 @@ namespace VoidHuntersRevived.Common.Utilities
 
         public ref int Count(in T item)
         {
-            ref int count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, item, out bool exists);
+            ref int count = ref CollectionsMarshal.GetValueRefOrAddDefault(this._count, item, out bool exists);
             if (!exists)
             {
-                _cached.Enqueue(new Cached(in item));
+                this._cached.Enqueue(new Cached(in item));
                 count = 0;
             }
 

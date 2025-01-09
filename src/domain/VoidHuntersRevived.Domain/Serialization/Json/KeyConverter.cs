@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Common.Extensions.System;
-using Guppy.Core.Serialization.Common.Services;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Common.Extensions.System;
+using Guppy.Core.Serialization.Common.Services;
 using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Serialization.Json

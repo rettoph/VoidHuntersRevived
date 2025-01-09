@@ -28,8 +28,8 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            _bubbleBufferCount = 0;
-            foreach (var ((bubbles, bodyComponents, count), _) in _entityQueryService.QueryEntities<PhysicsBubble, BodyComponent>())
+            this._bubbleBufferCount = 0;
+            foreach (var ((bubbles, bodyComponents, count), _) in this._entityQueryService.QueryEntities<PhysicsBubble, BodyComponent>())
             {
                 this.EnsureBubbleBufferCapacity(count);
 
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                         BodyComponent bodyComponent = bodyComponents[i];
                         Fix64 diameter = physicsBubble.Radius * Two;
 
-                        _bubbleBuffer[_bubbleBufferCount++] = new FixRectangle()
+                        this._bubbleBuffer[this._bubbleBufferCount++] = new FixRectangle()
                         {
                             X = bodyComponent.Transform.Position.X - physicsBubble.Radius,
                             Y = bodyComponent.Transform.Position.Y - physicsBubble.Radius,
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 }
             }
 
-            foreach (var ((localIds, enableds, bodyComponents, statuses, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Enabled, BodyComponent, EntityStatus>())
+            foreach (var ((localIds, enableds, bodyComponents, statuses, count), _) in this._entityQueryService.QueryEntities<EntityLocalId, Enabled, BodyComponent, EntityStatus>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -72,14 +72,14 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
                         if (enabled.Value == true && withinPhysicsBubble == false)
                         { // disable piece no longer contained within physics bubble
-                            _space.DisableBody(localIds[i]);
+                            this._space.DisableBody(localIds[i]);
                             enabled.Value = false;
                             continue;
                         }
 
                         if (enabled.Value == false && withinPhysicsBubble == true)
                         { // enable piece now within physics bubble
-                            _space.EnableBody(localIds[i]);
+                            this._space.EnableBody(localIds[i]);
                             enabled.Value = true;
                             continue;
                         }
@@ -90,20 +90,20 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private void EnsureBubbleBufferCapacity(int count)
         {
-            int requiredLength = _bubbleBufferCount + count;
-            if (requiredLength < _bubbleBuffer.Length)
+            int requiredLength = this._bubbleBufferCount + count;
+            if (requiredLength < this._bubbleBuffer.Length)
             {
                 return;
             }
 
-            Array.Resize<FixRectangle>(ref _bubbleBuffer, requiredLength);
+            Array.Resize<FixRectangle>(ref this._bubbleBuffer, requiredLength);
         }
 
         private bool WithinPhysicsBubble(BodyComponent bodyComponent)
         {
-            for (int i = 0; i < _bubbleBufferCount; i++)
+            for (int i = 0; i < this._bubbleBufferCount; i++)
             {
-                if (_bubbleBuffer[i].Contains(bodyComponent.Position) == false)
+                if (this._bubbleBuffer[i].Contains(bodyComponent.Position) == false)
                 {
                     continue;
                 }
@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 return;
             }
 
-            _space.DisableBody(enabled.LocalId);
+            this._space.DisableBody(enabled.LocalId);
             enabled.Component.Value = false;
         }
     }

@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Common;
 using Svelto.ECS;
-using System.Runtime.InteropServices;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common

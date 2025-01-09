@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                 return;
             }
 
-            _entityQueryService.GetFilter<EntityLocalId, IUser>(userId.Component.Value.Value).Add(userId);
+            this._entityQueryService.GetFilter<EntityLocalId, IUser>(userId.Component.Value.Value).Add(userId);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]

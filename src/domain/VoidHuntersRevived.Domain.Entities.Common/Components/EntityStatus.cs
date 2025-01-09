@@ -3,29 +3,22 @@ using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Components
 {
-    public unsafe struct EntityStatus : IEntityComponent
+    public unsafe struct EntityStatus(EntityStatusEnum value) : IEntityComponent
     {
-        private int _counter;
+        public EntityStatusEnum Value = value;
+        public int Count { get; private set; }
 
-        public EntityStatusEnum Value;
-        public int Count => _counter;
-
-        public EntityStatus(EntityStatusEnum value)
-        {
-            this.Value = value;
-        }
-
-        public bool IsSpawned => _counter >= 1;
-        public bool IsDespawned => _counter < 1;
+        public readonly bool IsSpawned => this.Count >= 1;
+        public readonly bool IsDespawned => this.Count < 1;
 
         public bool IncrementSoftSpawnCount()
         {
-            return ++_counter == 1;
+            return ++this.Count == 1;
         }
 
         public bool IncrementSoftDespawnCount()
         {
-            return --_counter == 0;
+            return --this.Count == 0;
         }
     }
 }

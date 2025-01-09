@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Common.Extensions
             T* ptr = &instance;
             byte* bytes = (byte*)ptr;
 
-            for(int i=0; i<sizeof(T); i++)
+            for (int i = 0; i < sizeof(T); i++)
             {
                 if (bytes[i] != (byte)0)
                 {

@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common.Attributes;
+﻿using System.Xml.Linq;
+using Guppy.Core.Common.Attributes;
 using Svelto.ECS;
-using System.Xml.Linq;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -33,57 +33,57 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Thrustable> thrustable)
         {
-            Node node = _entityQueryService.QueryByGroupIndex<Node>(thrustable.GroupIndex);
+            Node node = this._entityQueryService.QueryByGroupIndex<Node>(thrustable.GroupIndex);
 
-            if (_entityQueryService.Has<Helm>(node.TreeLocalId.Value.groupID) == false)
+            if (this._entityQueryService.Has<Helm>(node.TreeLocalId.Value.groupID) == false)
             {
                 return;
             }
 
-            ref var filter = ref _entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(node.TreeLocalId);
+            ref var filter = ref this._entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(node.TreeLocalId);
             filter.Add(thrustable.LocalId, thrustable.Index);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Thrustable> thrustable)
         {
-            Node node = _entityQueryService.QueryByGroupIndex<Node>(thrustable.GroupIndex);
+            Node node = this._entityQueryService.QueryByGroupIndex<Node>(thrustable.GroupIndex);
 
-            if (_entityQueryService.Has<Helm>(node.TreeLocalId.Value.groupID) == false)
+            if (this._entityQueryService.Has<Helm>(node.TreeLocalId.Value.groupID) == false)
             {
                 return;
             }
 
-            ref var filter = ref _entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(node.TreeLocalId);
+            ref var filter = ref this._entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(node.TreeLocalId);
             filter.Remove(thrustable.LocalId);
         }
 
         public void Process(VhId eventId, Tree_Clean data)
         {
-            if (!_entityQueryService.TryGetLocalId(data.TreeGlobalId, out EntityLocalId treeLocalId))
+            if (!this._entityQueryService.TryGetLocalId(data.TreeGlobalId, out EntityLocalId treeLocalId))
             {
                 return;
             }
-            if (!_entityQueryService.Has<Helm>(treeLocalId.Group))
+            if (!this._entityQueryService.Has<Helm>(treeLocalId.Group))
             {
                 return;
             }
-            if (_entityQueryService.TryQueryByLocalId<Enabled>(treeLocalId, out Enabled enabled) == false || enabled == false)
+            if (this._entityQueryService.TryQueryByLocalId<Enabled>(treeLocalId, out Enabled enabled) == false || enabled == false)
             {
                 return;
             }
 
-            IBody treeBody = _space.GetBody(treeLocalId);
-            ref var filter = ref _entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(treeLocalId);
+            IBody treeBody = this._space.GetBody(treeLocalId);
+            ref var filter = ref this._entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(treeLocalId);
 
             foreach (var (thrustableIndices, group) in filter)
             {
-                var (thrustables, fixtures, _) = _entityQueryService.QueryEntities<Thrustable, Fixture>(group);
+                var (thrustables, fixtures, _) = this._entityQueryService.QueryEntities<Thrustable, Fixture>(group);
 
                 for (int i = 0; i < thrustableIndices.count; i++)
                 {
                     uint index = thrustableIndices[i];
-                    this.CleanThrustable(treeBody, ref thrustables[index], ref fixtures[index]);
+                    CleanThrustable(treeBody, ref thrustables[index], ref fixtures[index]);
                 }
             }
         }
@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.ProcessInput)]
         public void OnStep(Step step)
         {
-            foreach (var ((localIds, enableds, helms, count), groupId) in _entityQueryService.QueryEntities<EntityLocalId, Enabled, Helm>())
+            foreach (var ((localIds, enableds, helms, count), _) in this._entityQueryService.QueryEntities<EntityLocalId, Enabled, Helm>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -104,8 +104,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                         continue;
                     }
 
-                    IBody body = _space.GetBody(helmLocalId);
-                    ref var filter = ref _entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(helmLocalId);
+                    IBody body = this._space.GetBody(helmLocalId);
+                    ref var filter = ref this._entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(helmLocalId);
 
                     this.TryApplyImpulse(step, body, helm.Direction, ref filter);
                 }
@@ -116,7 +116,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             foreach (var (indices, group) in filter)
             {
-                var (thrustables, fixtures, _) = _entityQueryService.QueryEntities<Thrustable, Fixture>(group);
+                var (thrustables, fixtures, _) = this._entityQueryService.QueryEntities<Thrustable, Fixture>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {
@@ -137,7 +137,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        private void CleanThrustable(IBody treeBody, ref Thrustable thrustable, ref Fixture fixture)
+        private static void CleanThrustable(IBody treeBody, ref Thrustable thrustable, ref Fixture fixture)
         {
             thrustable.Direction = Direction.None;
 
@@ -153,7 +153,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             // The angle between the com and the acceleration point
             var ipr = Fix64.WrapAngle(Fix64.Atan2(ip.Y - com.Y, ip.X - com.X));
             // The angle between the com and the acceleration target
-            var itr = Fix64.WrapAngle(Fix64.Atan2(it.Y - com.Y, it.X - com.X));
+            _ = Fix64.WrapAngle(Fix64.Atan2(it.Y - com.Y, it.X - com.X));
             // The angle between the acceleration point and the acceleration target
             var ipitr = Fix64.WrapAngle(Fix64.Atan2(it.Y - ip.Y, it.X - ip.X));
             // The relative acceleration target rotation between the acceleration point and center of mass
@@ -165,27 +165,39 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             // Check if the thruster moves the chain forward...
             if ((ipitr_upper < Fix64.PiOver2 && ipitr_lower > -Fix64.PiOver2))
+            {
                 thrustable.Direction |= Direction.Forward;
+            }
 
             // Check if the thruster turns the chain right...
             if (ript > Buffer && ript < BufferPi)
+            {
                 thrustable.Direction |= Direction.TurnRight;
+            }
 
             // Check if the thruster moves the chain backward...
             if (ipitr_lower > Fix64.PiOver2 || ipitr_upper < -Fix64.PiOver2)
+            {
                 thrustable.Direction |= Direction.Backward;
+            }
 
             // Check if the thruster turns the chain left...
             if (ript < -Buffer && ript > -BufferPi)
+            {
                 thrustable.Direction |= Direction.TurnLeft;
+            }
 
             // Check if the thruster moves the chain right...
             if (ipitr_lower < -Buffer && ript > -BufferPi)
+            {
                 thrustable.Direction |= Direction.Right;
+            }
 
             // Check if the thruster moves the chain left...
             if (ipitr_lower > Buffer && ipitr_upper < BufferPi)
+            {
                 thrustable.Direction |= Direction.Left;
+            }
         }
     }
 }

@@ -12,23 +12,23 @@ namespace VoidHuntersRevived.Tests.Common
 
         public TOut Build()
         {
-            if (_instance is not null)
+            if (this._instance is not null)
             {
                 throw new InvalidOperationException();
             }
 
-            _instance = this.build();
-            return _instance;
+            this._instance = this.build();
+            return this._instance;
         }
 
         public TOut GetInstance()
         {
-            return _instance ?? this.Build();
+            return this._instance ?? this.Build();
         }
 
         public Lazy<TOut> GetLazy()
         {
-            return new Lazy<TOut>(() => this.GetInstance());
+            return new Lazy<TOut>(this.GetInstance);
         }
 
         public Lazy<TLazy> GetLazy<TLazy>()
@@ -49,23 +49,23 @@ namespace VoidHuntersRevived.Tests.Common
 
         public TOut Build(TArg arg)
         {
-            if (_instance is not null)
+            if (this._instance is not null)
             {
                 throw new InvalidOperationException();
             }
 
-            _instance = this.build(arg);
-            return _instance;
+            this._instance = this.build(arg);
+            return this._instance;
         }
 
         public TOut GetInstance()
         {
-            return _instance ?? throw new NotImplementedException();
+            return this._instance ?? throw new NotImplementedException();
         }
 
         public Lazy<TOut> GetLazy()
         {
-            return new Lazy<TOut>(() => this.GetInstance());
+            return new Lazy<TOut>(this.GetInstance);
         }
 
         public Lazy<TLazy> GetLazy<TLazy>()

@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 
         protected override bool TryResolve(ResourceKey<IPrimitiveType> resource, DirectoryLocation root, string input, out IPrimitiveType value)
         {
-            IFile<IPrimitiveType> primitive = _files.Get<IPrimitiveType>(
+            IFile<IPrimitiveType> primitive = this._files.Get<IPrimitiveType>(
                 new FileLocation(root, input),
                 true);
 

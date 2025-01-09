@@ -15,18 +15,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public ref Node GetHead(Tree tree)
         {
-            return ref _entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
+            return ref this._entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
         }
 
         public ref Node GetHead(EntityLocalId treeLocalId)
         {
-            ref Tree tree = ref _entityQueryService.QueryByLocalId<Tree>(treeLocalId);
+            ref Tree tree = ref this._entityQueryService.QueryByLocalId<Tree>(treeLocalId);
             return ref this.GetHead(tree);
         }
 
         public ref Node GetHead(GroupIndex treeGroupIndex)
         {
-            ref Tree tree = ref _entityQueryService.QueryByGroupIndex<Tree>(treeGroupIndex);
+            ref Tree tree = ref this._entityQueryService.QueryByGroupIndex<Tree>(treeGroupIndex);
             return ref this.GetHead(tree);
         }
     }

@@ -23,13 +23,13 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             ILogger logger,
             ISpace space)
         {
-            _entityQueryService = entityQueryService;
-            _space = space;
-            _logger = logger;
-            _awakeChangedBodies = new Queue<IBody>();
+            this._entityQueryService = entityQueryService;
+            this._space = space;
+            this._logger = logger;
+            this._awakeChangedBodies = new Queue<IBody>();
 
-            _space.OnBodyEnabled += this.HandleBodyEnabled;
-            _space.OnBodyAwakeChanged += this.HandleBodyAwakeChanged;
+            this._space.OnBodyEnabled += this.HandleBodyEnabled;
+            this._space.OnBodyAwakeChanged += this.HandleBodyAwakeChanged;
         }
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
@@ -46,9 +46,9 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             //    }
             //}
 
-            while (_awakeChangedBodies.TryDequeue(out IBody? body))
+            while (this._awakeChangedBodies.TryDequeue(out IBody? body))
             {
-                ref Awake awake = ref _entityQueryService.QueryByEGID<Awake>(body.EntityLocalId.Value, out _, out bool exists);
+                ref Awake awake = ref this._entityQueryService.QueryByEGID<Awake>(body.EntityLocalId.Value, out _, out bool exists);
 
                 if (exists)
                 {
@@ -56,20 +56,20 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                 }
                 else
                 {
-                    _logger.Warning("Awake state changed to {AwakeValue} for body {BodyEntityLocalId}, but entity not found.", body.Awake, body.EntityLocalId);
+                    this._logger.Warning("Awake state changed to {AwakeValue} for body {BodyEntityLocalId}, but entity not found.", body.Awake, body.EntityLocalId);
                 }
             }
         }
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Awake awake = ref _entityQueryService.QueryByLocalId<Awake>(body.EntityLocalId);
+            ref Awake awake = ref this._entityQueryService.QueryByLocalId<Awake>(body.EntityLocalId);
             body.SleepingAllowed = awake.SleepingAllowed;
         }
 
         private void HandleBodyAwakeChanged(IBody args)
         {
-            _awakeChangedBodies.Enqueue(args);
+            this._awakeChangedBodies.Enqueue(args);
         }
     }
 }

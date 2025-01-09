@@ -14,14 +14,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>(componentType);
             ThrowIf.Type.IsNotUnmanagedStruct(componentType);
 
-            return _serializers[componentType];
+            return this._serializers[componentType];
         }
 
         public IEnumerable<IComponentSerializer> GetComponentSerializersByTypes(IEnumerable<Type> componentTypes)
         {
             foreach (Type componentType in componentTypes)
             {
-                if (_serializers.TryGetValue(componentType, out IComponentSerializer? componentSerializer))
+                if (this._serializers.TryGetValue(componentType, out IComponentSerializer? componentSerializer))
                 {
                     yield return componentSerializer;
                 }

@@ -5,9 +5,9 @@ namespace VoidHuntersRevived.Domain.Physics.Common
     public struct CollisionGroup
     {
         private BitVector32 _flags;
-        private byte _nameIndex;
+        private readonly byte _nameIndex;
 
-        public string Name => _names[_nameIndex];
+        public readonly string Name => _names[this._nameIndex];
 
         public IEnumerable<CollisionCategory> Categories
         {
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common
             {
                 for (byte i = 0; i < 32; i++)
                 {
-                    if (_flags[0x1 << i])
+                    if (this._flags[0x1 << i])
                     {
                         yield return new CollisionCategory(i);
                     }
@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common
             }
         }
 
-        public int Flags => _flags.Data;
+        public int Flags => this._flags.Data;
 
         public CollisionGroup()
         {
@@ -31,8 +31,8 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         }
         private CollisionGroup(byte nameIndex, params CollisionCategory[] categories)
         {
-            _nameIndex = nameIndex;
-            _flags = new BitVector32();
+            this._nameIndex = nameIndex;
+            this._flags = new BitVector32();
 
             this.Append(categories);
         }
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         {
             foreach (CollisionCategory category in categories)
             {
-                _flags[category._mask] = true;
+                this._flags[category._mask] = true;
             }
         }
 
@@ -49,12 +49,12 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         {
             foreach (CollisionCategory category in categories)
             {
-                _flags[category._mask] = false;
+                this._flags[category._mask] = false;
             }
         }
 
-        private static List<string> _names = [];
-        private static Dictionary<string, CollisionGroup> _dict = [];
+        private static readonly List<string> _names = [];
+        private static readonly Dictionary<string, CollisionGroup> _dict = [];
         public static CollisionGroup Create(string name, params CollisionCategory[] categories)
         {
             var group = new CollisionGroup((byte)_names.Count, categories);

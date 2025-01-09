@@ -20,12 +20,12 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Select data)
         {
-            _tractorBeamEmitterService.Select(eventId, data.TractorBeamEmitterGlobalId, data.TargetNodeGlobalId);
+            this._tractorBeamEmitterService.Select(eventId, data.TractorBeamEmitterGlobalId, data.TargetNodeGlobalId);
         }
 
         public void Process(VhId eventId, Input_TractorBeamEmitter_Deselect data)
         {
-            _tractorBeamEmitterService.Deselect(eventId, data.TractorBeamEmitterGlobalId, data.AttachToNodeSocketGlobalId);
+            this._tractorBeamEmitterService.Deselect(eventId, data.TractorBeamEmitterGlobalId, data.AttachToNodeSocketGlobalId);
         }
     }
 }

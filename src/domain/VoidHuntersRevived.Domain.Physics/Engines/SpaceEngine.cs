@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.StepSpace)]
         public void OnStep(Step step)
         {
-            _space.Step(step);
+            this._space.Step(step);
         }
     }
 }

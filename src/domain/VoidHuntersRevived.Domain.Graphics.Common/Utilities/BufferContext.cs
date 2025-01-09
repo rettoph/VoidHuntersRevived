@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 {
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
             list.AddRange(indices);
         }
 
-        public override IEnumerable<PrimitiveTypeEnum> GetTypes() => _types;
+        public override IEnumerable<PrimitiveTypeEnum> GetTypes() => this._types;
 
         public override VertexBuffer[] BuildVertexBuffers(GraphicsDevice graphics)
         {
@@ -46,8 +46,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 
             foreach (PrimitiveTypeEnum type in this.GetTypes())
             {
-                VertexBuffer buffer = new(graphics, typeof(TVertex), _vertices[type].Count, BufferUsage.WriteOnly);
-                buffer.SetData([.. _vertices[type]]);
+                VertexBuffer buffer = new(graphics, typeof(TVertex), this._vertices[type].Count, BufferUsage.WriteOnly);
+                buffer.SetData([.. this._vertices[type]]);
                 buffers.Add(buffer);
             }
 
@@ -60,8 +60,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 
             foreach (PrimitiveTypeEnum type in this.GetTypes())
             {
-                IndexBuffer buffer = new(graphics, IndexElementSize.SixteenBits, _indices[type].Count, BufferUsage.WriteOnly);
-                buffer.SetData([.. _indices[type]]);
+                IndexBuffer buffer = new(graphics, IndexElementSize.SixteenBits, this._indices[type].Count, BufferUsage.WriteOnly);
+                buffer.SetData([.. this._indices[type]]);
                 buffers.Add(buffer);
             }
 
@@ -70,11 +70,11 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
 
         private void GetCollections(PrimitiveTypeEnum type, out List<TVertex> vertices, out List<short> indices)
         {
-            ref List<TVertex> verticesRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_vertices, type, out bool exists)!;
+            ref List<TVertex> verticesRef = ref CollectionsMarshal.GetValueRefOrAddDefault(this._vertices, type, out bool exists)!;
             if (exists == true)
             {
                 vertices = verticesRef;
-                indices = _indices[type];
+                indices = this._indices[type];
                 return;
             }
 
@@ -83,8 +83,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
             vertices = verticesRef;
             indices = [];
 
-            _types.Add(type);
-            _indices.Add(type, indices);
+            this._types.Add(type);
+            this._indices.Add(type, indices);
         }
     }
 }

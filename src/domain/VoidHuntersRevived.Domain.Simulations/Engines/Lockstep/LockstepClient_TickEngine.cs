@@ -20,44 +20,44 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(in Guid messsageId, INetIncomingMessage<Tick> message)
         {
-            TickBuffer.EnqueueTickResponse response = _ticks.TryEnqueue(message.Body);
-            _logger.Verbose("Attempted to enqueue Tick {Id}, Response = {Response}", message.Body.Id, response);
+            TickBuffer.EnqueueTickResponse response = this._ticks.TryEnqueue(message.Body);
+            this._logger.Verbose("Attempted to enqueue Tick {Id}, Response = {Response}", message.Body.Id, response);
         }
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryStart> message)
         {
             //_ticks.Clear();
-            _logger.Verbose("CurrentTickId = {CurrentTickId}", message.Body.CurrentTickId);
+            this._logger.Verbose("CurrentTickId = {CurrentTickId}", message.Body.CurrentTickId);
         }
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryItem> message)
         {
             TickBuffer.EnqueueTickResponse response = TickBuffer.EnqueueTickResponse.NotEnqueued;
-            Tick? previous = _ticks.Previous(message.Body.Tick.Id);
+            Tick? previous = this._ticks.Previous(message.Body.Tick.Id);
             int id = (previous?.Id ?? 0) + 1;
 
-            _logger.Verbose("TickId = {CurrentTickId}, PreviousTickId = {PreviousTickId}", message.Body.Tick.Id, previous?.Id ?? 0);
+            this._logger.Verbose("TickId = {CurrentTickId}, PreviousTickId = {PreviousTickId}", message.Body.Tick.Id, previous?.Id ?? 0);
             for (; id < message.Body.Tick.Id; id++)
             {
-                response = _ticks.TryEnqueue(Tick.Empty(id));
-                _logger.Verbose("Attempted to enqueue empty Tick {TickId}, Response = {Response}", id, response);
+                response = this._ticks.TryEnqueue(Tick.Empty(id));
+                this._logger.Verbose("Attempted to enqueue empty Tick {TickId}, Response = {Response}", id, response);
             }
 
-            response = _ticks.TryEnqueue(message.Body.Tick);
-            _logger.Verbose("Attempted to enqueue Tick {TickId}, Response = {Response}", id, response);
+            response = this._ticks.TryEnqueue(message.Body.Tick);
+            this._logger.Verbose("Attempted to enqueue Tick {TickId}, Response = {Response}", id, response);
         }
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryEnd> message)
         {
             TickBuffer.EnqueueTickResponse response = TickBuffer.EnqueueTickResponse.NotEnqueued;
-            Tick? previous = _ticks.Previous(message.Body.CurrentTickId);
+            Tick? previous = this._ticks.Previous(message.Body.CurrentTickId);
             int id = (previous?.Id ?? 0) + 1;
 
-            _logger.Verbose("CurrentTickId = {CurrentTickId}, PreviousId = {PreviousId}", message.Body.CurrentTickId, previous?.Id ?? 0);
+            this._logger.Verbose("CurrentTickId = {CurrentTickId}, PreviousId = {PreviousId}", message.Body.CurrentTickId, previous?.Id ?? 0);
             for (; id < message.Body.CurrentTickId; id++)
             {
-                response = _ticks.TryEnqueue(Tick.Empty(id));
-                _logger.Verbose("Attempted to enqueue empty Tick {TickId}, Response = {Response}", id, response);
+                response = this._ticks.TryEnqueue(Tick.Empty(id));
+                this._logger.Verbose("Attempted to enqueue empty Tick {TickId}, Response = {Response}", id, response);
             }
         }
     }

@@ -20,9 +20,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
 
             EntityGroupList.Clear();
             Assert.Empty(EntityGroupList.GetAll());
-
-
-            EntityGroup group = EntityGroup.Create("test", [typeof(TestComponent)]);
+            _ = EntityGroup.Create("test", [typeof(TestComponent)]);
             EntityGroupList groups = EntityGroupList.GetOrCreate([typeof(TestComponent)]);
             Assert.Equal(1, groups.Values.count);
         }
@@ -35,9 +33,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
 
             EntityGroupList.Clear();
             Assert.Empty(EntityGroupList.GetAll());
-
-
-            EntityGroup group = EntityGroup.Create("test", [typeof(TestComponent), typeof(TestComponent)]);
+            _ = EntityGroup.Create("test", [typeof(TestComponent), typeof(TestComponent)]);
 
             EntityGroupList groups1 = EntityGroupList.GetOrCreate([typeof(TestComponentTwo), typeof(TestComponent)]);
             EntityGroupList groups2 = EntityGroupList.GetOrCreate([typeof(TestComponent), typeof(TestComponentTwo)]);

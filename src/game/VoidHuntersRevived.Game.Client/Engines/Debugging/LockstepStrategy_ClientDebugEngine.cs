@@ -15,13 +15,13 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         [SequenceGroup<DebugSequenceGroup>("Strategy")]
         public void OnDebug(GameTime gameTime)
         {
-            _imgui.KeyValue("Tick", this.Strategy.CurrentTick.Id.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
-            _imgui.KeyValue("Step", $"{this.Strategy.StepsSinceTick}/{this.Strategy.StepsPerTick}", valueColor: Color.Cyan.ToVector4());
-            _imgui.KeyValue("BufferHead", $"{(this.Strategy.TickBuffer.Head?.Id.ToString()) ?? "null"}", valueColor: Color.Cyan.ToVector4());
-            _imgui.KeyValue("BufferTail", $"{(this.Strategy.TickBuffer.Tail?.Id.ToString()) ?? "null"}", valueColor: Color.Cyan.ToVector4());
-            _imgui.KeyValue("BufferCount", this.Strategy.TickBuffer.Count.ToString("#,##0"), valueColor: Color.Cyan.ToVector4());
-            _imgui.KeyValue("TimeSinceStep", this.Strategy.TimeSinceStep.ToString(@"hh\:mm\:ss\.FFFFFFF"), valueColor: Color.Cyan.ToVector4());
-            _imgui.KeyValue("StepTimespan", this.Strategy.StepTimeSpan.ToString(@"hh\:mm\:ss\.FFFFFFF"), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("Tick", this.Strategy.CurrentTick.Id.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("Step", $"{this.Strategy.StepsSinceTick}/{this.Strategy.StepsPerTick}", valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("BufferHead", $"{(this.Strategy.TickBuffer.Head?.Id.ToString()) ?? "null"}", valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("BufferTail", $"{(this.Strategy.TickBuffer.Tail?.Id.ToString()) ?? "null"}", valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("BufferCount", this.Strategy.TickBuffer.Count.ToString("#,##0"), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("TimeSinceStep", this.Strategy.TimeSinceStep.ToString(@"hh\:mm\:ss\.FFFFFFF"), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("StepTimespan", this.Strategy.StepTimeSpan.ToString(@"hh\:mm\:ss\.FFFFFFF"), valueColor: Color.Cyan.ToVector4());
         }
     }
 }

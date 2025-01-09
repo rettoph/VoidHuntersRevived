@@ -13,9 +13,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
         private readonly ILogger _logger = logger;
         protected override Node Read(in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
-            EntityLocalId treeLocalId = _entityQueryService.GetLocalId(options.Owner);
+            EntityLocalId treeLocalId = this._entityQueryService.GetLocalId(options.Owner);
 
-            _logger.Verbose("Deserializing Node - Id = {Id}, TreeLocalId = {TreeLocalId}", entity.GlobalId, treeLocalId);
+            this._logger.Verbose("Deserializing Node - Id = {Id}, TreeLocalId = {TreeLocalId}", entity.GlobalId, treeLocalId);
 
             return new Node(entity.LocalId, treeLocalId);
         }

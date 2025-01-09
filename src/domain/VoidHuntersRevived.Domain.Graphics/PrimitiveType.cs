@@ -7,14 +7,14 @@ namespace VoidHuntersRevived.Domain.Graphics
     {
         private readonly Lazy<IPrimitive[]> _primitives;
 
-        public IPrimitive[] Primitives => _primitives.Value;
+        public IPrimitive[] Primitives => this._primitives.Value;
         public VertexBuffer VertexBuffer { get; }
         public IndexBuffer[] IndexBuffers { get; }
         public PrimitiveTypeEnum[] BufferTypes { get; }
 
         internal PrimitiveType(Lazy<IPrimitive[]> primitives, VertexBuffer vertexBuffer, IndexBuffer[] indexBuffers, PrimitiveTypeEnum[] bufferTypes)
         {
-            _primitives = primitives;
+            this._primitives = primitives;
             this.VertexBuffer = vertexBuffer;
             this.IndexBuffers = indexBuffers;
             this.BufferTypes = bufferTypes;
@@ -43,13 +43,10 @@ namespace VoidHuntersRevived.Domain.Graphics
         }
     }
 
-    public class PrimitiveType<TVertexInstance, TVertexStatic, TEffect> : PrimitiveType<TVertexInstance>, IPrimitiveType<TVertexInstance, TVertexStatic, TEffect>
+    public class PrimitiveType<TVertexInstance, TVertexStatic, TEffect>(Lazy<IPrimitive[]> primitives, VertexBuffer vertexBuffer, IndexBuffer[] indexBuffers, PrimitiveTypeEnum[] bufferTypes) : PrimitiveType<TVertexInstance>(primitives, vertexBuffer, indexBuffers, bufferTypes), IPrimitiveType<TVertexInstance, TVertexStatic, TEffect>
         where TVertexInstance : unmanaged, IVertexType
         where TVertexStatic : unmanaged, IVertexType
         where TEffect : Effect
     {
-        public PrimitiveType(Lazy<IPrimitive[]> primitives, VertexBuffer vertexBuffer, IndexBuffer[] indexBuffers, PrimitiveTypeEnum[] bufferTypes) : base(primitives, vertexBuffer, indexBuffers, bufferTypes)
-        {
-        }
     }
 }

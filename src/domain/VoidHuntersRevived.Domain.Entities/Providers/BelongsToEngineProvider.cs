@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 
         public IEnumerable<IEngine> GetEngines()
         {
-            foreach (Type componentType in _entityTemplateService.GetAllDistinctComponentTypes())
+            foreach (Type componentType in this._entityTemplateService.GetAllDistinctComponentTypes())
             {
                 foreach (Type interfaceType in componentType.GetInterfaces())
                 {
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
                     if (interfaceType.GetGenericTypeDefinition() == typeof(IBelongsTo<,>))
                     {
                         Type belongsToEngineType = typeof(BelongsToEngine<,>).MakeGenericType(interfaceType.GenericTypeArguments);
-                        IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, new object[] { _entityQueryService, _logger }) ?? throw new NotImplementedException();
+                        IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
 
                         yield return belongsToEngine;
                     }
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
                     if (interfaceType.GetGenericTypeDefinition() == typeof(ICompositeBelongsTo<,,>))
                     {
                         Type belongsToEngineType = typeof(CompositeBelongsToEngine<,,>).MakeGenericType(interfaceType.GenericTypeArguments);
-                        IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, new object[] { _entityQueryService, _logger }) ?? throw new NotImplementedException();
+                        IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
 
                         yield return belongsToEngine;
                     }

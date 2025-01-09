@@ -35,13 +35,13 @@ namespace VoidHuntersRevived.Game.Client.Engines
             IEntityQueryService entityQueryService,
             INetScope<IStrategy> netScope)
         {
-            _camera = camera;
-            _camera.Zoom = 100;
-            _zoom = 100;
+            this._camera = camera;
+            this._camera.Zoom = 100;
+            this._zoom = 100;
 
-            _screen = screen;
-            _entityQueryService = entityQueryService;
-            _netScope = netScope;
+            this._screen = screen;
+            this._entityQueryService = entityQueryService;
+            this._netScope = netScope;
         }
 
 
@@ -50,38 +50,38 @@ namespace VoidHuntersRevived.Game.Client.Engines
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
-                _offset -= Vector2.UnitY * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                this._offset -= Vector2.UnitY * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                _offset += Vector2.UnitY * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                this._offset += Vector2.UnitY * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                _offset -= Vector2.UnitX * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                this._offset -= Vector2.UnitX * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                _offset += Vector2.UnitX * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                this._offset += Vector2.UnitX * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             Vector2 location = this.GetUserPosition();
-            _position = location + _offset;
+            this._position = location + this._offset;
 
-            _camera.Position = Vector2.Lerp(_camera.Position, _position, (float)gameTime.ElapsedGameTime.TotalSeconds * 2);
-            _camera.Zoom = MathHelper.Lerp(_camera.Zoom, _zoom, (float)gameTime.ElapsedGameTime.TotalSeconds * 2);
+            this._camera.Position = Vector2.Lerp(this._camera.Position, this._position, (float)gameTime.ElapsedGameTime.TotalSeconds * 2);
+            this._camera.Zoom = MathHelper.Lerp(this._camera.Zoom, this._zoom, (float)gameTime.ElapsedGameTime.TotalSeconds * 2);
 
 
-            _screen.Camera.Update(gameTime);
-            _camera.Update(gameTime);
+            this._screen.Camera.Update(gameTime);
+            this._camera.Update(gameTime);
         }
 
         public void Process(in Guid messageId, CursorScroll message)
         {
-            _zoom *= ((float)Math.Pow(1.5, message.Delta / 120));
+            this._zoom *= ((float)Math.Pow(1.5, message.Delta / 120));
         }
 
         private Vector2 GetUserPosition()
@@ -89,11 +89,11 @@ namespace VoidHuntersRevived.Game.Client.Engines
             Vector2 sum = Vector2.Zero;
             int count = 0;
 
-            int currentUserId = _netScope.Group.Peer.Users.Current.Id;
-            ref var filter = ref _entityQueryService.GetFilter<EntityLocalId, IUser>(currentUserId);
+            int currentUserId = this._netScope.Group.Peer.Users.Current.Id;
+            ref var filter = ref this._entityQueryService.GetFilter<EntityLocalId, IUser>(currentUserId);
             foreach (var (indices, group) in filter)
             {
-                var (bodies, _) = _entityQueryService.QueryEntities<Body>(group);
+                var (bodies, _) = this._entityQueryService.QueryEntities<Body>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {

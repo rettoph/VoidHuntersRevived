@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Providers
 
         public IEnumerable<IEngine> GetEngines()
         {
-            foreach (Type vertexType in _primitiveService.GetAllVertexTypes())
+            foreach (Type vertexType in this._primitiveService.GetAllVertexTypes())
             {
                 if (vertexType.IsAssignableTo<IEntityComponent>() == false)
                 {
@@ -29,8 +29,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Providers
                 }
 
                 Type vertexTypePrimitiveServiceType = typeof(IPrimitiveService<>).MakeGenericType(vertexType);
-                object vertexTypePrimitiveService = _scope.Resolve(vertexTypePrimitiveServiceType);
-                yield return PrimitiveEntityEngineProvider.BuildEngine(vertexType, vertexTypePrimitiveService, _entityQueryService);
+                object vertexTypePrimitiveService = this._scope.Resolve(vertexTypePrimitiveServiceType);
+                yield return PrimitiveEntityEngineProvider.BuildEngine(vertexType, vertexTypePrimitiveService, this._entityQueryService);
             }
         }
 

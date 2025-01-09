@@ -1,11 +1,11 @@
-﻿using Autofac;
+﻿using System.Collections.ObjectModel;
+using Autofac;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Common.Services;
 using Microsoft.Xna.Framework;
-using System.Collections.ObjectModel;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -25,16 +25,16 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public SimulationService(INetScope<IStrategy> netScope, ISceneService scenes, ITerminal terminal)
         {
-            _netScope = netScope;
-            _scenes = scenes;
-            _simulations = [];
+            this._netScope = netScope;
+            this._scenes = scenes;
+            this._simulations = [];
 
-            this.Instances = new ReadOnlyCollection<ISimulation>(_simulations);
+            this.Instances = new ReadOnlyCollection<ISimulation>(this._simulations);
         }
 
         public void Dispose()
         {
-            foreach (ISimulation simulation in _simulations)
+            foreach (ISimulation simulation in this._simulations)
             {
                 simulation.Dispose();
             }
@@ -44,14 +44,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         {
             ISimulation simulation = new Simulation(id, this.BuildStrategies(strategies));
 
-            _simulations.Add(simulation);
+            this._simulations.Add(simulation);
 
             return simulation;
         }
 
         public void Draw(GameTime gameTime)
         {
-            foreach (ISimulation simulation in _simulations)
+            foreach (ISimulation simulation in this._simulations)
             {
                 simulation.Draw(gameTime);
             }
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public void Update(GameTime gameTime)
         {
-            foreach (ISimulation simulation in _simulations)
+            foreach (ISimulation simulation in this._simulations)
             {
                 simulation.Update(gameTime);
             }
@@ -68,26 +68,26 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         private IEnumerable<IStrategy> BuildStrategies(StrategyTypeEnum[] strategies)
         {
             List<Type> strategyTypes = [];
-            if (_netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Predictive))
+            if (this._netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Predictive))
             {
                 strategyTypes.Add(typeof(PredictiveStrategy));
             }
-            if (_netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Lockstep))
+            if (this._netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Lockstep))
             {
                 strategyTypes.Add(typeof(LockstepStrategy_Client));
             }
-            if (_netScope.Group.Peer.Type == PeerType.Server && strategies.Contains(StrategyTypeEnum.Lockstep))
+            if (this._netScope.Group.Peer.Type == PeerType.Server && strategies.Contains(StrategyTypeEnum.Lockstep))
             {
                 strategyTypes.Add(typeof(LockstepStrategy_Server));
             }
 
             foreach (Type type in strategyTypes)
             {
-                IStrategy strategy = (IStrategy)_scenes.Create(type, configuration =>
+                IStrategy strategy = (IStrategy)this._scenes.Create(type, configuration =>
                 {
                     configuration.WithContainerBuilder(builder =>
                     {
-                        builder.RegisterNetScope<IStrategy>(_netScope.Group.Peer.Type, _netScope.Group.Id);
+                        builder.RegisterNetScope<IStrategy>(this._netScope.Group.Peer.Type, this._netScope.Group.Id);
                     });
                 });
 

@@ -18,14 +18,14 @@ namespace VoidHuntersRevived.Domain.Providers
 
         public uint GetUInt32()
         {
-            return _value.UInt32++;
+            return this._value.UInt32++;
         }
 
         public int GetInt32()
         {
-            int value = _value.Int32;
+            int value = this._value.Int32;
 
-            _value.UInt32++;
+            this._value.UInt32++;
 
             return value;
         }

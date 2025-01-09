@@ -14,9 +14,9 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Components
         private readonly ILogger _logger = logger;
         protected override FixtureComponent Read(in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
-            EntityLocalId bodyLocalId = _entityQueryService.GetLocalId(options.Owner);
+            EntityLocalId bodyLocalId = this._entityQueryService.GetLocalId(options.Owner);
 
-            _logger.Verbose("Deserializing Fixture - Id = {Id}, BodyLocalId = {BodyLocalId}", entity.GlobalId, bodyLocalId);
+            this._logger.Verbose("Deserializing Fixture - Id = {Id}, BodyLocalId = {BodyLocalId}", entity.GlobalId, bodyLocalId);
 
             Fix64 localRotation = reader.Read<Fix64>();
             FixTransform2D localTransform = reader.Read<FixTransform2D>();

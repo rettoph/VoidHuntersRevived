@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Serialization.Common.Services;
-using Svelto.ECS;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Serialization.Common.Services;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                         reader.Read();
                         break;
                     case nameof(EntityTemplateFragment.RequiredComponents):
-                        requiredComponents.AddRange((JsonSerializer.Deserialize<string[]>(ref reader, options) ?? []).Select(_entityComponentSerializationService.GetType));
+                        requiredComponents.AddRange((JsonSerializer.Deserialize<string[]>(ref reader, options) ?? []).Select(this._entityComponentSerializationService.GetType));
                         reader.Read();
                         break;
                     default:
@@ -66,8 +66,8 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                 Key = key.Value,
                 Flags = flags,
                 Inherit = inherit,
-                Components = components.Values.ToArray(),
-                RequiredComponents = requiredComponents.ToArray()
+                Components = [.. components.Values],
+                RequiredComponents = [.. requiredComponents]
             };
 
             return template;

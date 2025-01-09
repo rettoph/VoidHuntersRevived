@@ -37,23 +37,23 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group02)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, ref Entity<Node, Fixture> entity)
         {
-            _logger.Verbose("OnSpawn - NodeGlobalId = {NodeGlobalId}", entity.GlobalId);
+            this._logger.Verbose("OnSpawn - NodeGlobalId = {NodeGlobalId}", entity.GlobalId);
 
-            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(entity.First.TreeLocalId, out bool alreadyDirty);
+            ref VhId dirtyEventId = ref this._dirtyTrees.GetOrEnqueue(entity.First.TreeLocalId, out bool alreadyDirty);
             dirtyEventId = alreadyDirty
                 ? HashBuilder<IReactOnAddEx<Node>, VhId, EntityGlobalId>.Instance.Calculate(dirtyEventId, entity.GlobalId)
                 : HashBuilder<IReactOnAddEx<Node>, EntityGlobalId>.Instance.Calculate(entity.GlobalId);
 
-            ref Body body = ref _entityQueryService.QueryByEGID<Body>(entity.Second.BodyFilterId.EGID);
+            ref Body body = ref this._entityQueryService.QueryByEGID<Body>(entity.Second.BodyFilterId.EGID);
             this.SetLocalTransformation(ref entity, in body);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node, Fixture> entity)
         {
-            _logger.Verbose("OnSpawn - NodeGlobalId = {NodeGlobalId}", entity.GlobalId);
+            this._logger.Verbose("OnSpawn - NodeGlobalId = {NodeGlobalId}", entity.GlobalId);
 
-            ref VhId dirtyEventId = ref _dirtyTrees.GetOrEnqueue(entity.First.TreeLocalId, out bool alreadyDirty);
+            ref VhId dirtyEventId = ref this._dirtyTrees.GetOrEnqueue(entity.First.TreeLocalId, out bool alreadyDirty);
             dirtyEventId = alreadyDirty
                 ? HashBuilder<IReactOnRemoveEx<Node>, VhId, EntityGlobalId>.Instance.Calculate(dirtyEventId, entity.GlobalId)
                 : HashBuilder<IReactOnRemoveEx<Node>, EntityGlobalId>.Instance.Calculate(entity.GlobalId);
@@ -62,11 +62,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            while (_dirtyTrees.TryDequeue(out EntityLocalId dirtyTreeLocalId, out VhId dirtyTreeEventId))
+            while (this._dirtyTrees.TryDequeue(out EntityLocalId dirtyTreeLocalId, out VhId dirtyTreeEventId))
             {
-                if (_entityQueryService.IsSpawned(dirtyTreeLocalId))
+                if (this._entityQueryService.IsSpawned(dirtyTreeLocalId))
                 {
-                    EntityGlobalId dirtyTreGlobalId = _entityQueryService.GetGlobalId(dirtyTreeLocalId);
+                    EntityGlobalId dirtyTreGlobalId = this._entityQueryService.GetGlobalId(dirtyTreeLocalId);
 
                     this.Strategy.Publish(dirtyTreeEventId, new Tree_Clean()
                     {
@@ -79,11 +79,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private void SetLocalTransformation(ref Entity<Node, Fixture> node, in Body treeBody)
         {
-            _logger.Verbose("Preparing to set {LocalTransformation} for {Node} {Fixture} {NodeId}", nameof(Fixture.LocalTransform), nameof(Node), nameof(Fixture), node.LocalId);
+            this._logger.Verbose("Preparing to set {LocalTransformation} for {Node} {Fixture} {NodeId}", nameof(Fixture.LocalTransform), nameof(Node), nameof(Fixture), node.LocalId);
 
             node.Second.SetBodyTransform(treeBody.Transform);
 
-            if (!_entityQueryService.TryQueryByGroupIndex<Coupling>(node.GroupIndex, out Coupling coupling) || coupling.SocketId == NodeSocketLocalId.Empty)
+            if (!this._entityQueryService.TryQueryByGroupIndex<Coupling>(node.GroupIndex, out Coupling coupling) || coupling.SocketId == NodeSocketLocalId.Empty)
             {
                 node.Second.SetLocalRotationTransform(Fix64.Zero, FixTransform2D.Identity);
                 return;
@@ -91,8 +91,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
             try
             {
-                ref Plug plug = ref _entityQueryService.QueryByGroupIndex<Plug>(node.GroupIndex);
-                NodeSocket nodeSocket = _socketService.GetNodeSocket(coupling.SocketId);
+                ref Plug plug = ref this._entityQueryService.QueryByGroupIndex<Plug>(node.GroupIndex);
+                NodeSocket nodeSocket = this._socketService.GetNodeSocket(coupling.SocketId);
 
                 FixTransform2D localTransform = FixTransform2D.Invert(plug.NodeTransform) * nodeSocket.LocalTransform;
                 node.Second.SetLocalRotationTransform(localTransform.Rotation.Phase, localTransform);
@@ -108,9 +108,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 // Without this it will default all vertices to 0,0 and fail an assert
                 node.Second.SetLocalRotationTransform(Fix64.Zero, FixTransform2D.Identity);
 
-                var localId = _entityQueryService.QueryByGroupIndex<EntityLocalId>(node.GroupIndex);
-                _logger.Error(ex, "There was a fatal error attempting to set node transformation for node {NodeLocalId}.", localId);
-                _entitySpawnService.Despawn(NameSpace<NodeFixtureEngine>.Instance, localId);
+                var localId = this._entityQueryService.QueryByGroupIndex<EntityLocalId>(node.GroupIndex);
+                this._logger.Error(ex, "There was a fatal error attempting to set node transformation for node {NodeLocalId}.", localId);
+                this._entitySpawnService.Despawn(NameSpace<NodeFixtureEngine>.Instance, localId);
 #if DEBUG
                 throw;
 #endif

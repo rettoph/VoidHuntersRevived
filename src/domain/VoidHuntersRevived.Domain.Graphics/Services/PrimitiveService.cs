@@ -11,12 +11,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
     {
         private readonly IPrimitive[] _primitives = resourceService.GetAll<IPrimitiveType>().SelectMany(x => x.Value.Primitives).ToArray();
 
-        public IEnumerable<IPrimitive> GetAll() => _primitives;
+        public IEnumerable<IPrimitive> GetAll() => this._primitives;
 
         public IEnumerable<IPrimitive<TVertex>> GetAll<TVertex>()
-            where TVertex : unmanaged, IVertexType => _primitives.OfType<IPrimitive<TVertex>>();
+            where TVertex : unmanaged, IVertexType => this._primitives.OfType<IPrimitive<TVertex>>();
 
-        public IEnumerable<Type> GetAllVertexTypes() => _primitives.Select(x => x.VertexType).Distinct();
+        public IEnumerable<Type> GetAllVertexTypes() => this._primitives.Select(x => x.VertexType).Distinct();
     }
 
     public class PrimitiveService<TVertex> : IPrimitiveService<TVertex>
@@ -27,24 +27,24 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
 
         public PrimitiveService(IResourceService resourceService)
         {
-            _grouped = resourceService.GetAll<IPrimitiveType>()
+            this._grouped = resourceService.GetAll<IPrimitiveType>()
                 .SelectMany(t => t.Value.Primitives.Select(p => (type: t, primitive: p)))
                 .Where(x => x.primitive is Primitive<TVertex>)
                 .ToDictionary(
                     keySelector: x => new PrimitiveTypeSequenceGroup(x.type.Key, x.primitive.SequenceGroup),
                     elementSelector: x => (IPrimitive<TVertex>)x.primitive);
 
-            _all = [.. _grouped.Values];
+            this._all = [.. this._grouped.Values];
         }
 
         public IPrimitive<TVertex>[] GetAll()
         {
-            return _all;
+            return this._all;
         }
 
         public IPrimitive<TVertex> GetPrimitiveByTypeAndSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup)
         {
-            return _grouped[new PrimitiveTypeSequenceGroup(type, sequenceGroup)];
+            return this._grouped[new PrimitiveTypeSequenceGroup(type, sequenceGroup)];
         }
 
         private readonly struct PrimitiveTypeSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup)
@@ -55,11 +55,11 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
             public override bool Equals(object? obj)
             {
                 return obj is PrimitiveTypeSequenceGroup casted &&
-                       Type == casted.Type &&
-                       SequenceGroup == casted.SequenceGroup;
+                       this.Type == casted.Type &&
+                       this.SequenceGroup == casted.SequenceGroup;
             }
 
-            public override int GetHashCode() => HashCode.Combine(Type, SequenceGroup);
+            public override int GetHashCode() => HashCode.Combine(this.Type, this.SequenceGroup);
         }
     }
 }

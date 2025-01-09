@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Extensions.System.Collection
                 builders.Add(builder);
             }
 
-            return builders.ToArray();
+            return [.. builders];
         }
     }
 }

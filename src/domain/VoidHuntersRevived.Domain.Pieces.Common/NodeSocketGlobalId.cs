@@ -10,13 +10,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
         public override bool Equals(object? obj)
         {
             return obj is NodeSocketGlobalId id &&
-                   NodeGlobalId.Equals(id.NodeGlobalId) &&
-                   SocketIndex == id.SocketIndex;
+                   this.NodeGlobalId.Equals(id.NodeGlobalId) &&
+                   this.SocketIndex == id.SocketIndex;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(NodeGlobalId, SocketIndex);
+            return HashCode.Combine(this.NodeGlobalId, this.SocketIndex);
         }
 
         public static bool operator ==(NodeSocketGlobalId socketVhId1, NodeSocketGlobalId socketVhId2)

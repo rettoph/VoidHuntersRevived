@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Common.Extensions.System;
+﻿using System.Runtime.CompilerServices;
+using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Common.Providers;
 using Serilog;
-using System.Runtime.CompilerServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
             foreach ((Type type, List<IEventEngine> subscribers) in subscriptions)
             {
                 Type publisherType = typeof(EventPublisher<>).MakeGenericType(type);
-                EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, new object[] { loggerProvider.GetOrCreate(publisherType), subscribers })!;
+                EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, [loggerProvider.GetOrCreate(publisherType), subscribers])!;
                 publishers.Add(type, publisher);
             }
         }
@@ -64,9 +64,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
         private void Publish(in VhId id, T data)
         {
-            _logger.Verbose("Publishing Event {EventId} {EventType}", id.Value, typeof(T).Name);
+            this._logger.Verbose("Publishing Event {EventId} {EventType}", id.Value, typeof(T).Name);
 
-            foreach (IEventEngine<T> subscriber in _subscribers)
+            foreach (IEventEngine<T> subscriber in this._subscribers)
             {
                 subscriber.Process(id, data);
             }
@@ -79,13 +79,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
 
         private void Revert(in VhId id, T data)
         {
-            if (_reverters.Length == 0)
+            if (this._reverters.Length == 0)
             {
                 return;
             }
 
-            _logger.Verbose("Reverting Event {EventId} {EventType}", id.Value, typeof(T).Name);
-            foreach (IRevertEventEngine<T> reverter in _reverters)
+            this._logger.Verbose("Reverting Event {EventId} {EventType}", id.Value, typeof(T).Name);
+            foreach (IRevertEventEngine<T> reverter in this._reverters)
             {
                 reverter.Revert(id, data);
             }

@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Common
 {
-    public struct VhId : IEquatable<VhId>
+    public readonly struct VhId : IEquatable<VhId>
     {
         public static readonly VhId Empty = default!;
 
@@ -23,20 +23,20 @@ namespace VoidHuntersRevived.Common
 
         public override bool Equals(object? obj)
         {
-            return obj is VhId id && Equals(id);
+            return obj is VhId id && this.Equals(id);
         }
 
-        public bool Equals(VhId other)
+        public readonly bool Equals(VhId other)
         {
-            return Value == other.Value;
+            return this.Value == other.Value;
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
-            return HashCode.Combine(Value);
+            return HashCode.Combine(this.Value);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return this.Value.ToString();
         }

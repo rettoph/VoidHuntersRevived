@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         public void Initialize(ILockstepStrategy lockstep)
         {
-            _lockstepSpace = lockstep.Engines.Get<ISpace>();
+            this._lockstepSpace = lockstep.Engines.Get<ISpace>();
         }
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SubmitChanges)]
@@ -23,14 +23,14 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         {
             Fix64 damping = step.ElapsedTime;
 
-            foreach (IBody lockstepBody in _lockstepSpace.AllBodies())
+            foreach (IBody lockstepBody in this._lockstepSpace.AllBodies())
             {
                 if (lockstepBody.Awake == false)
                 {
                     continue;
                 }
 
-                if (!_predictiveSpace.TryGetBody(lockstepBody.EntityLocalId, out IBody? predictiveBody))
+                if (!this._predictiveSpace.TryGetBody(lockstepBody.EntityLocalId, out IBody? predictiveBody))
                 {
                     continue;
                 }

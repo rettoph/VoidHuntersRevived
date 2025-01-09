@@ -21,17 +21,17 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             IEntityQueryService entityQueryService,
             ISpace space)
         {
-            _entityQueryService = entityQueryService;
-            _space = space;
+            this._entityQueryService = entityQueryService;
+            this._space = space;
 
-            _space.OnBodyEnabled += this.HandleBodyEnabled;
+            this._space.OnBodyEnabled += this.HandleBodyEnabled;
         }
 
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((localIds, bodyComponents, enableds, awakes, count), _) in _entityQueryService.QueryEntities<EntityLocalId, BodyComponent, Enabled, Awake>())
+            foreach (var ((localIds, bodyComponents, enableds, awakes, count), _) in this._entityQueryService.QueryEntities<EntityLocalId, BodyComponent, Enabled, Awake>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -41,15 +41,15 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                     }
 
                     EntityLocalId localId = localIds[i];
-                    IBody bodyInstance = _space.GetBody(localId);
+                    IBody bodyInstance = this._space.GetBody(localId);
 
                     ref BodyComponent bodyComponent = ref bodyComponents[i];
                     bodyComponent.SetRotationTransform(bodyInstance.Rotation, bodyInstance.Transform);
 
-                    ref var fixtureFilter = ref _entityQueryService.GetFilter(bodyComponent.FixtureFilterId);
+                    ref var fixtureFilter = ref this._entityQueryService.GetFilter(bodyComponent.FixtureFilterId);
                     foreach (var (indices, group) in fixtureFilter)
                     {
-                        var (fixtures, _) = _entityQueryService.QueryEntities<FixtureComponent>(group);
+                        var (fixtures, _) = this._entityQueryService.QueryEntities<FixtureComponent>(group);
 
                         for (int j = 0; j < indices.count; j++)
                         {
@@ -63,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 
         private void HandleBodyEnabled(IBody bodyInstance)
         {
-            ref BodyComponent bodyComponent = ref _entityQueryService.QueryByLocalId<Common.Components.Body>(bodyInstance.EntityLocalId);
+            ref BodyComponent bodyComponent = ref this._entityQueryService.QueryByLocalId<Common.Components.Body>(bodyInstance.EntityLocalId);
             bodyInstance.SetTransform(bodyComponent.Transform);
         }
     }

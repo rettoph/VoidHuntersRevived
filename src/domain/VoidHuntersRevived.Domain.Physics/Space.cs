@@ -1,6 +1,6 @@
-﻿using Serilog;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -16,9 +16,9 @@ namespace VoidHuntersRevived.Domain.Physics
 
         internal readonly AetherWorld _aether;
 
-        public int BodyCount => _aether.BodyList.Count;
+        public int BodyCount => this._aether.BodyList.Count;
 
-        public int ContactCount => _aether.ContactCount;
+        public int ContactCount => this._aether.ContactCount;
 
         public event OnEventDelegate<IBody> OnBodyEnabled;
         public event OnEventDelegate<IBody> OnBodyDisabled;
@@ -26,11 +26,11 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public Space(ILogger logger, AetherWorld aether)
         {
-            _aether = aether;
-            _bodies = [];
-            _logger = logger;
+            this._aether = aether;
+            this._bodies = [];
+            this._logger = logger;
 
-            _aether.BodyAwakeChanged += this.HandleBodyAwakeChanged;
+            this._aether.BodyAwakeChanged += this.HandleBodyAwakeChanged;
 
             this.OnBodyEnabled = null!;
             this.OnBodyDisabled = null!;
@@ -39,11 +39,11 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public void EnableBody(in EntityLocalId entityLocalId)
         {
-            if (_bodies.TryGetValue(entityLocalId, out Body? cached) == false)
+            if (this._bodies.TryGetValue(entityLocalId, out Body? cached) == false)
             {
-                _logger.Verbose("Enabling BodyEntityLocalId {BodyEntityLocalId}", entityLocalId);
+                this._logger.Verbose("Enabling BodyEntityLocalId {BodyEntityLocalId}", entityLocalId);
                 Body body = new(entityLocalId, this);
-                _bodies.Add(entityLocalId, body);
+                this._bodies.Add(entityLocalId, body);
                 this.OnBodyAwakeChanged(body);
                 this.OnBodyEnabled(body);
             }
@@ -51,9 +51,9 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public void DisableBody(in EntityLocalId entityLocalId)
         {
-            if (_bodies.Remove(entityLocalId, out var body))
+            if (this._bodies.Remove(entityLocalId, out var body))
             {
-                _logger.Verbose("Disabling {BodyEntityLocalId}", entityLocalId);
+                this._logger.Verbose("Disabling {BodyEntityLocalId}", entityLocalId);
                 body!.Dispose();
                 this.OnBodyDisabled?.Invoke(body);
             }
@@ -61,12 +61,12 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public IBody GetBody(in EntityLocalId entityLocalId)
         {
-            return _bodies[entityLocalId];
+            return this._bodies[entityLocalId];
         }
 
         public void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb)
         {
-            _aether.QueryAABB(aetherFixture =>
+            this._aether.QueryAABB(aetherFixture =>
             {
                 return callback((Fixture)aetherFixture.Tag);
             }, ref Unsafe.As<AABB, AetherAABB>(ref aabb));
@@ -74,17 +74,17 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public void Step(Step step)
         {
-            _aether.Step(step.ElapsedTime);
+            this._aether.Step(step.ElapsedTime);
         }
 
         public IEnumerable<IBody> AllBodies()
         {
-            return _bodies.Values;
+            return this._bodies.Values;
         }
 
         public bool TryGetBody(in EntityLocalId entityLocalId, [MaybeNullWhen(false)] out IBody body)
         {
-            if (_bodies.TryGetValue(entityLocalId, out Body? instance))
+            if (this._bodies.TryGetValue(entityLocalId, out Body? instance))
             {
                 body = instance;
                 return true;

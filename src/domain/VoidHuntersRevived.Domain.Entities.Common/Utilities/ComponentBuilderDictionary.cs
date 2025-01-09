@@ -10,12 +10,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         private readonly Dictionary<Type, IEntityComponent> _values;
         private readonly Dictionary<Type, IComponentBuilder> _builders;
 
-        public IEnumerable<Type> Keys => _values.Keys;
+        public IEnumerable<Type> Keys => this._values.Keys;
 
         public ComponentBuilderDictionary()
         {
-            _values = [];
-            _builders = [];
+            this._values = [];
+            this._builders = [];
         }
 
         public ComponentBuilderDictionary(IEnumerable<ComponentBuilderDictionary> dictionaries) : this()
@@ -50,14 +50,14 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 
             IComponentBuilder builder = (IComponentBuilder)(Activator.CreateInstance(componentBuilderType, component) ?? throw new NotImplementedException());
 
-            _values[componentType] = component;
-            _builders[componentType] = builder;
+            this._values[componentType] = component;
+            this._builders[componentType] = builder;
         }
 
         public bool TryGet<T>(out T component)
             where T : unmanaged, IEntityComponent
         {
-            if (_values.TryGetValue(typeof(T), out IEntityComponent? uncasted) == false)
+            if (this._values.TryGetValue(typeof(T), out IEntityComponent? uncasted) == false)
             {
                 component = default;
                 return false;
@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 
         public T Get<T>()
         {
-            if (_values.TryGetValue(typeof(T), out IEntityComponent? uncasted) == false)
+            if (this._values.TryGetValue(typeof(T), out IEntityComponent? uncasted) == false)
             {
                 throw new KeyNotFoundException();
             }
@@ -91,22 +91,22 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         public bool Has<T>()
             where T : unmanaged, IEntityComponent
         {
-            return _builders.ContainsKey(typeof(T));
+            return this._builders.ContainsKey(typeof(T));
         }
 
         public bool Has(Type type)
         {
-            return _builders.ContainsKey(type);
+            return this._builders.ContainsKey(type);
         }
 
         public IComponentBuilder[] ToArray()
         {
-            return _builders.Values.ToArray();
+            return [.. this._builders.Values];
         }
 
         public Dictionary<Type, IEntityComponent> ToComponentDictionary()
         {
-            return _values;
+            return this._values;
         }
 
         public static implicit operator IComponentBuilder[](ComponentBuilderDictionary dictionary)

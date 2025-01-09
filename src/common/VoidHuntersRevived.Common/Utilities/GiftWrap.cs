@@ -11,7 +11,9 @@ namespace VoidHuntersRevived.Common.Utilities
         public static Vector2[] GetConvexHull(Vector2[] vertices)
         {
             if (vertices.Length <= 3)
+            {
                 return vertices;
+            }
 
             // Find the right most point on the hull
             int i0 = 0;
@@ -80,7 +82,7 @@ namespace VoidHuntersRevived.Common.Utilities
 
         private static float Cross(ref Vector2 a, ref Vector2 b)
         {
-            return a.X * b.Y - a.Y * b.X;
+            return (a.X * b.Y) - (a.Y * b.X);
         }
 
     }

@@ -34,24 +34,24 @@ namespace VoidHuntersRevived.Presentation.Client
 
         public VoidHuntersGame(bool internalServer = false)
         {
-            _internalServer = internalServer;
-            _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            this._internalServer = internalServer;
+            this._graphics = new GraphicsDeviceManager(this);
+            this.Content.RootDirectory = "Content";
 
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
             this.IsFixedTimeStep = false;
 
-            _graphics.PreparingDeviceSettings += (s, e) =>
+            this._graphics.PreparingDeviceSettings += (s, e) =>
             {
-                _graphics.PreferMultiSampling = true;
+                this._graphics.PreferMultiSampling = true;
                 e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 8;
                 e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
                 e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };
-            _graphics.SynchronizeWithVerticalRetrace = false;
-            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            _graphics.ApplyChanges();
+            this._graphics.SynchronizeWithVerticalRetrace = false;
+            this._graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            this._graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Presentation.Client
             {
                 var engine = new GameEngine(VoidHuntersContextBuilder.ClientContext, builder =>
                 {
-                    builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window)
+                    builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window)
                         .RegisterCoreNetworkServices()
                         .RegisterDomainServices()
                         .RegisterGameCoreServices()
@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Presentation.Client
                     builder.RegisterType<ClientSerilogSinkConfigurator>().As<ISerilogSinkConfigurator>().InstancePerLifetimeScope();
                 }).Start();
 
-                if (_internalServer)
+                if (this._internalServer)
                 {
                     engine.Scenes.Create<ServerGameScene>(configuration =>
                     {
@@ -100,7 +100,7 @@ namespace VoidHuntersRevived.Presentation.Client
                 });
                 //_engine.Guppies.Create<EditorGuppy>();
 
-                _engine = engine;
+                this._engine = engine;
             });
 
         }
@@ -121,21 +121,21 @@ namespace VoidHuntersRevived.Presentation.Client
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            _engine?.Dispose();
+            this._engine?.Dispose();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
-            _engine?.Dispose();
+            this._engine?.Dispose();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
 
-            _engine?.Dispose();
+            this._engine?.Dispose();
 
             Environment.Exit(0);
         }
@@ -150,7 +150,7 @@ namespace VoidHuntersRevived.Presentation.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _engine?.Update(gameTime);
+            this._engine?.Update(gameTime);
         }
 
         /// <summary>
@@ -161,14 +161,14 @@ namespace VoidHuntersRevived.Presentation.Client
         {
             base.Draw(gameTime);
 
-            if (_engine is null)
+            if (this._engine is null)
             {
                 return;
             }
 
-            GraphicsDevice.Clear(Color.Black);
+            this.GraphicsDevice.Clear(Color.Black);
 
-            _engine?.Draw(gameTime);
+            this._engine?.Draw(gameTime);
         }
     }
 }

@@ -16,11 +16,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         public EntityLocalId Spawn(VhId sourceId, NodeSocket targetNodeSocket, EntityGlobalId globalId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
-            TeamMember teamMember = _entityQueryService.QueryByLocalId<TeamMember>(targetNodeSocket.Node.TreeLocalId);
+            TeamMember teamMember = this._entityQueryService.QueryByLocalId<TeamMember>(targetNodeSocket.Node.TreeLocalId);
             NodeSocketGlobalId targetNodeSocketGlobalId = this.GetGlobalId(targetNodeSocket.LocalId);
-            EntityGlobalId treeGlobalId = _entityQueryService.GetGlobalId(targetNodeSocket.Node.TreeLocalId);
+            EntityGlobalId treeGlobalId = this._entityQueryService.GetGlobalId(targetNodeSocket.Node.TreeLocalId);
 
-            return _entitySpawnService.Spawn(sourceId, nodeTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
+            return this._entitySpawnService.Spawn(sourceId, nodeTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
             {
                 EntityLocalId bodyLocalId = entities.Query.GetLocalId(treeGlobalId);
 
@@ -39,11 +39,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public EntityLocalId Spawn(VhId sourceId, NodeSocket targetNodeSocket, EntityData nodes, EntityInitializerDelegate? initializerDelegate = null)
         {
-            TeamMember teamMember = _entityQueryService.QueryByLocalId<TeamMember>(targetNodeSocket.Node.TreeLocalId);
+            TeamMember teamMember = this._entityQueryService.QueryByLocalId<TeamMember>(targetNodeSocket.Node.TreeLocalId);
             NodeSocketGlobalId targetNodeSocketGlobalId = this.GetGlobalId(targetNodeSocket.LocalId);
-            EntityGlobalId treeGlobalId = _entityQueryService.GetGlobalId(targetNodeSocket.Node.TreeLocalId);
+            EntityGlobalId treeGlobalId = this._entityQueryService.GetGlobalId(targetNodeSocket.Node.TreeLocalId);
 
-            EntityLocalId nodeLocalId = _entitySerializationService.Deserialize(
+            EntityLocalId nodeLocalId = this._entitySerializationService.Deserialize(
                 sourceId: sourceId,
                 options: new DeserializationOptions
                 {

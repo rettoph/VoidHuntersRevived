@@ -1,8 +1,8 @@
-﻿using Serilog;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using Serilog;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -23,22 +23,22 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public EntityLocalId GetLocalId(EntityGlobalId globalId)
         {
-            return _globalLocalIds[globalId];
+            return this._globalLocalIds[globalId];
         }
 
         public bool TryGetLocalId(EntityGlobalId globalId, out EntityLocalId localId)
         {
-            return _globalLocalIds.TryGetValue(globalId, out localId);
+            return this._globalLocalIds.TryGetValue(globalId, out localId);
         }
 
         public EntityGlobalId GetGlobalId(EntityLocalId localId)
         {
-            return _localGlobalIds[localId];
+            return this._localGlobalIds[localId];
         }
 
         public bool TryGetGlobalId(EntityLocalId localId, out EntityGlobalId globalId)
         {
-            return _localGlobalIds.TryGetValue(localId, out globalId);
+            return this._localGlobalIds.TryGetValue(localId, out globalId);
         }
 
         public bool TryGetEntity(EntityGlobalId globalId, out Entity entity)
@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error getting entity. EntityGlobalId = {EntityGlobalId}, Type = {Type}", globalId, typeof(T));
+                this._logger.Error(ex, "Error getting entity. EntityGlobalId = {EntityGlobalId}, Type = {Type}", globalId, typeof(T));
 
                 entity = default;
                 return false;
@@ -100,7 +100,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error getting entity. EntityLocalId = {EntityLocalId}, Type = {Type}", localId, typeof(T));
+                this._logger.Error(ex, "Error getting entity. EntityLocalId = {EntityLocalId}, Type = {Type}", localId, typeof(T));
 
                 entity = default;
                 return false;
@@ -125,7 +125,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error getting entity. ExclusiveGroupStruct = {ExclusiveGroupStruct}, Index = {Index}, Type = {Type}", groupId, index, typeof(T));
+                this._logger.Error(ex, "Error getting entity. ExclusiveGroupStruct = {ExclusiveGroupStruct}, Index = {Index}, Type = {Type}", groupId, index, typeof(T));
 
                 entity = default;
                 return false;
@@ -134,27 +134,27 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         public ref EntityLocalId AddLocalId(EntityGlobalId globalId)
         {
-            ref EntityLocalId localId = ref CollectionsMarshal.GetValueRefOrAddDefault(_globalLocalIds, globalId, out bool exists);
+            ref EntityLocalId localId = ref CollectionsMarshal.GetValueRefOrAddDefault(this._globalLocalIds, globalId, out bool exists);
             if (exists == true)
             { // Unable to hard spawn - entity already exists
                 throw new NotImplementedException();
             }
 
-            _logger.Verbose("Added EntityGlobalId {EntityGlobalId}", globalId);
+            this._logger.Verbose("Added EntityGlobalId {EntityGlobalId}", globalId);
             return ref localId;
         }
 
         public void AddGlobalId(EntityLocalId localId, EntityGlobalId globalId)
         {
-            _localGlobalIds.Add(localId, globalId);
+            this._localGlobalIds.Add(localId, globalId);
         }
 
         public bool Remove(EntityGlobalId globalId)
         {
-            if (_globalLocalIds.Remove(globalId, out EntityLocalId localId)
-                && _localGlobalIds.Remove(localId))
+            if (this._globalLocalIds.Remove(globalId, out EntityLocalId localId)
+                && this._localGlobalIds.Remove(localId))
             {
-                _logger.Verbose("Removed EntityGlobalId {EntityGlobalId}", globalId);
+                this._logger.Verbose("Removed EntityGlobalId {EntityGlobalId}", globalId);
                 return true;
             }
 
@@ -263,7 +263,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TryQueryByGroupIndex<T>(GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent
         {
-            if (!entitiesDB.HasAny<T>(groupIndex.GroupID))
+            if (!this.entitiesDB.HasAny<T>(groupIndex.GroupID))
             {
                 value = default;
                 return false;
@@ -284,7 +284,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TryQueryByGroupIndex<T>(ExclusiveGroupStruct groupId, uint index, out T value)
             where T : unmanaged, IEntityComponent
         {
-            if (!entitiesDB.HasAny<T>(groupId))
+            if (!this.entitiesDB.HasAny<T>(groupId))
             {
                 value = default;
                 return false;

@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             if (scope.IsRoot() == false)
             {
-                _strategy = scope.Resolve<Lazy<IOptional<IStrategy>>>();
+                this._strategy = scope.Resolve<Lazy<IOptional<IStrategy>>>();
             }
         }
 
@@ -25,10 +25,10 @@ namespace VoidHuntersRevived.Domain.Simulations
             switch (key)
             {
                 case IStateKey<StrategyTypeEnum> { Value: StateKey.DefaultValue }:
-                    state = _strategy?.Value.Value?.Type ?? StrategyTypeEnum.None;
+                    state = this._strategy?.Value.Value?.Type ?? StrategyTypeEnum.None;
                     return true;
                 case IStateKey<Type> { Value: nameof(IStrategy) }:
-                    state = _strategy?.Value?.Value?.GetType();
+                    state = this._strategy?.Value?.Value?.GetType();
                     return true;
                 default:
                     state = null;

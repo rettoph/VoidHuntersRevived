@@ -11,12 +11,12 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
         public void AddUse(EntityLocalId tacticalId)
         {
-            _entityQueryService.QueryByLocalId<Tactical>(tacticalId).AddUse();
+            this._entityQueryService.QueryByLocalId<Tactical>(tacticalId).AddUse();
         }
 
         public void RemoveUse(EntityLocalId tacticalId)
         {
-            _entityQueryService.QueryByLocalId<Tactical>(tacticalId).RemoveUse();
+            this._entityQueryService.QueryByLocalId<Tactical>(tacticalId).RemoveUse();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Value);
+            return HashCode.Combine(this.Value);
         }
 
         public static bool operator ==(EntityGlobalId left, EntityGlobalId right)

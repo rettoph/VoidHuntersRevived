@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         IImGuiComponent,
         IOnDebugEngine
     {
-        public string? Group => typeof(World).Name;
+        public static string? Group => typeof(World).Name;
 
         private readonly IStrategy _strategy;
         private readonly IScene _scene;
@@ -50,55 +50,55 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
             GraphicsDevice graphics,
             ICamera2D camera)
         {
-            _strategy = strategy;
-            _scene = scene;
-            _imgui = imgui;
-            _objectExplorer = objectExplorer;
-            _world = world;
-            _debug = new DebugView(world);
-            _camera = camera;
-            _debug.LoadContent(graphics, resourceService.Get(Resources.SpriteFonts.Default));
-            _filter = string.Empty;
+            this._strategy = strategy;
+            this._scene = scene;
+            this._imgui = imgui;
+            this._objectExplorer = objectExplorer;
+            this._world = world;
+            this._debug = new DebugView(world);
+            this._camera = camera;
+            this._debug.LoadContent(graphics, resourceService.Get(Resources.SpriteFonts.Default));
+            this._filter = string.Empty;
 
-            _buttonRedStyle = resourceService.Get(Resources.ImGuiStyles.ButtonRed);
-            _buttonGreenStyle = resourceService.Get(Resources.ImGuiStyles.ButtonGreen);
+            this._buttonRedStyle = resourceService.Get(Resources.ImGuiStyles.ButtonRed);
+            this._buttonGreenStyle = resourceService.Get(Resources.ImGuiStyles.ButtonGreen);
         }
 
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.Draw)]
         public void OnDraw(GameTime gameTime)
         {
-            if (_debugViewEnabled == false)
+            if (this._debugViewEnabled == false)
             {
                 return;
             }
 
-            _debug.RenderDebugData(_camera.Projection, _camera.View, _camera.World);
+            this._debug.RenderDebugData(this._camera.Projection, this._camera.View, this._camera.World);
         }
 
         [SequenceGroup<DebugSequenceGroup>("Aether")]
         public void OnDebug(GameTime gameTime)
         {
-            _imgui.KeyValue("Bodies", _world.BodyList.Count.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
-            _imgui.KeyValue("Contacts", _world.ContactCount.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("Bodies", this._world.BodyList.Count.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("Contacts", this._world.ContactCount.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
 
 
-            Resource<ImStyle> buttonStyle = _debugViewEnabled ? _buttonGreenStyle : _buttonRedStyle;
+            Resource<ImStyle> buttonStyle = this._debugViewEnabled ? this._buttonGreenStyle : this._buttonRedStyle;
 
-            using (_imgui.Apply(buttonStyle))
+            using (this._imgui.Apply(buttonStyle))
             {
-                if (_imgui.Button($"{(_debugViewEnabled ? "Disable" : "Enable")} DebugView"))
+                if (this._imgui.Button($"{(this._debugViewEnabled ? "Disable" : "Enable")} DebugView"))
                 {
-                    _debugViewEnabled = !_debugViewEnabled;
+                    this._debugViewEnabled = !this._debugViewEnabled;
                 }
             }
 
-            buttonStyle = _aetherExplorerEnabled ? _buttonRedStyle : _buttonRedStyle;
+            buttonStyle = this._aetherExplorerEnabled ? this._buttonRedStyle : this._buttonRedStyle;
 
-            using (_imgui.Apply(buttonStyle))
+            using (this._imgui.Apply(buttonStyle))
             {
-                if (_imgui.Button($"{(_aetherExplorerEnabled ? "Disable" : "Enable")} Aether Explorer"))
+                if (this._imgui.Button($"{(this._aetherExplorerEnabled ? "Disable" : "Enable")} Aether Explorer"))
                 {
-                    _aetherExplorerEnabled = !_aetherExplorerEnabled;
+                    this._aetherExplorerEnabled = !this._aetherExplorerEnabled;
                 }
             }
         }
@@ -106,26 +106,26 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.PostDraw)]
         public void DrawImGui(GameTime gameTime)
         {
-            if (_aetherExplorerEnabled == false)
+            if (this._aetherExplorerEnabled == false)
             {
                 return;
             }
 
-            _imgui.Begin($"Aether Explorer - {_strategy.Type}, {_scene.Name} {_scene.Id}", ref _aetherExplorerEnabled);
+            this._imgui.Begin($"Aether Explorer - {this._strategy.Type}, {this._scene.Name} {this._scene.Id}", ref this._aetherExplorerEnabled);
 
-            _imgui.InputText("Filter", ref _filter, 255);
+            this._imgui.InputText("Filter", ref this._filter, 255);
 
-            using (_imgui.ApplyID(nameof(World.BodyList)))
+            using (this._imgui.ApplyID(nameof(World.BodyList)))
             {
-                _objectExplorer.DrawObjectExplorer(_world.BodyList, _filter, 8, [_world]);
+                this._objectExplorer.DrawObjectExplorer(this._world.BodyList, this._filter, 8, [this._world]);
             }
 
-            using (_imgui.ApplyID(nameof(World.ContactManager)))
+            using (this._imgui.ApplyID(nameof(World.ContactManager)))
             {
-                _objectExplorer.DrawObjectExplorer(_world.ContactManager, _filter, 8);
+                this._objectExplorer.DrawObjectExplorer(this._world.ContactManager, this._filter, 8);
             }
 
-            _imgui.End();
+            this._imgui.End();
         }
     }
 }

@@ -29,14 +29,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             Lazy<IComponentSerializerService> componentSerializerService,
             EnginesRoot enginesRoot)
         {
-            _uniqueNumberProvider = uniqueNumberProvider;
-            _entityTemplateFragmentService = entityTemplateFragmentService;
-            _componentSerializerService = componentSerializerService;
+            this._uniqueNumberProvider = uniqueNumberProvider;
+            this._entityTemplateFragmentService = entityTemplateFragmentService;
+            this._componentSerializerService = componentSerializerService;
 
             // Create EntityTemplateProviders for all registered EntityTemplate instances
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
             IEntityFunctions functions = enginesRoot.GenerateEntityFunctions();
-            _templates = _entityTemplateFragmentService.GetAll()
+            this._templates = this._entityTemplateFragmentService.GetAll()
                 .Where(kvp => kvp.Value.Select(f => f.Flags).Aggregate((f1, f2) => f1 | f2).HasFlag(EntityTemplateFlags.Partial) == false)
                 .ToDictionary(
                     keySelector: kvp => kvp.Key,
@@ -44,8 +44,8 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     {
                         return (IEntityTemplate)new EntityTemplate(
                             kvp.Key,
-                            _entityTemplateFragmentService,
-                            _uniqueNumberProvider,
+                            this._entityTemplateFragmentService,
+                            this._uniqueNumberProvider,
                             factory,
                             functions,
                             loggerService.GetOrCreate<EntityTemplate>()
@@ -56,24 +56,24 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.PreInitialize)]
         public void OnInitialize(IStrategy strategy)
         {
-            foreach (IEntityTemplate entityTemplateProvider in _templates.Values)
+            foreach (IEntityTemplate entityTemplateProvider in this._templates.Values)
             {
                 entityTemplateProvider.Initialize(
                     entitiesDB: this.entitiesDB,
                     engineService: this.Strategy.Engines,
-                    componentSerializerService: _componentSerializerService.Value);
+                    componentSerializerService: this._componentSerializerService.Value);
             }
         }
 
         public IEntityTemplate GetByKey(Key<IEntityTemplate> key)
         {
-            return _templates[key];
+            return this._templates[key];
         }
 
         public IEnumerable<IEntityTemplate> WithComponent<TComponent>()
             where TComponent : unmanaged, IEntityComponent
         {
-            return _templates.Values.Where(x => x.Components.Has<TComponent>());
+            return this._templates.Values.Where(x => x.Components.Has<TComponent>());
         }
     }
 }

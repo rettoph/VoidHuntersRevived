@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
             this.Node = ref node;
             this.Fixture = ref fixture;
 
-            _sockets = sockets;
+            this._sockets = sockets;
         }
 
         public NodeSockets(EntityLocalId bodyLocalId, uint index, NB<Node> nodes, NB<Fixture> fixtures, NB<Sockets> sockets)
@@ -27,10 +27,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
         {
         }
 
-        public int Count => _sockets.Items.count;
+        public readonly int Count => this._sockets.Items.count;
 
-        public NodeSocket this[byte index] => new(this.BodyLocalId, this.Node, this.Fixture, index, _sockets.Items[index]);
-        public NodeSocket this[uint index] => new(this.BodyLocalId, this.Node, this.Fixture, (byte)index, _sockets.Items[index]);
-        public NodeSocket this[int index] => new(this.BodyLocalId, this.Node, this.Fixture, (byte)index, _sockets.Items[index]);
+        public readonly NodeSocket this[byte index] => new(this.BodyLocalId, this.Node, this.Fixture, index, this._sockets.Items[index]);
+        public readonly NodeSocket this[uint index] => new(this.BodyLocalId, this.Node, this.Fixture, (byte)index, this._sockets.Items[index]);
+        public readonly NodeSocket this[int index] => new(this.BodyLocalId, this.Node, this.Fixture, (byte)index, this._sockets.Items[index]);
     }
 }

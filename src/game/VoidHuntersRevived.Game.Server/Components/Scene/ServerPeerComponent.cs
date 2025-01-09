@@ -19,19 +19,19 @@ namespace VoidHuntersRevived.Game.Server.Components.Scene
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Setup)]
         public void Initialize(ServerGameScene scene)
         {
-            _server.Start(1337, Claim.Public("username", "System"));
-            _server.Users.OnUserConnected += HandleUserConnected;
+            this._server.Start(1337, Claim.Public("username", "System"));
+            this._server.Users.OnUserConnected += this.HandleUserConnected;
         }
 
         [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PostUpdate)]
         public void Update(GameTime gameTime)
         {
-            _server.Flush();
+            this._server.Flush();
         }
 
         private void HandleUserConnected(IUserService sender, IUser args)
         {
-            _scope.Group.Users.Add(args);
+            this._scope.Group.Users.Add(args);
         }
     }
 }

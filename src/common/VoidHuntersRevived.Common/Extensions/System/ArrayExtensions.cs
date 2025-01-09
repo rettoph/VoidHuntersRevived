@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Common.Extensions.System
         public static NativeDynamicArrayCast<T> ToNativeDynamicArray<T>(this T[] array)
             where T : struct
         {
-            NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)array.Length, Allocator.Persistent);
+            NativeDynamicArrayCast<T> native = new((uint)array.Length, Allocator.Persistent);
 
             for (int i = 0; i < array.Length; i++)
             {

@@ -65,14 +65,14 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         public SimulationBuilder AddStrategy<TStrategy>()
             where TStrategy : IStrategy
         {
-            _strategies.Add(container => new StrategyMocker<TStrategy>(container));
+            this._strategies.Add(container => new StrategyMocker<TStrategy>(container));
 
             return this;
         }
 
         public override SimulationMocker Build()
         {
-            IStrategyMocker[] strategies = _strategies.Select(factory => factory(this.AutoMock.Container)).ToArray();
+            IStrategyMocker[] strategies = this._strategies.Select(factory => factory(this.AutoMock.Container)).ToArray();
 
             SimulationMocker simulation = new(
                 instance: new Simulation(this.Id, strategies.Select(x => x.Instance).ToArray()),

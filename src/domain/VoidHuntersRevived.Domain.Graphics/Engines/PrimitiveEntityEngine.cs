@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
         public void OnDraw(GameTime gameTime)
         {
-            foreach (IPrimitive<TVertex> primitive in _primitiveService.GetAll())
+            foreach (IPrimitive<TVertex> primitive in this._primitiveService.GetAll())
             {
                 this.CopyEntityDataToVertexBuffer(primitive);
             }
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
                 {
                     Common.Components.Primitive<TVertex> primitive = primitives[i];
 
-                    _primitiveService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
+                    this._primitiveService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
                         .GetFilter<TVertex>(this.entitiesDB)
                         .Add(nativeIds[i], groupID, i);
                 }
@@ -61,12 +61,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
                 ref Common.Components.Primitive<TVertex> primitive = ref primitives[i];
 
                 ref TeamMember teamMember = ref teamMembers[i];
-                if (_entityQueryService.TryQueryByEGID<PrimitiveSequenceGroup<TVertex>>(teamMember.ParentFilterId.EGID, out PrimitiveSequenceGroup<TVertex> teamSequenceGroup) && teamSequenceGroup.IsDefault() == false)
+                if (this._entityQueryService.TryQueryByEGID<PrimitiveSequenceGroup<TVertex>>(teamMember.ParentFilterId.EGID, out PrimitiveSequenceGroup<TVertex> teamSequenceGroup) && teamSequenceGroup.IsDefault() == false)
                 {
                     primitive = new Common.Components.Primitive<TVertex>(primitive.Type, teamSequenceGroup.Value);
                 }
 
-                _primitiveService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
+                this._primitiveService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
                     .GetFilter<TVertex>(this.entitiesDB)
                     .Add(nativeIds[i], groupID, i);
             }

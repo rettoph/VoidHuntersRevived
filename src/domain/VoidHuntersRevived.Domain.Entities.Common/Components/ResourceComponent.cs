@@ -9,8 +9,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Components
     {
         private readonly Resource<T> _value = value;
 
-        public ResourceKey<T> Resource => _value.Key;
-        public T Value => _value.Value;
+        public ResourceKey<T> Resource => this._value.Key;
+        public T Value => this._value.Value;
 
         public ResourceComponent(string name, IResourceService resourceService) : this(resourceService.Get(ResourceKey<T>.Get(name)))
         {

@@ -14,7 +14,9 @@ namespace tainicom.Aether.Physics2D.Common
         {
             // Transform main polygon
             for (int i = 0; i < vertices.Count; i++)
+            {
                 vertices[i] = FixVector2.Transform(vertices[i].AsFixVector2(), transform).AsAetherVector2();
+            }
 
             // Transform holes
             if (vertices.Holes != null && vertices.Holes.Count > 0)

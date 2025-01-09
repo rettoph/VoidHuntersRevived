@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Physics.ResourceTypes
 
         protected override bool TryResolve(ResourceKey<IBodyTemplate> resource, DirectoryLocation root, string input, out IBodyTemplate value)
         {
-            IFile<IBodyTemplate> template = _files.Get<IBodyTemplate>(
+            IFile<IBodyTemplate> template = this._files.Get<IBodyTemplate>(
                 new FileLocation(root, input),
                 true);
 

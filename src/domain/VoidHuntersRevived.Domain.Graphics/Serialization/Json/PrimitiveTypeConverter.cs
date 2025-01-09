@@ -1,9 +1,9 @@
-﻿using Autofac;
-using Guppy.Game.Graphics.Common;
-using Guppy.Game.Graphics.Common.Enums;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Autofac;
+using Guppy.Game.Graphics.Common;
+using Guppy.Game.Graphics.Common.Enums;
 using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Contexts;
 using BufferUsage = Microsoft.Xna.Framework.Graphics.BufferUsage;
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
 
         public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (_graphics.Status == GraphicsObjectStatusEnum.NotImplemented)
+            if (this._graphics.Status == GraphicsObjectStatusEnum.NotImplemented)
             {
                 reader.Skip();
 
@@ -98,12 +98,12 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
                 throw new NotImplementedException();
             }
 
-            VertexBuffer vertexBuffer = new(_graphics.Value, staticVertexType, vertices.Length, BufferUsage.WriteOnly);
+            VertexBuffer vertexBuffer = new(this._graphics.Value, staticVertexType, vertices.Length, BufferUsage.WriteOnly);
             SetDataMethod.MakeGenericMethod(staticVertexType).Invoke(null, [vertexBuffer, vertices]);
 
             IndexBuffer[] indexBuffers = indexBufferContexts.Select(x =>
             {
-                IndexBuffer indexBuffer = new(_graphics.Value, IndexElementSize.SixteenBits, x.Values.Length, BufferUsage.WriteOnly);
+                IndexBuffer indexBuffer = new(this._graphics.Value, IndexElementSize.SixteenBits, x.Values.Length, BufferUsage.WriteOnly);
                 indexBuffer.SetData(x.Values);
 
                 return indexBuffer;
@@ -114,11 +114,11 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
             Type primitiveType = typeof(Primitive<,,>).MakeGenericType(typeToConvert.GenericTypeArguments);
             Lazy<IPrimitive[]> primitives = new(() =>
             {
-                Effect effect = (Effect)_scope.Resolve(effectType);
+                Effect effect = (Effect)this._scope.Resolve(effectType);
 
                 return primitiveContexts.Select(x =>
                 {
-                    IPrimitive? primitive = (IPrimitive?)Activator.CreateInstance(primitiveType, [x.Sequence, x.SequenceGroup, vertexBuffer, indexBuffers, bufferTypes, effect, _graphics.Value]);
+                    IPrimitive? primitive = (IPrimitive?)Activator.CreateInstance(primitiveType, [x.Sequence, x.SequenceGroup, vertexBuffer, indexBuffers, bufferTypes, effect, this._graphics.Value]);
                     return primitive ?? throw new NotImplementedException();
                 }).ToArray();
             });

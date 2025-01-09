@@ -13,23 +13,23 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Components
         private FixTransform2D _transform = transform;
 
         public FixVector2 Position
-        {
-            get => _transform.Position;
-            set => _transform.Position = value;
+        { readonly get => this._transform.Position;
+            set => this._transform.Position = value;
         }
         public Fix64 Rotation
         {
-            get => _rotation;
+            readonly get => this._rotation;
             set
             {
-                _rotation = value;
-                _transform.Rotation.Phase = value;
+                this._rotation = value;
+                this._transform.Rotation.Phase = value;
             }
         }
-        public readonly FixTransform2D Transform => _transform;
+        public readonly FixTransform2D Transform => this._transform;
 
         public readonly EntityFilterId<Fixture> FixtureFilterId = EntityFilterId<Fixture>.Create<Body>(localId);
-        EntityFilterId<Fixture> IHasMany<Fixture>.ChildrenFilterId => this.FixtureFilterId;
+
+        readonly EntityFilterId<Fixture> IHasMany<Fixture>.ChildrenFilterId => this.FixtureFilterId;
 
         public Body(EntityLocalId bodyLocalId, FixTransform2D transform) : this(bodyLocalId, transform.Rotation.Phase, transform)
         {
@@ -42,8 +42,8 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Components
 
         public void SetRotationTransform(Fix64 rotation, FixTransform2D transform)
         {
-            _rotation = rotation;
-            _transform = transform;
+            this._rotation = rotation;
+            this._transform = transform;
         }
     }
 }

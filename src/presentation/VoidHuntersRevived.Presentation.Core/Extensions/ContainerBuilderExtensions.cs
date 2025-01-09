@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
                     }
 
                     IPathService fileTypePaths = scope.Resolve<IPathService>();
-                    FileLocation source = fileTypePaths.GetSourceLocation(DirectoryType.AppData, "logs", $"log_{DateTime.Now.ToString("yyyy-dd-M")}.txt");
+                    FileLocation source = fileTypePaths.GetSourceLocation(DirectoryType.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
                     DirectoryHelper.EnsureDirectoryExists(source);
 
                     config.WriteTo.File(

@@ -10,13 +10,13 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         public override bool Equals(object? obj)
         {
             return obj is FixtureId id &&
-                   Index == id.Index &&
-                   EqualityComparer<EntityLocalId>.Default.Equals(EntityLocalId, id.EntityLocalId);
+                   this.Index == id.Index &&
+                   EqualityComparer<EntityLocalId>.Default.Equals(this.EntityLocalId, id.EntityLocalId);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Index, EntityLocalId);
+            return HashCode.Combine(this.Index, this.EntityLocalId);
         }
 
         public static bool operator ==(FixtureId left, FixtureId right)

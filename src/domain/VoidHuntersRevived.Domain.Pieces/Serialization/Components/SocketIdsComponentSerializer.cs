@@ -30,11 +30,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
 
         private void WriteSocketCouplings(ref EntityWriter writer, in Entity entity, byte socketIndex, SerializationOptions options)
         {
-            ref var filter = ref _socketService.GetCouplingFilter(entity.LocalId, socketIndex);
+            ref var filter = ref this._socketService.GetCouplingFilter(entity.LocalId, socketIndex);
 
             foreach (var (indices, groupId) in filter)
             {
-                var (entityLocalIds, _) = _entityQueryService.QueryEntities<EntityLocalId>(groupId);
+                var (entityLocalIds, _) = this._entityQueryService.QueryEntities<EntityLocalId>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {

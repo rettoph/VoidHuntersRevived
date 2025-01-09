@@ -35,11 +35,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
 
             // Add the tractorable to its owning tractor beam emitter's filter
-            ref var filter = ref _entityQueryService.GetFilter(tractorable.Component.TractorBeamEmitterFilterId);
+            ref var filter = ref this._entityQueryService.GetFilter(tractorable.Component.TractorBeamEmitterFilterId);
             filter.Add(in tractorable.LocalId, in tractorable.Index);
 
-            _tacticalService.AddUse(tractorable.Component.TractorBeamEmitterFilterId.EGID.ToEntityLocalId());
-            _logger.Verbose("Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", tractorable.LocalId, tractorable.Component.TractorBeamEmitterFilterId);
+            this._tacticalService.AddUse(tractorable.Component.TractorBeamEmitterFilterId.EGID.ToEntityLocalId());
+            this._logger.Verbose("Added tractorable {TractorableId} to emitter {TractorBeamEmitterId}", tractorable.LocalId, tractorable.Component.TractorBeamEmitterFilterId);
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
@@ -50,11 +50,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 return;
             }
 
-            ref var filter = ref _entityQueryService.GetFilter(tractorable.Component.TractorBeamEmitterFilterId);
+            ref var filter = ref this._entityQueryService.GetFilter(tractorable.Component.TractorBeamEmitterFilterId);
             filter.Remove(tractorable.LocalId);
 
-            _tacticalService.RemoveUse(tractorable.Component.TractorBeamEmitterFilterId.EGID.ToEntityLocalId());
-            _logger.Verbose("Removed tractorable {TractorableId} from emitter {TractorBeamEmitterId}", tractorable.LocalId, tractorable.Component.TractorBeamEmitterFilterId);
+            this._tacticalService.RemoveUse(tractorable.Component.TractorBeamEmitterFilterId.EGID.ToEntityLocalId());
+            this._logger.Verbose("Removed tractorable {TractorableId} from emitter {TractorBeamEmitterId}", tractorable.LocalId, tractorable.Component.TractorBeamEmitterFilterId);
         }
     }
 }

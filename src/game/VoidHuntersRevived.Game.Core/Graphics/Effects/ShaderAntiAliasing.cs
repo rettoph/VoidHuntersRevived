@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Game.Core.Graphics.Effects
     {
         public Vector2 Pixel
         {
-            set => this.Parameters[nameof(Pixel)].SetValue(value);
+            set => this.Parameters[nameof(this.Pixel)].SetValue(value);
         }
     }
 }

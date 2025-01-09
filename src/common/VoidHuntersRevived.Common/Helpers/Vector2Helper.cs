@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Common.Helpers
 
             for (int i = 0; i < segments; i++)
             {
-                var radians = (float)i / segments * MathHelper.TwoPi;
+                float radians = (float)i / segments * MathHelper.TwoPi;
                 var translation = Matrix.CreateRotationZ(radians);
 
                 vertices[i] = Vector2.Transform(unit, translation);

@@ -2,25 +2,23 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public struct Id<T>(VhId value) : IId<T>, IEquatable<Id<T>>
+    public readonly struct Id<T>(VhId value) : IId<T>, IEquatable<Id<T>>
     {
-        private readonly VhId _value = value;
-
-        public VhId Value => _value;
+        public readonly VhId Value { get; } = value;
 
         public override bool Equals(object? obj)
         {
-            return obj is Id<T> id && Equals(id);
+            return obj is Id<T> id && this.Equals(id);
         }
 
-        public bool Equals(Id<T> other)
+        public readonly bool Equals(Id<T> other)
         {
-            return _value.Value == other._value.Value;
+            return this.Value.Value == other.Value.Value;
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
-            return HashCode.Combine(_value);
+            return HashCode.Combine(this.Value);
         }
 
         public static bool operator ==(Id<T> left, Id<T> right)
@@ -38,9 +36,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return new Id<T>(NameSpace<T>.Instance.Create(input));
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
-            return typeof(T).Name + ":" + _value.ToString();
+            return typeof(T).Name + ":" + this.Value.ToString();
         }
     }
 }

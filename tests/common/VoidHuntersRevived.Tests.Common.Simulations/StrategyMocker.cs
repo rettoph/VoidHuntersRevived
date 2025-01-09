@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                 return;
             }
 
-            _inputs.Add(new EventDto()
+            this._inputs.Add(new EventDto()
             {
                 SourceId = sourceId,
                 Data = data
@@ -71,14 +71,14 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
 
         public void Input(IInputData data, bool verified)
         {
-            this.Input(HashBuilder<IStrategyMocker, int>.Instance.Calculate(_sourceIdGeneratorIndex++), data, verified);
+            this.Input(HashBuilder<IStrategyMocker, int>.Instance.Calculate(this._sourceIdGeneratorIndex++), data, verified);
         }
 
         public void Update(TimeSpan interval, int count)
         {
             for (int i = 0; i < count; i++)
             {
-                _gameTime.Step(interval);
+                this._gameTime.Step(interval);
 
                 if (this.Instance is ILockstepStrategy lockstep)
                 {
@@ -86,12 +86,12 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                     {
                         TickBuffer ticks = this.Scope.Resolve<TickBuffer>();
 
-                        ticks.TryEnqueue(Tick.Create(lockstep.CurrentTick.Id + 1, _inputs.ToArray()));
-                        _inputs.Clear();
+                        ticks.TryEnqueue(Tick.Create(lockstep.CurrentTick.Id + 1, [.. this._inputs]));
+                        this._inputs.Clear();
                     }
                 }
 
-                this.Instance.Update(_gameTime);
+                this.Instance.Update(this._gameTime);
             }
         }
         public int CalculateTotalEntities<T>()

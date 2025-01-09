@@ -18,8 +18,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
 
             EntityGroupList groups = EntityGroupList.GetOrCreate([typeof(TestComponent)]);
             Assert.Equal(0, groups.Values.count);
-
-            EntityGroup group = EntityGroup.Create("test", [typeof(TestComponent)]);
+            _ = EntityGroup.Create("test", [typeof(TestComponent)]);
             Assert.Equal(1, groups.Values.count);
         }
     }

@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Game.Core.Graphics.Effects
     {
         public Matrix WorldViewProjection
         {
-            set => this.Parameters[nameof(WorldViewProjection)].SetValue(value);
+            set => this.Parameters[nameof(this.WorldViewProjection)].SetValue(value);
         }
     }
 }

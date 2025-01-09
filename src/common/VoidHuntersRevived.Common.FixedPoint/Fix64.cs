@@ -330,17 +330,17 @@ namespace VoidHuntersRevived.Common.FixedPoint
 
         public override readonly int GetHashCode()
         {
-            return m_rawValue.GetHashCode();
+            return this.m_rawValue.GetHashCode();
         }
 
         public readonly bool Equals(Fix64 other)
         {
-            return m_rawValue == other.m_rawValue;
+            return this.m_rawValue == other.m_rawValue;
         }
 
         public readonly int CompareTo(Fix64 other)
         {
-            return m_rawValue.CompareTo(other.m_rawValue);
+            return this.m_rawValue.CompareTo(other.m_rawValue);
         }
 
         public override readonly string ToString()
@@ -364,7 +364,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <summary>
         /// The underlying integer representation
         /// </summary>
-        public readonly long RawValue => m_rawValue;
+        public readonly long RawValue => this.m_rawValue;
 
         /// <summary>
         /// This is the constructor from raw value; it can only be used interally.
@@ -372,7 +372,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <param name="rawValue"></param>
         private Fix64(long rawValue)
         {
-            m_rawValue = rawValue;
+            this.m_rawValue = rawValue;
         }
 
         public static Fix64 Min(Fix64 value1, Fix64 value2)
@@ -407,7 +407,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
 
         public static Fix64 Lerp(Fix64 v1, Fix64 v2, Fix64 amount)
         {
-            return v1 + (v2 - v1) * amount;
+            return v1 + ((v2 - v1) * amount);
         }
 
         public static Fix64 WrapAngle(Fix64 angle)

@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.ProcessInput)]
         public void OnStep(Step step)
         {
-            foreach (var ((localIds, tacticals, tractorBeamEmitters, count), _) in _entityQueryService.QueryEntities<EntityLocalId, Tactical, TractorBeamEmitter>())
+            foreach (var ((localIds, tacticals, tractorBeamEmitters, count), _) in this._entityQueryService.QueryEntities<EntityLocalId, Tactical, TractorBeamEmitter>())
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -45,10 +45,10 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
         private void UpdateTractorBeamEmitterTractorables(in EntityLocalId tractorBeamEmitterLocalId, ref Tactical tactical, ref TractorBeamEmitter tractorBeamEmitter)
         {
-            ref var filter = ref _entityQueryService.GetFilter(tractorBeamEmitter.TractorableFilterId);
+            ref var filter = ref this._entityQueryService.GetFilter(tractorBeamEmitter.TractorableFilterId);
             foreach (var (indices, groupId) in filter)
             {
-                var (localIds, statuses, enableds, trees, _) = _entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Enabled, Tree>(groupId);
+                var (localIds, statuses, enableds, trees, _) = this._entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Enabled, Tree>(groupId);
 
                 for (int i = 0; i < indices.count; i++)
                 {
@@ -57,13 +57,13 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
                     if (statuses[index].IsDespawned == true)
                     {
-                        _logger.Warning("Despawned. TractorBeamEmitter = {TractorBeamEmitterId}, TractorBeamEmitterLocalId = {TractorBeamEmitterLocalId}, IsDespawned = {IsDespawned}.", tractorBeamEmitterLocalId, targetId, statuses[index].IsDespawned);
+                        this._logger.Warning("Despawned. TractorBeamEmitter = {TractorBeamEmitterId}, TractorBeamEmitterLocalId = {TractorBeamEmitterLocalId}, IsDespawned = {IsDespawned}.", tractorBeamEmitterLocalId, targetId, statuses[index].IsDespawned);
                         continue;
                     }
 
                     if (enableds[index] == false)
                     {
-                        _logger.Warning("Not Enabled. TractorBeamEmitter = {TractorBeamEmitterId}, TractorBeamEmitterLocalId = {TractorBeamEmitterLocalId}, Enabled = {Enabled}.", tractorBeamEmitterLocalId, targetId, enableds[index].Value);
+                        this._logger.Warning("Not Enabled. TractorBeamEmitter = {TractorBeamEmitterId}, TractorBeamEmitterLocalId = {TractorBeamEmitterLocalId}, Enabled = {Enabled}.", tractorBeamEmitterLocalId, targetId, enableds[index].Value);
                         throw new NotImplementedException();
 
                         // What to do here?
@@ -77,12 +77,12 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                         // continue;
                     }
 
-                    IBody targetBody = _space.GetBody(in targetId);
+                    IBody targetBody = this._space.GetBody(in targetId);
                     ref Tree targetTree = ref trees[index];
 
-                    FixTransform2D targetHeadChildTransform = _entityQueryService.QueryByLocalId<Plug>(targetTree.HeadLocalId).NodeTransform;
+                    FixTransform2D targetHeadChildTransform = this._entityQueryService.QueryByLocalId<Plug>(targetTree.HeadLocalId).NodeTransform;
 
-                    if (_socketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Value, out var openSocketNode))
+                    if (this._socketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Value, out var openSocketNode))
                     {
                         FixTransform2D potentialTransform = FixTransform2D.Invert(targetHeadChildTransform) * openSocketNode.WorldTransform;
 

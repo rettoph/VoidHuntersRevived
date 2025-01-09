@@ -19,13 +19,13 @@ namespace VoidHuntersRevived.Game.Core.Components.Scene
         [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.PostDraw)]
         public void Draw(GameTime gameTime)
         {
-            _simulationService.Draw(gameTime);
+            this._simulationService.Draw(gameTime);
         }
 
         [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.Update)]
         public void Update(GameTime gameTime)
         {
-            _simulationService.Update(gameTime);
+            this._simulationService.Update(gameTime);
         }
     }
 }

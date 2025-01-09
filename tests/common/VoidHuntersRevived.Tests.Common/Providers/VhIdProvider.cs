@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Tests.Common.Providers
 
         public VhId Next()
         {
-            return _seed.Create(_noise++);
+            return this._seed.Create(this._noise++);
         }
     }
 }

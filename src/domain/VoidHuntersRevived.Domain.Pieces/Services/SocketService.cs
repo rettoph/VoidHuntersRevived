@@ -1,6 +1,6 @@
-﻿using Serilog;
+﻿using System.Diagnostics.CodeAnalysis;
+using Serilog;
 using Svelto.ECS;
-using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
@@ -32,23 +32,23 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         public NodeSocketGlobalId GetGlobalId(NodeSocketLocalId nodeSocketLocalId)
         {
             return new NodeSocketGlobalId(
-                nodeGlobalId: _entityQueryService.GetGlobalId(nodeSocketLocalId.NodeLocalId),
+                nodeGlobalId: this._entityQueryService.GetGlobalId(nodeSocketLocalId.NodeLocalId),
                 socketIndex: nodeSocketLocalId.SocketIndex);
         }
 
         public NodeSocketLocalId GetLocalId(NodeSocketGlobalId nodeSocketGlobalId)
         {
             return new NodeSocketLocalId(
-                nodeLocalId: _entityQueryService.GetLocalId(nodeSocketGlobalId.NodeGlobalId),
+                nodeLocalId: this._entityQueryService.GetLocalId(nodeSocketGlobalId.NodeGlobalId),
                 socketIndex: nodeSocketGlobalId.SocketIndex);
         }
 
         public NodeSocket GetNodeSocket(NodeSocketLocalId nodeSocketLocalId)
         {
-            _logger.Verbose("GetNodeSocket - NodeSocketLocalId = {NodeSocketLocalId}", nodeSocketLocalId);
+            this._logger.Verbose("GetNodeSocket - NodeSocketLocalId = {NodeSocketLocalId}", nodeSocketLocalId);
 
-            ref Node node = ref _entityQueryService.QueryByLocalId<Node>(nodeSocketLocalId.NodeLocalId, out GroupIndex groupIndex);
-            var (fixtures, sockets, _) = _entityQueryService.QueryEntities<Fixture, Sockets>(groupIndex.GroupID);
+            ref Node node = ref this._entityQueryService.QueryByLocalId<Node>(nodeSocketLocalId.NodeLocalId, out GroupIndex groupIndex);
+            var (fixtures, sockets, _) = this._entityQueryService.QueryEntities<Fixture, Sockets>(groupIndex.GroupID);
             NodeSocket nodeSocket = new(
                 bodyLocalId: fixtures[groupIndex.Index].BodyFilterId.EGID.ToEntityLocalId(),
                 localId: nodeSocketLocalId,
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public bool TryGetNodeSocket(NodeSocketGlobalId nodeSocketGlobalId, out NodeSocket nodeSocket)
         {
-            if (_entityQueryService.TryGetLocalId(nodeSocketGlobalId.NodeGlobalId, out EntityLocalId nodeLocalId))
+            if (this._entityQueryService.TryGetLocalId(nodeSocketGlobalId.NodeGlobalId, out EntityLocalId nodeLocalId))
             {
                 nodeSocket = this.GetNodeSocket(new NodeSocketLocalId(nodeLocalId, nodeSocketGlobalId.SocketIndex));
                 return true;
@@ -73,15 +73,15 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public bool TryGetNodeSocket(NodeSocketLocalId nodeSocketLocalId, out NodeSocket nodeSocket)
         {
-            _logger.Verbose("TryGetNodeSocket - NodeSocketLocalId = {NodeSocketLocalId}", nodeSocketLocalId);
+            this._logger.Verbose("TryGetNodeSocket - NodeSocketLocalId = {NodeSocketLocalId}", nodeSocketLocalId);
 
-            if (_entityQueryService.TryQueryByLocalId<Node>(nodeSocketLocalId.NodeLocalId, out GroupIndex groupIndex, out Node node) == false)
+            if (this._entityQueryService.TryQueryByLocalId<Node>(nodeSocketLocalId.NodeLocalId, out GroupIndex groupIndex, out Node node) == false)
             {
                 nodeSocket = default;
                 return false;
             }
 
-            var (fixtures, sockets, _) = _entityQueryService.QueryEntities<Fixture, Sockets>(groupIndex.GroupID);
+            var (fixtures, sockets, _) = this._entityQueryService.QueryEntities<Fixture, Sockets>(groupIndex.GroupID);
             nodeSocket = new(
                 bodyLocalId: fixtures[groupIndex.Index].BodyFilterId.EGID.ToEntityLocalId(),
                 localId: nodeSocketLocalId,
@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public ref EntityFilterCollection GetCouplingFilter(NodeSocketLocalId socketId)
         {
-            return ref _entityQueryService.GetFilter<Coupling>(socketId.NodeLocalId, socketId.FilterContextId);
+            return ref this._entityQueryService.GetFilter<Coupling>(socketId.NodeLocalId, socketId.FilterContextId);
         }
 
         public ref EntityFilterCollection GetCouplingFilter(EntityLocalId nodeLocalId, byte socketIndex)
@@ -105,14 +105,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         public bool TryGetClosestOpenNodeSocket(EntityLocalId treeLocalId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket)
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
-            ref var filter = ref _entityQueryService.GetCompositeFilter<Body, Fixture, Sockets>(treeLocalId);
+            ref var filter = ref this._entityQueryService.GetCompositeFilter<Body, Fixture, Sockets>(treeLocalId);
             Fix64 closestOpenSocketDistance = OpenNodemaximumDistance;
             nodeSocket = default!;
             bool result = false;
 
             foreach (var (indeces, group) in filter)
             {
-                var (statuses, nodes, fixtures, sockets, _) = _entityQueryService.QueryEntities<EntityStatus, Node, Fixture, Sockets>(group);
+                var (statuses, nodes, fixtures, sockets, _) = this._entityQueryService.QueryEntities<EntityStatus, Node, Fixture, Sockets>(group);
 
                 for (int i = 0; i < indeces.count; i++)
                 {
@@ -150,7 +150,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 int count = 0;
                 foreach (var (indices, groupId) in filter)
                 {
-                    var (entityStatuses, _) = _entityQueryService.QueryEntities<EntityStatus>(groupId);
+                    var (entityStatuses, _) = this._entityQueryService.QueryEntities<EntityStatus>(groupId);
 
                     for (int i = 0; i < indices.count; i++)
                     {

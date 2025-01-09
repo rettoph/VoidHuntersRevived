@@ -13,8 +13,8 @@ try
 
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
     //GC.TryStartNoGCRegion(256 * 1024 * 1024);
-    using (var game = new VoidHuntersGame(internalServer))
-        game.Run();
+    using var game = new VoidHuntersGame(internalServer);
+    game.Run();
 }
 finally
 {

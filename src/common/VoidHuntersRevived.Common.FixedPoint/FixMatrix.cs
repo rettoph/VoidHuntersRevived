@@ -135,22 +135,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
             {
                 return index switch
                 {
-                    0 => M11,
-                    1 => M12,
-                    2 => M13,
-                    3 => M14,
-                    4 => M21,
-                    5 => M22,
-                    6 => M23,
-                    7 => M24,
-                    8 => M31,
-                    9 => M32,
-                    10 => M33,
-                    11 => M34,
-                    12 => M41,
-                    13 => M42,
-                    14 => M43,
-                    15 => M44,
+                    0 => this.M11,
+                    1 => this.M12,
+                    2 => this.M13,
+                    3 => this.M14,
+                    4 => this.M21,
+                    5 => this.M22,
+                    6 => this.M23,
+                    7 => this.M24,
+                    8 => this.M31,
+                    9 => this.M32,
+                    10 => this.M33,
+                    11 => this.M34,
+                    12 => this.M41,
+                    13 => this.M42,
+                    14 => this.M43,
+                    15 => this.M44,
                     _ => throw new ArgumentOutOfRangeException(),
                 };
             }
@@ -159,22 +159,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
             {
                 switch (index)
                 {
-                    case 0: M11 = value; break;
-                    case 1: M12 = value; break;
-                    case 2: M13 = value; break;
-                    case 3: M14 = value; break;
-                    case 4: M21 = value; break;
-                    case 5: M22 = value; break;
-                    case 6: M23 = value; break;
-                    case 7: M24 = value; break;
-                    case 8: M31 = value; break;
-                    case 9: M32 = value; break;
-                    case 10: M33 = value; break;
-                    case 11: M34 = value; break;
-                    case 12: M41 = value; break;
-                    case 13: M42 = value; break;
-                    case 14: M43 = value; break;
-                    case 15: M44 = value; break;
+                    case 0: this.M11 = value; break;
+                    case 1: this.M12 = value; break;
+                    case 2: this.M13 = value; break;
+                    case 3: this.M14 = value; break;
+                    case 4: this.M21 = value; break;
+                    case 5: this.M22 = value; break;
+                    case 6: this.M23 = value; break;
+                    case 7: this.M24 = value; break;
+                    case 8: this.M31 = value; break;
+                    case 9: this.M32 = value; break;
+                    case 10: this.M33 = value; break;
+                    case 11: this.M34 = value; break;
+                    case 12: this.M41 = value; break;
+                    case 13: this.M42 = value; break;
+                    case 14: this.M43 = value; break;
+                    case 15: this.M44 = value; break;
                     default: throw new ArgumentOutOfRangeException();
                 }
             }
@@ -190,7 +190,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// </exception>
         public Fix64 this[int row, int column]
         {
-            get
+            readonly get
             {
                 return this[(row * 4) + column];
             }
@@ -282,8 +282,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>The rotation <see cref="FixMatrix"/> around X axis.</returns>
         public static FixMatrix CreateRotationX(Fix64 radians)
         {
-            FixMatrix result;
-            FixMatrix.CreateRotationX(radians, out result);
+            FixMatrix.CreateRotationX(radians, out FixMatrix result);
             return result;
         }
 
@@ -312,8 +311,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>The rotation <see cref="FixMatrix"/> around Y axis.</returns>
         public static FixMatrix CreateRotationY(Fix64 radians)
         {
-            FixMatrix result;
-            FixMatrix.CreateRotationY(radians, out result);
+            FixMatrix.CreateRotationY(radians, out FixMatrix result);
             return result;
         }
 
@@ -342,8 +340,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>The rotation <see cref="FixMatrix"/> around Z axis.</returns>
         public static FixMatrix CreateRotationZ(Fix64 radians)
         {
-            FixMatrix result;
-            FixMatrix.CreateRotationZ(radians, out result);
+            FixMatrix.CreateRotationZ(radians, out FixMatrix result);
             return result;
         }
 
@@ -374,8 +371,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>The translation <see cref="FixMatrix"/>.</returns>
         public static FixMatrix CreateTranslation(Fix64 xPosition, Fix64 yPosition, Fix64 zPosition)
         {
-            FixMatrix result;
-            FixMatrix.CreateTranslation(xPosition, yPosition, zPosition, out result);
+            FixMatrix.CreateTranslation(xPosition, yPosition, zPosition, out FixMatrix result);
             return result;
         }
 
@@ -411,8 +407,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>The translation <see cref="FixMatrix"/>.</returns>
         public static FixMatrix CreateTranslation(FixVector3 position)
         {
-            FixMatrix result;
-            FixMatrix.CreateTranslation(ref position, out result);
+            FixMatrix.CreateTranslation(ref position, out FixMatrix result);
             return result;
         }
 
@@ -453,22 +448,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>The result of dividing the matrix.</returns>
         public static FixMatrix Divide(FixMatrix matrix1, FixMatrix matrix2)
         {
-            matrix1.M11 = matrix1.M11 / matrix2.M11;
-            matrix1.M12 = matrix1.M12 / matrix2.M12;
-            matrix1.M13 = matrix1.M13 / matrix2.M13;
-            matrix1.M14 = matrix1.M14 / matrix2.M14;
-            matrix1.M21 = matrix1.M21 / matrix2.M21;
-            matrix1.M22 = matrix1.M22 / matrix2.M22;
-            matrix1.M23 = matrix1.M23 / matrix2.M23;
-            matrix1.M24 = matrix1.M24 / matrix2.M24;
-            matrix1.M31 = matrix1.M31 / matrix2.M31;
-            matrix1.M32 = matrix1.M32 / matrix2.M32;
-            matrix1.M33 = matrix1.M33 / matrix2.M33;
-            matrix1.M34 = matrix1.M34 / matrix2.M34;
-            matrix1.M41 = matrix1.M41 / matrix2.M41;
-            matrix1.M42 = matrix1.M42 / matrix2.M42;
-            matrix1.M43 = matrix1.M43 / matrix2.M43;
-            matrix1.M44 = matrix1.M44 / matrix2.M44;
+            matrix1.M11 /= matrix2.M11;
+            matrix1.M12 /= matrix2.M12;
+            matrix1.M13 /= matrix2.M13;
+            matrix1.M14 /= matrix2.M14;
+            matrix1.M21 /= matrix2.M21;
+            matrix1.M22 /= matrix2.M22;
+            matrix1.M23 /= matrix2.M23;
+            matrix1.M24 /= matrix2.M24;
+            matrix1.M31 /= matrix2.M31;
+            matrix1.M32 /= matrix2.M32;
+            matrix1.M33 /= matrix2.M33;
+            matrix1.M34 /= matrix2.M34;
+            matrix1.M41 /= matrix2.M41;
+            matrix1.M42 /= matrix2.M42;
+            matrix1.M43 /= matrix2.M43;
+            matrix1.M44 /= matrix2.M44;
             return matrix1;
         }
 
@@ -507,22 +502,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         public static FixMatrix Divide(FixMatrix matrix1, Fix64 divider)
         {
             Fix64 num = Fix64.One / divider;
-            matrix1.M11 = matrix1.M11 * num;
-            matrix1.M12 = matrix1.M12 * num;
-            matrix1.M13 = matrix1.M13 * num;
-            matrix1.M14 = matrix1.M14 * num;
-            matrix1.M21 = matrix1.M21 * num;
-            matrix1.M22 = matrix1.M22 * num;
-            matrix1.M23 = matrix1.M23 * num;
-            matrix1.M24 = matrix1.M24 * num;
-            matrix1.M31 = matrix1.M31 * num;
-            matrix1.M32 = matrix1.M32 * num;
-            matrix1.M33 = matrix1.M33 * num;
-            matrix1.M34 = matrix1.M34 * num;
-            matrix1.M41 = matrix1.M41 * num;
-            matrix1.M42 = matrix1.M42 * num;
-            matrix1.M43 = matrix1.M43 * num;
-            matrix1.M44 = matrix1.M44 * num;
+            matrix1.M11 *= num;
+            matrix1.M12 *= num;
+            matrix1.M13 *= num;
+            matrix1.M14 *= num;
+            matrix1.M21 *= num;
+            matrix1.M22 *= num;
+            matrix1.M23 *= num;
+            matrix1.M24 *= num;
+            matrix1.M31 *= num;
+            matrix1.M32 *= num;
+            matrix1.M33 *= num;
+            matrix1.M34 *= num;
+            matrix1.M41 *= num;
+            matrix1.M42 *= num;
+            matrix1.M43 *= num;
+            matrix1.M44 *= num;
             return matrix1;
         }
 
@@ -564,11 +559,11 @@ namespace VoidHuntersRevived.Common.FixedPoint
         }
 
         /// <summary>
-        /// Compares whether current instance is equal to specified <see cref="Object"/> without any tolerance.
+        /// Compares whether current instance is equal to specified <see cref="object"/> without any tolerance.
         /// </summary>
-        /// <param name="obj">The <see cref="Object"/> to compare.</param>
+        /// <param name="obj">The <see cref="object"/> to compare.</param>
         /// <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return obj is FixMatrix matrix
                 && this == matrix;
@@ -578,9 +573,9 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// Gets the hash code of this <see cref="FixMatrix"/>.
         /// </summary>
         /// <returns>Hash code of this <see cref="FixMatrix"/>.</returns>
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
-            return (((((((((((((((this.M11.GetHashCode() + this.M12.GetHashCode()) + this.M13.GetHashCode()) + this.M14.GetHashCode()) + this.M21.GetHashCode()) + this.M22.GetHashCode()) + this.M23.GetHashCode()) + this.M24.GetHashCode()) + this.M31.GetHashCode()) + this.M32.GetHashCode()) + this.M33.GetHashCode()) + this.M34.GetHashCode()) + this.M41.GetHashCode()) + this.M42.GetHashCode()) + this.M43.GetHashCode()) + this.M44.GetHashCode());
+            return (this.M11.GetHashCode() + this.M12.GetHashCode() + this.M13.GetHashCode() + this.M14.GetHashCode() + this.M21.GetHashCode() + this.M22.GetHashCode() + this.M23.GetHashCode() + this.M24.GetHashCode() + this.M31.GetHashCode() + this.M32.GetHashCode() + this.M33.GetHashCode() + this.M34.GetHashCode() + this.M41.GetHashCode() + this.M42.GetHashCode() + this.M43.GetHashCode() + this.M44.GetHashCode());
         }
 
         /// <summary>
@@ -590,8 +585,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>The inverted matrix.</returns>
         public static FixMatrix Invert(FixMatrix matrix)
         {
-            FixMatrix result;
-            FixMatrix.Invert(ref matrix, out result);
+            FixMatrix.Invert(ref matrix, out FixMatrix result);
             return result;
         }
 
@@ -618,46 +612,46 @@ namespace VoidHuntersRevived.Common.FixedPoint
             Fix64 num14 = matrix.M42;
             Fix64 num15 = matrix.M43;
             Fix64 num16 = matrix.M44;
-            Fix64 num17 = (num11 * num16 - num12 * num15);
-            Fix64 num18 = (num10 * num16 - num12 * num14);
-            Fix64 num19 = (num10 * num15 - num11 * num14);
-            Fix64 num20 = (num9 * num16 - num12 * num13);
-            Fix64 num21 = (num9 * num15 - num11 * num13);
-            Fix64 num22 = (num9 * num14 - num10 * num13);
-            Fix64 num23 = (num6 * num17 - num7 * num18 + num8 * num19);
-            Fix64 num24 = -(num5 * num17 - num7 * num20 + num8 * num21);
-            Fix64 num25 = (num5 * num18 - num6 * num20 + num8 * num22);
-            Fix64 num26 = -(num5 * num19 - num6 * num21 + num7 * num22);
-            Fix64 num27 = (Fix64.One / (num1 * num23 + num2 * num24 + num3 * num25 + num4 * num26));
+            Fix64 num17 = ((num11 * num16) - (num12 * num15));
+            Fix64 num18 = ((num10 * num16) - (num12 * num14));
+            Fix64 num19 = ((num10 * num15) - (num11 * num14));
+            Fix64 num20 = ((num9 * num16) - (num12 * num13));
+            Fix64 num21 = ((num9 * num15) - (num11 * num13));
+            Fix64 num22 = ((num9 * num14) - (num10 * num13));
+            Fix64 num23 = ((num6 * num17) - (num7 * num18) + (num8 * num19));
+            Fix64 num24 = -((num5 * num17) - (num7 * num20) + (num8 * num21));
+            Fix64 num25 = ((num5 * num18) - (num6 * num20) + (num8 * num22));
+            Fix64 num26 = -((num5 * num19) - (num6 * num21) + (num7 * num22));
+            Fix64 num27 = (Fix64.One / ((num1 * num23) + (num2 * num24) + (num3 * num25) + (num4 * num26)));
 
             result.M11 = num23 * num27;
             result.M21 = num24 * num27;
             result.M31 = num25 * num27;
             result.M41 = num26 * num27;
-            result.M12 = -(num2 * num17 - num3 * num18 + num4 * num19) * num27;
-            result.M22 = (num1 * num17 - num3 * num20 + num4 * num21) * num27;
-            result.M32 = -(num1 * num18 - num2 * num20 + num4 * num22) * num27;
-            result.M42 = (num1 * num19 - num2 * num21 + num3 * num22) * num27;
-            Fix64 num28 = (num7 * num16 - num8 * num15);
-            Fix64 num29 = (num6 * num16 - num8 * num14);
-            Fix64 num30 = (num6 * num15 - num7 * num14);
-            Fix64 num31 = (num5 * num16 - num8 * num13);
-            Fix64 num32 = (num5 * num15 - num7 * num13);
-            Fix64 num33 = (num5 * num14 - num6 * num13);
-            result.M13 = (num2 * num28 - num3 * num29 + num4 * num30) * num27;
-            result.M23 = -(num1 * num28 - num3 * num31 + num4 * num32) * num27;
-            result.M33 = (num1 * num29 - num2 * num31 + num4 * num33) * num27;
-            result.M43 = -(num1 * num30 - num2 * num32 + num3 * num33) * num27;
-            Fix64 num34 = (num7 * num12 - num8 * num11);
-            Fix64 num35 = (num6 * num12 - num8 * num10);
-            Fix64 num36 = (num6 * num11 - num7 * num10);
-            Fix64 num37 = (num5 * num12 - num8 * num9);
-            Fix64 num38 = (num5 * num11 - num7 * num9);
-            Fix64 num39 = (num5 * num10 - num6 * num9);
-            result.M14 = -(num2 * num34 - num3 * num35 + num4 * num36) * num27;
-            result.M24 = (num1 * num34 - num3 * num37 + num4 * num38) * num27;
-            result.M34 = -(num1 * num35 - num2 * num37 + num4 * num39) * num27;
-            result.M44 = (num1 * num36 - num2 * num38 + num3 * num39) * num27;
+            result.M12 = -((num2 * num17) - (num3 * num18) + (num4 * num19)) * num27;
+            result.M22 = ((num1 * num17) - (num3 * num20) + (num4 * num21)) * num27;
+            result.M32 = -((num1 * num18) - (num2 * num20) + (num4 * num22)) * num27;
+            result.M42 = ((num1 * num19) - (num2 * num21) + (num3 * num22)) * num27;
+            Fix64 num28 = ((num7 * num16) - (num8 * num15));
+            Fix64 num29 = ((num6 * num16) - (num8 * num14));
+            Fix64 num30 = ((num6 * num15) - (num7 * num14));
+            Fix64 num31 = ((num5 * num16) - (num8 * num13));
+            Fix64 num32 = ((num5 * num15) - (num7 * num13));
+            Fix64 num33 = ((num5 * num14) - (num6 * num13));
+            result.M13 = ((num2 * num28) - (num3 * num29) + (num4 * num30)) * num27;
+            result.M23 = -((num1 * num28) - (num3 * num31) + (num4 * num32)) * num27;
+            result.M33 = ((num1 * num29) - (num2 * num31) + (num4 * num33)) * num27;
+            result.M43 = -((num1 * num30) - (num2 * num32) + (num3 * num33)) * num27;
+            Fix64 num34 = ((num7 * num12) - (num8 * num11));
+            Fix64 num35 = ((num6 * num12) - (num8 * num10));
+            Fix64 num36 = ((num6 * num11) - (num7 * num10));
+            Fix64 num37 = ((num5 * num12) - (num8 * num9));
+            Fix64 num38 = ((num5 * num11) - (num7 * num9));
+            Fix64 num39 = ((num5 * num10) - (num6 * num9));
+            result.M14 = -((num2 * num34) - (num3 * num35) + (num4 * num36)) * num27;
+            result.M24 = ((num1 * num34) - (num3 * num37) + (num4 * num38)) * num27;
+            result.M34 = -((num1 * num35) - (num2 * num37) + (num4 * num39)) * num27;
+            result.M44 = ((num1 * num36) - (num2 * num38) + (num3 * num39)) * num27;
 
 
             /*
@@ -709,22 +703,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>>The result of linear interpolation of the specified matrixes.</returns>
         public static FixMatrix Lerp(FixMatrix matrix1, FixMatrix matrix2, Fix64 amount)
         {
-            matrix1.M11 = matrix1.M11 + ((matrix2.M11 - matrix1.M11) * amount);
-            matrix1.M12 = matrix1.M12 + ((matrix2.M12 - matrix1.M12) * amount);
-            matrix1.M13 = matrix1.M13 + ((matrix2.M13 - matrix1.M13) * amount);
-            matrix1.M14 = matrix1.M14 + ((matrix2.M14 - matrix1.M14) * amount);
-            matrix1.M21 = matrix1.M21 + ((matrix2.M21 - matrix1.M21) * amount);
-            matrix1.M22 = matrix1.M22 + ((matrix2.M22 - matrix1.M22) * amount);
-            matrix1.M23 = matrix1.M23 + ((matrix2.M23 - matrix1.M23) * amount);
-            matrix1.M24 = matrix1.M24 + ((matrix2.M24 - matrix1.M24) * amount);
-            matrix1.M31 = matrix1.M31 + ((matrix2.M31 - matrix1.M31) * amount);
-            matrix1.M32 = matrix1.M32 + ((matrix2.M32 - matrix1.M32) * amount);
-            matrix1.M33 = matrix1.M33 + ((matrix2.M33 - matrix1.M33) * amount);
-            matrix1.M34 = matrix1.M34 + ((matrix2.M34 - matrix1.M34) * amount);
-            matrix1.M41 = matrix1.M41 + ((matrix2.M41 - matrix1.M41) * amount);
-            matrix1.M42 = matrix1.M42 + ((matrix2.M42 - matrix1.M42) * amount);
-            matrix1.M43 = matrix1.M43 + ((matrix2.M43 - matrix1.M43) * amount);
-            matrix1.M44 = matrix1.M44 + ((matrix2.M44 - matrix1.M44) * amount);
+            matrix1.M11 += ((matrix2.M11 - matrix1.M11) * amount);
+            matrix1.M12 += ((matrix2.M12 - matrix1.M12) * amount);
+            matrix1.M13 += ((matrix2.M13 - matrix1.M13) * amount);
+            matrix1.M14 += ((matrix2.M14 - matrix1.M14) * amount);
+            matrix1.M21 += ((matrix2.M21 - matrix1.M21) * amount);
+            matrix1.M22 += ((matrix2.M22 - matrix1.M22) * amount);
+            matrix1.M23 += ((matrix2.M23 - matrix1.M23) * amount);
+            matrix1.M24 += ((matrix2.M24 - matrix1.M24) * amount);
+            matrix1.M31 += ((matrix2.M31 - matrix1.M31) * amount);
+            matrix1.M32 += ((matrix2.M32 - matrix1.M32) * amount);
+            matrix1.M33 += ((matrix2.M33 - matrix1.M33) * amount);
+            matrix1.M34 += ((matrix2.M34 - matrix1.M34) * amount);
+            matrix1.M41 += ((matrix2.M41 - matrix1.M41) * amount);
+            matrix1.M42 += ((matrix2.M42 - matrix1.M42) * amount);
+            matrix1.M43 += ((matrix2.M43 - matrix1.M43) * amount);
+            matrix1.M44 += ((matrix2.M44 - matrix1.M44) * amount);
             return matrix1;
         }
 
@@ -763,22 +757,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>Result of the matrix multiplication.</returns>
         public static FixMatrix Multiply(FixMatrix matrix1, FixMatrix matrix2)
         {
-            Fix64 m11 = (((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31)) + (matrix1.M14 * matrix2.M41);
-            Fix64 m12 = (((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32)) + (matrix1.M14 * matrix2.M42);
-            Fix64 m13 = (((matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23)) + (matrix1.M13 * matrix2.M33)) + (matrix1.M14 * matrix2.M43);
-            Fix64 m14 = (((matrix1.M11 * matrix2.M14) + (matrix1.M12 * matrix2.M24)) + (matrix1.M13 * matrix2.M34)) + (matrix1.M14 * matrix2.M44);
-            Fix64 m21 = (((matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21)) + (matrix1.M23 * matrix2.M31)) + (matrix1.M24 * matrix2.M41);
-            Fix64 m22 = (((matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22)) + (matrix1.M23 * matrix2.M32)) + (matrix1.M24 * matrix2.M42);
-            Fix64 m23 = (((matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23)) + (matrix1.M23 * matrix2.M33)) + (matrix1.M24 * matrix2.M43);
-            Fix64 m24 = (((matrix1.M21 * matrix2.M14) + (matrix1.M22 * matrix2.M24)) + (matrix1.M23 * matrix2.M34)) + (matrix1.M24 * matrix2.M44);
-            Fix64 m31 = (((matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21)) + (matrix1.M33 * matrix2.M31)) + (matrix1.M34 * matrix2.M41);
-            Fix64 m32 = (((matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22)) + (matrix1.M33 * matrix2.M32)) + (matrix1.M34 * matrix2.M42);
-            Fix64 m33 = (((matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23)) + (matrix1.M33 * matrix2.M33)) + (matrix1.M34 * matrix2.M43);
-            Fix64 m34 = (((matrix1.M31 * matrix2.M14) + (matrix1.M32 * matrix2.M24)) + (matrix1.M33 * matrix2.M34)) + (matrix1.M34 * matrix2.M44);
-            Fix64 m41 = (((matrix1.M41 * matrix2.M11) + (matrix1.M42 * matrix2.M21)) + (matrix1.M43 * matrix2.M31)) + (matrix1.M44 * matrix2.M41);
-            Fix64 m42 = (((matrix1.M41 * matrix2.M12) + (matrix1.M42 * matrix2.M22)) + (matrix1.M43 * matrix2.M32)) + (matrix1.M44 * matrix2.M42);
-            Fix64 m43 = (((matrix1.M41 * matrix2.M13) + (matrix1.M42 * matrix2.M23)) + (matrix1.M43 * matrix2.M33)) + (matrix1.M44 * matrix2.M43);
-            Fix64 m44 = (((matrix1.M41 * matrix2.M14) + (matrix1.M42 * matrix2.M24)) + (matrix1.M43 * matrix2.M34)) + (matrix1.M44 * matrix2.M44);
+            Fix64 m11 = (matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21) + (matrix1.M13 * matrix2.M31) + (matrix1.M14 * matrix2.M41);
+            Fix64 m12 = (matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22) + (matrix1.M13 * matrix2.M32) + (matrix1.M14 * matrix2.M42);
+            Fix64 m13 = (matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23) + (matrix1.M13 * matrix2.M33) + (matrix1.M14 * matrix2.M43);
+            Fix64 m14 = (matrix1.M11 * matrix2.M14) + (matrix1.M12 * matrix2.M24) + (matrix1.M13 * matrix2.M34) + (matrix1.M14 * matrix2.M44);
+            Fix64 m21 = (matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21) + (matrix1.M23 * matrix2.M31) + (matrix1.M24 * matrix2.M41);
+            Fix64 m22 = (matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22) + (matrix1.M23 * matrix2.M32) + (matrix1.M24 * matrix2.M42);
+            Fix64 m23 = (matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23) + (matrix1.M23 * matrix2.M33) + (matrix1.M24 * matrix2.M43);
+            Fix64 m24 = (matrix1.M21 * matrix2.M14) + (matrix1.M22 * matrix2.M24) + (matrix1.M23 * matrix2.M34) + (matrix1.M24 * matrix2.M44);
+            Fix64 m31 = (matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21) + (matrix1.M33 * matrix2.M31) + (matrix1.M34 * matrix2.M41);
+            Fix64 m32 = (matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22) + (matrix1.M33 * matrix2.M32) + (matrix1.M34 * matrix2.M42);
+            Fix64 m33 = (matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23) + (matrix1.M33 * matrix2.M33) + (matrix1.M34 * matrix2.M43);
+            Fix64 m34 = (matrix1.M31 * matrix2.M14) + (matrix1.M32 * matrix2.M24) + (matrix1.M33 * matrix2.M34) + (matrix1.M34 * matrix2.M44);
+            Fix64 m41 = (matrix1.M41 * matrix2.M11) + (matrix1.M42 * matrix2.M21) + (matrix1.M43 * matrix2.M31) + (matrix1.M44 * matrix2.M41);
+            Fix64 m42 = (matrix1.M41 * matrix2.M12) + (matrix1.M42 * matrix2.M22) + (matrix1.M43 * matrix2.M32) + (matrix1.M44 * matrix2.M42);
+            Fix64 m43 = (matrix1.M41 * matrix2.M13) + (matrix1.M42 * matrix2.M23) + (matrix1.M43 * matrix2.M33) + (matrix1.M44 * matrix2.M43);
+            Fix64 m44 = (matrix1.M41 * matrix2.M14) + (matrix1.M42 * matrix2.M24) + (matrix1.M43 * matrix2.M34) + (matrix1.M44 * matrix2.M44);
             matrix1.M11 = m11;
             matrix1.M12 = m12;
             matrix1.M13 = m13;
@@ -806,22 +800,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <param name="result">Result of the matrix multiplication as an output parameter.</param>
         public static void Multiply(ref FixMatrix matrix1, ref FixMatrix matrix2, out FixMatrix result)
         {
-            Fix64 m11 = (((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31)) + (matrix1.M14 * matrix2.M41);
-            Fix64 m12 = (((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32)) + (matrix1.M14 * matrix2.M42);
-            Fix64 m13 = (((matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23)) + (matrix1.M13 * matrix2.M33)) + (matrix1.M14 * matrix2.M43);
-            Fix64 m14 = (((matrix1.M11 * matrix2.M14) + (matrix1.M12 * matrix2.M24)) + (matrix1.M13 * matrix2.M34)) + (matrix1.M14 * matrix2.M44);
-            Fix64 m21 = (((matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21)) + (matrix1.M23 * matrix2.M31)) + (matrix1.M24 * matrix2.M41);
-            Fix64 m22 = (((matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22)) + (matrix1.M23 * matrix2.M32)) + (matrix1.M24 * matrix2.M42);
-            Fix64 m23 = (((matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23)) + (matrix1.M23 * matrix2.M33)) + (matrix1.M24 * matrix2.M43);
-            Fix64 m24 = (((matrix1.M21 * matrix2.M14) + (matrix1.M22 * matrix2.M24)) + (matrix1.M23 * matrix2.M34)) + (matrix1.M24 * matrix2.M44);
-            Fix64 m31 = (((matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21)) + (matrix1.M33 * matrix2.M31)) + (matrix1.M34 * matrix2.M41);
-            Fix64 m32 = (((matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22)) + (matrix1.M33 * matrix2.M32)) + (matrix1.M34 * matrix2.M42);
-            Fix64 m33 = (((matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23)) + (matrix1.M33 * matrix2.M33)) + (matrix1.M34 * matrix2.M43);
-            Fix64 m34 = (((matrix1.M31 * matrix2.M14) + (matrix1.M32 * matrix2.M24)) + (matrix1.M33 * matrix2.M34)) + (matrix1.M34 * matrix2.M44);
-            Fix64 m41 = (((matrix1.M41 * matrix2.M11) + (matrix1.M42 * matrix2.M21)) + (matrix1.M43 * matrix2.M31)) + (matrix1.M44 * matrix2.M41);
-            Fix64 m42 = (((matrix1.M41 * matrix2.M12) + (matrix1.M42 * matrix2.M22)) + (matrix1.M43 * matrix2.M32)) + (matrix1.M44 * matrix2.M42);
-            Fix64 m43 = (((matrix1.M41 * matrix2.M13) + (matrix1.M42 * matrix2.M23)) + (matrix1.M43 * matrix2.M33)) + (matrix1.M44 * matrix2.M43);
-            Fix64 m44 = (((matrix1.M41 * matrix2.M14) + (matrix1.M42 * matrix2.M24)) + (matrix1.M43 * matrix2.M34)) + (matrix1.M44 * matrix2.M44);
+            Fix64 m11 = (matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21) + (matrix1.M13 * matrix2.M31) + (matrix1.M14 * matrix2.M41);
+            Fix64 m12 = (matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22) + (matrix1.M13 * matrix2.M32) + (matrix1.M14 * matrix2.M42);
+            Fix64 m13 = (matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23) + (matrix1.M13 * matrix2.M33) + (matrix1.M14 * matrix2.M43);
+            Fix64 m14 = (matrix1.M11 * matrix2.M14) + (matrix1.M12 * matrix2.M24) + (matrix1.M13 * matrix2.M34) + (matrix1.M14 * matrix2.M44);
+            Fix64 m21 = (matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21) + (matrix1.M23 * matrix2.M31) + (matrix1.M24 * matrix2.M41);
+            Fix64 m22 = (matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22) + (matrix1.M23 * matrix2.M32) + (matrix1.M24 * matrix2.M42);
+            Fix64 m23 = (matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23) + (matrix1.M23 * matrix2.M33) + (matrix1.M24 * matrix2.M43);
+            Fix64 m24 = (matrix1.M21 * matrix2.M14) + (matrix1.M22 * matrix2.M24) + (matrix1.M23 * matrix2.M34) + (matrix1.M24 * matrix2.M44);
+            Fix64 m31 = (matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21) + (matrix1.M33 * matrix2.M31) + (matrix1.M34 * matrix2.M41);
+            Fix64 m32 = (matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22) + (matrix1.M33 * matrix2.M32) + (matrix1.M34 * matrix2.M42);
+            Fix64 m33 = (matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23) + (matrix1.M33 * matrix2.M33) + (matrix1.M34 * matrix2.M43);
+            Fix64 m34 = (matrix1.M31 * matrix2.M14) + (matrix1.M32 * matrix2.M24) + (matrix1.M33 * matrix2.M34) + (matrix1.M34 * matrix2.M44);
+            Fix64 m41 = (matrix1.M41 * matrix2.M11) + (matrix1.M42 * matrix2.M21) + (matrix1.M43 * matrix2.M31) + (matrix1.M44 * matrix2.M41);
+            Fix64 m42 = (matrix1.M41 * matrix2.M12) + (matrix1.M42 * matrix2.M22) + (matrix1.M43 * matrix2.M32) + (matrix1.M44 * matrix2.M42);
+            Fix64 m43 = (matrix1.M41 * matrix2.M13) + (matrix1.M42 * matrix2.M23) + (matrix1.M43 * matrix2.M33) + (matrix1.M44 * matrix2.M43);
+            Fix64 m44 = (matrix1.M41 * matrix2.M14) + (matrix1.M42 * matrix2.M24) + (matrix1.M43 * matrix2.M34) + (matrix1.M44 * matrix2.M44);
             result.M11 = m11;
             result.M12 = m12;
             result.M13 = m13;
@@ -904,12 +898,12 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// </remarks>
         public static Fix64[] ToFloatArray(FixMatrix matrix)
         {
-            Fix64[] matarray = {
+            Fix64[] matarray = [
                 matrix.M11, matrix.M12, matrix.M13, matrix.M14,
                 matrix.M21, matrix.M22, matrix.M23, matrix.M24,
                 matrix.M31, matrix.M32, matrix.M33, matrix.M34,
                 matrix.M41, matrix.M42, matrix.M43, matrix.M44
-            };
+            ];
             return matarray;
         }
 
@@ -972,22 +966,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>Sum of the matrixes.</returns>
         public static FixMatrix operator +(FixMatrix matrix1, FixMatrix matrix2)
         {
-            matrix1.M11 = matrix1.M11 + matrix2.M11;
-            matrix1.M12 = matrix1.M12 + matrix2.M12;
-            matrix1.M13 = matrix1.M13 + matrix2.M13;
-            matrix1.M14 = matrix1.M14 + matrix2.M14;
-            matrix1.M21 = matrix1.M21 + matrix2.M21;
-            matrix1.M22 = matrix1.M22 + matrix2.M22;
-            matrix1.M23 = matrix1.M23 + matrix2.M23;
-            matrix1.M24 = matrix1.M24 + matrix2.M24;
-            matrix1.M31 = matrix1.M31 + matrix2.M31;
-            matrix1.M32 = matrix1.M32 + matrix2.M32;
-            matrix1.M33 = matrix1.M33 + matrix2.M33;
-            matrix1.M34 = matrix1.M34 + matrix2.M34;
-            matrix1.M41 = matrix1.M41 + matrix2.M41;
-            matrix1.M42 = matrix1.M42 + matrix2.M42;
-            matrix1.M43 = matrix1.M43 + matrix2.M43;
-            matrix1.M44 = matrix1.M44 + matrix2.M44;
+            matrix1.M11 += matrix2.M11;
+            matrix1.M12 += matrix2.M12;
+            matrix1.M13 += matrix2.M13;
+            matrix1.M14 += matrix2.M14;
+            matrix1.M21 += matrix2.M21;
+            matrix1.M22 += matrix2.M22;
+            matrix1.M23 += matrix2.M23;
+            matrix1.M24 += matrix2.M24;
+            matrix1.M31 += matrix2.M31;
+            matrix1.M32 += matrix2.M32;
+            matrix1.M33 += matrix2.M33;
+            matrix1.M34 += matrix2.M34;
+            matrix1.M41 += matrix2.M41;
+            matrix1.M42 += matrix2.M42;
+            matrix1.M43 += matrix2.M43;
+            matrix1.M44 += matrix2.M44;
             return matrix1;
         }
 
@@ -999,22 +993,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>The result of dividing the matrixes.</returns>
         public static FixMatrix operator /(FixMatrix matrix1, FixMatrix matrix2)
         {
-            matrix1.M11 = matrix1.M11 / matrix2.M11;
-            matrix1.M12 = matrix1.M12 / matrix2.M12;
-            matrix1.M13 = matrix1.M13 / matrix2.M13;
-            matrix1.M14 = matrix1.M14 / matrix2.M14;
-            matrix1.M21 = matrix1.M21 / matrix2.M21;
-            matrix1.M22 = matrix1.M22 / matrix2.M22;
-            matrix1.M23 = matrix1.M23 / matrix2.M23;
-            matrix1.M24 = matrix1.M24 / matrix2.M24;
-            matrix1.M31 = matrix1.M31 / matrix2.M31;
-            matrix1.M32 = matrix1.M32 / matrix2.M32;
-            matrix1.M33 = matrix1.M33 / matrix2.M33;
-            matrix1.M34 = matrix1.M34 / matrix2.M34;
-            matrix1.M41 = matrix1.M41 / matrix2.M41;
-            matrix1.M42 = matrix1.M42 / matrix2.M42;
-            matrix1.M43 = matrix1.M43 / matrix2.M43;
-            matrix1.M44 = matrix1.M44 / matrix2.M44;
+            matrix1.M11 /= matrix2.M11;
+            matrix1.M12 /= matrix2.M12;
+            matrix1.M13 /= matrix2.M13;
+            matrix1.M14 /= matrix2.M14;
+            matrix1.M21 /= matrix2.M21;
+            matrix1.M22 /= matrix2.M22;
+            matrix1.M23 /= matrix2.M23;
+            matrix1.M24 /= matrix2.M24;
+            matrix1.M31 /= matrix2.M31;
+            matrix1.M32 /= matrix2.M32;
+            matrix1.M33 /= matrix2.M33;
+            matrix1.M34 /= matrix2.M34;
+            matrix1.M41 /= matrix2.M41;
+            matrix1.M42 /= matrix2.M42;
+            matrix1.M43 /= matrix2.M43;
+            matrix1.M44 /= matrix2.M44;
             return matrix1;
         }
 
@@ -1027,22 +1021,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         public static FixMatrix operator /(FixMatrix matrix, Fix64 divider)
         {
             Fix64 num = Fix64.One / divider;
-            matrix.M11 = matrix.M11 * num;
-            matrix.M12 = matrix.M12 * num;
-            matrix.M13 = matrix.M13 * num;
-            matrix.M14 = matrix.M14 * num;
-            matrix.M21 = matrix.M21 * num;
-            matrix.M22 = matrix.M22 * num;
-            matrix.M23 = matrix.M23 * num;
-            matrix.M24 = matrix.M24 * num;
-            matrix.M31 = matrix.M31 * num;
-            matrix.M32 = matrix.M32 * num;
-            matrix.M33 = matrix.M33 * num;
-            matrix.M34 = matrix.M34 * num;
-            matrix.M41 = matrix.M41 * num;
-            matrix.M42 = matrix.M42 * num;
-            matrix.M43 = matrix.M43 * num;
-            matrix.M44 = matrix.M44 * num;
+            matrix.M11 *= num;
+            matrix.M12 *= num;
+            matrix.M13 *= num;
+            matrix.M14 *= num;
+            matrix.M21 *= num;
+            matrix.M22 *= num;
+            matrix.M23 *= num;
+            matrix.M24 *= num;
+            matrix.M31 *= num;
+            matrix.M32 *= num;
+            matrix.M33 *= num;
+            matrix.M34 *= num;
+            matrix.M41 *= num;
+            matrix.M42 *= num;
+            matrix.M43 *= num;
+            matrix.M44 *= num;
             return matrix;
         }
 
@@ -1113,22 +1107,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// </remarks>
         public static FixMatrix operator *(FixMatrix matrix1, FixMatrix matrix2)
         {
-            Fix64 m11 = (((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31)) + (matrix1.M14 * matrix2.M41);
-            Fix64 m12 = (((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32)) + (matrix1.M14 * matrix2.M42);
-            Fix64 m13 = (((matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23)) + (matrix1.M13 * matrix2.M33)) + (matrix1.M14 * matrix2.M43);
-            Fix64 m14 = (((matrix1.M11 * matrix2.M14) + (matrix1.M12 * matrix2.M24)) + (matrix1.M13 * matrix2.M34)) + (matrix1.M14 * matrix2.M44);
-            Fix64 m21 = (((matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21)) + (matrix1.M23 * matrix2.M31)) + (matrix1.M24 * matrix2.M41);
-            Fix64 m22 = (((matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22)) + (matrix1.M23 * matrix2.M32)) + (matrix1.M24 * matrix2.M42);
-            Fix64 m23 = (((matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23)) + (matrix1.M23 * matrix2.M33)) + (matrix1.M24 * matrix2.M43);
-            Fix64 m24 = (((matrix1.M21 * matrix2.M14) + (matrix1.M22 * matrix2.M24)) + (matrix1.M23 * matrix2.M34)) + (matrix1.M24 * matrix2.M44);
-            Fix64 m31 = (((matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21)) + (matrix1.M33 * matrix2.M31)) + (matrix1.M34 * matrix2.M41);
-            Fix64 m32 = (((matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22)) + (matrix1.M33 * matrix2.M32)) + (matrix1.M34 * matrix2.M42);
-            Fix64 m33 = (((matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23)) + (matrix1.M33 * matrix2.M33)) + (matrix1.M34 * matrix2.M43);
-            Fix64 m34 = (((matrix1.M31 * matrix2.M14) + (matrix1.M32 * matrix2.M24)) + (matrix1.M33 * matrix2.M34)) + (matrix1.M34 * matrix2.M44);
-            Fix64 m41 = (((matrix1.M41 * matrix2.M11) + (matrix1.M42 * matrix2.M21)) + (matrix1.M43 * matrix2.M31)) + (matrix1.M44 * matrix2.M41);
-            Fix64 m42 = (((matrix1.M41 * matrix2.M12) + (matrix1.M42 * matrix2.M22)) + (matrix1.M43 * matrix2.M32)) + (matrix1.M44 * matrix2.M42);
-            Fix64 m43 = (((matrix1.M41 * matrix2.M13) + (matrix1.M42 * matrix2.M23)) + (matrix1.M43 * matrix2.M33)) + (matrix1.M44 * matrix2.M43);
-            Fix64 m44 = (((matrix1.M41 * matrix2.M14) + (matrix1.M42 * matrix2.M24)) + (matrix1.M43 * matrix2.M34)) + (matrix1.M44 * matrix2.M44);
+            Fix64 m11 = (matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21) + (matrix1.M13 * matrix2.M31) + (matrix1.M14 * matrix2.M41);
+            Fix64 m12 = (matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22) + (matrix1.M13 * matrix2.M32) + (matrix1.M14 * matrix2.M42);
+            Fix64 m13 = (matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23) + (matrix1.M13 * matrix2.M33) + (matrix1.M14 * matrix2.M43);
+            Fix64 m14 = (matrix1.M11 * matrix2.M14) + (matrix1.M12 * matrix2.M24) + (matrix1.M13 * matrix2.M34) + (matrix1.M14 * matrix2.M44);
+            Fix64 m21 = (matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21) + (matrix1.M23 * matrix2.M31) + (matrix1.M24 * matrix2.M41);
+            Fix64 m22 = (matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22) + (matrix1.M23 * matrix2.M32) + (matrix1.M24 * matrix2.M42);
+            Fix64 m23 = (matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23) + (matrix1.M23 * matrix2.M33) + (matrix1.M24 * matrix2.M43);
+            Fix64 m24 = (matrix1.M21 * matrix2.M14) + (matrix1.M22 * matrix2.M24) + (matrix1.M23 * matrix2.M34) + (matrix1.M24 * matrix2.M44);
+            Fix64 m31 = (matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21) + (matrix1.M33 * matrix2.M31) + (matrix1.M34 * matrix2.M41);
+            Fix64 m32 = (matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22) + (matrix1.M33 * matrix2.M32) + (matrix1.M34 * matrix2.M42);
+            Fix64 m33 = (matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23) + (matrix1.M33 * matrix2.M33) + (matrix1.M34 * matrix2.M43);
+            Fix64 m34 = (matrix1.M31 * matrix2.M14) + (matrix1.M32 * matrix2.M24) + (matrix1.M33 * matrix2.M34) + (matrix1.M34 * matrix2.M44);
+            Fix64 m41 = (matrix1.M41 * matrix2.M11) + (matrix1.M42 * matrix2.M21) + (matrix1.M43 * matrix2.M31) + (matrix1.M44 * matrix2.M41);
+            Fix64 m42 = (matrix1.M41 * matrix2.M12) + (matrix1.M42 * matrix2.M22) + (matrix1.M43 * matrix2.M32) + (matrix1.M44 * matrix2.M42);
+            Fix64 m43 = (matrix1.M41 * matrix2.M13) + (matrix1.M42 * matrix2.M23) + (matrix1.M43 * matrix2.M33) + (matrix1.M44 * matrix2.M43);
+            Fix64 m44 = (matrix1.M41 * matrix2.M14) + (matrix1.M42 * matrix2.M24) + (matrix1.M43 * matrix2.M34) + (matrix1.M44 * matrix2.M44);
             matrix1.M11 = m11;
             matrix1.M12 = m12;
             matrix1.M13 = m13;
@@ -1156,22 +1150,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>Result of the matrix multiplication with a scalar.</returns>
         public static FixMatrix operator *(FixMatrix matrix, Fix64 scaleFactor)
         {
-            matrix.M11 = matrix.M11 * scaleFactor;
-            matrix.M12 = matrix.M12 * scaleFactor;
-            matrix.M13 = matrix.M13 * scaleFactor;
-            matrix.M14 = matrix.M14 * scaleFactor;
-            matrix.M21 = matrix.M21 * scaleFactor;
-            matrix.M22 = matrix.M22 * scaleFactor;
-            matrix.M23 = matrix.M23 * scaleFactor;
-            matrix.M24 = matrix.M24 * scaleFactor;
-            matrix.M31 = matrix.M31 * scaleFactor;
-            matrix.M32 = matrix.M32 * scaleFactor;
-            matrix.M33 = matrix.M33 * scaleFactor;
-            matrix.M34 = matrix.M34 * scaleFactor;
-            matrix.M41 = matrix.M41 * scaleFactor;
-            matrix.M42 = matrix.M42 * scaleFactor;
-            matrix.M43 = matrix.M43 * scaleFactor;
-            matrix.M44 = matrix.M44 * scaleFactor;
+            matrix.M11 *= scaleFactor;
+            matrix.M12 *= scaleFactor;
+            matrix.M13 *= scaleFactor;
+            matrix.M14 *= scaleFactor;
+            matrix.M21 *= scaleFactor;
+            matrix.M22 *= scaleFactor;
+            matrix.M23 *= scaleFactor;
+            matrix.M24 *= scaleFactor;
+            matrix.M31 *= scaleFactor;
+            matrix.M32 *= scaleFactor;
+            matrix.M33 *= scaleFactor;
+            matrix.M34 *= scaleFactor;
+            matrix.M41 *= scaleFactor;
+            matrix.M42 *= scaleFactor;
+            matrix.M43 *= scaleFactor;
+            matrix.M44 *= scaleFactor;
             return matrix;
         }
 
@@ -1183,22 +1177,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>Result of the matrix subtraction.</returns>
         public static FixMatrix operator -(FixMatrix matrix1, FixMatrix matrix2)
         {
-            matrix1.M11 = matrix1.M11 - matrix2.M11;
-            matrix1.M12 = matrix1.M12 - matrix2.M12;
-            matrix1.M13 = matrix1.M13 - matrix2.M13;
-            matrix1.M14 = matrix1.M14 - matrix2.M14;
-            matrix1.M21 = matrix1.M21 - matrix2.M21;
-            matrix1.M22 = matrix1.M22 - matrix2.M22;
-            matrix1.M23 = matrix1.M23 - matrix2.M23;
-            matrix1.M24 = matrix1.M24 - matrix2.M24;
-            matrix1.M31 = matrix1.M31 - matrix2.M31;
-            matrix1.M32 = matrix1.M32 - matrix2.M32;
-            matrix1.M33 = matrix1.M33 - matrix2.M33;
-            matrix1.M34 = matrix1.M34 - matrix2.M34;
-            matrix1.M41 = matrix1.M41 - matrix2.M41;
-            matrix1.M42 = matrix1.M42 - matrix2.M42;
-            matrix1.M43 = matrix1.M43 - matrix2.M43;
-            matrix1.M44 = matrix1.M44 - matrix2.M44;
+            matrix1.M11 -= matrix2.M11;
+            matrix1.M12 -= matrix2.M12;
+            matrix1.M13 -= matrix2.M13;
+            matrix1.M14 -= matrix2.M14;
+            matrix1.M21 -= matrix2.M21;
+            matrix1.M22 -= matrix2.M22;
+            matrix1.M23 -= matrix2.M23;
+            matrix1.M24 -= matrix2.M24;
+            matrix1.M31 -= matrix2.M31;
+            matrix1.M32 -= matrix2.M32;
+            matrix1.M33 -= matrix2.M33;
+            matrix1.M34 -= matrix2.M34;
+            matrix1.M41 -= matrix2.M41;
+            matrix1.M42 -= matrix2.M42;
+            matrix1.M43 -= matrix2.M43;
+            matrix1.M44 -= matrix2.M44;
             return matrix1;
         }
 
@@ -1236,22 +1230,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>The result of the matrix subtraction.</returns>
         public static FixMatrix Subtract(FixMatrix matrix1, FixMatrix matrix2)
         {
-            matrix1.M11 = matrix1.M11 - matrix2.M11;
-            matrix1.M12 = matrix1.M12 - matrix2.M12;
-            matrix1.M13 = matrix1.M13 - matrix2.M13;
-            matrix1.M14 = matrix1.M14 - matrix2.M14;
-            matrix1.M21 = matrix1.M21 - matrix2.M21;
-            matrix1.M22 = matrix1.M22 - matrix2.M22;
-            matrix1.M23 = matrix1.M23 - matrix2.M23;
-            matrix1.M24 = matrix1.M24 - matrix2.M24;
-            matrix1.M31 = matrix1.M31 - matrix2.M31;
-            matrix1.M32 = matrix1.M32 - matrix2.M32;
-            matrix1.M33 = matrix1.M33 - matrix2.M33;
-            matrix1.M34 = matrix1.M34 - matrix2.M34;
-            matrix1.M41 = matrix1.M41 - matrix2.M41;
-            matrix1.M42 = matrix1.M42 - matrix2.M42;
-            matrix1.M43 = matrix1.M43 - matrix2.M43;
-            matrix1.M44 = matrix1.M44 - matrix2.M44;
+            matrix1.M11 -= matrix2.M11;
+            matrix1.M12 -= matrix2.M12;
+            matrix1.M13 -= matrix2.M13;
+            matrix1.M14 -= matrix2.M14;
+            matrix1.M21 -= matrix2.M21;
+            matrix1.M22 -= matrix2.M22;
+            matrix1.M23 -= matrix2.M23;
+            matrix1.M24 -= matrix2.M24;
+            matrix1.M31 -= matrix2.M31;
+            matrix1.M32 -= matrix2.M32;
+            matrix1.M33 -= matrix2.M33;
+            matrix1.M34 -= matrix2.M34;
+            matrix1.M41 -= matrix2.M41;
+            matrix1.M42 -= matrix2.M42;
+            matrix1.M43 -= matrix2.M43;
+            matrix1.M44 -= matrix2.M44;
             return matrix1;
         }
 
@@ -1281,7 +1275,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
             result.M44 = matrix1.M44 - matrix2.M44;
         }
 
-        internal string DebugDisplayString
+        internal readonly string DebugDisplayString
         {
             get
             {
@@ -1299,19 +1293,19 @@ namespace VoidHuntersRevived.Common.FixedPoint
         }
 
         /// <summary>
-        /// Returns a <see cref="String"/> representation of this <see cref="FixMatrix"/> in the format:
+        /// Returns a <see cref="string"/> representation of this <see cref="FixMatrix"/> in the format:
         /// {M11:[<see cref="M11"/>] M12:[<see cref="M12"/>] M13:[<see cref="M13"/>] M14:[<see cref="M14"/>]}
         /// {M21:[<see cref="M21"/>] M12:[<see cref="M22"/>] M13:[<see cref="M23"/>] M14:[<see cref="M24"/>]}
         /// {M31:[<see cref="M31"/>] M32:[<see cref="M32"/>] M33:[<see cref="M33"/>] M34:[<see cref="M34"/>]}
         /// {M41:[<see cref="M41"/>] M42:[<see cref="M42"/>] M43:[<see cref="M43"/>] M44:[<see cref="M44"/>]}
         /// </summary>
-        /// <returns>A <see cref="String"/> representation of this <see cref="FixMatrix"/>.</returns>
+        /// <returns>A <see cref="string"/> representation of this <see cref="FixMatrix"/>.</returns>
         public override readonly string ToString()
         {
-            return "{M11:" + M11 + " M12:" + M12 + " M13:" + M13 + " M14:" + M14 + "}"
-                + " {M21:" + M21 + " M22:" + M22 + " M23:" + M23 + " M24:" + M24 + "}"
-                + " {M31:" + M31 + " M32:" + M32 + " M33:" + M33 + " M34:" + M34 + "}"
-                + " {M41:" + M41 + " M42:" + M42 + " M43:" + M43 + " M44:" + M44 + "}";
+            return "{M11:" + this.M11 + " M12:" + this.M12 + " M13:" + this.M13 + " M14:" + this.M14 + "}"
+                + " {M21:" + this.M21 + " M22:" + this.M22 + " M23:" + this.M23 + " M24:" + this.M24 + "}"
+                + " {M31:" + this.M31 + " M32:" + this.M32 + " M33:" + this.M33 + " M34:" + this.M34 + "}"
+                + " {M41:" + this.M41 + " M42:" + this.M42 + " M43:" + this.M43 + " M44:" + this.M44 + "}";
         }
 
         /// <summary>
@@ -1321,8 +1315,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>The new <see cref="FixMatrix"/> which contains the transposing result.</returns>
         public static FixMatrix Transpose(FixMatrix matrix)
         {
-            FixMatrix ret;
-            FixMatrix.Transpose(ref matrix, out ret);
+            FixMatrix.Transpose(ref matrix, out FixMatrix ret);
             return ret;
         }
 
@@ -1358,7 +1351,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
             result = ret;
         }
 
-        public void Deconstruct(out Fix64 x, out Fix64 y, out Fix64 cos, out Fix64 sin)
+        public readonly void Deconstruct(out Fix64 x, out Fix64 y, out Fix64 cos, out Fix64 sin)
         {
             x = this.M41;
             y = this.M42;
@@ -1366,7 +1359,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
             sin = this.M12;
         }
 
-        public FixTransform2D ToFixTransform2D()
+        public readonly FixTransform2D ToFixTransform2D()
         {
             return new FixTransform2D(
                 x: this.M41,

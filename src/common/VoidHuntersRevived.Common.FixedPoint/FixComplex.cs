@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
 
         public Fix64 Phase
         {
-            get { return Fix64.Atan2(this.Imaginary, this.Real); }
+            readonly get { return Fix64.Atan2(this.Imaginary, this.Real); }
             set
             {
                 if (value == Fix64.Zero)
@@ -37,17 +37,17 @@ namespace VoidHuntersRevived.Common.FixedPoint
             }
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return $"{{ Real = {this.Real}, Imaginary = {this.Imaginary} }}";
         }
 
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return obj is FixComplex complex && complex == this;
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(this.Imaginary, this.Real);
         }

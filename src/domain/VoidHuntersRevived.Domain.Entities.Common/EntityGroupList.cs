@@ -1,10 +1,10 @@
-﻿using Guppy.Core.Common;
+﻿using System.Runtime.InteropServices;
+using System.Text;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Resources.Common.Extensions.System;
 using Svelto.DataStructures;
 using Svelto.ECS;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
@@ -50,11 +50,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public readonly string Name;
         public readonly HashSet<Type> ComponentTypes;
 
-        public FasterReadOnlyList<ExclusiveGroupStruct> Values => new(_values);
+        public FasterReadOnlyList<ExclusiveGroupStruct> Values => new(this._values);
 
         internal EntityGroupList(Guid hash, string name, IEnumerable<Type> componentTypes)
         {
-            _values = new();
+            this._values = new();
 
             this.Hash = hash;
             this.Name = name;
@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             {
                 if (group.Contains(this.ComponentTypes))
                 {
-                    _values.Add(group.Value);
+                    this._values.Add(group.Value);
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         {
             StringBuilder stringBuilder = new();
 
-            List<Type> orderedTypes = componentTypes.OrderBy(x => x.AssemblyQualifiedName).ToList();
+            List<Type> orderedTypes = [.. componentTypes.OrderBy(x => x.AssemblyQualifiedName)];
 
             stringBuilder.AppendJoin('|', orderedTypes.Select(x => x.GetFormattedName()));
             name = stringBuilder.ToString();
@@ -134,12 +134,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public override bool Equals(object? obj)
         {
             return obj is EntityGroupList group &&
-                   Name == group.Name;
+                   this.Name == group.Name;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Name);
+            return HashCode.Combine(this.Name);
         }
     }
 }

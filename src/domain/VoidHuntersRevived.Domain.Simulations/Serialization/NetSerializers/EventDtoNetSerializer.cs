@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
         {
             base.Initialize(serializers);
 
-            _serializers = serializers;
+            this._serializers = serializers;
         }
 
         public override EventDto Deserialize(NetDataReader reader)
@@ -22,14 +22,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
             return new EventDto()
             {
                 SourceId = reader.GetVhId(),
-                Data = (IEventData)_serializers.Deserialize(reader)
+                Data = (IEventData)this._serializers.Deserialize(reader)
             };
         }
 
         public override void Serialize(NetDataWriter writer, in EventDto instance)
         {
             writer.Put(instance.SourceId);
-            _serializers.Serialize(writer, instance.Data);
+            this._serializers.Serialize(writer, instance.Data);
         }
     }
 }

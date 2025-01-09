@@ -31,26 +31,26 @@ namespace VoidHuntersRevived.Domain.Teams.Services
 
         public Team GetDefaultTeam()
         {
-            return _defaultTeamComponent;
+            return this._defaultTeamComponent;
         }
 
         public Team GetOpenTeam()
         {
-            return _teamComponents.First().Value;
+            return this._teamComponents.First().Value;
         }
 
         private void BuildTeams()
         {
             // Spawn default team entities...
             int teamIndex = 0;
-            foreach (IEntityTemplate teamEntityTemplate in _entityTemplateService.WithComponent<Team>())
+            foreach (IEntityTemplate teamEntityTemplate in this._entityTemplateService.WithComponent<Team>())
             {
                 teamIndex++;
-                EntityLocalId teamLocalId = _privateEntitySpawnService.Spawn(
+                EntityLocalId teamLocalId = this._privateEntitySpawnService.Spawn(
                     sourceId: HashBuilder<Team, int>.Instance.Calculate(teamIndex),
                     entityTemplateKey: teamEntityTemplate.Key,
                     globalId: HashBuilder<Team, int>.Instance.Calculate(teamIndex).ToGlobalEntityId(),
-                    initializer: TeamInstanceInitializer);
+                    initializer: this.TeamInstanceInitializer);
             }
         }
 
@@ -62,11 +62,11 @@ namespace VoidHuntersRevived.Domain.Teams.Services
 
             if (entity.Initializer.Has<DefaultTeam>())
             {
-                _defaultTeamComponent = runtimeTeam;
+                this._defaultTeamComponent = runtimeTeam;
             }
             else
             {
-                _teamComponents.Add(runtimeTeam.Id, runtimeTeam);
+                this._teamComponents.Add(runtimeTeam.Id, runtimeTeam);
             }
         }
     }

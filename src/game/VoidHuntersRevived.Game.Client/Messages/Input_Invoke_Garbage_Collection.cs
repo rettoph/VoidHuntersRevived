@@ -1,5 +1,5 @@
-﻿using Guppy.Game.Input.Common;
-using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Messaging.Common;
+using Guppy.Game.Input.Common;
 
 namespace VoidHuntersRevived.Game.Client.Messages
 {

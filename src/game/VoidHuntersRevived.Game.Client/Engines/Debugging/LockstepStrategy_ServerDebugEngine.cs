@@ -15,8 +15,8 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         [SequenceGroup<DebugSequenceGroup>("Strategy")]
         public void OnDebug(GameTime gameTime)
         {
-            _imgui.KeyValue("Tick", this.Strategy.CurrentTick.Id.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
-            _imgui.KeyValue("Step", $"{this.Strategy.StepsSinceTick}/{this.Strategy.StepsPerTick}", valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("Tick", this.Strategy.CurrentTick.Id.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("Step", $"{this.Strategy.StepsSinceTick}/{this.Strategy.StepsPerTick}", valueColor: Color.Cyan.ToVector4());
         }
     }
 }

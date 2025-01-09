@@ -24,13 +24,13 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
         [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
         public void OnInitialize(IStrategy strategy)
         {
-            _primitiveActions.Add(_primitiveService.GetAll());
+            this._primitiveActions.Add(this._primitiveService.GetAll());
         }
 
         [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.Draw)]
         public void OnDraw(GameTime gameTime)
         {
-            _primitiveActions.Invoke(gameTime);
+            this._primitiveActions.Invoke(gameTime);
         }
     }
 }

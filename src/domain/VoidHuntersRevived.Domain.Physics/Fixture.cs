@@ -12,24 +12,24 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public FixtureId Id { get; }
 
-        public IBody Body => _body;
+        public IBody Body => this._body;
 
         public FixVector2 Centeroid { get; set; }
 
         public Fixture(FixtureId id, Body body, Shape shape, Category colissionCategories, Category collidesWith)
         {
-            _body = body;
-            _aether = _body._aether.CreateFixture(shape);
-            _aether.Tag = this;
-            _aether.CollisionCategories = colissionCategories;
-            _aether.CollidesWith = collidesWith;
+            this._body = body;
+            this._aether = this._body._aether.CreateFixture(shape);
+            this._aether.Tag = this;
+            this._aether.CollisionCategories = colissionCategories;
+            this._aether.CollidesWith = collidesWith;
 
             this.Id = id;
         }
 
         public void Dispose()
         {
-            _body._aether.Remove(_aether);
+            this._body._aether.Remove(this._aether);
         }
     }
 }

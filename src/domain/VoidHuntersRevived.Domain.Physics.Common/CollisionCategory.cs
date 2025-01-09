@@ -2,10 +2,10 @@
 {
     public struct CollisionCategory
     {
-        private byte _bit;
-        internal int _mask => 0x1 << _bit;
+        private readonly byte _bit;
+        internal readonly int _mask => 0x1 << this._bit;
 
-        public string Name => _names[_bit];
+        public readonly string Name => _names[this._bit];
 
         public CollisionCategory()
         {
@@ -19,7 +19,7 @@
                 throw new ArgumentOutOfRangeException();
             }
 
-            _bit = bit;
+            this._bit = bit;
         }
 
         public override string ToString()
@@ -28,7 +28,7 @@
         }
 
         private static byte _currentBit;
-        private static string[] _names = new string[32];
+        private static readonly string[] _names = new string[32];
         public static CollisionCategory Create(string name)
         {
             _names[_currentBit] = name;

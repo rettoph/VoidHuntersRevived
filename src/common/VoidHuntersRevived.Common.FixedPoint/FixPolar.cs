@@ -8,8 +8,8 @@
         public readonly FixVector2 ToVector2()
         {
             return new FixVector2(
-                x: Fix64.Cos(Radians) * Length,
-                y: Fix64.Sin(Radians) * Length);
+                x: Fix64.Cos(this.Radians) * this.Length,
+                y: Fix64.Sin(this.Radians) * this.Length);
         }
 
         public static FixPolar Rotate(FixPolar polar, Fix64 radians)

@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Modules
             base.Load(builder);
 
             // Auto register an engine to dispose of instances as needed
-            foreach (Type disposableComponent in _assemblies.GetTypes<IEntityComponent>())
+            foreach (Type disposableComponent in this._assemblies.GetTypes<IEntityComponent>())
             {
                 if (disposableComponent.IsAssignableTo<IDisposable>())
                 {

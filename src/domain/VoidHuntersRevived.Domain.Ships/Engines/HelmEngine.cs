@@ -15,8 +15,8 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
         public void Process(VhId vhid, Helm_SetDirection data)
         {
-            EntityLocalId shipLocalId = _entityQueryService.GetLocalId(data.ShipGlobalId);
-            ref Helm helm = ref _entityQueryService.QueryByLocalId<Helm>(shipLocalId);
+            EntityLocalId shipLocalId = this._entityQueryService.GetLocalId(data.ShipGlobalId);
+            ref Helm helm = ref this._entityQueryService.QueryByLocalId<Helm>(shipLocalId);
 
             if (data.Value)
             {

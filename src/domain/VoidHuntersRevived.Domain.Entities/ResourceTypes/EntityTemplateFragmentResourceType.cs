@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.ResourceTypes
 
         protected override bool TryResolve(ResourceKey<EntityTemplateFragment> resource, DirectoryLocation root, string input, out EntityTemplateFragment value)
         {
-            IFile<EntityTemplateFragment> type = _files.Get<EntityTemplateFragment>(
+            IFile<EntityTemplateFragment> type = this._files.Get<EntityTemplateFragment>(
                 new FileLocation(root, input),
                 true);
 

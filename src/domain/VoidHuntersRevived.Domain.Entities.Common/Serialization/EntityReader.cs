@@ -3,35 +3,28 @@ using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 {
-    public ref struct EntityReader
+    public ref struct EntityReader(
+        VhId seed,
+        byte[] data,
+        int position)
     {
-        private readonly byte[] _data;
-        private int _position;
-        private readonly VhId _seed;
+        private readonly byte[] _data = data;
+        private int _position = position;
+        private readonly VhId _seed = seed;
 
-        public int Position => _position;
-        public int Length => _data.Length;
-        public bool DataAvailable => _position < _data.Length;
-
-        public EntityReader(
-            VhId seed,
-            byte[] data,
-            int position)
-        {
-            _seed = seed;
-            _data = data;
-            _position = position;
-        }
+        public readonly int Position => this._position;
+        public readonly int Length => this._data.Length;
+        public readonly bool DataAvailable => this._position < this._data.Length;
 
         public EntityGlobalId ReadGlobalEntityId()
         {
             VhId raw = this.Read<VhId>();
-            return _seed.Create(raw).ToGlobalEntityId();
+            return this._seed.Create(raw).ToGlobalEntityId();
         }
 
         public byte ReadByte()
         {
-            return _data[_position++];
+            return this._data[this._position++];
         }
 
         public bool ReadBoolean()
@@ -52,9 +45,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         public unsafe T Read<T>()
             where T : unmanaged
         {
-            fixed (byte* pByte = &_data[_position])
+            fixed (byte* pByte = &this._data[this._position])
             {
-                _position += sizeof(T);
+                this._position += sizeof(T);
 
                 T* pT = (T*)pByte;
 
@@ -64,7 +57,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
         public void Skip(int bytes)
         {
-            _position += bytes;
+            this._position += bytes;
         }
     }
 }

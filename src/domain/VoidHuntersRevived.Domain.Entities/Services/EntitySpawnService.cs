@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 GlobalId = globalId
             });
 
-            return _entityQueryService.GetLocalId(globalId);
+            return this._entityQueryService.GetLocalId(globalId);
         }
 
         EntityLocalId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId, EntityInitializerDelegate initializer)
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Initializer = initializer
             });
 
-            return _entityQueryService.GetLocalId(globalId);
+            return this._entityQueryService.GetLocalId(globalId);
         }
 
         void IEntitySpawnService.Despawn(VhId sourceId, EntityGlobalId globalId)
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
         void IEntitySpawnService.Despawn(VhId sourceId, EntityLocalId localId)
         {
-            EntityGlobalId globalId = _entityQueryService.GetGlobalId(localId);
+            EntityGlobalId globalId = this._entityQueryService.GetGlobalId(localId);
             this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
             {
                 IsPrivate = false,
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 GlobalId = globalId
             });
 
-            return _entityQueryService.GetLocalId(globalId);
+            return this._entityQueryService.GetLocalId(globalId);
         }
 
         EntityLocalId IPrivateEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId, EntityInitializerDelegate initializer)
@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 Initializer = initializer
             });
 
-            return _entityQueryService.GetLocalId(globalId);
+            return this._entityQueryService.GetLocalId(globalId);
         }
 
         void IPrivateEntitySpawnService.Despawn(VhId sourceId, EntityGlobalId globalId)

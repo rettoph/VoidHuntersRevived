@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         public Fix64 X = x;
         public Fix64 Y = y;
 
-        public readonly Fix64 Length => Fix64.Sqrt(this.X * this.X + this.Y * this.Y);
+        public readonly Fix64 Length => Fix64.Sqrt((this.X * this.X) + (this.Y * this.Y));
 
         public FixVector2(double x, double y) : this((Fix64)x, (Fix64)y)
         {
@@ -24,14 +24,14 @@ namespace VoidHuntersRevived.Common.FixedPoint
         {
             Fix64 dx = v1.X - v2.X;
             Fix64 dy = v1.Y - v2.Y;
-            result = Fix64.Sqrt(dx * dx + dy * dy);
+            result = Fix64.Sqrt((dx * dx) + (dy * dy));
         }
 
         public static Fix64 Distance(FixVector2 v1, FixVector2 v2)
         {
             Fix64 dx = v1.X - v2.X;
             Fix64 dy = v1.Y - v2.Y;
-            return Fix64.Sqrt(dx * dx + dy * dy);
+            return Fix64.Sqrt((dx * dx) + (dy * dy));
         }
 
         public readonly FixPolar ToPolar()
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
             );
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return $"{{ X = {this.X}, Y = {this.Y} }}";
         }
@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>Transformed <see cref="Vector2"/>.</returns>
         public static FixVector2 Transform(FixVector2 position, FixMatrix matrix)
         {
-            return new FixVector2(position.X * matrix.M11 + position.Y * matrix.M21 + matrix.M41, position.X * matrix.M12 + position.Y * matrix.M22 + matrix.M42);
+            return new FixVector2((position.X * matrix.M11) + (position.Y * matrix.M21) + matrix.M41, (position.X * matrix.M12) + (position.Y * matrix.M22) + matrix.M42);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <returns>Transformed <see cref="Vector2"/>.</returns>
         public static FixVector2 Transform(FixVector2 position, FixTransform2D transform)
         {
-            return new FixVector2(position.X * transform.Rotation.Real + position.Y * -transform.Rotation.Imaginary + transform.Position.X, position.X * transform.Rotation.Imaginary + position.Y * transform.Rotation.Real + transform.Position.Y);
+            return new FixVector2((position.X * transform.Rotation.Real) + (position.Y * -transform.Rotation.Imaginary) + transform.Position.X, (position.X * transform.Rotation.Imaginary) + (position.Y * transform.Rotation.Real) + transform.Position.Y);
         }
 
         /// <summary>
@@ -100,8 +100,8 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <param name="result">Transformed <see cref="Vector2"/> as an output parameter.</param>
         public static void Transform(ref FixVector2 position, ref FixMatrix matrix, out FixVector2 result)
         {
-            var x = position.X * matrix.M11 + position.Y * matrix.M21 + matrix.M41;
-            var y = position.X * matrix.M12 + position.Y * matrix.M22 + matrix.M42;
+            var x = (position.X * matrix.M11) + (position.Y * matrix.M21) + matrix.M41;
+            var y = (position.X * matrix.M12) + (position.Y * matrix.M22) + matrix.M42;
             result.X = x;
             result.Y = y;
         }
@@ -127,16 +127,21 @@ namespace VoidHuntersRevived.Common.FixedPoint
             ArgumentNullException.ThrowIfNull(destinationArray);
 
             if (sourceArray.Length < sourceIndex + length)
+            {
                 throw new ArgumentException("Source array length is lesser than sourceIndex + length");
+            }
+
             if (destinationArray.Length < destinationIndex + length)
+            {
                 throw new ArgumentException("Destination array length is lesser than destinationIndex + length");
+            }
 
             for (int x = 0; x < length; x++)
             {
                 var position = sourceArray[sourceIndex + x];
                 var destination = destinationArray[destinationIndex + x];
-                destination.X = position.X * matrix.M11 + position.Y * matrix.M21 + matrix.M41;
-                destination.Y = position.X * matrix.M12 + position.Y * matrix.M22 + matrix.M42;
+                destination.X = (position.X * matrix.M11) + (position.Y * matrix.M21) + matrix.M41;
+                destination.Y = (position.X * matrix.M12) + (position.Y * matrix.M22) + matrix.M42;
                 destinationArray[destinationIndex + x] = destination;
             }
         }
@@ -249,13 +254,13 @@ namespace VoidHuntersRevived.Common.FixedPoint
         public override readonly bool Equals(object? obj)
         {
             return obj is FixVector2 vector &&
-                   EqualityComparer<Fix64>.Default.Equals(X, vector.X) &&
-                   EqualityComparer<Fix64>.Default.Equals(Y, vector.Y);
+                   EqualityComparer<Fix64>.Default.Equals(this.X, vector.X) &&
+                   EqualityComparer<Fix64>.Default.Equals(this.Y, vector.Y);
         }
 
         public override readonly int GetHashCode()
         {
-            return HashCode.Combine(X, Y);
+            return HashCode.Combine(this.X, this.Y);
         }
     }
 }

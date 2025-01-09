@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Serialization.Common.Converters;
+﻿using System.Text.Json;
+using Guppy.Core.Serialization.Common.Converters;
 using Svelto.DataStructures;
-using System.Text.Json;
 
 namespace VoidHuntersRevived.Domain.Serialization.Json
 {
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
         {
             protected override NativeDynamicArrayCast<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                T[] array = JsonSerializer.Deserialize<T[]>(ref reader, options) ?? Array.Empty<T>();
+                T[] array = JsonSerializer.Deserialize<T[]>(ref reader, options) ?? [];
                 reader.Read();
 
                 return array.ToNativeDynamicArray();

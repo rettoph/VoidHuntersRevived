@@ -16,13 +16,13 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PostInitialize)]
         public void Initialize(IStrategy strategy)
         {
-            _imGuiActions.Add(strategy.Engines);
+            this._imGuiActions.Add(strategy.Engines);
         }
 
         [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.PostDraw)]
         public void DrawImGui(GameTime gameTime)
         {
-            _imGuiActions.Invoke(gameTime);
+            this._imGuiActions.Invoke(gameTime);
         }
     }
 }

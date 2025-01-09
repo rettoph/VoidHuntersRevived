@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Domain.Graphics
 
         private TVertexInstance[] _instanceVertices;
 
-        public TVertexInstance[] InstanceVertices => _instanceVertices;
+        public TVertexInstance[] InstanceVertices => this._instanceVertices;
 
         internal Primitive(
             int sequence,
@@ -75,8 +75,8 @@ namespace VoidHuntersRevived.Domain.Graphics
             PrimitiveTypeEnum[] bufferTypes,
             GraphicsDevice graphics) : base(typeof(TVertexInstance), sequence, sequenceGroup, staticVertexBuffer, staticIndexBuffers, bufferTypes, graphics)
         {
-            _instanceVertices = new TVertexInstance[DefaultBufferSize];
-            this.InstanceVertexBuffer = new DynamicVertexBuffer(this.Graphics, typeof(TVertexInstance), _instanceVertices.Length, BufferUsage.WriteOnly);
+            this._instanceVertices = new TVertexInstance[DefaultBufferSize];
+            this.InstanceVertexBuffer = new DynamicVertexBuffer(this.Graphics, typeof(TVertexInstance), this._instanceVertices.Length, BufferUsage.WriteOnly);
             this.VertexBufferBindings = this.StaticIndexBuffers.Select((x, idx) => new VertexBufferBinding[]
             {
                 new(this.StaticVertexBuffer, 0, 0),
@@ -86,21 +86,21 @@ namespace VoidHuntersRevived.Domain.Graphics
 
         public void EnsureFit(int size)
         {
-            if (_instanceVertices.Length >= size + this.InstanceCount)
+            if (this._instanceVertices.Length >= size + this.InstanceCount)
             {
                 return;
             }
 
-            int capacity = _instanceVertices.Length;
+            int capacity = this._instanceVertices.Length;
             while (capacity < size + this.InstanceCount)
             {
                 capacity *= 2;
             }
 
-            Array.Resize(ref _instanceVertices, capacity);
+            Array.Resize(ref this._instanceVertices, capacity);
 
             this.InstanceVertexBuffer.Dispose();
-            this.InstanceVertexBuffer = new DynamicVertexBuffer(this.Graphics, typeof(TVertexInstance), _instanceVertices.Length, BufferUsage.WriteOnly);
+            this.InstanceVertexBuffer = new DynamicVertexBuffer(this.Graphics, typeof(TVertexInstance), this._instanceVertices.Length, BufferUsage.WriteOnly);
             this.VertexBufferBindings = this.StaticIndexBuffers.Select((x, idx) => new VertexBufferBinding[]
             {
                 new(this.StaticVertexBuffer, 0, 0),
@@ -110,24 +110,24 @@ namespace VoidHuntersRevived.Domain.Graphics
 
         public void SetNextVertexUnsafe(TVertexInstance vertex)
         {
-            _instanceVertices[this.InstanceCount++] = vertex;
+            this._instanceVertices[this.InstanceCount++] = vertex;
         }
 
         public ref TVertexInstance GetNextVertexUnsafe()
         {
-            return ref _instanceVertices[this.InstanceCount++];
+            return ref this._instanceVertices[this.InstanceCount++];
         }
 
         public void SetNextVertex(TVertexInstance vertex)
         {
-            EnsureFit(1);
-            _instanceVertices[this.InstanceCount++] = vertex;
+            this.EnsureFit(1);
+            this._instanceVertices[this.InstanceCount++] = vertex;
         }
 
         public ref TVertexInstance GetNextVertex()
         {
-            EnsureFit(1);
-            return ref _instanceVertices[this.InstanceCount++];
+            this.EnsureFit(1);
+            return ref this._instanceVertices[this.InstanceCount++];
         }
 
         public virtual bool Flush()
@@ -137,7 +137,7 @@ namespace VoidHuntersRevived.Domain.Graphics
                 return false;
             }
 
-            this.InstanceVertexBuffer.SetData(_instanceVertices, 0, this.InstanceCount);
+            this.InstanceVertexBuffer.SetData(this._instanceVertices, 0, this.InstanceCount);
             return true;
         }
 

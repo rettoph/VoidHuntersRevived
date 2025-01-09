@@ -5,18 +5,18 @@ namespace VoidHuntersRevived.Common.Utilities
     public class HashBuilder<TNameSpace>
         where TNameSpace : unmanaged
     {
-        private byte[] _buffer;
+        private readonly byte[] _buffer;
         private int _index;
 
         public unsafe HashBuilder(TNameSpace nameSpace, int bufferCapacity)
         {
-            _buffer = new byte[bufferCapacity + sizeof(TNameSpace)];
+            this._buffer = new byte[bufferCapacity + sizeof(TNameSpace)];
             this.Append(nameSpace);
         }
 
         public unsafe HashBuilder<TNameSpace> Reset()
         {
-            _index = sizeof(TNameSpace);
+            this._index = sizeof(TNameSpace);
 
             return this;
         }
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Common.Utilities
 
                 for (int i = 0; i < sizeof(T); i++)
                 {
-                    _buffer[_index++] = pBytes[i];
+                    this._buffer[this._index++] = pBytes[i];
                 }
             }
 
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Common.Utilities
 
         public unsafe VhId Calculate()
         {
-            uint128 hash = xxHash128.ComputeHash(_buffer, _index);
+            uint128 hash = xxHash128.ComputeHash(this._buffer, this._index);
             VhId* newId = (VhId*)&hash;
 
             return newId[0];
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Common.Utilities
     public class HashBuilder<TNameSpace, TName1> : HashBuilder<VhId>
         where TName1 : unmanaged
     {
-        public static readonly HashBuilder<TNameSpace, TName1> Instance = new HashBuilder<TNameSpace, TName1>();
+        public static readonly HashBuilder<TNameSpace, TName1> Instance = new();
 
         public unsafe HashBuilder() : base(NameSpace<TNameSpace>.Instance, sizeof(TName1))
         {
@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Common.Utilities
         where TName1 : unmanaged
         where TName2 : unmanaged
     {
-        public static readonly HashBuilder<TNameSpace, TName1, TName2> Instance = new HashBuilder<TNameSpace, TName1, TName2>();
+        public static readonly HashBuilder<TNameSpace, TName1, TName2> Instance = new();
 
         public unsafe HashBuilder() : base(NameSpace<TNameSpace>.Instance, sizeof(TName1) + sizeof(TName2))
         {
@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Common.Utilities
         where TName2 : unmanaged
         where TName3 : unmanaged
     {
-        public static readonly HashBuilder<TNameSpace, TName1, TName2, TName3> Instance = new HashBuilder<TNameSpace, TName1, TName2, TName3>();
+        public static readonly HashBuilder<TNameSpace, TName1, TName2, TName3> Instance = new();
 
         public unsafe HashBuilder() : base(NameSpace<TNameSpace>.Instance, sizeof(TName1) + sizeof(TName2) + sizeof(TName3))
         {
@@ -109,7 +109,7 @@ namespace VoidHuntersRevived.Common.Utilities
         where TName3 : unmanaged
         where TName4 : unmanaged
     {
-        public static readonly HashBuilder<TNameSpace, TName1, TName2, TName3, TName4> Instance = new HashBuilder<TNameSpace, TName1, TName2, TName3, TName4>();
+        public static readonly HashBuilder<TNameSpace, TName1, TName2, TName3, TName4> Instance = new();
 
         public unsafe HashBuilder() : base(NameSpace<TNameSpace>.Instance, sizeof(TName1) + sizeof(TName2) + sizeof(TName3) + sizeof(TName4))
         {
@@ -133,7 +133,7 @@ namespace VoidHuntersRevived.Common.Utilities
         where TName4 : unmanaged
         where TName5 : unmanaged
     {
-        public static readonly HashBuilder<TNameSpace, TName1, TName2, TName3, TName4, TName5> Instance = new HashBuilder<TNameSpace, TName1, TName2, TName3, TName4, TName5>();
+        public static readonly HashBuilder<TNameSpace, TName1, TName2, TName3, TName4, TName5> Instance = new();
 
         public unsafe HashBuilder() : base(NameSpace<TNameSpace>.Instance, sizeof(TName1) + sizeof(TName2) + sizeof(TName3) + sizeof(TName4) + sizeof(TName5))
         {

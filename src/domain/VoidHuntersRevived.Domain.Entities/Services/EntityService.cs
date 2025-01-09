@@ -16,10 +16,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly Lazy<IEntitySpawnService> _entitySpawnService;
         private readonly Lazy<IEntitySerializationService> _entitySerializationService;
 
-        public IEntityTemplateService Templates => _entityTemplateService.Value;
-        public IEntityQueryService Query => _entityQueryService.Value;
-        public IEntitySpawnService Spawn => _entitySpawnService.Value;
-        public IEntitySerializationService Serialization => _entitySerializationService.Value;
+        public IEntityTemplateService Templates => this._entityTemplateService.Value;
+        public IEntityQueryService Query => this._entityQueryService.Value;
+        public IEntitySpawnService Spawn => this._entitySpawnService.Value;
+        public IEntitySerializationService Serialization => this._entitySerializationService.Value;
 
         IEntityTemplateService IEntityService.Templates => this.Templates;
 
@@ -35,22 +35,22 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             Lazy<IEntitySpawnService> entitySpawnService,
             Lazy<IEntitySerializationService> entitySerialzationService)
         {
-            _entityTemplateService = entityTemplateService;
-            _entityQueryService = entityQueryService;
-            _entitySpawnService = entitySpawnService;
-            _entitySerializationService = entitySerialzationService;
+            this._entityTemplateService = entityTemplateService;
+            this._entityQueryService = entityQueryService;
+            this._entitySpawnService = entitySpawnService;
+            this._entitySerializationService = entitySerialzationService;
 
-            _ref = new UnmanagedReference<IEntityService>(this);
+            this._ref = new UnmanagedReference<IEntityService>(this);
         }
 
         public void Dispose()
         {
-            _ref.Dispose(false);
+            this._ref.Dispose(false);
         }
 
         public UnmanagedReference<IEntityService> GetReference()
         {
-            return _ref;
+            return this._ref;
         }
     }
 }

@@ -42,13 +42,13 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             Fix64 minDistance = QueryRadius;
             Node? callbackTargetNode = default!;
 
-            _space.QueryAABB(fixture =>
+            this._space.QueryAABB(fixture =>
             {
-                if (_entityQueryService.IsSpawned(fixture.Id.EntityLocalId))
+                if (this._entityQueryService.IsSpawned(fixture.Id.EntityLocalId))
                 {
-                    ref Node queryNode = ref _entityQueryService.QueryByLocalId<Node>(fixture.Id.EntityLocalId, out GroupIndex nodeGroupIndex);
-                    ref Rigid queryRigid = ref _entityQueryService.QueryByGroupIndex<Rigid>(nodeGroupIndex);
-                    ref Fixture queryFixture = ref _entityQueryService.QueryByGroupIndex<Fixture>(nodeGroupIndex);
+                    ref Node queryNode = ref this._entityQueryService.QueryByLocalId<Node>(fixture.Id.EntityLocalId, out GroupIndex nodeGroupIndex);
+                    ref Rigid queryRigid = ref this._entityQueryService.QueryByGroupIndex<Rigid>(nodeGroupIndex);
+                    ref Fixture queryFixture = ref this._entityQueryService.QueryByGroupIndex<Fixture>(nodeGroupIndex);
 
                     FixVector2 queryNodePosition = FixVector2.Transform(queryRigid.Template.Value.Centeroid, queryFixture.WorldTransform);
                     FixVector2.Distance(ref target, ref queryNodePosition, out Fix64 queryNodeDistance);
@@ -58,10 +58,10 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         return true;
                     }
 
-                    ref Tree tree = ref _entityQueryService.QueryByLocalId<Tree>(queryNode.TreeLocalId, out GroupIndex treeGroupIndex);
-                    if (_entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitterFilterId.IsDefault<TractorBeamEmitter>())
+                    ref Tree tree = ref this._entityQueryService.QueryByLocalId<Tree>(queryNode.TreeLocalId, out GroupIndex treeGroupIndex);
+                    if (this._entityQueryService.TryQueryByGroupIndex(treeGroupIndex, out Tractorable tractorable) && tractorable.TractorBeamEmitterFilterId.IsDefault<TractorBeamEmitter>())
                     { // Target resides within a tractorable tree, so we want to grab the head
-                        callbackTargetNode = tree.HeadLocalId == queryNode.LocalId ? queryNode : _entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
+                        callbackTargetNode = tree.HeadLocalId == queryNode.LocalId ? queryNode : this._entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
                     }
                     else if (queryNode.TreeLocalId == tractorBeamEmitterLocalId && tree.HeadLocalId != queryNode.LocalId)
                     { // The node belongs to the current tractor beam emitter's ship and is not the head
@@ -72,7 +72,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
                         return true;
                     }
 
-                    if (!_entityQueryService.IsSpawned(treeGroupIndex))
+                    if (!this._entityQueryService.IsSpawned(treeGroupIndex))
                     { // Tree has been soft despawned
                         return true;
                     }

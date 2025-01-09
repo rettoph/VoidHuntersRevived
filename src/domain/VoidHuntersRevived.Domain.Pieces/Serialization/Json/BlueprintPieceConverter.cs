@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
         public override IBlueprintPiece? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             Key<IEntityTemplate>? pieceEntityTemplateKey = null;
-            IBlueprintPiece[][] children = Array.Empty<IBlueprintPiece[]>();
+            IBlueprintPiece[][] children = [];
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 
             for (int i = 0; i < children.Length; i++)
             {
-                children[i] ??= Array.Empty<IBlueprintPiece>();
+                children[i] ??= [];
             }
 
             return new BlueprintPiece(pieceEntityTemplateKey.Value, children);

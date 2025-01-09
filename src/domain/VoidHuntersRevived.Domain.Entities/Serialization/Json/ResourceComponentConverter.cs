@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Resources.Common.Services;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Resources.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             reader.CheckToken(JsonTokenType.String, true);
             string key = reader.ReadString();
 
-            object? instance = Activator.CreateInstance(typeToConvert, [key, _resourceService]);
+            object? instance = Activator.CreateInstance(typeToConvert, [key, this._resourceService]);
 
             return instance ?? throw new NotImplementedException();
         }

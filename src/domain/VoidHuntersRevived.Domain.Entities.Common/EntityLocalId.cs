@@ -11,12 +11,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         public override bool Equals(object? obj)
         {
             return obj is EntityLocalId id &&
-                   Value.Equals(id.Value);
+                   this.Value.Equals(id.Value);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Value);
+            return HashCode.Combine(this.Value);
         }
 
         public override string ToString()

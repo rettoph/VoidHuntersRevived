@@ -11,12 +11,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 
         public Blueprint GetById(Id<Blueprint> id)
         {
-            return _blueprints[id];
+            return this._blueprints[id];
         }
 
         public IEnumerable<Blueprint> GetAll()
         {
-            return _blueprints.Values;
+            return this._blueprints.Values;
         }
     }
 }

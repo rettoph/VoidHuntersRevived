@@ -1,10 +1,10 @@
-﻿using Guppy.Core.Common;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Providers;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
 using Serilog;
-using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -23,11 +23,11 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly ActionSequenceGroup<OnDrawSequenceGroup, GameTime> _drawActions;
         private readonly ActionSequenceGroup<OnStepSequenceGroup, Step> _stepActions;
 
-        protected ILogger logger => _logger ??= _loggerService.Value.GetOrCreate(this.GetType());
+        protected ILogger logger => this._logger ??= this._loggerService.Value.GetOrCreate(this.GetType());
 
         public readonly StrategyTypeEnum Type;
         public ISimulation Simulation { get; private set; } = null!;
-        public IEngineService Engines => _engineService.Value;
+        public IEngineService Engines => this._engineService.Value;
 
         public Step CurrentStep { get; private set; }
 
@@ -38,12 +38,12 @@ namespace VoidHuntersRevived.Domain.Simulations
             Lazy<IEngineService> engineService,
             Lazy<ILoggerService> loggerService)
         {
-            _engineService = engineService;
-            _loggerService = loggerService;
-            _enqueued = new Queue<EventDto>();
-            _publishers = [];
-            _stepActions = new ActionSequenceGroup<OnStepSequenceGroup, Step>(false);
-            _drawActions = new ActionSequenceGroup<OnDrawSequenceGroup, GameTime>(true);
+            this._engineService = engineService;
+            this._loggerService = loggerService;
+            this._enqueued = new Queue<EventDto>();
+            this._publishers = [];
+            this._stepActions = new ActionSequenceGroup<OnStepSequenceGroup, Step>(false);
+            this._drawActions = new ActionSequenceGroup<OnDrawSequenceGroup, GameTime>(true);
 
             this.Type = type;
 
@@ -59,12 +59,12 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             this.Engines.Initialize();
 
-            EventPublisher.PopulatePublishers(this.Engines, _loggerService.Value, _publishers);
+            EventPublisher.PopulatePublishers(this.Engines, this._loggerService.Value, this._publishers);
 
-            _drawActions.Add(this.Engines);
+            this._drawActions.Add(this.Engines);
 
-            _stepActions.Add([this.Step_PublishEvents]); // Special case - add the internal queue submission method
-            _stepActions.Add(this.Engines);
+            this._stepActions.Add([this.Step_PublishEvents]); // Special case - add the internal queue submission method
+            this._stepActions.Add(this.Engines);
 
             // Call all engine initializers
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             base.Draw(gameTime);
 
-            _drawActions.Invoke(gameTime);
+            this._drawActions.Invoke(gameTime);
         }
 
         public override void Update(GameTime gameTime)
@@ -98,13 +98,13 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.CurrentStep = step;
 
-            _stepActions.Invoke(step);
+            this._stepActions.Invoke(step);
         }
 
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.PublishEvents)]
         private void Step_PublishEvents(Step step)
         {
-            while (_enqueued.TryDequeue(out EventDto? enqueued))
+            while (this._enqueued.TryDequeue(out EventDto? enqueued))
             {
                 this.Publish(enqueued);
             }
@@ -112,12 +112,12 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected virtual void Revert(EventDto @event)
         {
-            _publishers[@event.Data.GetType()].Revert(@event);
+            this._publishers[@event.Data.GetType()].Revert(@event);
         }
         public virtual void Publish(EventDto @event)
         {
             this.logger.Verbose("Publishing {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
-            _publishers[@event.Data.GetType()].Publish(@event);
+            this._publishers[@event.Data.GetType()].Publish(@event);
         }
 
         public abstract void Input(VhId sourceId, IInputData data);
@@ -134,7 +134,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         public void Enqueue(EventDto @event)
         {
             this.logger.Verbose("Enqueing {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
-            _enqueued.Enqueue(@event);
+            this._enqueued.Enqueue(@event);
         }
     }
 }

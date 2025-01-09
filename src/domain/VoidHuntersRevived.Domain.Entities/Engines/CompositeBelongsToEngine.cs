@@ -33,11 +33,11 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         {
             if (entity.First.ParentFilterId.IsDefault<TParent>())
             {
-                _logger.Warning("{0}::{1} - Empty {2}", typeof(CompositeBelongsToEngine<TParent, TPrimary, TSecondary>).GetFormattedName(), nameof(CompositeBelongsToEngine<TParent, TPrimary, TSecondary>.OnSpawn), nameof(entity.First.ParentFilterId));
+                this._logger.Warning("{0}::{1} - Empty {2}", typeof(CompositeBelongsToEngine<TParent, TPrimary, TSecondary>).GetFormattedName(), nameof(CompositeBelongsToEngine<TParent, TPrimary, TSecondary>.OnSpawn), nameof(entity.First.ParentFilterId));
                 return;
             }
 
-            _entityQueryService.GetCompositeFilter<TParent, TPrimary, TSecondary>(entity.First).Add(in entity.LocalId, in entity.Index);
+            this._entityQueryService.GetCompositeFilter<TParent, TPrimary, TSecondary>(entity.First).Add(in entity.LocalId, in entity.Index);
         }
     }
 }

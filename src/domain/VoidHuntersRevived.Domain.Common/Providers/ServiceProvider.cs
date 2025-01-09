@@ -9,14 +9,14 @@ namespace VoidHuntersRevived.Domain.Common.Providers
 
         public ServiceProvider()
         {
-            _cache = [];
+            this._cache = [];
         }
 
         protected abstract TService Factory(TKey key);
 
         public TService Get(TKey key)
         {
-            ref TService? instance = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, key, out bool exists);
+            ref TService? instance = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, key, out bool exists);
 
             if (!exists)
             {
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Common.Providers
 
         public TService? Remove(TKey key)
         {
-            if (_cache.Remove(key, out TService? instance))
+            if (this._cache.Remove(key, out TService? instance))
             {
                 return instance;
             }

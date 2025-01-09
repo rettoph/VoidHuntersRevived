@@ -1,5 +1,5 @@
-﻿using Svelto.ECS;
-using System.Reflection;
+﻿using System.Reflection;
+using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         {
             var method = BuildEntityInitializerDelegateMethodInfo.MakeGenericMethod(component.GetType());
 
-            EntityInitializerDelegate initializer = (EntityInitializerDelegate)method.Invoke(null, new object[] { component })!;
+            EntityInitializerDelegate initializer = (EntityInitializerDelegate)method.Invoke(null, [component])!;
             return initializer;
         }
 
@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             return initializer;
         }
 
-        public static MethodInfo BuildEntityInitializerDelegateMethodInfo = typeof(EntityInitializerHelper).GetMethod(nameof(BuildEntityInitializerDelegate), 1, new Type[] { Type.MakeGenericMethodParameter(0) }) ?? throw new Exception();
+        public static MethodInfo BuildEntityInitializerDelegateMethodInfo = typeof(EntityInitializerHelper).GetMethod(nameof(BuildEntityInitializerDelegate), 1, [Type.MakeGenericMethodParameter(0)]) ?? throw new Exception();
         public static EntityInitializerDelegate BuildEntityInitializerDelegate<T>(T instance)
             where T : unmanaged, IEntityComponent
         {

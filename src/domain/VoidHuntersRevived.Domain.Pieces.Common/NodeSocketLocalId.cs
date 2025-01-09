@@ -1,5 +1,5 @@
-﻿using Svelto.ECS;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
 
         public override bool Equals(object? obj)
         {
-            return obj is NodeSocketLocalId id && Equals(id);
+            return obj is NodeSocketLocalId id && this.Equals(id);
         }
 
         public bool Equals(NodeSocketLocalId other)

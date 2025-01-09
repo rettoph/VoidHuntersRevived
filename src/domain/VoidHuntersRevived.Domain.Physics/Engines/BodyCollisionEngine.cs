@@ -14,15 +14,15 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             IEntityQueryService entityQueryService,
             ISpace space)
         {
-            _entityQueryService = entityQueryService;
-            _space = space;
+            this._entityQueryService = entityQueryService;
+            this._space = space;
 
-            _space.OnBodyEnabled += this.HandleBodyEnabled;
+            this._space.OnBodyEnabled += this.HandleBodyEnabled;
         }
 
         private void HandleBodyEnabled(IBody body)
         {
-            ref Collision collision = ref _entityQueryService.QueryByLocalId<Collision>(body.EntityLocalId);
+            ref Collision collision = ref this._entityQueryService.QueryByLocalId<Collision>(body.EntityLocalId);
             body.CollisionCategories = collision.Categories;
             body.CollidesWith = collision.CollidesWith;
         }

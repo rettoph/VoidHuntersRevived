@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 return;
             }
 
-            ref var filter = ref _socketService.GetCouplingFilter(entity.Component.SocketId);
+            ref var filter = ref this._socketService.GetCouplingFilter(entity.Component.SocketId);
             filter.Add(in entity.LocalId, in entity.Index);
         }
 
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                 return;
             }
 
-            ref var filter = ref _socketService.GetCouplingFilter(coupling.Component.SocketId);
+            ref var filter = ref this._socketService.GetCouplingFilter(coupling.Component.SocketId);
             filter.Remove(in coupling.LocalId);
         }
     }

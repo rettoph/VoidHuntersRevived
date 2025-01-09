@@ -89,8 +89,8 @@ namespace VoidHuntersRevived.Game.Client.Extensions
 
         private static void AddSetDirectionInput(ContainerBuilder services, string key, Keys defaultSource, Direction direction)
         {
-            services.RegisterInput(key, defaultSource, new[]
-            {
+            services.RegisterInput(key, defaultSource,
+            [
                 (KeyState.Down, new Input_Helm_SetDirection()
                 {
                     Which = direction,
@@ -101,7 +101,7 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                     Which = direction,
                     Value = false
                 }),
-            });
+            ]);
         }
     }
 }

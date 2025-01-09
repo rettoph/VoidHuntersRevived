@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Engines
 
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<TComponent> entities, ExclusiveGroupStruct groupID)
         {
-            if (_entityQueryService.HasAll<EntityTemplate, TeamMember>(groupID, out var components) == false)
+            if (this._entityQueryService.HasAll<EntityTemplate, TeamMember>(groupID, out var components) == false)
             {
                 return;
             }
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Engines
                 ref TComponent instanceComponent = ref instanceComponents[i];
 
                 ref TeamMember teamMember = ref teamMembers[i];
-                if (_entityQueryService.TryQueryByEGID<TComponent>(teamMember.ParentFilterId.EGID, out TComponent teamComponent) && teamComponent.IsDefault() == false)
+                if (this._entityQueryService.TryQueryByEGID<TComponent>(teamMember.ParentFilterId.EGID, out TComponent teamComponent) && teamComponent.IsDefault() == false)
                 {
                     instanceComponent = teamComponent;
                     continue;

@@ -1,9 +1,9 @@
-﻿using Autofac;
+﻿using System.Text.Json.Serialization;
+using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Extensions;
 using Serilog;
 using Svelto.ECS;
-using System.Text.Json.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;

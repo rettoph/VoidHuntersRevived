@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
 
             for (uint index = rangeOfEntities.start; index < rangeOfEntities.end; index++)
             {
-                _logger.Verbose("{ClassName}<{TName}>::{MethodName} - Disposing of {ComponentType} for {LocalId}", nameof(DisposableEngine<T>), _tName, nameof(Remove), _tName, localIds[index]);
+                this._logger.Verbose("{ClassName}<{TName}>::{MethodName} - Disposing of {ComponentType} for {LocalId}", nameof(DisposableEngine<T>), _tName, nameof(Remove), _tName, localIds[index]);
                 components[index].Dispose();
             }
         }

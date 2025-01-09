@@ -17,18 +17,18 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
 
             foreach (EventDto @event in events)
             {
-                Hash = Hash.Create(@event.Id);
+                this.Hash = this.Hash.Create(@event.Id);
             }
         }
 
         public override string ToString()
         {
-            return $"Id = {Id}, Events: {this.Events.Length}, Hash = {Hash}";
+            return $"Id = {this.Id}, Events: {this.Events.Length}, Hash = {this.Hash}";
         }
 
         public Tick Next(EventDto[] events)
         {
-            return new Tick(Id + 1, events);
+            return new Tick(this.Id + 1, events);
         }
 
         public static Tick First(EventDto[] events)
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
 
         public static Tick Empty(int id)
         {
-            return new Tick(id, Array.Empty<EventDto>());
+            return new Tick(id, []);
         }
 
         public static Tick Create(int id, EventDto[] events)

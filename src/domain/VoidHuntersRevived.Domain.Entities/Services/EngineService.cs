@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Common;
+﻿using System.Collections;
+using Guppy.Core.Common;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Services;
 using Svelto.ECS;
-using System.Collections;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
@@ -15,46 +15,45 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         EnginesRoot enginesRoot) : IEngineService
     {
         private readonly IBrokerService _brokers = brokers;
-        private readonly EnginesRoot _enginesRoot = enginesRoot;
         private readonly Lazy<IFiltered<IEngineProvider>> _engineProviders = engineProviders;
-        private readonly List<IEngine> _engines = engines.ToList();
+        private readonly List<IEngine> _engines = [.. engines];
 
-        public EnginesRoot Root => _enginesRoot;
+        public EnginesRoot Root { get; } = enginesRoot;
 
         public void Initialize()
         {
-            _engines.AddRange(_engineProviders.Value.SelectMany(x => x.GetEngines()));
+            this._engines.AddRange(this._engineProviders.Value.SelectMany(x => x.GetEngines()));
 
-            foreach (IEngine engine in _engines)
+            foreach (IEngine engine in this._engines)
             {
                 if (engine is IBaseSubscriber subscriber)
                 {
-                    _brokers.AddSubscribers(subscriber.Yield());
+                    this._brokers.AddSubscribers(subscriber.Yield());
                 }
 
-                _enginesRoot.AddEngine(engine);
+                this.Root.AddEngine(engine);
             }
         }
 
         public void Dispose()
         {
-            _brokers.RemoveSubscribers(_engines.OfType<IBaseSubscriber>());
-            _enginesRoot.Dispose();
+            this._brokers.RemoveSubscribers(this._engines.OfType<IBaseSubscriber>());
+            this.Root.Dispose();
         }
 
         public T Get<T>()
         {
-            return (T)_engines.Single(x => x is T);
+            return (T)this._engines.Single(x => x is T);
         }
 
         public IEnumerator<IEngine> GetEnumerator()
         {
-            return _engines.GetEnumerator();
+            return this._engines.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _engines.GetEnumerator();
+            return this._engines.GetEnumerator();
         }
     }
 }

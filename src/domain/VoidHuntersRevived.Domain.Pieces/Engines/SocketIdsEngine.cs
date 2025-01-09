@@ -29,14 +29,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         {
             for (int i = 0; i < sockets.Component.Items.count; i++)
             {
-                var filter = _socketService.GetCouplingFilter(nodeLocalId: sockets.LocalId, socketIndex: (byte)i);
+                var filter = this._socketService.GetCouplingFilter(nodeLocalId: sockets.LocalId, socketIndex: (byte)i);
                 foreach (var (indices, groupId) in filter)
                 {
-                    var (localIds, _) = _entityQueryService.QueryEntities<EntityLocalId>(groupId);
+                    var (localIds, _) = this._entityQueryService.QueryEntities<EntityLocalId>(groupId);
 
                     for (int j = 0; j < indices.count; j++)
                     {
-                        _entitySpawnService.Despawn(sourceEventId, localIds[indices[j]]);
+                        this._entitySpawnService.Despawn(sourceEventId, localIds[indices[j]]);
                     }
                 }
             }

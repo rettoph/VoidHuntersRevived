@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         public void Process(in Guid messageId, Input_Toggle_LockstepWireframe message)
         {
-            _visible = !_visible;
+            this._visible = !this._visible;
         }
     }
 }

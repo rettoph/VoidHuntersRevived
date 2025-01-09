@@ -18,9 +18,9 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         [SequenceGroup<DebugSequenceGroup>("Entities")]
         public void OnDebug(GameTime gameTime)
         {
-            _imgui.KeyValue("Total", _entityQueryService.CalculateTotal<EntityLocalId>().ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
-            _imgui.KeyValue("Trees", _entityQueryService.CalculateTotal<Tree>().ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
-            _imgui.KeyValue("Nodes", _entityQueryService.CalculateTotal<Node>().ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("Total", this._entityQueryService.CalculateTotal<EntityLocalId>().ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("Trees", this._entityQueryService.CalculateTotal<Tree>().ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("Nodes", this._entityQueryService.CalculateTotal<Node>().ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
         }
     }
 }

@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
         {
             base.Initialize(serializers);
 
-            _serializers = serializers;
+            this._serializers = serializers;
         }
 
         public override Tick Deserialize(NetDataReader reader)
@@ -40,9 +40,9 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 
             var items = new EventDto[count];
 
-            for (var i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
-                if (_serializers.Deserialize(reader) is EventDto input)
+                if (this._serializers.Deserialize(reader) is EventDto input)
                 {
                     items[i] = input;
                 }
@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
             writer.Put(count);
             foreach (EventDto input in instance.Events)
             {
-                _serializers.Serialize(writer, input);
+                this._serializers.Serialize(writer, input);
             }
         }
     }

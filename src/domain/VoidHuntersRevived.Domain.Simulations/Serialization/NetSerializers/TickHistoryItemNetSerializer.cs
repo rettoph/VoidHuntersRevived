@@ -14,20 +14,20 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
         {
             base.Initialize(serializers);
 
-            _serializer = serializers.Get<Tick>();
+            this._serializer = serializers.Get<Tick>();
         }
 
         public override TickHistoryItem Deserialize(NetDataReader reader)
         {
             return new TickHistoryItem()
             {
-                Tick = _serializer.Deserialize(reader)
+                Tick = this._serializer.Deserialize(reader)
             };
         }
 
         public override void Serialize(NetDataWriter writer, in TickHistoryItem instance)
         {
-            _serializer.Serialize(writer, instance.Tick);
+            this._serializer.Serialize(writer, instance.Tick);
         }
     }
 }

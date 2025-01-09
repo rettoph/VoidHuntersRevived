@@ -15,11 +15,12 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Components
 
 
         public FixTransform2D WorldTransform { get; private set; }
-        public FixVector2 WorldPosition => this.WorldTransform.Position;
-        public Fix64 WorldRotation => _worldRotation ??= this.WorldTransform.Rotation.Phase;
+        public readonly FixVector2 WorldPosition => this.WorldTransform.Position;
+        public Fix64 WorldRotation => this._worldRotation ??= this.WorldTransform.Rotation.Phase;
 
         public readonly EntityFilterId<Fixture> BodyFilterId = EntityFilterId<Fixture>.Create<Body>(bodyLocalId);
-        EntityFilterId<Fixture> IBelongsTo<Body, Fixture>.ParentFilterId => this.BodyFilterId;
+
+        readonly EntityFilterId<Fixture> IBelongsTo<Body, Fixture>.ParentFilterId => this.BodyFilterId;
 
         public void SetLocalRotationTransform(Fix64 rotation, FixTransform2D transform)
         {
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Components
         public void SetBodyTransform(FixTransform2D bodyTransform)
         {
             this.WorldTransform = this.LocalTransform * bodyTransform;
-            _worldRotation = null;
+            this._worldRotation = null;
         }
     }
 }

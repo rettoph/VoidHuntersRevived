@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         [SequenceGroup<DebugSequenceGroup>("Strategy")]
         public void OnDebug(GameTime gameTime)
         {
-            _imgui.KeyValue("Time", TimeSpan.FromSeconds((float)Strategy.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'), valueColor: Color.Cyan.ToVector4());
+            this._imgui.KeyValue("Time", TimeSpan.FromSeconds((float)this.Strategy.CurrentStep.TotalTime).ToString(@"hh\:mm\:ss\.FFFFFFF").PadRight(16, '0'), valueColor: Color.Cyan.ToVector4());
         }
     }
 }

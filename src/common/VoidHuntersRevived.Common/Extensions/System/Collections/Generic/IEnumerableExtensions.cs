@@ -23,7 +23,7 @@ namespace System.Collections.Generic
         public static NativeDynamicArrayCast<T> ToNativeDynamicArray<T>(this IEnumerable<T> items, Allocator allocator = Allocator.Persistent)
             where T : struct
         {
-            NativeDynamicArrayCast<T> native = new NativeDynamicArrayCast<T>((uint)items.Count(), allocator);
+            NativeDynamicArrayCast<T> native = new((uint)items.Count(), allocator);
 
             int index = 0;
             foreach (T item in items)

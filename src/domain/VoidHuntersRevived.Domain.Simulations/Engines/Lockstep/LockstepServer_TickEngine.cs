@@ -24,34 +24,34 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(VhId id, UserJoined data)
         {
-            IUser? user = _scope.Group.Peer!.Users.UpdateOrCreate(data.UserDto);
+            IUser? user = this._scope.Group.Peer!.Users.UpdateOrCreate(data.UserDto);
 
             if (user.NetPeer is null)
             {
                 return;
             }
 
-            var currentTickId = this.Strategy.CurrentTick.Id;
+            int currentTickId = this.Strategy.CurrentTick.Id;
 
-            _scope.CreateMessage(new TickHistoryStart()
+            this._scope.CreateMessage(new TickHistoryStart()
             {
                 CurrentTickId = currentTickId
             }).AddRecipient(user.NetPeer);
 
-            foreach (Tick tick in _history)
+            foreach (Tick tick in this._history)
             {
                 if (tick.Id > currentTickId)
                 {
                     break;
                 }
 
-                _scope.CreateMessage(new TickHistoryItem()
+                this._scope.CreateMessage(new TickHistoryItem()
                 {
                     Tick = tick
                 }).AddRecipient(user.NetPeer);
             }
 
-            _scope.CreateMessage(new TickHistoryEnd()
+            this._scope.CreateMessage(new TickHistoryEnd()
             {
                 CurrentTickId = currentTickId
             }).AddRecipient(user.NetPeer);
@@ -61,15 +61,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
         public void OnTick(Tick tick)
         {
             // Broadcast the current tick to all connected peers
-            _scope.CreateMessage(in tick)
-                .AddRecipients(_scope.Group.Users.Peers);
+            this._scope.CreateMessage(in tick)
+                .AddRecipients(this._scope.Group.Users.Peers);
 
             if (tick.Events.Length == 0)
             {
                 return;
             }
 
-            _history.Add(tick);
+            this._history.Add(tick);
         }
     }
 }

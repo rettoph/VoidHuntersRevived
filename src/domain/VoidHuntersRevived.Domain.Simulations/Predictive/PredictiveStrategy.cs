@@ -1,9 +1,9 @@
-﻿using Guppy.Core.Common.Collections;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common.Collections;
 using Guppy.Core.Common.Providers;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Graphics.Common.Constants;
 using Microsoft.Xna.Framework;
-using System.Diagnostics.CodeAnalysis;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private ILockstepStrategy _lockstep = null!;
         private readonly Step _step = new();
         private double _lastStepTime;
-        private IPredictiveSynchronizationEngine[] _synchronizations = Array.Empty<IPredictiveSynchronizationEngine>();
+        private IPredictiveSynchronizationEngine[] _synchronizations = [];
         private readonly DictionaryQueue<VhId, PredictedEvent> _predictedEvents = new();
         private readonly Queue<EventDto> _confirmedEvents = new();
 
@@ -34,29 +34,29 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             base.Initialize(simulation);
 
-            _lockstep = simulation.First(StrategyTypeEnum.Lockstep) as ILockstepStrategy ?? throw new NotImplementedException();
-            _lockstep.OnEvent += this.HandleLockstepEvent;
-            _synchronizations = this.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
+            this._lockstep = simulation.First(StrategyTypeEnum.Lockstep) as ILockstepStrategy ?? throw new NotImplementedException();
+            this._lockstep.OnEvent += this.HandleLockstepEvent;
+            this._synchronizations = this.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
 
-            foreach (IPredictiveSynchronizationEngine synchronization in _synchronizations)
+            foreach (IPredictiveSynchronizationEngine synchronization in this._synchronizations)
             {
-                synchronization.Initialize(_lockstep);
+                synchronization.Initialize(this._lockstep);
             }
         }
 
         protected override bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step)
         {
-            if (_lastStepTime == realTime.TotalGameTime.TotalSeconds)
+            if (this._lastStepTime == realTime.TotalGameTime.TotalSeconds)
             {
                 step = default!;
                 return false;
             }
 
-            _step.ElapsedTime = (Fix64)realTime.ElapsedGameTime.TotalSeconds;
-            _step.TotalTime += _step.ElapsedTime;
-            _lastStepTime = realTime.TotalGameTime.TotalSeconds;
+            this._step.ElapsedTime = (Fix64)realTime.ElapsedGameTime.TotalSeconds;
+            this._step.TotalTime += this._step.ElapsedTime;
+            this._lastStepTime = realTime.TotalGameTime.TotalSeconds;
 
-            step = _step;
+            step = this._step;
             return true;
         }
 
@@ -66,12 +66,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             base.DoStep(step);
 
-            foreach (IPredictiveSynchronizationEngine synchronization in _synchronizations)
+            foreach (IPredictiveSynchronizationEngine synchronization in this._synchronizations)
             {
                 synchronization.Synchronize(step);
             }
 
-            while (_predictedEvents.TryPeek(out PredictedEvent? prediction) && prediction.IsExpired(this.CurrentStep))
+            while (this._predictedEvents.TryPeek(out PredictedEvent? prediction) && prediction.IsExpired(this.CurrentStep))
             {
                 if (prediction.Status == PredictedEventStatus.Unconfirmed)
                 {
@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                     prediction.Status = PredictedEventStatus.Reverted;
                 }
 
-                if (_predictedEvents.TryDequeue(out PredictedEvent? oldPrediction))
+                if (this._predictedEvents.TryDequeue(out PredictedEvent? oldPrediction))
                 {
                     PredictionPool.TryReturn(ref oldPrediction);
                 }
@@ -106,7 +106,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 return;
             }
 
-            ref PredictedEvent? predictiveEvent = ref _predictedEvents.GetOrEnqueue(@event.Id, out bool exists);
+            ref PredictedEvent? predictiveEvent = ref this._predictedEvents.GetOrEnqueue(@event.Id, out bool exists);
             if (exists == true)
             {
                 this.logger.Error("Unable to predict {EventName}, {EventId}; duplicate event?", @event.Data.GetType().Name, @event.Id.Value);
@@ -126,7 +126,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         private void Confirm()
         {
-            while (_confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
+            while (this._confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
             {
                 if (confirmedEvent.Data is EndOfTick endOfTick)
                 {
@@ -137,10 +137,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
                 this.logger.Verbose("Confirming {EventName}, {EventId}", confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
 
-                if (_predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published) == false)
+                if (this._predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published) == false)
                 {
                     published = this.GetPredictionEvent(confirmedEvent);
-                    _predictedEvents.TryEnqueue(confirmedEvent.Id, published);
+                    this._predictedEvents.TryEnqueue(confirmedEvent.Id, published);
                     base.Publish(confirmedEvent);
                 }
 
@@ -152,7 +152,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         {
             if (@event.Data.IsPrivate == false)
             {
-                _confirmedEvents.Enqueue(@event);
+                this._confirmedEvents.Enqueue(@event);
             }
         }
 

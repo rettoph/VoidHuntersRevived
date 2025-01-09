@@ -1,10 +1,10 @@
-﻿using Guppy.Core.Common;
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Interfaces;
 using Svelto.ECS;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;
@@ -30,20 +30,16 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         public override int GetHashCode()
         {
             int typesHash = this.Types.Aggregate(0, (ag, t) => ag + t.GetHashCode());
-            return HashCode.Combine(typesHash, SequenceGroup);
+            return HashCode.Combine(typesHash, this.SequenceGroup);
         }
     }
 
     public abstract class ComponentEngineInvoker
     {
         public delegate void ComponentEngineInvokerDelegate(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity);
-        public class ComponentEngineInvokerDelegateSequenceGroup<TSequenceGroup> : DelegateSequenceGroup<TSequenceGroup, ComponentEngineInvokerDelegate>
+        public class ComponentEngineInvokerDelegateSequenceGroup<TSequenceGroup>(bool sequence) : DelegateSequenceGroup<TSequenceGroup, ComponentEngineInvokerDelegate>(typeof(ComponentEngineInvokerDelegate), sequence)
             where TSequenceGroup : unmanaged, Enum
         {
-            public ComponentEngineInvokerDelegateSequenceGroup(bool sequence) : base(typeof(ComponentEngineInvokerDelegate), sequence)
-            {
-            }
-
             public void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
             {
                 this.Sequenced?.Invoke(sourceEventId, entityTemplate, in entity);
@@ -73,8 +69,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
                         if (method(onComponentEngineType).TryGetSequenceGroup(engine, true, out SequenceGroup<TSequenceGroup> sequenceGroup) == true)
                         { // Only look at engines with a defined sequence group
                             ComponentEngineInvokerContext<TSequenceGroup> context = new(onComponentEngineType.GenericTypeArguments, sequenceGroup);
-
-                            ref List<IEngine>? validEngineList = ref CollectionsMarshal.GetValueRefOrAddDefault(validEngines, context, out bool exists);
+                            ref List<IEngine>? validEngineList = ref CollectionsMarshal.GetValueRefOrAddDefault(validEngines, context, out _);
                             validEngineList ??= [];
 
                             validEngineList.Add(engine);
@@ -84,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             }
 
             List<ComponentEngineInvoker> invokers = [];
-            foreach (var (context, engineList) in validEngines)
+            foreach (var (context, _) in validEngines)
             {
                 Type invokerType = componentEngineInvokerType.MakeGenericType(context.Types);
                 ComponentEngineInvoker invoker = (ComponentEngineInvoker)Activator.CreateInstance(invokerType, context.SequenceGroup, engines, entitiesDB)!;
@@ -105,10 +100,10 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 
         public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
         {
-            ref TComponent component = ref _entitiesDB.QueryEntityByIndex<TComponent>(entity.Index, entity.Group);
+            ref TComponent component = ref this._entitiesDB.QueryEntityByIndex<TComponent>(entity.Index, entity.Group);
             Entity<TComponent> entityC = new(in entity, ref component);
 
-            foreach (IOnSpawnEngine<TComponent> engine in _engines)
+            foreach (IOnSpawnEngine<TComponent> engine in this._engines)
             {
                 engine.OnSpawn(sourceEventId, entityTemplate, ref entityC);
             }
@@ -126,10 +121,10 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 
         public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
         {
-            var (component1s, component2s, _) = _entitiesDB.QueryEntities<TComponent1, TComponent2>(entity.Group);
+            var (component1s, component2s, _) = this._entitiesDB.QueryEntities<TComponent1, TComponent2>(entity.Group);
             Entity<TComponent1, TComponent2> entityC = new(in entity, ref component1s[entity.Index], ref component2s[entity.Index]);
 
-            foreach (IOnSpawnEngine<TComponent1, TComponent2> engine in _engines)
+            foreach (IOnSpawnEngine<TComponent1, TComponent2> engine in this._engines)
             {
                 engine.OnSpawn(sourceEventId, entityTemplate, ref entityC);
             }
@@ -146,10 +141,10 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 
         public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
         {
-            ref TComponent component = ref _entitiesDB.QueryEntityByIndex<TComponent>(entity.Index, entity.Group);
+            ref TComponent component = ref this._entitiesDB.QueryEntityByIndex<TComponent>(entity.Index, entity.Group);
             Entity<TComponent> entityC = new(in entity, ref component);
 
-            foreach (IOnDespawnEngine<TComponent> engine in _engines)
+            foreach (IOnDespawnEngine<TComponent> engine in this._engines)
             {
                 engine.OnDespawn(sourceEventId, entityTemplate, ref entityC);
             }
@@ -167,10 +162,10 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
 
         public override void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
         {
-            var (component1s, component2s, _) = _entitiesDB.QueryEntities<TComponent1, TComponent2>(entity.Group);
+            var (component1s, component2s, _) = this._entitiesDB.QueryEntities<TComponent1, TComponent2>(entity.Group);
             Entity<TComponent1, TComponent2> entityC = new(in entity, ref component1s[entity.Index], ref component2s[entity.Index]);
 
-            foreach (IOnDespawnEngine<TComponent1, TComponent2> engine in _engines)
+            foreach (IOnDespawnEngine<TComponent1, TComponent2> engine in this._engines)
             {
                 engine.OnDespawn(sourceEventId, entityTemplate, ref entityC);
             }

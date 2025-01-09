@@ -30,10 +30,10 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
 
         public EntityService_SpawnDespawn_Tests() : base()
         {
-            _simulation = new SimulationBuilder(
+            this._simulation = new SimulationBuilder(
                     id: VhId.Empty,
-                    stepInterval: StepInterval,
-                    stepsPerTick: StepsPerTick,
+                    stepInterval: this.StepInterval,
+                    stepsPerTick: this.StepsPerTick,
                     entityTemplateFragments: [
                         new EntityTemplateFragment()
                         {
@@ -53,8 +53,8 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                 })
                 .Build();
 
-            _predictive = _simulation.Get<PredictiveStrategy>();
-            _lockstep = _simulation.Get<LockstepStrategy_Client>();
+            this._predictive = this._simulation.Get<PredictiveStrategy>();
+            this._lockstep = this._simulation.Get<LockstepStrategy_Client>();
         }
 
         [Theory]
@@ -65,18 +65,18 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         {
             TimeSpan simulatedRealtimeInterval = TimeSpan.FromMilliseconds(simulatedRealtimeIntervalInMilliseconds);
 
-            Dictionary<IStrategyMocker, int> totals = _simulation.CalculateTotalEntities<TestComponent>();
-            Assert.Equal(0, totals[_predictive]);
-            Assert.Equal(0, totals[_lockstep]);
+            Dictionary<IStrategyMocker, int> totals = this._simulation.CalculateTotalEntities<TestComponent>();
+            Assert.Equal(0, totals[this._predictive]);
+            Assert.Equal(0, totals[this._lockstep]);
 
             // "Predict" 10 initial entities to be discarded
-            _simulation.InputMany(this.GenerateTestSpawnInput, segment, 0, false)
+            this._simulation.InputMany(this.GenerateTestSpawnInput, segment, 0, false)
                 .Update(simulatedRealtimeInterval, 4);
 
             // Ensure the prediction was made in the predictive strategy but not on the lockstep strategy
-            totals = _simulation.CalculateTotalEntities<TestComponent>();
-            Assert.Equal(segment, totals[_predictive]);
-            Assert.Equal(0, totals[_lockstep]);
+            totals = this._simulation.CalculateTotalEntities<TestComponent>();
+            Assert.Equal(segment, totals[this._predictive]);
+            Assert.Equal(0, totals[this._lockstep]);
 
             for (int x = 0; x < range; x++)
             {
@@ -84,16 +84,16 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                 {
                     bool verified = y == (segment / 2);
 
-                    _simulation.Update(simulatedRealtimeInterval, 1)
-                        .Input(this.GenerateTestDepawnInput(y), verified)
+                    this._simulation.Update(simulatedRealtimeInterval, 1)
+                        .Input(GenerateTestDepawnInput(y), verified)
                         .Input(this.GenerateTestSpawnInput(y + range), verified);
                 }
 
-                _simulation.Update(simulatedRealtimeInterval, 10);
+                this._simulation.Update(simulatedRealtimeInterval, 10);
             }
 
             // Simulate long lapse of time - giving the predictive strategy time to catch up and revert as needed
-            _simulation.Update(simulatedRealtimeInterval, 1000);
+            this._simulation.Update(simulatedRealtimeInterval, 1000);
 
 
             // Ensure an equal number of entities exist in both strategies
@@ -105,9 +105,9 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             // This is all done in an effort to simulate spam clicking the tracktor beam to rapidly spawn/despawn pieces in game
             // Ideally the total number of entities within both simulations should be the same. A mismatch indicates some sort of desyncronization between 
             // the predictive and lockstep strategies
-            totals = _simulation.CalculateTotalEntities<TestComponent>();
-            Assert.Equal(1, totals[_predictive]);
-            Assert.Equal(1, totals[_lockstep]);
+            totals = this._simulation.CalculateTotalEntities<TestComponent>();
+            Assert.Equal(1, totals[this._predictive]);
+            Assert.Equal(1, totals[this._lockstep]);
         }
 
         private TestSpawnInput GenerateTestSpawnInput(int id)
@@ -115,7 +115,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             return new TestSpawnInput() { EntityGlobalId = HashBuilder<TestSpawnInput, int>.Instance.Calculate(id).ToGlobalEntityId(), EntityTemplateKey = TestEntityTemplateKey };
         }
 
-        private TestDepawnInput GenerateTestDepawnInput(int id)
+        private static TestDepawnInput GenerateTestDepawnInput(int id)
         {
             return new TestDepawnInput() { EntityGlobalId = HashBuilder<TestDepawnInput, int>.Instance.Calculate(id).ToGlobalEntityId() };
         }

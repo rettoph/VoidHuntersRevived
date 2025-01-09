@@ -1,5 +1,5 @@
-﻿using Svelto.ECS;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using Svelto.ECS;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Physics.Common.Components;

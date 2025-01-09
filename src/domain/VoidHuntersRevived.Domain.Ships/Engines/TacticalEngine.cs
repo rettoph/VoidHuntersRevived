@@ -22,8 +22,8 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
 
         public void Process(VhId eventId, Tactical_SetTarget data)
         {
-            EntityLocalId shipLocalId = _entityQueryService.GetLocalId(data.ShipGlobalId);
-            ref Tactical tactical = ref _entityQueryService.QueryByLocalId<Tactical>(shipLocalId);
+            EntityLocalId shipLocalId = this._entityQueryService.GetLocalId(data.ShipGlobalId);
+            ref Tactical tactical = ref this._entityQueryService.QueryByLocalId<Tactical>(shipLocalId);
 
             tactical.Target = data.Value;
 
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
         public void OnStep(Step step)
         {
-            foreach (var ((tacticals, count), groupId) in _entityQueryService.QueryEntities<Tactical>())
+            foreach (var ((tacticals, count), _) in this._entityQueryService.QueryEntities<Tactical>())
             {
                 for (int i = 0; i < count; i++)
                 {
