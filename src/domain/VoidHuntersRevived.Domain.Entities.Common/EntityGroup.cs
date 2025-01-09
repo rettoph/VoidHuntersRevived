@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             {
                 if (this.Contains(entityGroupList.ComponentTypes) == true)
                 {
-                    entityGroupList._values.Add(this.Value);
+                    entityGroupList.values.Add(this.Value);
                 }
             }
         }
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         private static readonly Dictionary<string, EntityGroup> _dictionary = [];
         public static EntityGroup Create(string name, IEnumerable<Type> components)
         {
-            components.Any(ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>);
+            _ = components.Any(ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>);
 
             ref EntityGroup? group = ref CollectionsMarshal.GetValueRefOrAddDefault(_dictionary, name, out bool exists);
             if (exists == false)

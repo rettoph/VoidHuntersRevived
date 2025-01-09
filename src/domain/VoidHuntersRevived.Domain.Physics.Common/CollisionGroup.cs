@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         {
             foreach (CollisionCategory category in categories)
             {
-                this._flags[category._mask] = true;
+                this._flags[category.mask] = true;
             }
         }
 
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         {
             foreach (CollisionCategory category in categories)
             {
-                this._flags[category._mask] = false;
+                this._flags[category.mask] = false;
             }
         }
 

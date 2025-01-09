@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Domain.Simulations.Common.Enums
 {
-    public enum OnTickSequenceGroup
+    public enum OnTickSequenceGroupEnum
     {
         InputEvents,
 

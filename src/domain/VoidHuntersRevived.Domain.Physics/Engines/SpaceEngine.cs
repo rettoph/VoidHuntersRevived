@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
     {
         private readonly ISpace _space = space;
 
-        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.StepSpace)]
+        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.StepSpace)]
         public void OnStep(Step step)
         {
             this._space.Step(step);

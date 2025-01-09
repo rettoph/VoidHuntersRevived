@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Utilities;
-using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
@@ -8,8 +7,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     public class EntityService : StrategyEngine, IEntityService, IDisposable
     {
         private readonly UnmanagedReference<IEntityService> _ref;
-
-        public EntitiesDB entitiesDB { get; set; } = null!;
 
         private readonly Lazy<IEntityTemplateService> _entityTemplateService;
         private readonly Lazy<IEntityQueryService> _entityQueryService;
@@ -43,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this._ref = new UnmanagedReference<IEntityService>(this);
         }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             this._ref.Dispose(false);
         }

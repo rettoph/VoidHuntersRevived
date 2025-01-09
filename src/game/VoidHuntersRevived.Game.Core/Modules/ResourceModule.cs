@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Team.TeamEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Team.TeamEntityTemplate,
-                Flags = EntityTemplateFlags.Partial,
+                Flags = EntityTemplateFlagsEnum.Partial,
                 RequiredComponents = [
                     typeof(Team),
                     typeof(ColorScheme)
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Team.DefaultTeamEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Team.DefaultTeamEntityTemplate,
-                Flags = EntityTemplateFlags.Partial,
+                Flags = EntityTemplateFlagsEnum.Partial,
                 Components = [
                     new DefaultTeam()
                 ],
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Team.TeamMemberEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
-                Flags = EntityTemplateFlags.Partial,
+                Flags = EntityTemplateFlagsEnum.Partial,
                 Components = [
                     new TeamMember()
                 ]
@@ -65,7 +65,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Physics.BodyEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Physics.BodyEntityTemplate,
-                Flags = EntityTemplateFlags.Partial,
+                Flags = EntityTemplateFlagsEnum.Partial,
                 Inherit = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
                 Components = [
                     Body.Default,
@@ -80,7 +80,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Physics.FixtureEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Physics.FixtureEntityTemplate,
-                Flags = EntityTemplateFlags.Partial,
+                Flags = EntityTemplateFlagsEnum.Partial,
                 Inherit = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
                 Components = [
                     new Fixture()
@@ -93,7 +93,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Piece.TreeEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Piece.TreeEntityTemplate,
-                Flags = EntityTemplateFlags.Partial,
+                Flags = EntityTemplateFlagsEnum.Partial,
                 Inherit = Resources.EntityTemplates.Physics.BodyEntityTemplate,
                 Components = [
                     new Tree(),
@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Piece.PieceEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Piece.PieceEntityTemplate,
-                Flags = EntityTemplateFlags.Partial,
+                Flags = EntityTemplateFlagsEnum.Partial,
                 Inherit = Resources.EntityTemplates.Physics.FixtureEntityTemplate,
                 Components = [
                     Plug.Default,
@@ -121,7 +121,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Piece.ThrusterEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Piece.ThrusterEntityTemplate,
-                Flags = EntityTemplateFlags.Partial,
+                Flags = EntityTemplateFlagsEnum.Partial,
                 Inherit = Resources.EntityTemplates.Piece.PieceEntityTemplate,
                 Components = [
                     new Thrustable()
@@ -131,7 +131,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Piece.HullEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Piece.HullEntityTemplate,
-                Flags = EntityTemplateFlags.Partial,
+                Flags = EntityTemplateFlagsEnum.Partial,
                 Inherit = Resources.EntityTemplates.Piece.PieceEntityTemplate,
                 RequiredComponents = [
                     typeof(Sockets)
@@ -158,7 +158,7 @@ namespace VoidHuntersRevived.Game.Core.Modules
             builder.RegisterResource(Resources.EntityTemplates.Ship.ShipEntityTemplate.Name, new EntityTemplateFragment()
             {
                 Key = Resources.EntityTemplates.Ship.ShipEntityTemplate,
-                Flags = EntityTemplateFlags.Partial,
+                Flags = EntityTemplateFlagsEnum.Partial,
                 Inherit = Resources.EntityTemplates.Piece.TreeEntityTemplate,
                 Components = [
                     new PhysicsBubble() {

@@ -5,7 +5,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
 {
     public readonly struct Fix64
     {
-        private readonly long m_rawValue;
+        private readonly long _rawValue;
 
         // Precision of this type is 2^-32, that is 2,3283064365386962890625E-10
         public static readonly decimal Precision = FixedMath64.Precision;
@@ -90,7 +90,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// </summary>
         public static Fix64 FastAdd(Fix64 x, Fix64 y)
         {
-            return new Fix64(x.m_rawValue + y.m_rawValue);
+            return new Fix64(x._rawValue + y._rawValue);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// </summary>
         public static Fix64 FastSub(Fix64 x, Fix64 y)
         {
-            return new Fix64(x.m_rawValue - y.m_rawValue);
+            return new Fix64(x._rawValue - y._rawValue);
         }
 
         public static Fix64 operator *(Fix64 x, Fix64 y)
@@ -151,32 +151,32 @@ namespace VoidHuntersRevived.Common.FixedPoint
 
         public static bool operator ==(Fix64 x, Fix64 y)
         {
-            return x.m_rawValue == y.m_rawValue;
+            return x._rawValue == y._rawValue;
         }
 
         public static bool operator !=(Fix64 x, Fix64 y)
         {
-            return x.m_rawValue != y.m_rawValue;
+            return x._rawValue != y._rawValue;
         }
 
         public static bool operator >(Fix64 x, Fix64 y)
         {
-            return x.m_rawValue > y.m_rawValue;
+            return x._rawValue > y._rawValue;
         }
 
         public static bool operator <(Fix64 x, Fix64 y)
         {
-            return x.m_rawValue < y.m_rawValue;
+            return x._rawValue < y._rawValue;
         }
 
         public static bool operator >=(Fix64 x, Fix64 y)
         {
-            return x.m_rawValue >= y.m_rawValue;
+            return x._rawValue >= y._rawValue;
         }
 
         public static bool operator <=(Fix64 x, Fix64 y)
         {
-            return x.m_rawValue <= y.m_rawValue;
+            return x._rawValue <= y._rawValue;
         }
 
         /// <summary>
@@ -325,22 +325,22 @@ namespace VoidHuntersRevived.Common.FixedPoint
 
         public override readonly bool Equals(object? obj)
         {
-            return obj is Fix64 fix64 && this.m_rawValue == fix64.m_rawValue;
+            return obj is Fix64 fix64 && this._rawValue == fix64._rawValue;
         }
 
         public override readonly int GetHashCode()
         {
-            return this.m_rawValue.GetHashCode();
+            return this._rawValue.GetHashCode();
         }
 
         public readonly bool Equals(Fix64 other)
         {
-            return this.m_rawValue == other.m_rawValue;
+            return this._rawValue == other._rawValue;
         }
 
         public readonly int CompareTo(Fix64 other)
         {
-            return this.m_rawValue.CompareTo(other.m_rawValue);
+            return this._rawValue.CompareTo(other._rawValue);
         }
 
         public override readonly string ToString()
@@ -364,7 +364,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <summary>
         /// The underlying integer representation
         /// </summary>
-        public readonly long RawValue => this.m_rawValue;
+        public readonly long RawValue => this._rawValue;
 
         /// <summary>
         /// This is the constructor from raw value; it can only be used interally.
@@ -372,7 +372,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <param name="rawValue"></param>
         private Fix64(long rawValue)
         {
-            this.m_rawValue = rawValue;
+            this._rawValue = rawValue;
         }
 
         public static Fix64 Min(Fix64 value1, Fix64 value2)

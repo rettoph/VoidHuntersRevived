@@ -11,12 +11,12 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Events
         public bool IsPredictable => true;
 
         public required EntityGlobalId ShipGlobalId { get; init; }
-        public required Direction Which { get; init; }
+        public required DirectionEnum Which { get; init; }
         public required bool Value { get; init; }
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<Helm_SetDirection, VhId, EntityGlobalId, Direction, bool>.Instance.Calculate(source, this.ShipGlobalId, this.Which, this.Value);
+            return HashBuilder<Helm_SetDirection, VhId, EntityGlobalId, DirectionEnum, bool>.Instance.Calculate(source, this.ShipGlobalId, this.Which, this.Value);
         }
     }
 }

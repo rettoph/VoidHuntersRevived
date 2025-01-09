@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
         public static SettingValue<int> StepsPerTick => new(Settings.StepsPerTick, 3);
         public static SettingValue<Fix64> StepInterval => new(Settings.StepInterval, (Fix64)20 / (Fix64)1000);
 
-        private static readonly Key<IEntityTemplate> TestSquareEntityTemplateKey = Key<IEntityTemplate>.GetByName(nameof(TestSquareEntityTemplateKey));
+        public static readonly Key<IEntityTemplate> TestSquareEntityTemplateKey = Key<IEntityTemplate>.GetByName(nameof(TestSquareEntityTemplateKey));
 
         private static SimulationMocker CreateSimulationMocker()
         {

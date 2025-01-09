@@ -20,8 +20,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
         private readonly List<Tick> _history = [];
         private readonly ILogger _logger = logger;
 
-        public string name { get; } = nameof(LockstepServer_TickEngine);
-
         public void Process(VhId id, UserJoined data)
         {
             IUser? user = this._scope.Group.Peer!.Users.UpdateOrCreate(data.UserDto);
@@ -57,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
             }).AddRecipient(user.NetPeer);
         }
 
-        [SequenceGroup<OnTickSequenceGroup>(OnTickSequenceGroup.PublishEvents)]
+        [SequenceGroup<OnTickSequenceGroupEnum>(OnTickSequenceGroupEnum.PublishEvents)]
         public void OnTick(Tick tick)
         {
             // Broadcast the current tick to all connected peers

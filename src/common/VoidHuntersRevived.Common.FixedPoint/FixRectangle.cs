@@ -19,9 +19,6 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
     /// <param name="height">The height of the created <see cref="FixRectangle"/>.</param>
     public struct FixRectangle(Fix64 x, Fix64 y, Fix64 width, Fix64 height)
     {
-        private static FixRectangle emptyFixRectangle = new();
-
-
         /// <summary>
         /// The x coordinate of the top-left corner of this <see cref="FixRectangle"/>.
         /// </summary>
@@ -49,10 +46,7 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
         /// <summary>
         /// Returns a <see cref="FixRectangle"/> with X=0, Y=0, Width=0, Height=0.
         /// </summary>
-        public static FixRectangle Empty
-        {
-            get { return emptyFixRectangle; }
-        }
+        public static FixRectangle Empty { get; } = new();
 
         /// <summary>
         /// Returns the x coordinate of the left edge of this <see cref="FixRectangle"/>.

@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 
             if (pieceEntityTemplateKey is null)
             {
-                throw new ArgumentException();
+                throw new ArgumentException(nameof(pieceEntityTemplateKey));
             }
 
             for (int i = 0; i < children.Length; i++)

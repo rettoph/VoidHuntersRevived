@@ -36,7 +36,6 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                 builder.RegisterEngine<LockstepStrategy_ServerDebugEngine>();
                 builder.RegisterEngine<LockstepStrategyDebugEngine>();
                 builder.RegisterEngine<StrategyDebugEngine>();
-                builder.RegisterEngine<DrawLockstepWireframeEngine>();
                 builder.RegisterEngine<DrawVertexVisibleEngine>();
                 builder.RegisterEngine<InputEngine>();
                 builder.RegisterEngine<ShaderAntiAliasingEngine>();
@@ -52,12 +51,12 @@ namespace VoidHuntersRevived.Game.Client.Extensions
 
         private static void RegisterInputs(ContainerBuilder builder)
         {
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionForward, Keys.W, Direction.Forward);
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnRight, Keys.D, Direction.TurnRight);
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionBackward, Keys.S, Direction.Backward);
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnLeft, Keys.A, Direction.TurnLeft);
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionRight, Keys.E, Direction.Right);
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionLeft, Keys.Q, Direction.Left);
+            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionForward, Keys.W, DirectionEnum.Forward);
+            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnRight, Keys.D, DirectionEnum.TurnRight);
+            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionBackward, Keys.S, DirectionEnum.Backward);
+            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnLeft, Keys.A, DirectionEnum.TurnLeft);
+            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionRight, Keys.E, DirectionEnum.Right);
+            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionLeft, Keys.Q, DirectionEnum.Left);
 
             builder.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtons.Right, new (ButtonState, IInput)[]
             {
@@ -65,12 +64,8 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                 (ButtonState.Released, new Input_TractorBeamEmitter_SetActive(false))
             });
 
-            builder.RegisterInput(Inputs.ToggleLockstepWireframe, Keys.F12, new (ButtonState, IInput)[]
-            {
-                (ButtonState.Released, new Input_Toggle_LockstepWireframe())
-            });
 
-            builder.RegisterInput(Inputs.ToggleFps, Keys.F11, new (ButtonState, IInput)[]
+            builder.RegisterInput(Inputs.ToggleFps, Keys.F12, new (ButtonState, IInput)[]
             {
                 (ButtonState.Released, new Input_Toggle_FPS())
             });
@@ -87,7 +82,7 @@ namespace VoidHuntersRevived.Game.Client.Extensions
             });
         }
 
-        private static void AddSetDirectionInput(ContainerBuilder services, string key, Keys defaultSource, Direction direction)
+        private static void AddSetDirectionInput(ContainerBuilder services, string key, Keys defaultSource, DirectionEnum direction)
         {
             services.RegisterInput(key, defaultSource,
             [

@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
     {
         public static EntityInitializerDelegate BuildEntityInitializerDelegate(IEntityComponent component)
         {
-            var method = BuildEntityInitializerDelegateMethodInfo.MakeGenericMethod(component.GetType());
+            var method = _buildEntityInitializerDelegateMethodInfo.MakeGenericMethod(component.GetType());
 
             EntityInitializerDelegate initializer = (EntityInitializerDelegate)method.Invoke(null, [component])!;
             return initializer;
@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             return initializer;
         }
 
-        public static MethodInfo BuildEntityInitializerDelegateMethodInfo = typeof(EntityInitializerHelper).GetMethod(nameof(BuildEntityInitializerDelegate), 1, [Type.MakeGenericMethodParameter(0)]) ?? throw new Exception();
+        private static readonly MethodInfo _buildEntityInitializerDelegateMethodInfo = typeof(EntityInitializerHelper).GetMethod(nameof(BuildEntityInitializerDelegate), 1, [Type.MakeGenericMethodParameter(0)]) ?? throw new Exception();
         public static EntityInitializerDelegate BuildEntityInitializerDelegate<T>(T instance)
             where T : unmanaged, IEntityComponent
         {

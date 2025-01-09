@@ -14,14 +14,12 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
     public sealed class TractorableEngine(
-        ITractorBeamEmitterService tractorBeamEmitterService,
         ITacticalService tacticalService,
         IEntityQueryService entityQueryService,
         ILogger logger) : StrategyEngine,
         IOnSpawnEngine<Tractorable>,
         IOnDespawnEngine<Tractorable>
     {
-        private readonly ITractorBeamEmitterService _tractorBeamEmitterService = tractorBeamEmitterService;
         private readonly ITacticalService _tacticalService = tacticalService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;

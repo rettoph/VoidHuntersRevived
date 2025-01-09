@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     public interface IOnStepEngine : IEngine
     {
-        [RequireSequenceGroup<OnStepSequenceGroup>]
+        [RequireSequenceGroup<OnStepSequenceGroupEnum>]
         void OnStep(Step step);
     }
 }

@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         IEventEngine<Tactical_SetTarget>,
         IOnStepEngine
     {
-        private static readonly Fix64 AimDamping = Fix64.One / (Fix64)32;
+        private static readonly Fix64 _aimDamping = Fix64.One / (Fix64)32;
 
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
             }
         }
 
-        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             foreach (var ((tacticals, count), _) in this._entityQueryService.QueryEntities<Tactical>())
@@ -42,7 +42,7 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
                 {
                     ref Tactical tactical = ref tacticals[i];
 
-                    Fix64 amount = Fix64.Min(step.ElapsedTime / AimDamping, Fix64.One);
+                    Fix64 amount = Fix64.Min(step.ElapsedTime / _aimDamping, Fix64.One);
                     tactical.Value = FixVector2.Lerp(
                         v1: tactical.Value,
                         v2: tactical.Target,

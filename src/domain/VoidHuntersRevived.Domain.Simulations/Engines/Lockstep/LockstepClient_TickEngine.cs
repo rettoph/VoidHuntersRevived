@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(in Guid messsageId, INetIncomingMessage<Tick> message)
         {
-            TickBuffer.EnqueueTickResponse response = this._ticks.TryEnqueue(message.Body);
+            TickBuffer.EnqueueTickResponseEnum response = this._ticks.TryEnqueue(message.Body);
             this._logger.Verbose("Attempted to enqueue Tick {Id}, Response = {Response}", message.Body.Id, response);
         }
 
@@ -32,11 +32,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryItem> message)
         {
-            TickBuffer.EnqueueTickResponse response = TickBuffer.EnqueueTickResponse.NotEnqueued;
             Tick? previous = this._ticks.Previous(message.Body.Tick.Id);
             int id = (previous?.Id ?? 0) + 1;
 
             this._logger.Verbose("TickId = {CurrentTickId}, PreviousTickId = {PreviousTickId}", message.Body.Tick.Id, previous?.Id ?? 0);
+            TickBuffer.EnqueueTickResponseEnum response;
             for (; id < message.Body.Tick.Id; id++)
             {
                 response = this._ticks.TryEnqueue(Tick.Empty(id));
@@ -49,14 +49,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryEnd> message)
         {
-            TickBuffer.EnqueueTickResponse response = TickBuffer.EnqueueTickResponse.NotEnqueued;
             Tick? previous = this._ticks.Previous(message.Body.CurrentTickId);
             int id = (previous?.Id ?? 0) + 1;
 
             this._logger.Verbose("CurrentTickId = {CurrentTickId}, PreviousId = {PreviousId}", message.Body.CurrentTickId, previous?.Id ?? 0);
             for (; id < message.Body.CurrentTickId; id++)
             {
-                response = this._ticks.TryEnqueue(Tick.Empty(id));
+                TickBuffer.EnqueueTickResponseEnum response = this._ticks.TryEnqueue(Tick.Empty(id));
                 this._logger.Verbose("Attempted to enqueue empty Tick {TickId}, Response = {Response}", id, response);
             }
         }

@@ -24,9 +24,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
     [StructLayout(LayoutKind.Explicit)]
     public struct VertexStaticVisible : IVertexType
     {
-        readonly VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
+        readonly VertexDeclaration IVertexType.VertexDeclaration => _vertexDeclaration;
 
-        private static readonly VertexDeclaration VertexDeclaration = new(
+        private static readonly VertexDeclaration _vertexDeclaration = new(
             new VertexElement(0, VertexElementFormat.Byte4, VertexElementUsage.BlendIndices, 0),
             new VertexElement(4, VertexElementFormat.Vector2, VertexElementUsage.Position, 0)
         );

@@ -18,14 +18,14 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     public class BodyPhysicsBubbleEngine(IEntityQueryService entityQueryService, ISpace space) : StrategyEngine, IOnStepEngine, IOnDespawnEngine<Enabled>
     {
-        private static readonly Fix64 Two = (Fix64)2;
+        private static readonly Fix64 _two = (Fix64)2;
 
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ISpace _space = space;
         private FixRectangle[] _bubbleBuffer = new FixRectangle[8];
         private int _bubbleBufferCount = 0;
 
-        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             this._bubbleBufferCount = 0;
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
                     if (physicsBubble.Enabled)
                     {
                         BodyComponent bodyComponent = bodyComponents[i];
-                        Fix64 diameter = physicsBubble.Radius * Two;
+                        Fix64 diameter = physicsBubble.Radius * _two;
 
                         this._bubbleBuffer[this._bubbleBufferCount++] = new FixRectangle()
                         {

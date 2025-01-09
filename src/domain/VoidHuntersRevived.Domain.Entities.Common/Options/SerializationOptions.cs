@@ -6,9 +6,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Options
     {
         public static SerializationOptions Default { get; } = new SerializationOptions()
         {
-            Recursion = Recursion.All
+            Recursion = RecursionEnum.All
         };
 
-        public Recursion Recursion { get; init; }
+        public RecursionEnum Recursion { get; init; }
     }
 }

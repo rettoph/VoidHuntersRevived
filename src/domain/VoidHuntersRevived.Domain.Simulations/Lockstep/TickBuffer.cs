@@ -17,12 +17,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             public Tick Data { get; private set; } = data;
             public Node? Child { get; private set; }
 
-            public EnqueueTickResponse Add(Node child)
+            public EnqueueTickResponseEnum Add(Node child)
             {
                 Node parent = this;
-                EnqueueTickResponse response = EnqueueTickResponse.NotEnqueued;
-
-                while ((response = parent.TryAdd(child)) == EnqueueTickResponse.NotEnqueued)
+                EnqueueTickResponseEnum response;
+                while ((response = parent.TryAdd(child)) == EnqueueTickResponseEnum.NotEnqueued)
                 {
                     if (parent.Child is null)
                     {
@@ -59,23 +58,23 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return parent ?? tick;
             }
 
-            private EnqueueTickResponse TryAdd(Node child)
+            private EnqueueTickResponseEnum TryAdd(Node child)
             {
                 if (child.Data.Id == this.Data.Id)
                 {
                     if (this.Data.Hash != child.Data.Hash)
                     {
                         this.Data = child.Data;
-                        return EnqueueTickResponse.DuplicateMismatch;
+                        return EnqueueTickResponseEnum.DuplicateMismatch;
                     }
 
-                    return EnqueueTickResponse.DuplicateMatch;
+                    return EnqueueTickResponseEnum.DuplicateMatch;
                 }
 
                 if (this.Child is null)
                 {
                     this.Child = child;
-                    return EnqueueTickResponse.Enqueued;
+                    return EnqueueTickResponseEnum.Enqueued;
                 }
 
                 if (child.Data.Id < this.Child.Data.Id)
@@ -83,14 +82,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                     var old = this.Child;
                     this.Child = child;
                     this.Child.Child = old;
-                    return EnqueueTickResponse.Enqueued;
+                    return EnqueueTickResponseEnum.Enqueued;
                 }
 
-                return EnqueueTickResponse.NotEnqueued;
+                return EnqueueTickResponseEnum.NotEnqueued;
             }
         }
 
-        public enum EnqueueTickResponse
+        public enum EnqueueTickResponseEnum
         {
             Enqueued,
             NotEnqueued,
@@ -164,7 +163,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             return false;
         }
 
-        public EnqueueTickResponse TryEnqueue(Tick tick)
+        public EnqueueTickResponseEnum TryEnqueue(Tick tick)
         {
             var node = new Node(tick);
             if (this._head is null)
@@ -172,16 +171,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 this._head = node;
                 this.UpdateTail();
                 this.Count++;
-                return EnqueueTickResponse.Enqueued;
+                return EnqueueTickResponseEnum.Enqueued;
             }
 
-            EnqueueTickResponse response = EnqueueTickResponse.NotEnqueued;
-
+            EnqueueTickResponseEnum response;
             if (tick.Id < this._head.Id)
             {
                 var old = this._head;
                 this._head = node;
-                if ((response = this._head.Add(old)) == EnqueueTickResponse.Enqueued)
+                if ((response = this._head.Add(old)) == EnqueueTickResponseEnum.Enqueued)
                 {
                     this.UpdateTail();
                     this.Count++;
@@ -190,7 +188,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 return response;
             }
 
-            if ((response = this._head.Add(node)) == EnqueueTickResponse.Enqueued)
+            if ((response = this._head.Add(node)) == EnqueueTickResponseEnum.Enqueued)
             {
                 this.UpdateTail();
                 this.Count++;

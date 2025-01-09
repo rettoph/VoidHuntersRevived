@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
     public interface IOnInitializeEngine<in TStrategy>
         where TStrategy : IStrategy
     {
-        [RequireSequenceGroup<OnInitializeSequenceGroup>]
+        [RequireSequenceGroup<OnInitializeSequenceGroupEnum>]
         void OnInitialize(TStrategy strategy);
     }
 

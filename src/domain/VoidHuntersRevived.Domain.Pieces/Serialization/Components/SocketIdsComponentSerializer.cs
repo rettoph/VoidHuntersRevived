@@ -17,18 +17,18 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
 
         protected override void Write(ref EntityWriter writer, in Entity entity, in Sockets instance, in SerializationOptions options)
         {
-            if (options.Recursion == Recursion.None)
+            if (options.Recursion == RecursionEnum.None)
             {
                 return;
             }
 
             for (int i = 0; i < instance.Items.count; i++)
             {
-                this.WriteSocketCouplings(ref writer, in entity, (byte)i, options);
+                this.WriteSocketCouplings(ref writer, in entity, (byte)i);
             }
         }
 
-        private void WriteSocketCouplings(ref EntityWriter writer, in Entity entity, byte socketIndex, SerializationOptions options)
+        private void WriteSocketCouplings(ref EntityWriter writer, in Entity entity, byte socketIndex)
         {
             ref var filter = ref this._socketService.GetCouplingFilter(entity.LocalId, socketIndex);
 

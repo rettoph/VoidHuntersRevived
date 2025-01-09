@@ -21,7 +21,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         IServerEngine,
         ISubscriber<INetIncomingMessage<EventDto>>
     {
-        private readonly IBus _bus = bus;
         private readonly List<EventDto> _inputs = [];
 
         public override void Initialize(ISimulation simulation)

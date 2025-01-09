@@ -11,7 +11,6 @@ using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
-using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
@@ -21,17 +20,15 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         IEntityQueryService entityQueryService,
         ISpace space,
         ILogger logger,
-        ITractorBeamEmitterService tractorBeamEmitterService,
         INodeSocketService socketService) : StrategyEngine,
         IOnStepEngine
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ISpace _space = space;
         private readonly ILogger _logger = logger;
-        private readonly ITractorBeamEmitterService _tractorBeamEmitterService = tractorBeamEmitterService;
         private readonly INodeSocketService _socketService = socketService;
 
-        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.ProcessInput)]
+        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.ProcessInput)]
         public void OnStep(Step step)
         {
             foreach (var ((localIds, tacticals, tractorBeamEmitters, count), _) in this._entityQueryService.QueryEntities<EntityLocalId, Tactical, TractorBeamEmitter>())

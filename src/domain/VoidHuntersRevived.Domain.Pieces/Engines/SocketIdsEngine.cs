@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -15,14 +14,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
     public sealed class SocketIdsEngine(
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
-        INodeSocketService socketService,
-        ILogger logger) : StrategyEngine,
+        INodeSocketService socketService) : StrategyEngine,
         IOnDespawnEngine<Sockets>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly INodeSocketService _socketService = socketService;
-        private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Sockets> sockets)

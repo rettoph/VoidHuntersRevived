@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         Lazy<IEngineService> engineService,
         Lazy<ILoggerService> loggerService) : Strategy(StrategyTypeEnum.Predictive, engineService, loggerService), IPredictiveStrategy
     {
-        private static readonly Pool<PredictedEvent> PredictionPool = new(ushort.MaxValue);
+        private static readonly Pool<PredictedEvent> _predictionPool = new(ushort.MaxValue);
         private ILockstepStrategy _lockstep = null!;
         private readonly Step _step = new();
         private double _lastStepTime;
@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
                 if (this._predictedEvents.TryDequeue(out PredictedEvent? oldPrediction))
                 {
-                    PredictionPool.TryReturn(ref oldPrediction);
+                    _predictionPool.TryReturn(ref oldPrediction);
                 }
             }
         }
@@ -158,7 +158,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
         private PredictedEvent GetPredictionEvent(EventDto @event)
         {
-            if (!PredictionPool.TryPull(out PredictedEvent? prediction))
+            if (!_predictionPool.TryPull(out PredictedEvent? prediction))
             {
                 prediction = new PredictedEvent();
             }

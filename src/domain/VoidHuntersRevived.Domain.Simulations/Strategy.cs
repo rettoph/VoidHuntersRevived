@@ -20,8 +20,8 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly Lazy<IEngineService> _engineService;
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
-        private readonly ActionSequenceGroup<OnDrawSequenceGroup, GameTime> _drawActions;
-        private readonly ActionSequenceGroup<OnStepSequenceGroup, Step> _stepActions;
+        private readonly ActionSequenceGroup<OnDrawSequenceGroupEnum, GameTime> _drawActions;
+        private readonly ActionSequenceGroup<OnStepSequenceGroupEnum, Step> _stepActions;
 
         protected ILogger logger => this._logger ??= this._loggerService.Value.GetOrCreate(this.GetType());
 
@@ -42,8 +42,8 @@ namespace VoidHuntersRevived.Domain.Simulations
             this._loggerService = loggerService;
             this._enqueued = new Queue<EventDto>();
             this._publishers = [];
-            this._stepActions = new ActionSequenceGroup<OnStepSequenceGroup, Step>(false);
-            this._drawActions = new ActionSequenceGroup<OnDrawSequenceGroup, GameTime>(true);
+            this._stepActions = new ActionSequenceGroup<OnStepSequenceGroupEnum, Step>(false);
+            this._drawActions = new ActionSequenceGroup<OnDrawSequenceGroupEnum, GameTime>(true);
 
             this.Type = type;
 
@@ -68,7 +68,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             // Call all engine initializers
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<OnInitializeSequenceGroup>.Invoke(this.Engines, initializeDelegate, false, [this]);
+            DelegateSequenceGroup<OnInitializeSequenceGroupEnum>.Invoke(this.Engines, initializeDelegate, false, [this]);
         }
 
         public virtual void Dispose()
@@ -101,7 +101,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this._stepActions.Invoke(step);
         }
 
-        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.PublishEvents)]
+        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.PublishEvents)]
         private void Step_PublishEvents(Step step)
         {
             while (this._enqueued.TryDequeue(out EventDto? enqueued))

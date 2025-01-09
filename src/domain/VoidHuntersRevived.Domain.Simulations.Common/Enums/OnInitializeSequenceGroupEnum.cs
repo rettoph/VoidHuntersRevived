@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Domain.Simulations.Common.Enums
 {
-    public enum OnInitializeSequenceGroup
+    public enum OnInitializeSequenceGroupEnum
     {
         Begin,
         PreInitialize,

@@ -3,7 +3,7 @@
     public struct CollisionCategory
     {
         private readonly byte _bit;
-        internal readonly int _mask => 0x1 << this._bit;
+        internal readonly int mask => 0x1 << this._bit;
 
         public readonly string Name => _names[this._bit];
 
@@ -16,13 +16,13 @@
         {
             if (bit > 31)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(bit));
             }
 
             this._bit = bit;
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return this.Name;
         }

@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Domain.Simulations.Common.Enums
 {
-    public enum EventTypeFlags
+    public enum EventTypeFlagsEnum
     {
         None = 0,
 

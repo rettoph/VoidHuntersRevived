@@ -13,7 +13,8 @@ namespace VoidHuntersRevived.Domain.Physics.Common.Components
         private FixTransform2D _transform = transform;
 
         public FixVector2 Position
-        { readonly get => this._transform.Position;
+        {
+            readonly get => this._transform.Position;
             set => this._transform.Position = value;
         }
         public Fix64 Rotation

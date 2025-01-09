@@ -1,6 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Graphics.Common;
-using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -16,16 +14,13 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 namespace VoidHuntersRevived.Game.Client.Engines
 {
     public class DrawVertexVisibleEngine(
-        IEntityQueryService entityQueryService,
-        ICamera2D camera,
-        GraphicsDevice graphics) : StrategyEngine,
+        IEntityQueryService entityQueryService
+    ) : StrategyEngine,
             IGraphicsEngine,
             IOnStepEngine,
             IOnSpawnEngine<VertexVisible>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
-        private readonly ICamera2D _camera = camera;
-        private readonly GraphicsDevice _graphics = graphics;
 
         /// <summary>
         /// Copy Initial Svelto data to vertex on spawn
@@ -54,7 +49,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         /// Copy Svelto entity data to vertex
         /// </summary>
         /// <param name="param"></param>
-        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             foreach (var ((vertices, colorSchemes, fixtures, _, count), _) in this._entityQueryService.QueryEntities<VertexVisible, ColorScheme, Fixture>())

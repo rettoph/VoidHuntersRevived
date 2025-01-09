@@ -45,7 +45,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         }
 
 
-        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
+        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.PreDraw)]
         public void OnDraw(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Up))

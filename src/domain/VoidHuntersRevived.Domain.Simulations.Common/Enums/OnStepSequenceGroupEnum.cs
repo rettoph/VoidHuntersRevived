@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Domain.Simulations.Common
 {
-    public enum OnStepSequenceGroup
+    public enum OnStepSequenceGroupEnum
     {
         Begin,
 

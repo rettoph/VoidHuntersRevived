@@ -24,8 +24,7 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
             VhId hash = reader.GetVhId();
             int id = reader.GetInt();
             byte count = reader.GetByte();
-            Tick tick = default!;
-
+            Tick tick;
             if (count == 0)
             {
                 tick = Tick.Empty(id);

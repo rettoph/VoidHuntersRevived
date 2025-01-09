@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         ITeamService teamService,
         ILogger logger) : StrategyEngine, ITractorBeamEmitterService
     {
-        private static readonly Fix64 QueryRadius = (Fix64)3;
+        private static readonly Fix64 _queryRadius = (Fix64)3;
 
         private readonly ISpace _space = space;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
@@ -38,8 +38,8 @@ namespace VoidHuntersRevived.Domain.Ships.Services
 
         public bool Query(EntityLocalId tractorBeamEmitterLocalId, FixVector2 target, out Node targetNode)
         {
-            AABB aabb = new(target, QueryRadius, QueryRadius);
-            Fix64 minDistance = QueryRadius;
+            AABB aabb = new(target, _queryRadius, _queryRadius);
+            Fix64 minDistance = _queryRadius;
             Node? callbackTargetNode = default!;
 
             this._space.QueryAABB(fixture =>

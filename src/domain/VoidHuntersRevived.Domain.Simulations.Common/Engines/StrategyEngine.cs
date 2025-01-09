@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
         {
         }
 
-        [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Begin)]
+        [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Begin)]
         public void Initialize(TStrategy strategy)
         {
             this.Strategy = strategy;

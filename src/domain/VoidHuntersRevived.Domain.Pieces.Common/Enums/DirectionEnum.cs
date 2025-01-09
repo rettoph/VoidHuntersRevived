@@ -1,7 +1,7 @@
 ﻿namespace VoidHuntersRevived.Domain.Pieces.Common.Enums
 {
     [Flags]
-    public enum Direction : byte
+    public enum DirectionEnum : byte
     {
         None = 0,
         Forward = 1,

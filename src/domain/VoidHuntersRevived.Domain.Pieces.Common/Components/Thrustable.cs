@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
     public struct Thrustable : IEntityComponent, IPieceComponent, ICompositeBelongsTo<Body, Fixture, Thrustable>
     {
         [JsonIgnore]
-        public Direction Direction;
+        public DirectionEnum Direction;
 
         public FixPolar MaxImpulse { get; init; }
 

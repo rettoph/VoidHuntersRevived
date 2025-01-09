@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
+        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.PreDraw)]
         public void OnDraw(GameTime gameTime)
         {
             foreach (IPrimitive<TVertex> primitive in this._primitiveService.GetAll())

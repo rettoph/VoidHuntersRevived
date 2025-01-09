@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Domain.Entities.Common.Enums
 {
-    public enum Recursion
+    public enum RecursionEnum
     {
         None,
         Healthy,

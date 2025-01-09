@@ -13,17 +13,16 @@ namespace VoidHuntersRevived.Domain.Teams.Services
 {
     public class TeamService(
         IEntityTemplateService entityTemplateService,
-        IEntityQueryService entityQueryService,
-        IPrivateEntitySpawnService privateEntitySpawnService) : StrategyEngine, ITeamService, IOnInitializeEngine
+        IPrivateEntitySpawnService privateEntitySpawnService
+    ) : StrategyEngine, ITeamService, IOnInitializeEngine
     {
         private Team _defaultTeamComponent;
         private readonly Dictionary<Id<Team>, Team> _teamComponents = [];
 
         private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
-        private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IPrivateEntitySpawnService _privateEntitySpawnService = privateEntitySpawnService;
 
-        [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
+        [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
         public void OnInitialize(IStrategy strategy)
         {
             this.BuildTeams();

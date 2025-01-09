@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
             IEntityFunctions functions = enginesRoot.GenerateEntityFunctions();
             this._templates = this._entityTemplateFragmentService.GetAll()
-                .Where(kvp => kvp.Value.Select(f => f.Flags).Aggregate((f1, f2) => f1 | f2).HasFlag(EntityTemplateFlags.Partial) == false)
+                .Where(kvp => kvp.Value.Select(f => f.Flags).Aggregate((f1, f2) => f1 | f2).HasFlag(EntityTemplateFlagsEnum.Partial) == false)
                 .ToDictionary(
                     keySelector: kvp => kvp.Key,
                     elementSelector: kvp =>
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     });
         }
 
-        [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.PreInitialize)]
+        [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.PreInitialize)]
         public void OnInitialize(IStrategy strategy)
         {
             foreach (IEntityTemplate entityTemplateProvider in this._templates.Values)

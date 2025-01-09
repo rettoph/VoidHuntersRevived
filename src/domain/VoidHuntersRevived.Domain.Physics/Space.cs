@@ -14,11 +14,11 @@ namespace VoidHuntersRevived.Domain.Physics
         private readonly Dictionary<EntityLocalId, Body> _bodies;
         private readonly ILogger _logger;
 
-        internal readonly AetherWorld _aether;
+        internal readonly AetherWorld aether;
 
-        public int BodyCount => this._aether.BodyList.Count;
+        public int BodyCount => this.aether.BodyList.Count;
 
-        public int ContactCount => this._aether.ContactCount;
+        public int ContactCount => this.aether.ContactCount;
 
         public event OnEventDelegate<IBody> OnBodyEnabled;
         public event OnEventDelegate<IBody> OnBodyDisabled;
@@ -26,11 +26,11 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public Space(ILogger logger, AetherWorld aether)
         {
-            this._aether = aether;
+            this.aether = aether;
             this._bodies = [];
             this._logger = logger;
 
-            this._aether.BodyAwakeChanged += this.HandleBodyAwakeChanged;
+            this.aether.BodyAwakeChanged += this.HandleBodyAwakeChanged;
 
             this.OnBodyEnabled = null!;
             this.OnBodyDisabled = null!;
@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb)
         {
-            this._aether.QueryAABB(aetherFixture =>
+            this.aether.QueryAABB(aetherFixture =>
             {
                 return callback((Fixture)aetherFixture.Tag);
             }, ref Unsafe.As<AABB, AetherAABB>(ref aabb));
@@ -74,7 +74,7 @@ namespace VoidHuntersRevived.Domain.Physics
 
         public void Step(Step step)
         {
-            this._aether.Step(step.ElapsedTime);
+            this.aether.Step(step.ElapsedTime);
         }
 
         public IEnumerable<IBody> AllBodies()

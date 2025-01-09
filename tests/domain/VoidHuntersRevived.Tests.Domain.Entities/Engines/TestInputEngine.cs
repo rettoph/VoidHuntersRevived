@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Engines
     {
         private IEntitySpawnService _entitySpawnService = null!;
 
-        [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
+        [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
         public void OnInitialize(IStrategy simulation)
         {
             this._entitySpawnService = simulation.Engines.Get<IEntitySpawnService>();

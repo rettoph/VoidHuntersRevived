@@ -2,7 +2,6 @@
 using Autofac;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Enums;
-using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Common.Services;
 using Microsoft.Xna.Framework;
@@ -23,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public ReadOnlyCollection<ISimulation> Instances { get; }
 
-        public SimulationService(INetScope<IStrategy> netScope, ISceneService scenes, ITerminal terminal)
+        public SimulationService(INetScope<IStrategy> netScope, ISceneService scenes)
         {
             this._netScope = netScope;
             this._scenes = scenes;

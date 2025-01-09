@@ -18,16 +18,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
         IEntitySerializationService entitySerializationService,
-        ITreeService treeService,
         ILogger logger) : StrategyEngine, INodeSocketService
     {
-        private static readonly Fix64 OpenNodemaximumDistance = Fix64.One;
+        private static readonly Fix64 _openNodemaximumDistance = Fix64.One;
 
         private readonly ILogger _logger = logger;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly IEntitySerializationService _entitySerializationService = entitySerializationService;
-        private readonly ITreeService _treeService = treeService;
 
         public NodeSocketGlobalId GetGlobalId(NodeSocketLocalId nodeSocketLocalId)
         {
@@ -106,7 +104,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         {
             // Since ships are Trees the ShipId will be the filterId seen in NodeEngine
             ref var filter = ref this._entityQueryService.GetCompositeFilter<Body, Fixture, Sockets>(treeLocalId);
-            Fix64 closestOpenSocketDistance = OpenNodemaximumDistance;
+            Fix64 closestOpenSocketDistance = _openNodemaximumDistance;
             nodeSocket = default!;
             bool result = false;
 
@@ -138,7 +136,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             out Fix64 closestOpenSocketDistance,
             out NodeSocket closestOpenSocketOnNode)
         {
-            closestOpenSocketDistance = OpenNodemaximumDistance;
+            closestOpenSocketDistance = _openNodemaximumDistance;
             closestOpenSocketOnNode = default!;
             bool result = false;
 

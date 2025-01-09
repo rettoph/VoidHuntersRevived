@@ -99,7 +99,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
             }
 
             VertexBuffer vertexBuffer = new(this._graphics.Value, staticVertexType, vertices.Length, BufferUsage.WriteOnly);
-            SetDataMethod.MakeGenericMethod(staticVertexType).Invoke(null, [vertexBuffer, vertices]);
+            _setDataMethod.MakeGenericMethod(staticVertexType).Invoke(null, [vertexBuffer, vertices]);
 
             IndexBuffer[] indexBuffers = indexBufferContexts.Select(x =>
             {
@@ -140,7 +140,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
             public short[] Values { get; set; }
         }
 
-        private static readonly MethodInfo SetDataMethod = typeof(PrimitiveTypeConverter).GetMethod(nameof(SetData), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new NotImplementedException();
+        private static readonly MethodInfo _setDataMethod = typeof(PrimitiveTypeConverter).GetMethod(nameof(SetData), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new NotImplementedException();
         private static void SetData<TVertex>(VertexBuffer vertexBuffer, TVertex[] data)
             where TVertex : unmanaged, IVertexType
         {

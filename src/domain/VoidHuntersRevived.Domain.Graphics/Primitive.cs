@@ -10,8 +10,8 @@ namespace VoidHuntersRevived.Domain.Graphics
 {
     public abstract class Primitive : IPrimitive
     {
-        private static int FilterId;
-        private static readonly FilterContextID FilterContextId = FilterContextID.GetNewContextID();
+        private static int _filterId;
+        private static readonly FilterContextID _filterContextId = FilterContextID.GetNewContextID();
 
         public Type VertexType { get; }
         public int Sequence { get; }
@@ -52,7 +52,7 @@ namespace VoidHuntersRevived.Domain.Graphics
             this.InstanceVertexBuffer = default!;
             this.VertexBufferBindings = [];
 
-            this.CombinedFilterId = new CombinedFilterID(FilterId++, FilterContextId);
+            this.CombinedFilterId = new CombinedFilterID(_filterId++, _filterContextId);
         }
 
         public abstract void Dispose();
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Graphics
     public abstract class Primitive<TVertexInstance> : Primitive, IPrimitive<TVertexInstance>
         where TVertexInstance : unmanaged, IVertexType
     {
-        private const int DefaultBufferSize = 256;
+        private const int _defaultBufferSize = 256;
 
         private TVertexInstance[] _instanceVertices;
 
@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Domain.Graphics
             PrimitiveTypeEnum[] bufferTypes,
             GraphicsDevice graphics) : base(typeof(TVertexInstance), sequence, sequenceGroup, staticVertexBuffer, staticIndexBuffers, bufferTypes, graphics)
         {
-            this._instanceVertices = new TVertexInstance[DefaultBufferSize];
+            this._instanceVertices = new TVertexInstance[_defaultBufferSize];
             this.InstanceVertexBuffer = new DynamicVertexBuffer(this.Graphics, typeof(TVertexInstance), this._instanceVertices.Length, BufferUsage.WriteOnly);
             this.VertexBufferBindings = this.StaticIndexBuffers.Select((x, idx) => new VertexBufferBinding[]
             {

@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
     {
         public required Key<IEntityTemplate> Key { get; init; }
 
-        public EntityTemplateFlags Flags { get; init; } = EntityTemplateFlags.None;
+        public EntityTemplateFlagsEnum Flags { get; init; } = EntityTemplateFlagsEnum.None;
 
         public Key<IEntityTemplate>? Inherit { get; init; } = null;
 

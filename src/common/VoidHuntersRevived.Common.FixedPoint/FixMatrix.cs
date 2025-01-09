@@ -151,7 +151,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
                     13 => this.M42,
                     14 => this.M43,
                     15 => this.M44,
-                    _ => throw new ArgumentOutOfRangeException(),
+                    _ => throw new ArgumentOutOfRangeException(nameof(index)),
                 };
             }
 
@@ -175,7 +175,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
                     case 13: this.M42 = value; break;
                     case 14: this.M43 = value; break;
                     case 15: this.M44 = value; break;
-                    default: throw new ArgumentOutOfRangeException();
+                    default: throw new ArgumentOutOfRangeException(nameof(index));
                 }
             }
         }
@@ -1273,23 +1273,6 @@ namespace VoidHuntersRevived.Common.FixedPoint
             result.M42 = matrix1.M42 - matrix2.M42;
             result.M43 = matrix1.M43 - matrix2.M43;
             result.M44 = matrix1.M44 - matrix2.M44;
-        }
-
-        internal readonly string DebugDisplayString
-        {
-            get
-            {
-                if (this == Identity)
-                {
-                    return "Identity";
-                }
-
-                return string.Concat(
-                     "( ", this.M11.ToString(), "  ", this.M12.ToString(), "  ", this.M13.ToString(), "  ", this.M14.ToString(), " )  \r\n",
-                     "( ", this.M21.ToString(), "  ", this.M22.ToString(), "  ", this.M23.ToString(), "  ", this.M24.ToString(), " )  \r\n",
-                     "( ", this.M31.ToString(), "  ", this.M32.ToString(), "  ", this.M33.ToString(), "  ", this.M34.ToString(), " )  \r\n",
-                     "( ", this.M41.ToString(), "  ", this.M42.ToString(), "  ", this.M43.ToString(), "  ", this.M44.ToString(), " )");
-            }
         }
 
         /// <summary>

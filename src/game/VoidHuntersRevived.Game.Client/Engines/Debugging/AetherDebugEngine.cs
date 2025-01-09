@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
             this._buttonGreenStyle = resourceService.Get(Resources.ImGuiStyles.ButtonGreen);
         }
 
-        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.Draw)]
+        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.Draw)]
         public void OnDraw(GameTime gameTime)
         {
             if (this._debugViewEnabled == false)

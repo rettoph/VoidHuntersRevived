@@ -44,17 +44,17 @@ namespace VoidHuntersRevived.Domain.Entities.Common
 
     public class EntityGroupList
     {
-        internal readonly FasterList<ExclusiveGroupStruct> _values;
+        internal readonly FasterList<ExclusiveGroupStruct> values;
 
         public readonly Guid Hash;
         public readonly string Name;
         public readonly HashSet<Type> ComponentTypes;
 
-        public FasterReadOnlyList<ExclusiveGroupStruct> Values => new(this._values);
+        public FasterReadOnlyList<ExclusiveGroupStruct> Values => new(this.values);
 
         internal EntityGroupList(Guid hash, string name, IEnumerable<Type> componentTypes)
         {
-            this._values = new();
+            this.values = new();
 
             this.Hash = hash;
             this.Name = name;
@@ -64,7 +64,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             {
                 if (group.Contains(this.ComponentTypes))
                 {
-                    this._values.Add(group.Value);
+                    this.values.Add(group.Value);
                 }
             }
         }
@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         private static readonly Dictionary<Guid, EntityGroupList> _dictionary = [];
         public static EntityGroupList GetOrCreate(IEnumerable<Type> components)
         {
-            components.Any(ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>);
+            _ = components.Any(ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>);
 
             EntityGroupList.CalculateNameByComponentTypes(components, out Guid hash, out string name);
             ref EntityGroupList? group = ref CollectionsMarshal.GetValueRefOrAddDefault(_dictionary, hash, out bool exists);

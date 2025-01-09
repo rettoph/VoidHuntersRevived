@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Serilog;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -11,12 +10,11 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Domain.Pieces.Engines
 {
-    public sealed class CouplingEngine(INodeSocketService socketService, ILogger logger) : StrategyEngine,
+    public sealed class CouplingEngine(INodeSocketService socketService) : StrategyEngine,
         IOnSpawnEngine<Coupling>,
         IOnDespawnEngine<Coupling>
     {
         private readonly INodeSocketService _socketService = socketService;
-        private readonly ILogger _logger = logger;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Coupling> entity)

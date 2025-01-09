@@ -9,12 +9,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         int position)
     {
         private readonly byte[] _data = data;
-        private int _position = position;
         private readonly VhId _seed = seed;
 
-        public readonly int Position => this._position;
+        public int Position { get; private set; } = position;
         public readonly int Length => this._data.Length;
-        public readonly bool DataAvailable => this._position < this._data.Length;
+        public readonly bool DataAvailable => this.Position < this._data.Length;
 
         public EntityGlobalId ReadGlobalEntityId()
         {
@@ -24,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
         public byte ReadByte()
         {
-            return this._data[this._position++];
+            return this._data[this.Position++];
         }
 
         public bool ReadBoolean()
@@ -45,9 +44,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         public unsafe T Read<T>()
             where T : unmanaged
         {
-            fixed (byte* pByte = &this._data[this._position])
+            fixed (byte* pByte = &this._data[this.Position])
             {
-                this._position += sizeof(T);
+                this.Position += sizeof(T);
 
                 T* pT = (T*)pByte;
 
@@ -57,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
 
         public void Skip(int bytes)
         {
-            this._position += bytes;
+            this.Position += bytes;
         }
     }
 }

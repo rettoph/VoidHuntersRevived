@@ -7,11 +7,11 @@ namespace VoidHuntersRevived.Presentation.Core
 {
     public static class VoidHuntersContextBuilder
     {
-        private static readonly Assembly[] GameLibraries = [
+        private static readonly Assembly[] _gameLibraries = [
             typeof(VhId).Assembly
         ];
 
-        public static readonly GuppyContext ClientContext = new(VoidHuntersRevivedGame.Company, $"{VoidHuntersRevivedGame.Name}", GameLibraries);
-        public static readonly GuppyContext ServerContext = new(VoidHuntersRevivedGame.Company, $"{VoidHuntersRevivedGame.Name}.Server", GameLibraries);
+        public static readonly GuppyContext ClientContext = new(VoidHuntersRevivedGame.Company, $"{VoidHuntersRevivedGame.Name}", _gameLibraries);
+        public static readonly GuppyContext ServerContext = new(VoidHuntersRevivedGame.Company, $"{VoidHuntersRevivedGame.Name}.Server", _gameLibraries);
     }
 }

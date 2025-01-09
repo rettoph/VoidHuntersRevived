@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             this._lockstepSpace = lockstep.Engines.Get<ISpace>();
         }
 
-        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SubmitChanges)]
+        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SubmitChanges)]
         public void Synchronize(Step step)
         {
             Fix64 damping = step.ElapsedTime;

@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 {
     internal sealed class StrategyTypeStateProvider : BaseStateProvider
     {
-        public readonly Lazy<IOptional<IStrategy>>? _strategy;
+        private readonly Lazy<IOptional<IStrategy>>? _strategy;
 
         public StrategyTypeStateProvider(ILifetimeScope scope)
         {

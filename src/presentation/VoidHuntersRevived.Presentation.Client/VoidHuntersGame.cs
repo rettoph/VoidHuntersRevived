@@ -2,7 +2,6 @@
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Extensions;
 using Guppy.Game;
-using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
@@ -23,7 +22,7 @@ namespace VoidHuntersRevived.Presentation.Client
     public sealed class VoidHuntersGame : Microsoft.Xna.Framework.Game
     {
         private readonly GraphicsDeviceManager _graphics;
-        private IGameEngine? _engine;
+        private GameEngine? _engine;
         private readonly bool _internalServer;
 
 

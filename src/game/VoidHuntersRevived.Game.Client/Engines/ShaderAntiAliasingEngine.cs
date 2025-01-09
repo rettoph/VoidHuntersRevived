@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common.Attributes;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common.Attributes;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -17,9 +17,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
         private RenderTarget2D _target_aa;
         private RenderTargetBinding[] _target_bindings;
 
-        public string name => nameof(ShaderAntiAliasingEngine);
-
-        public ShaderAntiAliasingEngine(GraphicsDevice graphics, SpriteBatch spriteBatch, GameWindow window, ShaderAntiAliasingEffect effect_aa, ContentManager content)
+        public ShaderAntiAliasingEngine(GraphicsDevice graphics, SpriteBatch spriteBatch, GameWindow window, ShaderAntiAliasingEffect effect_aa)
         {
             this._graphics = graphics;
             this._spriteBatch = spriteBatch;
@@ -43,7 +41,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             return new RenderTarget2D(this._graphics, this._graphics.Viewport.Width, this._graphics.Viewport.Height, true, SurfaceFormat.Color, DepthFormat.None, this._graphics.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
         }
 
-        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PreDraw)]
+        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.PreDraw)]
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Duck typing")]
         public void PreDraw(GameTime gameTime)
         {
             this._target_bindings = this._graphics.GetRenderTargets();
@@ -52,7 +51,8 @@ namespace VoidHuntersRevived.Game.Client.Engines
             this._graphics.Clear(Color.Transparent);
         }
 
-        [SequenceGroup<OnDrawSequenceGroup>(OnDrawSequenceGroup.PostDraw)]
+        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.PostDraw)]
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Duck typing")]
         public void PostDraw(GameTime gameTime)
         {
             this._graphics.SetRenderTargets(this._target_bindings);

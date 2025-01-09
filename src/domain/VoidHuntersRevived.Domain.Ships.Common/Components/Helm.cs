@@ -5,6 +5,6 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Components
 {
     public struct Helm() : IEntityComponent
     {
-        public Direction Direction = Direction.None;
+        public DirectionEnum Direction = DirectionEnum.None;
     }
 }

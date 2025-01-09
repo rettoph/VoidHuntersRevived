@@ -30,8 +30,6 @@ namespace VoidHuntersRevived.Game.Core.Engines
         private readonly IEntityTemplateFragmentService _entityTemplateService = entityTemplateService;
         private readonly IBlueprintService _blueprintService = blueprintService;
 
-        public string name { get; } = nameof(UserEngine);
-
         public void Process(VhId eventId, UserJoined data)
         {
             // IEntityTemplate<HullEntityTemplate> hull = _entityTemplateService.GetAll<HullEntityTemplate>().Last();

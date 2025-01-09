@@ -1,22 +1,20 @@
 ﻿using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
-using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Game.Core.Engines
 {
     internal sealed class SimulationEngine(
-        ITreeService treeService,
-        ITeamService teamService,
-        IEntityTemplateFragmentService entityTemplateService,
-        IBlueprintService blueprintService) : StrategyEngine, IEventEngine<Simulation_Begin>
+    //ITreeService treeService,
+    //ITeamService teamService,
+    //IEntityTemplateFragmentService entityTemplateService,
+    //IBlueprintService blueprintService
+    ) : StrategyEngine, IEventEngine<Simulation_Begin>
     {
-        private readonly ITreeService _treeService = treeService;
-        private readonly ITeamService _teamService = teamService;
-        private readonly IEntityTemplateFragmentService _entityTemplateService = entityTemplateService;
-        private readonly IBlueprintService _blueprintService = blueprintService;
+        //private readonly ITreeService _treeService = treeService;
+        //private readonly ITeamService _teamService = teamService;
+        //private readonly IEntityTemplateFragmentService _entityTemplateService = entityTemplateService;
+        //private readonly IBlueprintService _blueprintService = blueprintService;
 
         public void Process(VhId eventId, Simulation_Begin data)
         {

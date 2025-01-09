@@ -8,8 +8,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
     [StructLayout(LayoutKind.Explicit)]
     public struct VertexVisible : IVertexType, IEntityComponent
     {
-        readonly VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
-        private static readonly VertexDeclaration VertexDeclaration = new        (
+        readonly VertexDeclaration IVertexType.VertexDeclaration => _vertexDeclaration;
+        private static readonly VertexDeclaration _vertexDeclaration = new(
             new VertexElement(0, VertexElementFormat.Single, VertexElementUsage.Color, 0),
             new VertexElement(4, VertexElementFormat.Single, VertexElementUsage.Color, 1),
 

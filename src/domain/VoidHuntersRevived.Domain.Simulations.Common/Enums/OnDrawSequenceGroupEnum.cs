@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Domain.Simulations.Common.Enums
 {
-    public enum OnDrawSequenceGroup
+    public enum OnDrawSequenceGroupEnum
     {
         PreDraw,
         Draw,

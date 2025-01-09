@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
 
         private Vector2 CurrentTargetPosition => this._camera.Unproject(Mouse.GetState().Position.ToVector2());
 
-        [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
+        [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
         public void OnInitialize(IStrategy strategy)
         {
             IStrategy readStrategy = this.Strategy.Simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             });
         }
 
-        [SequenceGroup<OnTickSequenceGroup>(OnTickSequenceGroup.InputEvents)]
+        [SequenceGroup<OnTickSequenceGroupEnum>(OnTickSequenceGroupEnum.InputEvents)]
         public void OnTick(Tick tick)
         {
             if (this._spamClick)

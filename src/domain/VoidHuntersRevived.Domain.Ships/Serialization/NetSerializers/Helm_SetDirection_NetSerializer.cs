@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
             return new Helm_SetDirection()
             {
                 ShipGlobalId = reader.GetEntityGlobalId(),
-                Which = reader.GetEnum<Direction>(),
+                Which = reader.GetEnum<DirectionEnum>(),
                 Value = reader.GetBool()
             };
         }

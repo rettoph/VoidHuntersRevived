@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
         public override EntityTemplateFragment? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             Key<IEntityTemplate>? key = null;
-            EntityTemplateFlags flags = EntityTemplateFlags.None;
+            EntityTemplateFlagsEnum flags = EntityTemplateFlagsEnum.None;
             Key<IEntityTemplate>? inherit = null;
             Dictionary<Type, IEntityComponent> components = [];
             List<Type> requiredComponents = [];
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                         reader.Read();
                         break;
                     case nameof(EntityTemplateFragment.Flags):
-                        flags = JsonSerializer.Deserialize<EntityTemplateFlags>(ref reader, options);
+                        flags = JsonSerializer.Deserialize<EntityTemplateFlagsEnum>(ref reader, options);
                         reader.Read();
                         break;
                     case nameof(EntityTemplateFragment.Inherit):

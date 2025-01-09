@@ -11,8 +11,6 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
 {
     public sealed class BodyAwakeEngine : StrategyEngine, IOnStepEngine
     {
-        public string name { get; } = nameof(BodyAwakeEngine);
-
         private readonly ILogger _logger;
         private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
@@ -32,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             this._space.OnBodyAwakeChanged += this.HandleBodyAwakeChanged;
         }
 
-        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.SyncronizeEntities)]
+        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SyncronizeEntities)]
         public void OnStep(Step step)
         {
             //foreach (var ((ids, awakes, count), _) in _entities.QueryEntities<EntityId, Awake>())

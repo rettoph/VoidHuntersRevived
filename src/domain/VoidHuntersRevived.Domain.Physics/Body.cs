@@ -17,15 +17,15 @@ namespace VoidHuntersRevived.Domain.Physics
         private readonly Space _space;
         private readonly Dictionary<FixtureId, Fixture> _fixtures;
 
-        internal readonly AetherBody _aether;
+        internal readonly AetherBody aether;
 
         public ISpace? Space => this._space;
 
-        public FixVector2 LocalCenter => this._aether.LocalCenter.AsFixVector2();
+        public FixVector2 LocalCenter => this.aether.LocalCenter.AsFixVector2();
 
-        public FixVector2 LinearVelocity => this._aether.LinearVelocity.AsFixVector2();
+        public FixVector2 LinearVelocity => this.aether.LinearVelocity.AsFixVector2();
 
-        public Fix64 AngularVelocity => (Fix64)this._aether.AngularVelocity;
+        public Fix64 AngularVelocity => (Fix64)this.aether.AngularVelocity;
 
         public EntityLocalId EntityLocalId { get; }
 
@@ -33,23 +33,23 @@ namespace VoidHuntersRevived.Domain.Physics
         {
             get
             {
-                var trans = this._aether.GetTransform();
-                var output = new FixTransform2D(this._aether.Position.X, this._aether.Position.Y, trans.q.R, trans.q.i);
+                var trans = this.aether.GetTransform();
+                var output = new FixTransform2D(this.aether.Position.X, this.aether.Position.Y, trans.q.R, trans.q.i);
 
                 return output;
             }
         }
         public FixVector2 Position
         {
-            get => this._aether.Position.AsFixVector2();
+            get => this.aether.Position.AsFixVector2();
             set
             {
                 AetherVector2 aetherPosition = Unsafe.As<FixVector2, AetherVector2>(ref value);
-                this._aether.SetPositionIgnoreContact(ref aetherPosition);
-                this._aether.Awake = true;
+                this.aether.SetPositionIgnoreContact(ref aetherPosition);
+                this.aether.Awake = true;
             }
         }
-        public Fix64 Rotation => this._aether.Rotation;
+        public Fix64 Rotation => this.aether.Rotation;
 
         public CollisionGroup CollisionCategories
         {
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Domain.Physics
             {
                 foreach (Fixture fixture in this._fixtures.Values)
                 {
-                    fixture._aether.CollisionCategories = (Category)value.Flags;
+                    fixture.aether.CollisionCategories = (Category)value.Flags;
                 }
 
                 this._collisionCategories = value;
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Domain.Physics
             {
                 foreach (Fixture fixture in this._fixtures.Values)
                 {
-                    fixture._aether.CollidesWith = (Category)value.Flags;
+                    fixture.aether.CollidesWith = (Category)value.Flags;
                 }
 
                 this._collidesWith = value;
@@ -79,21 +79,21 @@ namespace VoidHuntersRevived.Domain.Physics
         }
 
         public bool Enabled { get; private set; }
-        public bool Awake => this._aether.Awake;
+        public bool Awake => this.aether.Awake;
         public bool SleepingAllowed
         {
-            get => this._aether.SleepingAllowed;
-            set => this._aether.SleepingAllowed = value;
+            get => this.aether.SleepingAllowed;
+            set => this.aether.SleepingAllowed = value;
         }
 
         public Body(EntityLocalId entityLocalId, Space space)
         {
             this._space = space;
-            this._aether = space._aether.CreateBody(AetherVector2.Zero, FixedMath64.Zero, BodyType.Dynamic);
+            this.aether = space.aether.CreateBody(AetherVector2.Zero, FixedMath64.Zero, BodyType.Dynamic);
             this._fixtures = [];
-            this._aether.Tag = this;
-            this._aether.AngularDamping = (Fix64)1m;
-            this._aether.LinearDamping = (Fix64)0.25m;
+            this.aether.Tag = this;
+            this.aether.AngularDamping = (Fix64)1m;
+            this.aether.LinearDamping = (Fix64)0.25m;
 
             this.EntityLocalId = entityLocalId;
             this.Enabled = true;
@@ -103,8 +103,8 @@ namespace VoidHuntersRevived.Domain.Physics
         {
             AetherTransform aetherTransform = Unsafe.As<FixTransform2D, AetherTransform>(ref transform);
 
-            this._aether.SetTransformIgnoreContacts(aetherTransform);
-            this._aether.Awake = true;
+            this.aether.SetTransformIgnoreContacts(aetherTransform);
+            this.aether.Awake = true;
         }
 
         public void SetTransform(FixVector2 position, Fix64 rotation)
@@ -112,8 +112,8 @@ namespace VoidHuntersRevived.Domain.Physics
             AetherVector2 aetherPosition = Unsafe.As<FixVector2, AetherVector2>(ref position);
             FixedMath64 fixedMathRotation = Unsafe.As<Fix64, FixedMath64>(ref rotation);
 
-            this._aether.SetTransformIgnoreContacts(ref aetherPosition, fixedMathRotation);
-            this._aether.Awake = true;
+            this.aether.SetTransformIgnoreContacts(ref aetherPosition, fixedMathRotation);
+            this.aether.Awake = true;
         }
 
         public void SetVelocity(FixVector2 linear, Fix64 angular)
@@ -121,13 +121,13 @@ namespace VoidHuntersRevived.Domain.Physics
             AetherVector2 aetherLinear = Unsafe.As<FixVector2, AetherVector2>(ref linear);
             FixedMath64 fixedMathAngular = Unsafe.As<Fix64, FixedMath64>(ref angular);
 
-            this._aether.LinearVelocity = aetherLinear;
-            this._aether.AngularVelocity = fixedMathAngular;
+            this.aether.LinearVelocity = aetherLinear;
+            this.aether.AngularVelocity = fixedMathAngular;
         }
 
         public void ApplyAngularImpulse(Fix64 impulse)
         {
-            this._aether.ApplyAngularImpulse(impulse);
+            this.aether.ApplyAngularImpulse(impulse);
         }
 
         public void ApplyForce(FixVector2 force, FixVector2 point)
@@ -135,12 +135,12 @@ namespace VoidHuntersRevived.Domain.Physics
             AetherVector2 aetherForce = Unsafe.As<FixVector2, AetherVector2>(ref force);
             AetherVector2 aetherPoint = Unsafe.As<FixVector2, AetherVector2>(ref point);
 
-            this._aether.ApplyForce(aetherForce, aetherPoint);
+            this.aether.ApplyForce(aetherForce, aetherPoint);
         }
 
         public void ApplyLinearImpulse(FixVector2 impulse)
         {
-            this._aether.ApplyLinearImpulse(impulse.AsAetherVector2());
+            this.aether.ApplyLinearImpulse(impulse.AsAetherVector2());
         }
 
         public IFixture Create(FixtureId id, Polygon polygon, FixMatrix transformation)
@@ -168,7 +168,7 @@ namespace VoidHuntersRevived.Domain.Physics
         public void Dispose()
         {
             this.Enabled = false;
-            this._space._aether.Remove(this._aether);
+            this._space.aether.Remove(this.aether);
         }
     }
 }

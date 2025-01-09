@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
     {
         private readonly INetScope _scope = scope;
 
-        [SequenceGroup<OnInitializeSequenceGroup>(OnInitializeSequenceGroup.Initialize)]
+        [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
         public void OnInitialize(IStrategy strategy)
         {
             this._scope.Group.Users.OnUserJoined += this.HandleUserJoined;

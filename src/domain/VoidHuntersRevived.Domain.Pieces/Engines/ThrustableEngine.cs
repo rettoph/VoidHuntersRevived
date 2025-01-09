@@ -27,8 +27,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ISpace _space = space;
 
-        private static readonly Fix64 Buffer = (Fix64)0.01m;
-        private static readonly Fix64 BufferPi = Fix64.Pi - Buffer;
+        private static readonly Fix64 _buffer = (Fix64)0.01m;
+        private static readonly Fix64 _bufferPi = Fix64.Pi - _buffer;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group03)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Thrustable> thrustable)
@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             }
         }
 
-        [SequenceGroup<OnStepSequenceGroup>(OnStepSequenceGroup.ProcessInput)]
+        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.ProcessInput)]
         public void OnStep(Step step)
         {
             foreach (var ((localIds, enableds, helms, count), _) in this._entityQueryService.QueryEntities<EntityLocalId, Enabled, Helm>())
@@ -107,12 +107,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
                     IBody body = this._space.GetBody(helmLocalId);
                     ref var filter = ref this._entityQueryService.GetCompositeFilter<Body, Fixture, Thrustable>(helmLocalId);
 
-                    this.TryApplyImpulse(step, body, helm.Direction, ref filter);
+                    this.TryApplyImpulse(body, helm.Direction, ref filter);
                 }
             }
         }
 
-        private void TryApplyImpulse(Step step, IBody body, Direction direction, ref EntityFilterCollection filter)
+        private void TryApplyImpulse(IBody body, DirectionEnum direction, ref EntityFilterCollection filter)
         {
             foreach (var (indices, group) in filter)
             {
@@ -139,7 +139,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
 
         private static void CleanThrustable(IBody treeBody, ref Thrustable thrustable, ref Fixture fixture)
         {
-            thrustable.Direction = Direction.None;
+            thrustable.Direction = DirectionEnum.None;
 
             // The chain's center of mass
             var com = treeBody.LocalCenter;
@@ -160,43 +160,43 @@ namespace VoidHuntersRevived.Domain.Pieces.Engines
             var ript = Fix64.WrapAngle(ipitr - ipr);
 
             // Define some lower and upper bounds...
-            var ipitr_lower = ipitr - Buffer;
-            var ipitr_upper = ipitr + Buffer;
+            var ipitr_lower = ipitr - _buffer;
+            var ipitr_upper = ipitr + _buffer;
 
             // Check if the thruster moves the chain forward...
             if ((ipitr_upper < Fix64.PiOver2 && ipitr_lower > -Fix64.PiOver2))
             {
-                thrustable.Direction |= Direction.Forward;
+                thrustable.Direction |= DirectionEnum.Forward;
             }
 
             // Check if the thruster turns the chain right...
-            if (ript > Buffer && ript < BufferPi)
+            if (ript > _buffer && ript < _bufferPi)
             {
-                thrustable.Direction |= Direction.TurnRight;
+                thrustable.Direction |= DirectionEnum.TurnRight;
             }
 
             // Check if the thruster moves the chain backward...
             if (ipitr_lower > Fix64.PiOver2 || ipitr_upper < -Fix64.PiOver2)
             {
-                thrustable.Direction |= Direction.Backward;
+                thrustable.Direction |= DirectionEnum.Backward;
             }
 
             // Check if the thruster turns the chain left...
-            if (ript < -Buffer && ript > -BufferPi)
+            if (ript < -_buffer && ript > -_bufferPi)
             {
-                thrustable.Direction |= Direction.TurnLeft;
+                thrustable.Direction |= DirectionEnum.TurnLeft;
             }
 
             // Check if the thruster moves the chain right...
-            if (ipitr_lower < -Buffer && ript > -BufferPi)
+            if (ipitr_lower < -_buffer && ript > -_bufferPi)
             {
-                thrustable.Direction |= Direction.Right;
+                thrustable.Direction |= DirectionEnum.Right;
             }
 
             // Check if the thruster moves the chain left...
-            if (ipitr_lower > Buffer && ipitr_upper < BufferPi)
+            if (ipitr_lower > _buffer && ipitr_upper < _bufferPi)
             {
-                thrustable.Direction |= Direction.Left;
+                thrustable.Direction |= DirectionEnum.Left;
             }
         }
     }
