@@ -18,6 +18,12 @@
             "type": "PowerShell",
             "request": "launch",
             "script": "${workspaceFolder}\\scripts\\setup.ps1"
+        },
+        {
+            "name": "Format",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\scripts\\format.ps1"
         }
     ]
 }
