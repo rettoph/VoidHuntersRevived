@@ -1,6 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Network.Common;
-using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -11,14 +10,13 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
-    internal class LockstepServer_TickEngine(ILogger logger, INetScope<IStrategy> scope) : StrategyEngine<ILockstepStrategy>,
+    internal class LockstepServer_TickEngine(INetScope<IStrategy> scope) : StrategyEngine<ILockstepStrategy>,
         IServerEngine,
         IOnTickEngine,
         IEventEngine<UserJoined>
     {
         private readonly INetScope<IStrategy> _scope = scope;
         private readonly List<Tick> _history = [];
-        private readonly ILogger _logger = logger;
 
         public void Process(VhId id, UserJoined data)
         {

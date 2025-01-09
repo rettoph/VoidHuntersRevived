@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Network.Common;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -8,7 +7,6 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
-using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
@@ -19,15 +17,11 @@ namespace VoidHuntersRevived.Game.Core.Engines
     internal sealed class UserEngine(
         ITreeService treeService,
         ITeamService teamService,
-        IEntityTemplateFragmentService entityTemplateService,
-        IBlueprintService blueprintService,
-        INetScope<IStrategy> scope) : StrategyEngine, IGetReadyEngine,
+        IBlueprintService blueprintService) : StrategyEngine, IGetReadyEngine,
         IEventEngine<UserJoined>
     {
-        private readonly INetScope<IStrategy> _scope = scope;
         private readonly ITreeService _treeService = treeService;
         private readonly ITeamService _teamService = teamService;
-        private readonly IEntityTemplateFragmentService _entityTemplateService = entityTemplateService;
         private readonly IBlueprintService _blueprintService = blueprintService;
 
         public void Process(VhId eventId, UserJoined data)
