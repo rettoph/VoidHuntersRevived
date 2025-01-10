@@ -22,6 +22,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly Dictionary<Type, EventPublisher> _publishers;
         private readonly ActionSequenceGroup<OnDrawSequenceGroupEnum, GameTime> _drawActions;
         private readonly ActionSequenceGroup<OnStepSequenceGroupEnum, Step> _stepActions;
+        private bool _disposed = false;
 
         protected ILogger logger => this._logger ??= this._loggerService.Value.GetOrCreate(this.GetType());
 
@@ -71,9 +72,23 @@ namespace VoidHuntersRevived.Domain.Simulations
             DelegateSequenceGroup<OnInitializeSequenceGroupEnum>.Invoke(this.Engines, initializeDelegate, false, [this]);
         }
 
-        public virtual void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
-            this.Engines.Dispose();
+            if (this._disposed == false)
+            {
+                if (disposing == true)
+                {
+                    this.Engines.Dispose();
+                }
+
+                this._disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         public override void Draw(GameTime gameTime)

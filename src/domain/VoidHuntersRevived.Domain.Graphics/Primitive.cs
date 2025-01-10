@@ -55,7 +55,13 @@ namespace VoidHuntersRevived.Domain.Graphics
             this.CombinedFilterId = new CombinedFilterID(_filterId++, _filterContextId);
         }
 
-        public abstract void Dispose();
+        protected abstract void Dispose(bool disposing);
+
+        public void Dispose()
+        {
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 
     public abstract class Primitive<TVertexInstance> : Primitive, IPrimitive<TVertexInstance>
@@ -64,6 +70,7 @@ namespace VoidHuntersRevived.Domain.Graphics
         private const int _defaultBufferSize = 256;
 
         private TVertexInstance[] _instanceVertices;
+        private bool _disposed = false;
 
         public TVertexInstance[] InstanceVertices => this._instanceVertices;
 
@@ -148,9 +155,18 @@ namespace VoidHuntersRevived.Domain.Graphics
 
         public abstract void Draw(GameTime gameTime);
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            this.InstanceVertexBuffer?.Dispose();
+            if (this._disposed == false)
+            {
+                if (disposing == true)
+                {
+                    this.InstanceVertexBuffer?.Dispose();
+                }
+
+                this._disposed = true;
+            }
+
         }
     }
 

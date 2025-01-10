@@ -10,14 +10,29 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
     {
         public readonly ISimulation Instance = instance;
         public readonly IStrategyMocker[] Strategies = strategies;
+        private bool _disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this._disposed == false)
+            {
+                if (disposing == true)
+                {
+                    this.Instance.Dispose();
+                    foreach (IStrategyMocker strategy in this.Strategies)
+                    {
+                        strategy.Dispose();
+                    }
+                }
+
+                this._disposed = true;
+            }
+        }
 
         public void Dispose()
         {
-            this.Instance.Dispose();
-            foreach (IStrategyMocker strategy in this.Strategies)
-            {
-                strategy.Dispose();
-            }
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         public IStrategyMocker<T> Get<T>()

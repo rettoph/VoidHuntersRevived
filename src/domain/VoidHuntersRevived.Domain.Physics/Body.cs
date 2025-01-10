@@ -12,6 +12,7 @@ namespace VoidHuntersRevived.Domain.Physics
 {
     public class Body : IBody, IDisposable
     {
+        private bool _disposed = false;
         private CollisionGroup _collisionCategories;
         private CollisionGroup _collidesWith;
         private readonly Space _space;
@@ -165,10 +166,24 @@ namespace VoidHuntersRevived.Domain.Physics
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this._disposed == false)
+            {
+                if (disposing == true)
+                {
+                    this.Enabled = false;
+                    this._space.aether.Remove(this.aether);
+                }
+
+                this._disposed = true;
+            }
+        }
+
         public void Dispose()
         {
-            this.Enabled = false;
-            this._space.aether.Remove(this.aether);
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

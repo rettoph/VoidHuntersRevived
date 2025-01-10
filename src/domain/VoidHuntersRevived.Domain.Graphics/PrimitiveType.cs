@@ -6,6 +6,7 @@ namespace VoidHuntersRevived.Domain.Graphics
     public abstract class PrimitiveType : IPrimitiveType
     {
         private readonly Lazy<IPrimitive[]> _primitives;
+        private bool _disposed = false;
 
         public IPrimitive[] Primitives => this._primitives.Value;
         public VertexBuffer VertexBuffer { get; }
@@ -20,18 +21,32 @@ namespace VoidHuntersRevived.Domain.Graphics
             this.BufferTypes = bufferTypes;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this._disposed == false)
+            {
+                if (disposing == true)
+                {
+                    this.VertexBuffer.Dispose();
+                    foreach (IndexBuffer indexBuffer in this.IndexBuffers)
+                    {
+                        indexBuffer.Dispose();
+                    }
+
+                    foreach (IPrimitive primitive in this.Primitives)
+                    {
+                        primitive.Dispose();
+                    }
+                }
+
+                this._disposed = true;
+            }
+        }
+
         public void Dispose()
         {
-            this.VertexBuffer.Dispose();
-            foreach (IndexBuffer indexBuffer in this.IndexBuffers)
-            {
-                indexBuffer.Dispose();
-            }
-
-            foreach (IPrimitive primitive in this.Primitives)
-            {
-                primitive.Dispose();
-            }
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 

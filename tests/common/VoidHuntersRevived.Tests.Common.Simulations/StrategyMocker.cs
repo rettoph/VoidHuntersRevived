@@ -31,11 +31,12 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         new TStrategy Instance { get; }
     }
 
-    public class StrategyMocker<TStrategy> : IStrategyMocker<TStrategy>
+    public class StrategyMocker<TStrategy> : IStrategyMocker<TStrategy>, IDisposable
         where TStrategy : IStrategy
     {
         private readonly GameTime _gameTime = new();
         private int _sourceIdGeneratorIndex = 0;
+        private bool _disposed;
         private readonly List<EventDto> _inputs = [];
 
         public TStrategy Instance { get; }
@@ -100,9 +101,23 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return this.Scope.Resolve<IEntityQueryService>().CalculateTotal<T>();
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this._disposed == false)
+            {
+                if (disposing == true)
+                {
+                    this.Scope.Dispose();
+                }
+
+                this._disposed = true;
+            }
+        }
+
         public void Dispose()
         {
-            this.Scope.Dispose();
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

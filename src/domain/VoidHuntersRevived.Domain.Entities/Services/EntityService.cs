@@ -6,6 +6,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public class EntityService : StrategyEngine, IEntityService, IDisposable
     {
+        private bool _disposed = false;
         private readonly UnmanagedReference<IEntityService> _ref;
 
         private readonly Lazy<IEntityTemplateService> _entityTemplateService;
@@ -40,9 +41,23 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this._ref = new UnmanagedReference<IEntityService>(this);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this._disposed == false)
+            {
+                if (disposing == true)
+                {
+                    this._ref.Dispose(false);
+                }
+
+                this._disposed = true;
+            }
+        }
+
         void IDisposable.Dispose()
         {
-            this._ref.Dispose(false);
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         public UnmanagedReference<IEntityService> GetReference()
