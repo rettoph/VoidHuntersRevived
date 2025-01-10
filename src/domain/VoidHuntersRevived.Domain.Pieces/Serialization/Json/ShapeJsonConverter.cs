@@ -33,9 +33,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
             };
         }
 
-        public override void Write(Utf8JsonWriter writer, Shape value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Write(Utf8JsonWriter writer, Shape value, JsonSerializerOptions options) => throw new NotImplementedException();
     }
 }

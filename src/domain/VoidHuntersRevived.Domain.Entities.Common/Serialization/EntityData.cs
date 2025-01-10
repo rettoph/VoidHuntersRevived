@@ -11,9 +11,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
         public int IndexCount => this._indices.Length;
         public int Length => this._data.Length;
 
-        public EntityReader GetReader(VhId seed, int index, int offset = 0)
-        {
-            return new EntityReader(seed, this._data, this._indices[index] + offset);
-        }
+        public EntityReader GetReader(VhId seed, int index, int offset = 0) => new(seed, this._data, this._indices[index] + offset);
     }
 }

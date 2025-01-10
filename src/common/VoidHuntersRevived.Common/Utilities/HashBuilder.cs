@@ -55,12 +55,9 @@ namespace VoidHuntersRevived.Common.Utilities
         {
         }
 
-        public VhId Calculate(in TName1 value)
-        {
-            return this.Reset()
+        public VhId Calculate(in TName1 value) => this.Reset()
                 .Append(in value)
                 .Calculate();
-        }
     }
 
     public class HashBuilder<TNameSpace, TName1, TName2> : HashBuilder<VhId>
@@ -73,13 +70,10 @@ namespace VoidHuntersRevived.Common.Utilities
         {
         }
 
-        public VhId Calculate(in TName1 value1, in TName2 value2)
-        {
-            return this.Reset()
+        public VhId Calculate(in TName1 value1, in TName2 value2) => this.Reset()
                 .Append(in value1)
                 .Append(in value2)
                 .Calculate();
-        }
     }
 
     public class HashBuilder<TNameSpace, TName1, TName2, TName3> : HashBuilder<VhId>
@@ -93,14 +87,11 @@ namespace VoidHuntersRevived.Common.Utilities
         {
         }
 
-        public VhId Calculate(in TName1 value1, in TName2 value2, in TName3 value3)
-        {
-            return this.Reset()
+        public VhId Calculate(in TName1 value1, in TName2 value2, in TName3 value3) => this.Reset()
                 .Append(in value1)
                 .Append(in value2)
                 .Append(in value3)
                 .Calculate();
-        }
     }
 
     public class HashBuilder<TNameSpace, TName1, TName2, TName3, TName4> : HashBuilder<VhId>
@@ -115,15 +106,12 @@ namespace VoidHuntersRevived.Common.Utilities
         {
         }
 
-        public VhId Calculate(in TName1 value1, in TName2 value2, in TName3 value3, in TName4 value4)
-        {
-            return this.Reset()
+        public VhId Calculate(in TName1 value1, in TName2 value2, in TName3 value3, in TName4 value4) => this.Reset()
                 .Append(in value1)
                 .Append(in value2)
                 .Append(in value3)
                 .Append(in value4)
                 .Calculate();
-        }
     }
 
     public class HashBuilder<TNameSpace, TName1, TName2, TName3, TName4, TName5> : HashBuilder<VhId>
@@ -139,15 +127,12 @@ namespace VoidHuntersRevived.Common.Utilities
         {
         }
 
-        public VhId Calculate(in TName1 value1, in TName2 value2, in TName3 value3, in TName4 value4, in TName5 value5)
-        {
-            return this.Reset()
+        public VhId Calculate(in TName1 value1, in TName2 value2, in TName3 value3, in TName4 value4, in TName5 value5) => this.Reset()
                 .Append(in value1)
                 .Append(in value2)
                 .Append(in value3)
                 .Append(in value4)
                 .Append(in value5)
                 .Calculate();
-        }
     }
 }

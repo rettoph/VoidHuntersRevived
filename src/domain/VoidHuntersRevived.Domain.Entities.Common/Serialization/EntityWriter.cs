@@ -25,10 +25,7 @@
             }
         }
 
-        public void Push(EntityLocalId localId)
-        {
-            this._nested.Push(localId);
-        }
+        public void Push(EntityLocalId localId) => this._nested.Push(localId);
 
         public bool WriteIf(bool condition)
         {

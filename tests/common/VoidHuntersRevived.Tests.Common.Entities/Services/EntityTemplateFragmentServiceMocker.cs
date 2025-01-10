@@ -16,9 +16,6 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Services
             this.Setup<EntityTemplateFragment[], Key<IEntityTemplate>>(x => x.GetByKey(It.IsAny<Key<IEntityTemplate>>()), key => this._fragments.Where(x => x.Key == key).ToArray());
         }
 
-        public void AddFragments(IEnumerable<EntityTemplateFragment> fragments)
-        {
-            this._fragments.AddRange(fragments);
-        }
+        public void AddFragments(IEnumerable<EntityTemplateFragment> fragments) => this._fragments.AddRange(fragments);
     }
 }

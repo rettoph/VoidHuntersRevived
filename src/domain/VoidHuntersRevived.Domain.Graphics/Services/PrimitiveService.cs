@@ -37,27 +37,18 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
             this._all = [.. this._grouped.Values];
         }
 
-        public IPrimitive<TVertex>[] GetAll()
-        {
-            return this._all;
-        }
+        public IPrimitive<TVertex>[] GetAll() => this._all;
 
-        public IPrimitive<TVertex> GetPrimitiveByTypeAndSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup)
-        {
-            return this._grouped[new PrimitiveTypeSequenceGroup(type, sequenceGroup)];
-        }
+        public IPrimitive<TVertex> GetPrimitiveByTypeAndSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup) => this._grouped[new PrimitiveTypeSequenceGroup(type, sequenceGroup)];
 
         private readonly struct PrimitiveTypeSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup)
         {
             public readonly Key<IPrimitiveType> Type = type;
             public readonly PrimitiveSequenceGroupEnum SequenceGroup = sequenceGroup;
 
-            public override bool Equals(object? obj)
-            {
-                return obj is PrimitiveTypeSequenceGroup casted &&
+            public override bool Equals(object? obj) => obj is PrimitiveTypeSequenceGroup casted &&
                        this.Type == casted.Type &&
                        this.SequenceGroup == casted.SequenceGroup;
-            }
 
             public override int GetHashCode() => HashCode.Combine(this.Type, this.SequenceGroup);
         }

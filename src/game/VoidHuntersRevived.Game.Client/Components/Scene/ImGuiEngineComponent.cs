@@ -14,15 +14,9 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         private readonly ActionSequenceGroup<ImGuiSequenceGroupEnum, GameTime> _imGuiActions = new(true);
 
         [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.PostInitialize)]
-        public void Initialize(IStrategy strategy)
-        {
-            this._imGuiActions.Add(strategy.Engines);
-        }
+        public void Initialize(IStrategy strategy) => this._imGuiActions.Add(strategy.Engines);
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.PostDraw)]
-        public void DrawImGui(GameTime gameTime)
-        {
-            this._imGuiActions.Invoke(gameTime);
-        }
+        public void DrawImGui(GameTime gameTime) => this._imGuiActions.Invoke(gameTime);
     }
 }

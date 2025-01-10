@@ -30,9 +30,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
             return new Socket(localTransform);
         }
 
-        public override void Write(Utf8JsonWriter writer, Socket value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Write(Utf8JsonWriter writer, Socket value, JsonSerializerOptions options) => throw new NotImplementedException();
     }
 }

@@ -22,10 +22,7 @@
             this._bit = bit;
         }
 
-        public override readonly string ToString()
-        {
-            return this.Name;
-        }
+        public override readonly string ToString() => this.Name;
 
         private static byte _currentBit;
         private static readonly string[] _names = new string[32];

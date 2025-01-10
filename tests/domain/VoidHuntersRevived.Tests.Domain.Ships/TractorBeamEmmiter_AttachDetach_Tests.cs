@@ -39,9 +39,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
         public static readonly Key<IEntityTemplate> TestSquareEntityTemplateKey = Key<IEntityTemplate>.GetByName(nameof(TestSquareEntityTemplateKey));
 
-        private static SimulationMocker CreateSimulationMocker()
-        {
-            return new SimulationBuilder(
+        private static SimulationMocker CreateSimulationMocker() => new SimulationBuilder(
                     id: VhId.Empty,
                     stepInterval: StepInterval,
                     stepsPerTick: StepsPerTick,
@@ -59,7 +57,6 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     builder.RegisterInstance(Enumerable.Empty<Blueprint>());
                 })
                 .Build();
-        }
 
         [Fact]
         public void SelectDeslectReselectAttach_Test()
@@ -393,9 +390,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             simulation.AssertBodyCount(2).AssertEntityCount<Tree>(2).AssertEntityCount<Node>(3);
         }
 
-        private static EntityTemplateFragment[] GetEntityTemplateFragments()
-        {
-            return [
+        private static EntityTemplateFragment[] GetEntityTemplateFragments() => [
                 new EntityTemplateFragment()
                 {
                     Key = Key<IEntityTemplate>.GetByName("Test.DefaultTeam"),
@@ -473,6 +468,5 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     ]
                 },
             ];
-        }
     }
 }

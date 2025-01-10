@@ -27,26 +27,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Common
             }
         }
 
-        public override bool Equals(object? obj)
-        {
-            return obj is NodeSocketLocalId id && this.Equals(id);
-        }
+        public override bool Equals(object? obj) => obj is NodeSocketLocalId id && this.Equals(id);
 
-        public bool Equals(NodeSocketLocalId other)
-        {
-            return EqualityComparer<EntityLocalId>.Default.Equals(this.NodeLocalId, other.NodeLocalId) &&
+        public bool Equals(NodeSocketLocalId other) => EqualityComparer<EntityLocalId>.Default.Equals(this.NodeLocalId, other.NodeLocalId) &&
                    this.SocketIndex == other.SocketIndex;
-        }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.NodeLocalId, this.SocketIndex);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.NodeLocalId, this.SocketIndex);
 
-        public override string ToString()
-        {
-            return $"{this.NodeLocalId}:{this.SocketIndex}";
-        }
+        public override string ToString() => $"{this.NodeLocalId}:{this.SocketIndex}";
 
         public static bool operator ==(NodeSocketLocalId id1, NodeSocketLocalId id2)
         {

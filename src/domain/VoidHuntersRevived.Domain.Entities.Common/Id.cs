@@ -6,20 +6,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common
     {
         public readonly VhId Value { get; } = value;
 
-        public override bool Equals(object? obj)
-        {
-            return obj is Id<T> id && this.Equals(id);
-        }
+        public override bool Equals(object? obj) => obj is Id<T> id && this.Equals(id);
 
-        public readonly bool Equals(Id<T> other)
-        {
-            return this.Value.Value == other.Value.Value;
-        }
+        public readonly bool Equals(Id<T> other) => this.Value.Value == other.Value.Value;
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(this.Value);
-        }
+        public override readonly int GetHashCode() => HashCode.Combine(this.Value);
 
         public static bool operator ==(Id<T> left, Id<T> right)
         {
@@ -31,14 +22,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return !(left == right);
         }
 
-        public static Id<T> FromString(string input)
-        {
-            return new Id<T>(NameSpace<T>.Instance.Create(input));
-        }
+        public static Id<T> FromString(string input) => new(NameSpace<T>.Instance.Create(input));
 
-        public override readonly string ToString()
-        {
-            return typeof(T).Name + ":" + this.Value.ToString();
-        }
+        public override readonly string ToString() => typeof(T).Name + ":" + this.Value.ToString();
     }
 }

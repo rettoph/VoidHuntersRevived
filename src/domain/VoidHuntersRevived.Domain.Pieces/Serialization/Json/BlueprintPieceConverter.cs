@@ -46,9 +46,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
             return new BlueprintPiece(pieceEntityTemplateKey.Value, children);
         }
 
-        public override void Write(Utf8JsonWriter writer, IBlueprintPiece value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Write(Utf8JsonWriter writer, IBlueprintPiece value, JsonSerializerOptions options) => throw new NotImplementedException();
     }
 }

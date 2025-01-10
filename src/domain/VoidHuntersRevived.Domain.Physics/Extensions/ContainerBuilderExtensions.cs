@@ -17,36 +17,33 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainPhysicsServices(this ContainerBuilder builder)
-        {
-            return builder.EnsureRegisteredOnce(nameof(RegisterDomainPhysicsServices), builder =>
-            {
-                builder.Register<AetherWorld>(c => new AetherWorld(AetherVector2.Zero)).InstancePerLifetimeScope();
+        public static ContainerBuilder RegisterDomainPhysicsServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterDomainPhysicsServices), builder =>
+                                                                                                                {
+                                                                                                                    builder.Register<AetherWorld>(c => new AetherWorld(AetherVector2.Zero)).InstancePerLifetimeScope();
 
-                builder.RegisterResourceType<BodyTemplateResourceType>();
+                                                                                                                    builder.RegisterResourceType<BodyTemplateResourceType>();
 
-                builder.RegisterEngine<BodyAwakeEngine>();
-                builder.RegisterEngine<BodyCollisionEngine>();
-                builder.RegisterEngine<BodyLocationEngine>();
-                builder.RegisterEngine<BodyLocationPredictiveSynchronizationEngine>();
-                builder.RegisterEngine<BodyPhysicsBubbleEngine>();
-                builder.RegisterEngine<SpaceEngine>();
-                builder.RegisterEngine<RigidFixtureEngine>();
-                builder.RegisterEngine<Space>();
+                                                                                                                    builder.RegisterEngine<BodyAwakeEngine>();
+                                                                                                                    builder.RegisterEngine<BodyCollisionEngine>();
+                                                                                                                    builder.RegisterEngine<BodyLocationEngine>();
+                                                                                                                    builder.RegisterEngine<BodyLocationPredictiveSynchronizationEngine>();
+                                                                                                                    builder.RegisterEngine<BodyPhysicsBubbleEngine>();
+                                                                                                                    builder.RegisterEngine<SpaceEngine>();
+                                                                                                                    builder.RegisterEngine<RigidFixtureEngine>();
+                                                                                                                    builder.RegisterEngine<Space>();
 
-                builder.RegisterJsonConverter<PolygonConverter>();
-                builder.RegisterJsonConverter<BodyTemplateConverter>();
-                builder.RegisterJsonConverter<RigidJsonConverter>();
+                                                                                                                    builder.RegisterJsonConverter<PolygonConverter>();
+                                                                                                                    builder.RegisterJsonConverter<BodyTemplateConverter>();
+                                                                                                                    builder.RegisterJsonConverter<RigidJsonConverter>();
 
-                builder.RegisterComponentSerializer<AwakeComponentSerializer>();
-                builder.RegisterComponentSerializer<CollisionComponentSerializer>();
-                builder.RegisterComponentSerializer<EnabledComponentSerializer>();
-                builder.RegisterComponentSerializer<PhysicsBubbleComponentSerializer>();
-                builder.RegisterComponentSerializer<BodyComponentSerializer>();
-                builder.RegisterComponentSerializer<FixtureComponentSerializer>();
+                                                                                                                    builder.RegisterComponentSerializer<AwakeComponentSerializer>();
+                                                                                                                    builder.RegisterComponentSerializer<CollisionComponentSerializer>();
+                                                                                                                    builder.RegisterComponentSerializer<EnabledComponentSerializer>();
+                                                                                                                    builder.RegisterComponentSerializer<PhysicsBubbleComponentSerializer>();
+                                                                                                                    builder.RegisterComponentSerializer<BodyComponentSerializer>();
+                                                                                                                    builder.RegisterComponentSerializer<FixtureComponentSerializer>();
 
-                builder.RegisterPolymorphicJsonType<Rigid, IEntityComponent>(nameof(Rigid));
-            });
-        }
+                                                                                                                    builder.RegisterPolymorphicJsonType<Rigid, IEntityComponent>(nameof(Rigid));
+                                                                                                                });
     }
 }

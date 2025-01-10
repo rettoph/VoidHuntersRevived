@@ -16,39 +16,36 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterPresentationCoreServices(this ContainerBuilder builder)
-        {
-            return builder.EnsureRegisteredOnce(nameof(RegisterPresentationCoreServices), builder =>
-            {
-                builder.Configure<LoggerConfiguration>((scope, config) =>
-                {
-                    IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
+        public static ContainerBuilder RegisterPresentationCoreServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterPresentationCoreServices), builder =>
+                                                                                                                   {
+                                                                                                                       builder.Configure<LoggerConfiguration>((scope, config) =>
+                                                                                                                       {
+                                                                                                                           IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
 
-                    string template = "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} - {Message:lj}{NewLine}{Exception}";
-                    if (strategy.HasValue)
-                    {
-                        IStateService states = scope.Resolve<IStateService>();
-                        config.Enrich.WithProperty(nameof(PeerTypeEnum), states.GetByKey(StateKey<PeerTypeEnum>.Create()));
-                        config.Enrich.WithProperty(nameof(StrategyTypeEnum), states.GetByKey(StateKey<StrategyTypeEnum>.Create()));
+                                                                                                                           string template = "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} - {Message:lj}{NewLine}{Exception}";
+                                                                                                                           if (strategy.HasValue)
+                                                                                                                           {
+                                                                                                                               IStateService states = scope.Resolve<IStateService>();
+                                                                                                                               config.Enrich.WithProperty(nameof(PeerTypeEnum), states.GetByKey(StateKey<PeerTypeEnum>.Create()));
+                                                                                                                               config.Enrich.WithProperty(nameof(StrategyTypeEnum), states.GetByKey(StateKey<StrategyTypeEnum>.Create()));
 
-                        template = $"[{{{nameof(PeerTypeEnum)}}}][{{{nameof(StrategyTypeEnum)}}}][{{Timestamp:HH:mm:ss}} {{Level:u3}}] {{SourceContext}} - {{Message:lj}}{{NewLine}}{{Exception}}";
-                    }
+                                                                                                                               template = $"[{{{nameof(PeerTypeEnum)}}}][{{{nameof(StrategyTypeEnum)}}}][{{Timestamp:HH:mm:ss}} {{Level:u3}}] {{SourceContext}} - {{Message:lj}}{{NewLine}}{{Exception}}";
+                                                                                                                           }
 
-                    IPathService fileTypePaths = scope.Resolve<IPathService>();
-                    FileLocation source = fileTypePaths.GetSourceLocation(DirectoryTypeEnum.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
-                    DirectoryHelper.EnsureDirectoryExists(source);
+                                                                                                                           IPathService fileTypePaths = scope.Resolve<IPathService>();
+                                                                                                                           FileLocation source = fileTypePaths.GetSourceLocation(DirectoryTypeEnum.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
+                                                                                                                           DirectoryHelper.EnsureDirectoryExists(source);
 
-                    config.WriteTo.File(
-                        path: source.Path,
-                        outputTemplate: template,
-                        retainedFileCountLimit: 5,
-                        shared: true
-                    );
+                                                                                                                           config.WriteTo.File(
+                                                                                                                               path: source.Path,
+                                                                                                                               outputTemplate: template,
+                                                                                                                               retainedFileCountLimit: 5,
+                                                                                                                               shared: true
+                                                                                                                           );
 
-                    ISerilogSinkConfigurator configurator = scope.Resolve<ISerilogSinkConfigurator>();
-                    configurator.Configure(config, template);
-                });
-            });
-        }
+                                                                                                                           ISerilogSinkConfigurator configurator = scope.Resolve<ISerilogSinkConfigurator>();
+                                                                                                                           configurator.Configure(config, template);
+                                                                                                                       });
+                                                                                                                   });
     }
 }

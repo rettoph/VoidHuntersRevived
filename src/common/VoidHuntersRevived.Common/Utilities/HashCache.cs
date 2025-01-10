@@ -28,20 +28,11 @@ namespace VoidHuntersRevived.Common.Utilities
             }
         }
 
-        public int Add(in T item)
-        {
-            return ++this.Count(in item);
-        }
+        public int Add(in T item) => ++this.Count(in item);
 
-        public int Remove(in T item)
-        {
-            return --this.Count(in item);
-        }
+        public int Remove(in T item) => --this.Count(in item);
 
-        public bool Any(in T item)
-        {
-            return this.Count(in item) != 0;
-        }
+        public bool Any(in T item) => this.Count(in item) != 0;
 
         public ref int Count(in T item)
         {

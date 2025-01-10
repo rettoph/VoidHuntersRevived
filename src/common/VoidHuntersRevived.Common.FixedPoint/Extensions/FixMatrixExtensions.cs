@@ -4,10 +4,7 @@ namespace VoidHuntersRevived.Common.FixedPoint.Extensions
 {
     public static class FixMatrixExtensions
     {
-        public static FixMatrix Invert(this FixMatrix matrix)
-        {
-            return FixMatrix.Invert(matrix);
-        }
+        public static FixMatrix Invert(this FixMatrix matrix) => FixMatrix.Invert(matrix);
 
         public static Fix64 Radians(this FixMatrix matrix)
         {
@@ -30,10 +27,7 @@ namespace VoidHuntersRevived.Common.FixedPoint.Extensions
             return result;
         }
 
-        public static BoundingSphere GetBoudingSphere(this FixMatrix matrix, float radius)
-        {
-            return new BoundingSphere(new Vector3((float)matrix.M41, (float)matrix.M42, (float)matrix.M43), radius);
-        }
+        public static BoundingSphere GetBoudingSphere(this FixMatrix matrix, float radius) => new(new Vector3((float)matrix.M41, (float)matrix.M42, (float)matrix.M43), radius);
 
         public static Matrix ToTransformationXnaMatrix(this FixMatrix matrix)
         {

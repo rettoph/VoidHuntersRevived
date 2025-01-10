@@ -15,10 +15,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _debugActions = new(true);
 
         [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
-        public void Initialize(IStrategy strategy)
-        {
-            this._debugActions.Add(strategy.Engines);
-        }
+        public void Initialize(IStrategy strategy) => this._debugActions.Add(strategy.Engines);
 
         [SequenceGroup<DebugSequenceGroupEnum>(DebugSequenceGroupEnum.Debug)]
         public void DrawDebug(GameTime gameTime)

@@ -65,9 +65,6 @@ namespace VoidHuntersRevived.Domain.Physics.Common
             return group;
         }
 
-        public static CollisionGroup GetByName(string name)
-        {
-            return _dict[name];
-        }
+        public static CollisionGroup GetByName(string name) => _dict[name];
     }
 }

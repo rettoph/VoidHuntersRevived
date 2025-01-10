@@ -156,10 +156,7 @@ namespace VoidHuntersRevived.Game.Client.Engines
             });
         }
 
-        public void Process(in Guid messageId, Input_Spam_Click message)
-        {
-            this._spamClick = message.Value;
-        }
+        public void Process(in Guid messageId, Input_Spam_Click message) => this._spamClick = message.Value;
 
         private void ForEachCurrentUserEntity(Action<EntityLocalId, EntityGlobalId> input)
         {

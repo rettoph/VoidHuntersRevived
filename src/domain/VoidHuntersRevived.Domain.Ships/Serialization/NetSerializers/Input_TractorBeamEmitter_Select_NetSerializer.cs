@@ -6,14 +6,11 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
 {
     internal class Input_TractorBeamEmitter_Select_NetSerializer : NetSerializer<Input_TractorBeamEmitter_Select>
     {
-        public override Input_TractorBeamEmitter_Select Deserialize(NetDataReader reader)
+        public override Input_TractorBeamEmitter_Select Deserialize(NetDataReader reader) => new()
         {
-            return new Input_TractorBeamEmitter_Select()
-            {
-                TractorBeamEmitterGlobalId = reader.GetEntityGlobalId(),
-                TargetNodeGlobalId = reader.GetEntityGlobalId()
-            };
-        }
+            TractorBeamEmitterGlobalId = reader.GetEntityGlobalId(),
+            TargetNodeGlobalId = reader.GetEntityGlobalId()
+        };
 
         public override void Serialize(NetDataWriter writer, in Input_TractorBeamEmitter_Select instance)
         {

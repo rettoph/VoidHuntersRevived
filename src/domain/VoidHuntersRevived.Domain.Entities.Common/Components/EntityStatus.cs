@@ -11,14 +11,8 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Components
         public readonly bool IsSpawned => this.Count >= 1;
         public readonly bool IsDespawned => this.Count < 1;
 
-        public bool IncrementSoftSpawnCount()
-        {
-            return ++this.Count == 1;
-        }
+        public bool IncrementSoftSpawnCount() => ++this.Count == 1;
 
-        public bool IncrementSoftDespawnCount()
-        {
-            return --this.Count == 0;
-        }
+        public bool IncrementSoftDespawnCount() => --this.Count == 0;
     }
 }

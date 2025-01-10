@@ -21,49 +21,46 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainPiecesServices(this ContainerBuilder builder)
-        {
-            return builder.EnsureRegisteredOnce(nameof(RegisterDomainPiecesServices), builder =>
-            {
-                builder.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<NodeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+        public static ContainerBuilder RegisterDomainPiecesServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterDomainPiecesServices), builder =>
+                                                                                                               {
+                                                                                                                   builder.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();
+                                                                                                                   builder.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                                                                                                                   builder.RegisterType<NodeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                                                                                                                   builder.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                builder.RegisterJsonConverter<BlueprintConverter>();
-                builder.RegisterJsonConverter<BlueprintPieceConverter>();
-                builder.RegisterJsonConverter<ShapeJsonConverter>();
-                builder.RegisterJsonConverter<SocketsJsonConverter>();
-                builder.RegisterJsonConverter<SocketJsonConverter>();
-                builder.RegisterJsonConverter<PlugJsonConverter>();
-                builder.RegisterJsonConverter<ThrustableJsonConverter>();
+                                                                                                                   builder.RegisterJsonConverter<BlueprintConverter>();
+                                                                                                                   builder.RegisterJsonConverter<BlueprintPieceConverter>();
+                                                                                                                   builder.RegisterJsonConverter<ShapeJsonConverter>();
+                                                                                                                   builder.RegisterJsonConverter<SocketsJsonConverter>();
+                                                                                                                   builder.RegisterJsonConverter<SocketJsonConverter>();
+                                                                                                                   builder.RegisterJsonConverter<PlugJsonConverter>();
+                                                                                                                   builder.RegisterJsonConverter<ThrustableJsonConverter>();
 
-                builder.RegisterPolymorphicJsonType<Plug, IEntityComponent>(nameof(Plug));
-                builder.RegisterPolymorphicJsonType<Sockets, IEntityComponent>(nameof(Sockets));
-                builder.RegisterPolymorphicJsonType<Thrustable, IEntityComponent>(nameof(Thrustable));
-                builder.RegisterPolymorphicJsonType<Primitive<VertexVisible>, IEntityComponent>("Primitive.Visible");
-                builder.RegisterPolymorphicJsonType<PrimitiveSequenceGroup<VertexVisible>, IEntityComponent>("PrimitiveSequenceGroup.Visible");
+                                                                                                                   builder.RegisterPolymorphicJsonType<Plug, IEntityComponent>(nameof(Plug));
+                                                                                                                   builder.RegisterPolymorphicJsonType<Sockets, IEntityComponent>(nameof(Sockets));
+                                                                                                                   builder.RegisterPolymorphicJsonType<Thrustable, IEntityComponent>(nameof(Thrustable));
+                                                                                                                   builder.RegisterPolymorphicJsonType<Primitive<VertexVisible>, IEntityComponent>("Primitive.Visible");
+                                                                                                                   builder.RegisterPolymorphicJsonType<PrimitiveSequenceGroup<VertexVisible>, IEntityComponent>("PrimitiveSequenceGroup.Visible");
 
-                builder.RegisterEngine<CouplingEngine>();
-                builder.RegisterEngine<NodeFixtureEngine>();
-                builder.RegisterEngine<SocketIdsEngine>();
-                builder.RegisterEngine<ThrustableEngine>();
-                builder.RegisterEngine<TractorableEngine>();
-                builder.RegisterEngine<TreeEngine>();
+                                                                                                                   builder.RegisterEngine<CouplingEngine>();
+                                                                                                                   builder.RegisterEngine<NodeFixtureEngine>();
+                                                                                                                   builder.RegisterEngine<SocketIdsEngine>();
+                                                                                                                   builder.RegisterEngine<ThrustableEngine>();
+                                                                                                                   builder.RegisterEngine<TractorableEngine>();
+                                                                                                                   builder.RegisterEngine<TreeEngine>();
 
-                builder.RegisterComponentSerializer<CouplingComponentSerializer>();
-                builder.RegisterComponentSerializer<NodeComponentSerializer>();
-                builder.RegisterComponentSerializer<PlugComponentSerializer>();
-                builder.RegisterComponentSerializer<SocketIdsComponentSerializer>();
-                builder.RegisterComponentSerializer<TreeComponentSerializer>();
+                                                                                                                   builder.RegisterComponentSerializer<CouplingComponentSerializer>();
+                                                                                                                   builder.RegisterComponentSerializer<NodeComponentSerializer>();
+                                                                                                                   builder.RegisterComponentSerializer<PlugComponentSerializer>();
+                                                                                                                   builder.RegisterComponentSerializer<SocketIdsComponentSerializer>();
+                                                                                                                   builder.RegisterComponentSerializer<TreeComponentSerializer>();
 
-                builder.RegisterResourceType<BlueprintResourceType>();
+                                                                                                                   builder.RegisterResourceType<BlueprintResourceType>();
 
-                builder.Configure<LoggerConfiguration>((scope, config) =>
-                {
-                    config.Destructure.AsScalar(typeof(Id<Blueprint>));
-                });
-            });
-        }
+                                                                                                                   builder.Configure<LoggerConfiguration>((scope, config) =>
+                                                                                                                   {
+                                                                                                                       config.Destructure.AsScalar(typeof(Id<Blueprint>));
+                                                                                                                   });
+                                                                                                               });
     }
 }

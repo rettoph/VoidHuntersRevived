@@ -12,9 +12,6 @@ namespace VoidHuntersRevived.Domain.Entities.Events
 
         public required EntityGlobalId GlobalId { get; init; }
 
-        public VhId CalculateHash(in VhId source)
-        {
-            return HashBuilder<HardDespawnEntity, VhId, EntityGlobalId, bool, bool>.Instance.Calculate(in source, this.GlobalId, this.IsPrivate, this.IsPredictable);
-        }
+        public VhId CalculateHash(in VhId source) => HashBuilder<HardDespawnEntity, VhId, EntityGlobalId, bool, bool>.Instance.Calculate(in source, this.GlobalId, this.IsPrivate, this.IsPredictable);
     }
 }

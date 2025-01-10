@@ -51,10 +51,7 @@ namespace VoidHuntersRevived.Common
             throw new NotImplementedException();
         }
 
-        public override string ToString()
-        {
-            return $"Key<{this.Type.Name}>('{this.Name}')";
-        }
+        public override string ToString() => $"Key<{this.Type.Name}>('{this.Name}')";
 
         public static bool operator ==(Key<T> a, Key<T> b)
         {
@@ -66,16 +63,10 @@ namespace VoidHuntersRevived.Common
             return a.Id != b.Id;
         }
 
-        public override bool Equals(object? obj)
-        {
-            return obj is Key<T> key &&
+        public override bool Equals(object? obj) => obj is Key<T> key &&
                    this.Id.Equals(key.Id);
-        }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Id);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Id);
 
         public static implicit operator Key<T>(ResourceKey<T> resource)
 

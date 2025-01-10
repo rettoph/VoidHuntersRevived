@@ -9,14 +9,8 @@ namespace VoidHuntersRevived.Domain.Ships.Services
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
-        public void AddUse(EntityLocalId tacticalId)
-        {
-            this._entityQueryService.QueryByLocalId<Tactical>(tacticalId).AddUse();
-        }
+        public void AddUse(EntityLocalId tacticalId) => this._entityQueryService.QueryByLocalId<Tactical>(tacticalId).AddUse();
 
-        public void RemoveUse(EntityLocalId tacticalId)
-        {
-            this._entityQueryService.QueryByLocalId<Tactical>(tacticalId).RemoveUse();
-        }
+        public void RemoveUse(EntityLocalId tacticalId) => this._entityQueryService.QueryByLocalId<Tactical>(tacticalId).RemoveUse();
     }
 }

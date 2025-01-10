@@ -22,33 +22,18 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         }
 
         public bool IsDefault<TParent>()
-            where TParent : unmanaged, IEntityComponent
-        {
-            return this.EGID == default && this.CombinedFilterId.contextID.id == FilterContextId<TParent>.Value.id;
-        }
+            where TParent : unmanaged, IEntityComponent => this.EGID == default && this.CombinedFilterId.contextID.id == FilterContextId<TParent>.Value.id;
 
         public static EntityFilterId<TChild> Create<TParent>(EGID egid)
-            where TParent : unmanaged, IEntityComponent
-        {
-            return new EntityFilterId<TChild>(egid, new(unchecked((int)egid.entityID), FilterContextHelper.GetFilterContext<TParent, TChild>()));
-        }
+            where TParent : unmanaged, IEntityComponent => new(egid, new(unchecked((int)egid.entityID), FilterContextHelper.GetFilterContext<TParent, TChild>()));
         public static EntityFilterId<TChild> Create<TParent>(EntityLocalId localId)
-            where TParent : unmanaged, IEntityComponent
-        {
-            return EntityFilterId<TChild>.Create<TParent>(localId.Value);
-        }
+            where TParent : unmanaged, IEntityComponent => EntityFilterId<TChild>.Create<TParent>(localId.Value);
 
-        public override bool Equals(object? obj)
-        {
-            return obj is EntityFilterId<TChild> id
+        public override bool Equals(object? obj) => obj is EntityFilterId<TChild> id
                 && this.CombinedFilterId.filterID == id.CombinedFilterId.filterID
                 && this.CombinedFilterId.contextID.id == id.CombinedFilterId.contextID.id;
-        }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.CombinedFilterId);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.CombinedFilterId);
 
         public static bool operator ==(EntityFilterId<TChild> left, EntityFilterId<TChild> right)
         {

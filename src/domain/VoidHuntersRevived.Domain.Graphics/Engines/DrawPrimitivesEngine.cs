@@ -19,15 +19,9 @@ namespace VoidHuntersRevived.Domain.Graphics.Engines
         private readonly ActionSequenceGroup<PrimitiveSequenceGroupEnum, GameTime> _primitiveActions = new(true);
 
         [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
-        public void OnInitialize(IStrategy strategy)
-        {
-            this._primitiveActions.Add(this._primitiveService.GetAll());
-        }
+        public void OnInitialize(IStrategy strategy) => this._primitiveActions.Add(this._primitiveService.GetAll());
 
         [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.Draw)]
-        public void OnDraw(GameTime gameTime)
-        {
-            this._primitiveActions.Invoke(gameTime);
-        }
+        public void OnDraw(GameTime gameTime) => this._primitiveActions.Invoke(gameTime);
     }
 }

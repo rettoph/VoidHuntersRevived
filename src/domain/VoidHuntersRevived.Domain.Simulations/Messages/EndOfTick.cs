@@ -9,9 +9,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Messages
         public bool IsPredictable => false;
         public int TickId { get; init; }
 
-        public VhId CalculateHash(in VhId source)
-        {
-            return HashBuilder<EndOfTick, VhId, int>.Instance.Calculate(source, this.TickId);
-        }
+        public VhId CalculateHash(in VhId source) => HashBuilder<EndOfTick, VhId, int>.Instance.Calculate(source, this.TickId);
     }
 }

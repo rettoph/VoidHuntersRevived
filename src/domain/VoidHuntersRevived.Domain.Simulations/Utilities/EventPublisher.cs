@@ -57,10 +57,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
         private readonly IRevertEventEngine<T>[] _reverters = subscribers.OfType<IRevertEventEngine<T>>().ToArray();
         private readonly ILogger _logger = logger;
 
-        public override void Publish(EventDto @event)
-        {
-            this.Publish(@event.Id, Unsafe.As<T>(@event.Data));
-        }
+        public override void Publish(EventDto @event) => this.Publish(@event.Id, Unsafe.As<T>(@event.Data));
 
         private void Publish(in VhId id, T data)
         {
@@ -72,10 +69,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
             }
         }
 
-        public override void Revert(EventDto @event)
-        {
-            this.Revert(@event.Id, Unsafe.As<T>(@event.Data));
-        }
+        public override void Revert(EventDto @event) => this.Revert(@event.Id, Unsafe.As<T>(@event.Data));
 
         private void Revert(in VhId id, T data)
         {

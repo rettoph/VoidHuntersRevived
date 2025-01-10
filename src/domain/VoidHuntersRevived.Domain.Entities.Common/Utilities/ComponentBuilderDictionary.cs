@@ -89,25 +89,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
         }
 
         public bool Has<T>()
-            where T : unmanaged, IEntityComponent
-        {
-            return this._builders.ContainsKey(typeof(T));
-        }
+            where T : unmanaged, IEntityComponent => this._builders.ContainsKey(typeof(T));
 
-        public bool Has(Type type)
-        {
-            return this._builders.ContainsKey(type);
-        }
+        public bool Has(Type type) => this._builders.ContainsKey(type);
 
-        public IComponentBuilder[] ToArray()
-        {
-            return [.. this._builders.Values];
-        }
+        public IComponentBuilder[] ToArray() => [.. this._builders.Values];
 
-        public Dictionary<Type, IEntityComponent> ToComponentDictionary()
-        {
-            return this._values;
-        }
+        public Dictionary<Type, IEntityComponent> ToComponentDictionary() => this._values;
 
         public static implicit operator IComponentBuilder[](ComponentBuilderDictionary dictionary)
         {

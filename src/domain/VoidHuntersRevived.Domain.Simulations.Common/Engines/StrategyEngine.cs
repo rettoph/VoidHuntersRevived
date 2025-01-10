@@ -18,10 +18,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
         }
 
         [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Begin)]
-        public void Initialize(TStrategy strategy)
-        {
-            this.Strategy = strategy;
-        }
+        public void Initialize(TStrategy strategy) => this.Strategy = strategy;
     }
 
     public abstract class StrategyEngine : StrategyEngine<IStrategy>

@@ -27,9 +27,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Extensions
         }
 
         public static ContainerBuilder RegisterStrategyFilter<TService, TStrategy>(this ContainerBuilder builder)
-            where TStrategy : IStrategy
-        {
-            return builder.RegisterFilter(new StateServiceFilter<Type?>(typeof(TService), StateKey<Type?>.Create<IStrategy>(), typeof(TStrategy)));
-        }
+            where TStrategy : IStrategy => builder.RegisterFilter(new StateServiceFilter<Type?>(typeof(TService), StateKey<Type?>.Create<IStrategy>(), typeof(TStrategy)));
     }
 }

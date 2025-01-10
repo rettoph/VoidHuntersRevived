@@ -117,11 +117,9 @@ namespace VoidHuntersRevived.Presentation.Client
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
         /// </summary>
-        protected override void UnloadContent()
-        {
+        protected override void UnloadContent() =>
             // TODO: Unload any non ContentManager content here
             this._engine?.Dispose();
-        }
 
         protected override void Dispose(bool disposing)
         {

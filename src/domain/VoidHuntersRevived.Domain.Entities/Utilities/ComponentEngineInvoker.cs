@@ -20,12 +20,9 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         public readonly Type[] Types = type;
         public readonly SequenceGroup<TSequenceGroup> SequenceGroup = sequenceGroup;
 
-        public override bool Equals(object? obj)
-        {
-            return obj is ComponentEngineInvokerContext<TSequenceGroup> context &&
+        public override bool Equals(object? obj) => obj is ComponentEngineInvokerContext<TSequenceGroup> context &&
                    Enumerable.SequenceEqual(this.Types, context.Types) &&
                    this.SequenceGroup == context.SequenceGroup;
-        }
 
         public override int GetHashCode()
         {
@@ -40,10 +37,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         public class ComponentEngineInvokerDelegateSequenceGroup<TSequenceGroup>(bool sequence) : DelegateSequenceGroup<TSequenceGroup, ComponentEngineInvokerDelegate>(typeof(ComponentEngineInvokerDelegate), sequence)
             where TSequenceGroup : unmanaged, Enum
         {
-            public void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
-            {
-                this.Sequenced?.Invoke(sourceEventId, entityTemplate, in entity);
-            }
+            public void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity) => this.Sequenced?.Invoke(sourceEventId, entityTemplate, in entity);
         }
 
         public abstract void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity);

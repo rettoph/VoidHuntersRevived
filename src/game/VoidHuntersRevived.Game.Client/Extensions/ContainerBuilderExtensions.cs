@@ -19,35 +19,32 @@ namespace VoidHuntersRevived.Game.Client.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterGameClientServices(this ContainerBuilder builder)
-        {
-            return builder.EnsureRegisteredOnce(nameof(RegisterGameClientServices), builder =>
-            {
-                builder.RegisterType<ClientPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<DebugEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<ImGuiEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<InvokeGarbageCollectionComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+        public static ContainerBuilder RegisterGameClientServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterGameClientServices), builder =>
+                                                                                                             {
+                                                                                                                 builder.RegisterType<ClientPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                                                                                                                 builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                                                                                                                 builder.RegisterType<DebugEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                                                                                                                 builder.RegisterType<ImGuiEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                                                                                                                 builder.RegisterType<InvokeGarbageCollectionComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                builder.RegisterEngine<CameraEngine>();
-                builder.RegisterEngine<AetherDebugEngine>();
-                builder.RegisterEngine<EntitiesDebugEngine>();
-                builder.RegisterEngine<LockstepStrategy_ClientDebugEngine>();
-                builder.RegisterEngine<LockstepStrategy_ServerDebugEngine>();
-                builder.RegisterEngine<LockstepStrategyDebugEngine>();
-                builder.RegisterEngine<StrategyDebugEngine>();
-                builder.RegisterEngine<DrawVertexVisibleEngine>();
-                builder.RegisterEngine<InputEngine>();
-                builder.RegisterEngine<ShaderAntiAliasingEngine>();
+                                                                                                                 builder.RegisterEngine<CameraEngine>();
+                                                                                                                 builder.RegisterEngine<AetherDebugEngine>();
+                                                                                                                 builder.RegisterEngine<EntitiesDebugEngine>();
+                                                                                                                 builder.RegisterEngine<LockstepStrategy_ClientDebugEngine>();
+                                                                                                                 builder.RegisterEngine<LockstepStrategy_ServerDebugEngine>();
+                                                                                                                 builder.RegisterEngine<LockstepStrategyDebugEngine>();
+                                                                                                                 builder.RegisterEngine<StrategyDebugEngine>();
+                                                                                                                 builder.RegisterEngine<DrawVertexVisibleEngine>();
+                                                                                                                 builder.RegisterEngine<InputEngine>();
+                                                                                                                 builder.RegisterEngine<ShaderAntiAliasingEngine>();
 
-                builder.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
-                {
-                    configuration.SetSceneHasDebugWindow(true).SetSceneHasTerminalWindow(true);
-                });
+                                                                                                                 builder.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
+                                                                                                                 {
+                                                                                                                     configuration.SetSceneHasDebugWindow(true).SetSceneHasTerminalWindow(true);
+                                                                                                                 });
 
-                ContainerBuilderExtensions.RegisterInputs(builder);
-            });
-        }
+                                                                                                                 ContainerBuilderExtensions.RegisterInputs(builder);
+                                                                                                             });
 
         private static void RegisterInputs(ContainerBuilder builder)
         {
@@ -82,9 +79,7 @@ namespace VoidHuntersRevived.Game.Client.Extensions
             });
         }
 
-        private static void AddSetDirectionInput(ContainerBuilder services, string key, Keys defaultSource, DirectionEnum direction)
-        {
-            services.RegisterInput(key, defaultSource,
+        private static void AddSetDirectionInput(ContainerBuilder services, string key, Keys defaultSource, DirectionEnum direction) => services.RegisterInput(key, defaultSource,
             [
                 (KeyState.Down, new Input_Helm_SetDirection()
                 {
@@ -97,6 +92,5 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                     Value = false
                 }),
             ]);
-        }
     }
 }

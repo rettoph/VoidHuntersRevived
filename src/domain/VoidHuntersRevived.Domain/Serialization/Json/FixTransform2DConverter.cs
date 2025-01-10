@@ -35,9 +35,6 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
             return new FixTransform2D(rotation, position);
         }
 
-        public override void Write(Utf8JsonWriter writer, FixTransform2D value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Write(Utf8JsonWriter writer, FixTransform2D value, JsonSerializerOptions options) => throw new NotImplementedException();
     }
 }

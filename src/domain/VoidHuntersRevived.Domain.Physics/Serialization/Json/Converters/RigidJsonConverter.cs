@@ -31,9 +31,6 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json
             return new Rigid(template);
         }
 
-        public override void Write(Utf8JsonWriter writer, Rigid value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Write(Utf8JsonWriter writer, Rigid value, JsonSerializerOptions options) => throw new NotImplementedException();
     }
 }

@@ -21,25 +21,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             //
         }
 
-        public EntityLocalId GetLocalId(EntityGlobalId globalId)
-        {
-            return this._globalLocalIds[globalId];
-        }
+        public EntityLocalId GetLocalId(EntityGlobalId globalId) => this._globalLocalIds[globalId];
 
-        public bool TryGetLocalId(EntityGlobalId globalId, out EntityLocalId localId)
-        {
-            return this._globalLocalIds.TryGetValue(globalId, out localId);
-        }
+        public bool TryGetLocalId(EntityGlobalId globalId, out EntityLocalId localId) => this._globalLocalIds.TryGetValue(globalId, out localId);
 
-        public EntityGlobalId GetGlobalId(EntityLocalId localId)
-        {
-            return this._localGlobalIds[localId];
-        }
+        public EntityGlobalId GetGlobalId(EntityLocalId localId) => this._localGlobalIds[localId];
 
-        public bool TryGetGlobalId(EntityLocalId localId, out EntityGlobalId globalId)
-        {
-            return this._localGlobalIds.TryGetValue(localId, out globalId);
-        }
+        public bool TryGetGlobalId(EntityLocalId localId, out EntityGlobalId globalId) => this._localGlobalIds.TryGetValue(localId, out globalId);
 
         public bool TryGetEntity(EntityGlobalId globalId, out Entity entity)
         {
@@ -144,10 +132,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return ref localId;
         }
 
-        public void AddGlobalId(EntityLocalId localId, EntityGlobalId globalId)
-        {
-            this._localGlobalIds.Add(localId, globalId);
-        }
+        public void AddGlobalId(EntityLocalId localId, EntityGlobalId globalId) => this._localGlobalIds.Add(localId, globalId);
 
         public bool Remove(EntityGlobalId globalId)
         {
@@ -162,10 +147,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
 
         public bool TryQueryByEGID<T>(EGID egid, out T value)
-            where T : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.TryGetEntity<T>(egid, out value);
-        }
+            where T : unmanaged, IEntityComponent => this.entitiesDB.TryGetEntity<T>(egid, out value);
 
         public bool TryQueryByEGID<T>(EGID egid, out GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent
@@ -217,40 +199,25 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
 
         public bool Has<T>(ExclusiveGroupStruct groupID)
-            where T : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.HasAny<T>(groupID);
-        }
+            where T : unmanaged, IEntityComponent => this.entitiesDB.HasAny<T>(groupID);
 
         public bool Has<T1>(ExclusiveGroupStruct groupId, out EntityCollection<T1> entities)
-            where T1 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.HasAny(groupId, out entities);
-        }
+            where T1 : unmanaged, IEntityComponent => this.entitiesDB.HasAny(groupId, out entities);
 
         public bool HasAll<T1, T2>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2> entities)
             where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.HasAll(groupId, out entities);
-        }
+            where T2 : unmanaged, IEntityComponent => this.entitiesDB.HasAll(groupId, out entities);
 
         public bool HasAll<T1, T2, T3>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2, T3> entities)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
-            where T3 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.HasAll(groupId, out entities);
-        }
+            where T3 : unmanaged, IEntityComponent => this.entitiesDB.HasAll(groupId, out entities);
 
         public bool HasAll<T1, T2, T3, T4>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2, T3, T4> entities)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
-            where T4 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.HasAll(groupId, out entities);
-        }
+            where T4 : unmanaged, IEntityComponent => this.entitiesDB.HasAll(groupId, out entities);
 
         public ref T QueryByGroupIndex<T>(GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent
@@ -295,124 +262,76 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         }
 
         public EntityCollection<T1> QueryEntities<T1>(ExclusiveGroupStruct groupID)
-            where T1 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1>(groupID);
-        }
+            where T1 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1>(groupID);
 
         public EntityCollection<T1, T2> QueryEntities<T1, T2>(ExclusiveGroupStruct groupID)
             where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1, T2>(groupID);
-        }
+            where T2 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1, T2>(groupID);
 
         public EntityCollection<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupID)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
-            where T3 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1, T2, T3>(groupID);
-        }
+            where T3 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1, T2, T3>(groupID);
 
         public EntityCollection<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(ExclusiveGroupStruct groupID)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
-            where T4 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groupID);
-        }
+            where T4 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groupID);
 
         public GroupsEnumerable<T1> QueryEntities<T1>()
-            where T1 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1>(EntityGroupList<T1>.Values);
-        }
+            where T1 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1>(EntityGroupList<T1>.Values);
 
         public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>()
             where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1, T2>(EntityGroupList<T1, T2>.Values);
-        }
+            where T2 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1, T2>(EntityGroupList<T1, T2>.Values);
 
         public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
-            where T3 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1, T2, T3>(EntityGroupList<T1, T2, T3>.Values);
-        }
+            where T3 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1, T2, T3>(EntityGroupList<T1, T2, T3>.Values);
 
         public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
-            where T4 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(EntityGroupList<T1, T2, T3, T4>.Values);
-        }
+            where T4 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1, T2, T3, T4>(EntityGroupList<T1, T2, T3, T4>.Values);
 
         public GroupsEnumerable<T1> QueryEntities<T1>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
-            where T1 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1>(groups);
-        }
+            where T1 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1>(groups);
 
         public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1, T2>(groups);
-        }
+            where T2 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1, T2>(groups);
 
         public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
-            where T3 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1, T2, T3>(groups);
-        }
+            where T3 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1, T2, T3>(groups);
 
         public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
-            where T4 : unmanaged, IEntityComponent
-        {
-            return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groups);
-        }
+            where T4 : unmanaged, IEntityComponent => this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groups);
 
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1>()
-            where T1 : unmanaged, IEntityComponent
-        {
-            return EntityGroupList<T1>.Values;
-        }
+            where T1 : unmanaged, IEntityComponent => EntityGroupList<T1>.Values;
 
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2>()
             where T1 : unmanaged, IEntityComponent
-            where T2 : unmanaged, IEntityComponent
-        {
-            return EntityGroupList<T1, T2>.Values;
-        }
+            where T2 : unmanaged, IEntityComponent => EntityGroupList<T1, T2>.Values;
 
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
-            where T3 : unmanaged, IEntityComponent
-        {
-            return EntityGroupList<T1, T2, T3>.Values;
-        }
+            where T3 : unmanaged, IEntityComponent => EntityGroupList<T1, T2, T3>.Values;
 
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1, T2, T3, T4>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
-            where T4 : unmanaged, IEntityComponent
-        {
-            return EntityGroupList<T1, T2, T3, T4>.Values;
-        }
+            where T4 : unmanaged, IEntityComponent => EntityGroupList<T1, T2, T3, T4>.Values;
 
         public int CalculateTotal<T>()
             where T : unmanaged, IEntityComponent

@@ -14,10 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Events
         public required EntityGlobalId GlobalId { get; init; }
         public required Key<IEntityTemplate> TemplateKey { get; init; }
 
-        public VhId CalculateHash(in VhId source)
-        {
-            return HashBuilder<SpawnEntity, VhId, EntityGlobalId, VhId>.Instance.Calculate(in source, this.GlobalId, this.TemplateKey.Id);
-        }
+        public VhId CalculateHash(in VhId source) => HashBuilder<SpawnEntity, VhId, EntityGlobalId, VhId>.Instance.Calculate(in source, this.GlobalId, this.TemplateKey.Id);
     }
 
     public class SpawnEntity<TInitializer> : SpawnEntity

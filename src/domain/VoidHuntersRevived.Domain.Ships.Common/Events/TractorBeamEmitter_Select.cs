@@ -15,9 +15,6 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Events
         public required EntityData TargetData { get; init; }
         public required FixTransform2D Transform { get; init; }
 
-        public VhId CalculateHash(in VhId source)
-        {
-            return HashBuilder<TractorBeamEmitter_Select, VhId, EntityGlobalId, VhId>.Instance.Calculate(source, this.TractorBeamEmitterGlobalId, this.TargetData.Id);
-        }
+        public VhId CalculateHash(in VhId source) => HashBuilder<TractorBeamEmitter_Select, VhId, EntityGlobalId, VhId>.Instance.Calculate(source, this.TractorBeamEmitterGlobalId, this.TargetData.Id);
     }
 }

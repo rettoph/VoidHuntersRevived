@@ -19,10 +19,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
 
         }
 
-        public void Dispose()
-        {
-            this.Items.Dispose();
-        }
+        public void Dispose() => this.Items.Dispose();
 
         public static Sockets Polygon(int sides)
         {
@@ -47,12 +44,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Components
             };
         }
 
-        public Sockets Clone()
+        public Sockets Clone() => new()
         {
-            return new Sockets()
-            {
-                Items = this.Items.Clone(Allocator.Persistent)
-            };
-        }
+            Items = this.Items.Clone(Allocator.Persistent)
+        };
     }
 }

@@ -139,11 +139,8 @@ namespace VoidHuntersRevived.Domain.Entities
         }
         #endregion
 
-        public IEnumerable<Type> GetAllDistinctComponentTypes()
-        {
-            return this._descriptor.componentsToBuild.Select(x => x.GetEntityComponentType())
+        public IEnumerable<Type> GetAllDistinctComponentTypes() => this._descriptor.componentsToBuild.Select(x => x.GetEntityComponentType())
                 .Distinct();
-        }
 
         private static DynamicEntityDescriptor<VoidHuntersEntityDescriptor> BuildDescriptor(
             Key<IEntityTemplate> key,

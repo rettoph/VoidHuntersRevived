@@ -50,15 +50,9 @@ namespace VoidHuntersRevived.Common.FixedPoint
                 sin: left.Rotation.Imaginary);
         }
 
-        public override readonly bool Equals(object? obj)
-        {
-            return obj is FixTransform2D d && this == d;
-        }
+        public override readonly bool Equals(object? obj) => obj is FixTransform2D d && this == d;
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(this.Position, this.Rotation);
-        }
+        public override readonly int GetHashCode() => HashCode.Combine(this.Position, this.Rotation);
 
         public static bool operator ==(FixTransform2D left, FixTransform2D right)
         {
@@ -72,13 +66,10 @@ namespace VoidHuntersRevived.Common.FixedPoint
                    left.Rotation != right.Rotation;
         }
 
-        public static FixTransform2D CreateRotation(Fix64 radians)
-        {
-            return new FixTransform2D(
+        public static FixTransform2D CreateRotation(Fix64 radians) => new(
                 x: Fix64.Zero,
                 y: Fix64.Zero,
                 radians: radians);
-        }
 
         public readonly FixMatrix ToFixMatrix()
         {
@@ -108,9 +99,6 @@ namespace VoidHuntersRevived.Common.FixedPoint
             return result;
         }
 
-        public override readonly string ToString()
-        {
-            return $"{{ Position = {this.Position}, Rotation = {this.Rotation} }}";
-        }
+        public override readonly string ToString() => $"{{ Position = {this.Position}, Rotation = {this.Rotation} }}";
     }
 }

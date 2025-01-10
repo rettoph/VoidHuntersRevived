@@ -129,10 +129,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
             return instance ?? throw new NotImplementedException();
         }
 
-        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options) => throw new NotImplementedException();
 
         private struct IndexBufferContext
         {
@@ -142,9 +139,6 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
 
         private static readonly MethodInfo _setDataMethod = typeof(PrimitiveTypeConverter).GetMethod(nameof(SetData), BindingFlags.Static | BindingFlags.NonPublic) ?? throw new NotImplementedException();
         private static void SetData<TVertex>(VertexBuffer vertexBuffer, TVertex[] data)
-            where TVertex : unmanaged, IVertexType
-        {
-            vertexBuffer.SetData(data);
-        }
+            where TVertex : unmanaged, IVertexType => vertexBuffer.SetData(data);
     }
 }

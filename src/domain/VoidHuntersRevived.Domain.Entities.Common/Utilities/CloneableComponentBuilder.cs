@@ -19,20 +19,11 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             castedDic!.Add(egid.entityID, this._instance.Clone());
         }
 
-        ITypeSafeDictionary IComponentBuilder.CreateDictionary(uint size)
-        {
-            return this._builder.CreateDictionary(size);
-        }
+        ITypeSafeDictionary IComponentBuilder.CreateDictionary(uint size) => this._builder.CreateDictionary(size);
 
-        Type IComponentBuilder.GetEntityComponentType()
-        {
-            return typeof(T);
-        }
+        Type IComponentBuilder.GetEntityComponentType() => typeof(T);
 
-        void IComponentBuilder.Preallocate(ITypeSafeDictionary dictionary, uint size)
-        {
-            dictionary.EnsureCapacity(size);
-        }
+        void IComponentBuilder.Preallocate(ITypeSafeDictionary dictionary, uint size) => dictionary.EnsureCapacity(size);
 
         void IDisposable.Dispose()
         {

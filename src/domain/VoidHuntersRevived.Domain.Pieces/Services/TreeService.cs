@@ -13,10 +13,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
 
-        public ref Node GetHead(Tree tree)
-        {
-            return ref this._entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
-        }
+        public ref Node GetHead(Tree tree) => ref this._entityQueryService.QueryByLocalId<Node>(tree.HeadLocalId);
 
         public ref Node GetHead(EntityLocalId treeLocalId)
         {

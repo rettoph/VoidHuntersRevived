@@ -121,25 +121,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             hash = stringBuilder.ToString().xxHash128();
         }
 
-        public static IEnumerable<EntityGroupList> GetAll()
-        {
-            return _dictionary.Values;
-        }
+        public static IEnumerable<EntityGroupList> GetAll() => _dictionary.Values;
 
-        public static void Clear()
-        {
-            _dictionary.Clear();
-        }
+        public static void Clear() => _dictionary.Clear();
 
-        public override bool Equals(object? obj)
-        {
-            return obj is EntityGroupList group &&
+        public override bool Equals(object? obj) => obj is EntityGroupList group &&
                    this.Name == group.Name;
-        }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Name);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Name);
     }
 }

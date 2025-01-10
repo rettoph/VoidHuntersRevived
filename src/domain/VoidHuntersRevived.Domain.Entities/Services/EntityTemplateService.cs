@@ -65,15 +65,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             }
         }
 
-        public IEntityTemplate GetByKey(Key<IEntityTemplate> key)
-        {
-            return this._templates[key];
-        }
+        public IEntityTemplate GetByKey(Key<IEntityTemplate> key) => this._templates[key];
 
         public IEnumerable<IEntityTemplate> WithComponent<TComponent>()
-            where TComponent : unmanaged, IEntityComponent
-        {
-            return this._templates.Values.Where(x => x.Components.Has<TComponent>());
-        }
+            where TComponent : unmanaged, IEntityComponent => this._templates.Values.Where(x => x.Components.Has<TComponent>());
     }
 }

@@ -6,9 +6,6 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Extensions
     public static class IPrimitiveExtensions
     {
         public static ref EntityFilterCollection GetFilter<TVertex>(this IPrimitive primitive, EntitiesDB entitiesDb)
-            where TVertex : unmanaged, IVertexType, IEntityComponent
-        {
-            return ref entitiesDb.GetFilters().GetOrCreatePersistentFilter<TVertex>(primitive.CombinedFilterId);
-        }
+            where TVertex : unmanaged, IVertexType, IEntityComponent => ref entitiesDb.GetFilters().GetOrCreatePersistentFilter<TVertex>(primitive.CombinedFilterId);
     }
 }

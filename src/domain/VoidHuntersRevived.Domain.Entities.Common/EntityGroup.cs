@@ -41,15 +41,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return group!;
         }
 
-        public static IEnumerable<EntityGroup> GetAll()
-        {
-            return _dictionary.Values;
-        }
+        public static IEnumerable<EntityGroup> GetAll() => _dictionary.Values;
 
-        public static void Clear()
-        {
-            _dictionary.Clear();
-        }
+        public static void Clear() => _dictionary.Clear();
 
         public bool Contains(IEnumerable<Type> componentTypes)
         {

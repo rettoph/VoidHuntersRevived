@@ -18,45 +18,42 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
             return entitySpawnService.Spawn(sourceId, treeId, team, globalId, blueprint.Head, default);
         }
 
-        private static EntityLocalId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, EntityGlobalId globalId, IBlueprintPiece blueprintPiece, NodeSocketGlobalId socketVhId)
-        {
-            return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
-            {
-                EntityLocalId bodyLocalId = entities.Query.GetLocalId(treeId);
+        private static EntityLocalId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, EntityGlobalId globalId, IBlueprintPiece blueprintPiece, NodeSocketGlobalId socketVhId) => entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
+                                                                                                                                                                                                                                             {
+                                                                                                                                                                                                                                                 EntityLocalId bodyLocalId = entities.Query.GetLocalId(treeId);
 
-                entity.Initializer.Init(team.TeamMemberComponent);
-                entity.Initializer.Init(new Node(entity.LocalId, bodyLocalId));
-                entity.Initializer.Init(new Fixture(bodyLocalId));
+                                                                                                                                                                                                                                                 entity.Initializer.Init(team.TeamMemberComponent);
+                                                                                                                                                                                                                                                 entity.Initializer.Init(new Node(entity.LocalId, bodyLocalId));
+                                                                                                                                                                                                                                                 entity.Initializer.Init(new Fixture(bodyLocalId));
 
-                if (socketVhId != default)
-                {
-                    entity.Initializer.Init<Coupling>(new Coupling(
-                        socketId: new NodeSocketLocalId(
-                            nodeLocalId: entities.Query.GetLocalId(socketVhId.NodeGlobalId),
-                            socketIndex: socketVhId.SocketIndex))
-                    );
-                }
+                                                                                                                                                                                                                                                 if (socketVhId != default)
+                                                                                                                                                                                                                                                 {
+                                                                                                                                                                                                                                                     entity.Initializer.Init<Coupling>(new Coupling(
+                                                                                                                                                                                                                                                         socketId: new NodeSocketLocalId(
+                                                                                                                                                                                                                                                             nodeLocalId: entities.Query.GetLocalId(socketVhId.NodeGlobalId),
+                                                                                                                                                                                                                                                             socketIndex: socketVhId.SocketIndex))
+                                                                                                                                                                                                                                                     );
+                                                                                                                                                                                                                                                 }
 
-                for (int i = 0; i < blueprintPiece.Children.Length; i++)
-                {
-                    for (int j = 0; j < blueprintPiece.Children[i].Length; j++)
-                    {
-                        EntityGlobalId childGlobalId = HashBuilder<Blueprint, EntityGlobalId, EntityGlobalId, int, int>.Instance.Calculate(
-                            treeId,
-                            entity.GlobalId,
-                            i,
-                            j).ToGlobalEntityId();
+                                                                                                                                                                                                                                                 for (int i = 0; i < blueprintPiece.Children.Length; i++)
+                                                                                                                                                                                                                                                 {
+                                                                                                                                                                                                                                                     for (int j = 0; j < blueprintPiece.Children[i].Length; j++)
+                                                                                                                                                                                                                                                     {
+                                                                                                                                                                                                                                                         EntityGlobalId childGlobalId = HashBuilder<Blueprint, EntityGlobalId, EntityGlobalId, int, int>.Instance.Calculate(
+                                                                                                                                                                                                                                                             treeId,
+                                                                                                                                                                                                                                                             entity.GlobalId,
+                                                                                                                                                                                                                                                             i,
+                                                                                                                                                                                                                                                             j).ToGlobalEntityId();
 
-                        entities.Spawn.Spawn(
-                            sourceId,
-                            treeId,
-                            team,
-                            childGlobalId,
-                            blueprintPiece.Children[i][j],
-                            new NodeSocketGlobalId(entity.GlobalId, (byte)i));
-                    }
-                }
-            });
-        }
+                                                                                                                                                                                                                                                         entities.Spawn.Spawn(
+                                                                                                                                                                                                                                                             sourceId,
+                                                                                                                                                                                                                                                             treeId,
+                                                                                                                                                                                                                                                             team,
+                                                                                                                                                                                                                                                             childGlobalId,
+                                                                                                                                                                                                                                                             blueprintPiece.Children[i][j],
+                                                                                                                                                                                                                                                             new NodeSocketGlobalId(entity.GlobalId, (byte)i));
+                                                                                                                                                                                                                                                     }
+                                                                                                                                                                                                                                                 }
+                                                                                                                                                                                                                                             });
     }
 }

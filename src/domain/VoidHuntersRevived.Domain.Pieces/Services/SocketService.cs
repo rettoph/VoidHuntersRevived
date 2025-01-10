@@ -27,19 +27,13 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly IEntitySerializationService _entitySerializationService = entitySerializationService;
 
-        public NodeSocketGlobalId GetGlobalId(NodeSocketLocalId nodeSocketLocalId)
-        {
-            return new NodeSocketGlobalId(
+        public NodeSocketGlobalId GetGlobalId(NodeSocketLocalId nodeSocketLocalId) => new(
                 nodeGlobalId: this._entityQueryService.GetGlobalId(nodeSocketLocalId.NodeLocalId),
                 socketIndex: nodeSocketLocalId.SocketIndex);
-        }
 
-        public NodeSocketLocalId GetLocalId(NodeSocketGlobalId nodeSocketGlobalId)
-        {
-            return new NodeSocketLocalId(
+        public NodeSocketLocalId GetLocalId(NodeSocketGlobalId nodeSocketGlobalId) => new(
                 nodeLocalId: this._entityQueryService.GetLocalId(nodeSocketGlobalId.NodeGlobalId),
                 socketIndex: nodeSocketGlobalId.SocketIndex);
-        }
 
         public NodeSocket GetNodeSocket(NodeSocketLocalId nodeSocketLocalId)
         {
@@ -90,15 +84,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
             return true;
         }
 
-        public ref EntityFilterCollection GetCouplingFilter(NodeSocketLocalId socketId)
-        {
-            return ref this._entityQueryService.GetFilter<Coupling>(socketId.NodeLocalId, socketId.FilterContextId);
-        }
+        public ref EntityFilterCollection GetCouplingFilter(NodeSocketLocalId socketId) => ref this._entityQueryService.GetFilter<Coupling>(socketId.NodeLocalId, socketId.FilterContextId);
 
-        public ref EntityFilterCollection GetCouplingFilter(EntityLocalId nodeLocalId, byte socketIndex)
-        {
-            return ref this.GetCouplingFilter(new NodeSocketLocalId(nodeLocalId, socketIndex));
-        }
+        public ref EntityFilterCollection GetCouplingFilter(EntityLocalId nodeLocalId, byte socketIndex) => ref this.GetCouplingFilter(new NodeSocketLocalId(nodeLocalId, socketIndex));
 
         public bool TryGetClosestOpenNodeSocket(EntityLocalId treeLocalId, FixVector2 worldPosition, [MaybeNullWhen(false)] out NodeSocket nodeSocket)
         {

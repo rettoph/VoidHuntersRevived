@@ -26,55 +26,37 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// Returns a number indicating the sign of a Fix64 number.
         /// Returns 1 if the value is positive, 0 if is 0, and -1 if it is negative.
         /// </summary>
-        public static int Sign(Fix64 value)
-        {
-            return FixedMath64.Sign(value);
-        }
+        public static int Sign(Fix64 value) => FixedMath64.Sign(value);
 
 
         /// <summary>
         /// Returns the absolute value of a Fix64 number.
         /// Note: Abs(Fix64.MinValue) == Fix64.MaxValue.
         /// </summary>
-        public static Fix64 Abs(Fix64 value)
-        {
-            return FixedMath64.Abs(value);
-        }
+        public static Fix64 Abs(Fix64 value) => FixedMath64.Abs(value);
 
         /// <summary>
         /// Returns the absolute value of a Fix64 number.
         /// FastAbs(Fix64.MinValue) is undefined.
         /// </summary>
-        public static Fix64 FastAbs(Fix64 value)
-        {
-            return FixedMath64.FastAbs(value);
-        }
+        public static Fix64 FastAbs(Fix64 value) => FixedMath64.FastAbs(value);
 
 
         /// <summary>
         /// Returns the largest integer less than or equal to the specified number.
         /// </summary>
-        public static Fix64 Floor(Fix64 value)
-        {
-            return FixedMath64.Floor(value);
-        }
+        public static Fix64 Floor(Fix64 value) => FixedMath64.Floor(value);
 
         /// <summary>
         /// Returns the smallest integral value that is greater than or equal to the specified number.
         /// </summary>
-        public static Fix64 Ceiling(Fix64 value)
-        {
-            return FixedMath64.Ceiling(value);
-        }
+        public static Fix64 Ceiling(Fix64 value) => FixedMath64.Ceiling(value);
 
         /// <summary>
         /// Rounds a value to the nearest integral value.
         /// If the value is halfway between an even and an uneven value, returns the even value.
         /// </summary>
-        public static Fix64 Round(Fix64 value)
-        {
-            return FixedMath64.Round(value);
-        }
+        public static Fix64 Round(Fix64 value) => FixedMath64.Round(value);
 
         /// <summary>
         /// Adds x and y. Performs saturating addition, i.e. in case of overflow, 
@@ -88,10 +70,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <summary>
         /// Adds x and y witout performing overflow checking. Should be inlined by the CLR.
         /// </summary>
-        public static Fix64 FastAdd(Fix64 x, Fix64 y)
-        {
-            return new Fix64(x._rawValue + y._rawValue);
-        }
+        public static Fix64 FastAdd(Fix64 x, Fix64 y) => new(x._rawValue + y._rawValue);
 
         /// <summary>
         /// Subtracts y from x. Performs saturating substraction, i.e. in case of overflow, 
@@ -105,10 +84,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <summary>
         /// Subtracts y from x witout performing overflow checking. Should be inlined by the CLR.
         /// </summary>
-        public static Fix64 FastSub(Fix64 x, Fix64 y)
-        {
-            return new Fix64(x._rawValue - y._rawValue);
-        }
+        public static Fix64 FastSub(Fix64 x, Fix64 y) => new(x._rawValue - y._rawValue);
 
         public static Fix64 operator *(Fix64 x, Fix64 y)
         {
@@ -119,11 +95,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// Performs multiplication without checking for overflow.
         /// Useful for performance-critical code where the values are guaranteed not to cause overflow
         /// </summary>
-        public static Fix64 FastMul(Fix64 x, Fix64 y)
-        {
-
-            return FixedMath64.FastMul(x, y);
-        }
+        public static Fix64 FastMul(Fix64 x, Fix64 y) => FixedMath64.FastMul(x, y);
 
         public static Fix64 operator /(Fix64 x, Fix64 y)
         {
@@ -139,10 +111,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// Performs modulo as fast as possible; throws if x == MinValue and y == -1.
         /// Use the operator (%) for a more reliable but slower modulo.
         /// </summary>
-        public static Fix64 FastMod(Fix64 x, Fix64 y)
-        {
-            return FixedMath64.FastMod(x, y);
-        }
+        public static Fix64 FastMod(Fix64 x, Fix64 y) => FixedMath64.FastMod(x, y);
 
         public static Fix64 operator -(Fix64 x)
         {
@@ -186,10 +155,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <exception cref="ArgumentOutOfRangeException">
         /// The argument was non-positive
         /// </exception>
-        public static Fix64 Ln(Fix64 x)
-        {
-            return FixedMath64.Ln(x);
-        }
+        public static Fix64 Ln(Fix64 x) => FixedMath64.Ln(x);
 
         /// <summary>
         /// Returns a specified number raised to the specified power.
@@ -201,10 +167,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <exception cref="ArgumentOutOfRangeException">
         /// The base was negative, with a non-zero exponent
         /// </exception>
-        public static Fix64 Pow(Fix64 b, Fix64 exp)
-        {
-            return FixedMath64.Pow(b, exp);
-        }
+        public static Fix64 Pow(Fix64 b, Fix64 exp) => FixedMath64.Pow(b, exp);
 
         /// <summary>
         /// Returns the square root of a specified number.
@@ -212,47 +175,32 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <exception cref="ArgumentOutOfRangeException">
         /// The argument was negative.
         /// </exception>
-        public static Fix64 Sqrt(Fix64 x)
-        {
-            return FixedMath64.Sqrt(x);
-        }
+        public static Fix64 Sqrt(Fix64 x) => FixedMath64.Sqrt(x);
 
         /// <summary>
         /// Returns the Sine of x.
         /// The relative error is less than 1E-10 for x in [-2PI, 2PI], and less than 1E-7 in the worst case.
         /// </summary>
-        public static Fix64 Sin(Fix64 x)
-        {
-            return FixedMath64.Sin(x);
-        }
+        public static Fix64 Sin(Fix64 x) => FixedMath64.Sin(x);
 
         /// <summary>
         /// Returns a rough approximation of the Sine of x.
         /// This is at least 3 times faster than Sin() on x86 and slightly faster than Math.Sin(),
         /// however its accuracy is limited to 4-5 decimals, for small enough values of x.
         /// </summary>
-        public static Fix64 FastSin(Fix64 x)
-        {
-            return FixedMath64.FastSin(x);
-        }
+        public static Fix64 FastSin(Fix64 x) => FixedMath64.FastSin(x);
 
         /// <summary>
         /// Returns the cosine of x.
         /// The relative error is less than 1E-10 for x in [-2PI, 2PI], and less than 1E-7 in the worst case.
         /// </summary>
-        public static Fix64 Cos(Fix64 x)
-        {
-            return FixedMath64.Cos(x);
-        }
+        public static Fix64 Cos(Fix64 x) => FixedMath64.Cos(x);
 
         /// <summary>
         /// Returns a rough approximation of the cosine of x.
         /// See FastSin for more details.
         /// </summary>
-        public static Fix64 FastCos(Fix64 x)
-        {
-            return FixedMath64.FastCos(x);
-        }
+        public static Fix64 FastCos(Fix64 x) => FixedMath64.FastCos(x);
 
         /// <summary>
         /// Returns the tangent of x.
@@ -260,33 +208,21 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <remarks>
         /// This function is not well-tested. It may be wildly inaccurate.
         /// </remarks>
-        public static Fix64 Tan(Fix64 x)
-        {
-            return FixedMath64.Tan(x);
-        }
+        public static Fix64 Tan(Fix64 x) => FixedMath64.Tan(x);
 
         /// <summary>
         /// Returns the arccos of of the specified number, calculated using Atan and Sqrt
         /// This function has at least 7 decimals of accuracy.
         /// </summary>
-        public static Fix64 Acos(Fix64 x)
-        {
-            return FixedMath64.Acos(x);
-        }
+        public static Fix64 Acos(Fix64 x) => FixedMath64.Acos(x);
 
         /// <summary>
         /// Returns the arctan of of the specified number, calculated using Euler series
         /// This function has at least 7 decimals of accuracy.
         /// </summary>
-        public static Fix64 Atan(Fix64 z)
-        {
-            return FixedMath64.Atan(z);
-        }
+        public static Fix64 Atan(Fix64 z) => FixedMath64.Atan(z);
 
-        public static Fix64 Atan2(Fix64 y, Fix64 x)
-        {
-            return FixedMath64.Atan2(y, x);
-        }
+        public static Fix64 Atan2(Fix64 y, Fix64 x) => FixedMath64.Atan2(y, x);
 
 
 
@@ -323,36 +259,19 @@ namespace VoidHuntersRevived.Common.FixedPoint
             return (decimal)(FixedMath64)value;
         }
 
-        public override readonly bool Equals(object? obj)
-        {
-            return obj is Fix64 fix64 && this._rawValue == fix64._rawValue;
-        }
+        public override readonly bool Equals(object? obj) => obj is Fix64 fix64 && this._rawValue == fix64._rawValue;
 
-        public override readonly int GetHashCode()
-        {
-            return this._rawValue.GetHashCode();
-        }
+        public override readonly int GetHashCode() => this._rawValue.GetHashCode();
 
-        public readonly bool Equals(Fix64 other)
-        {
-            return this._rawValue == other._rawValue;
-        }
+        public readonly bool Equals(Fix64 other) => this._rawValue == other._rawValue;
 
-        public readonly int CompareTo(Fix64 other)
-        {
-            return this._rawValue.CompareTo(other._rawValue);
-        }
+        public readonly int CompareTo(Fix64 other) => this._rawValue.CompareTo(other._rawValue);
 
-        public override readonly string ToString()
-        {
+        public override readonly string ToString() =>
             // Up to 10 decimal places
-            return ((decimal)this).ToString("0.##########");
-        }
+            ((decimal)this).ToString("0.##########");
 
-        public static Fix64 FromRaw(long rawValue)
-        {
-            return new Fix64(rawValue);
-        }
+        public static Fix64 FromRaw(long rawValue) => new(rawValue);
 
         // turn into a Console Application and use this to generate the look-up tables
         //static void Main(string[] args)
@@ -405,10 +324,7 @@ namespace VoidHuntersRevived.Common.FixedPoint
             return Unsafe.As<Fix64, FixedMath64>(ref fix64);
         }
 
-        public static Fix64 Lerp(Fix64 v1, Fix64 v2, Fix64 amount)
-        {
-            return v1 + ((v2 - v1) * amount);
-        }
+        public static Fix64 Lerp(Fix64 v1, Fix64 v2, Fix64 amount) => v1 + ((v2 - v1) * amount);
 
         public static Fix64 WrapAngle(Fix64 angle)
         {

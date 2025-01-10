@@ -36,22 +36,13 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         }
 
         public IStrategyMocker<T> Get<T>()
-            where T : IStrategy
-        {
-            return this.Strategies.OfType<IStrategyMocker<T>>().First();
-        }
+            where T : IStrategy => this.Strategies.OfType<IStrategyMocker<T>>().First();
         public IEnumerable<IStrategyMocker<T>> GetAll<T>()
-            where T : IStrategy
-        {
-            return this.Strategies.OfType<IStrategyMocker<T>>();
-        }
+            where T : IStrategy => this.Strategies.OfType<IStrategyMocker<T>>();
 
         public T Resolve<TStrategy, T>()
             where TStrategy : IStrategy
-            where T : class
-        {
-            return this.Get<TStrategy>().Scope.Resolve<T>();
-        }
+            where T : class => this.Get<TStrategy>().Scope.Resolve<T>();
 
         public SimulationMocker Update(TimeSpan interval, int count)
         {
@@ -120,10 +111,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         }
 
         public Dictionary<IStrategyMocker, int> CalculateTotalEntities<T>()
-            where T : unmanaged, IEntityComponent
-        {
-            return this.Strategies.ToDictionary(x => x, x => x.CalculateTotalEntities<T>());
-        }
+            where T : unmanaged, IEntityComponent => this.Strategies.ToDictionary(x => x, x => x.CalculateTotalEntities<T>());
 
         public SimulationMocker RunCoroutine(TimeSpan interval, VhId coroutineId, Func<VhIdProvider, IStrategyMocker, IEnumerator<int>> coroutine)
         {

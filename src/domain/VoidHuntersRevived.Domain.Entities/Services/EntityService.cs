@@ -60,9 +60,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             GC.SuppressFinalize(this);
         }
 
-        public UnmanagedReference<IEntityService> GetReference()
-        {
-            return this._ref;
-        }
+        public UnmanagedReference<IEntityService> GetReference() => this._ref;
     }
 }

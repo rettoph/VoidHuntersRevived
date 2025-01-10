@@ -13,10 +13,7 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         private readonly ISpace _predictiveSpace = space;
         private ISpace _lockstepSpace = null!;
 
-        public void Initialize(ILockstepStrategy lockstep)
-        {
-            this._lockstepSpace = lockstep.Engines.Get<ISpace>();
-        }
+        public void Initialize(ILockstepStrategy lockstep) => this._lockstepSpace = lockstep.Engines.Get<ISpace>();
 
         [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SubmitChanges)]
         public void Synchronize(Step step)

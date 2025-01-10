@@ -13,9 +13,6 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
         private readonly EntitiesSubmissionScheduler _scheduler = scheduler;
 
         [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SubmitChanges)]
-        public void OnStep(Step step)
-        {
-            this._scheduler.SubmitEntities();
-        }
+        public void OnStep(Step step) => this._scheduler.SubmitEntities();
     }
 }

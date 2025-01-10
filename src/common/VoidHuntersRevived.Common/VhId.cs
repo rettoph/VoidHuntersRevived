@@ -16,30 +16,15 @@ namespace VoidHuntersRevived.Common
         {
             this.Value = guid;
         }
-        public static VhId NewId()
-        {
-            return new VhId(Guid.NewGuid());
-        }
+        public static VhId NewId() => new(Guid.NewGuid());
 
-        public override bool Equals(object? obj)
-        {
-            return obj is VhId id && this.Equals(id);
-        }
+        public override bool Equals(object? obj) => obj is VhId id && this.Equals(id);
 
-        public readonly bool Equals(VhId other)
-        {
-            return this.Value == other.Value;
-        }
+        public readonly bool Equals(VhId other) => this.Value == other.Value;
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(this.Value);
-        }
+        public override readonly int GetHashCode() => HashCode.Combine(this.Value);
 
-        public override readonly string ToString()
-        {
-            return this.Value.ToString();
-        }
+        public override readonly string ToString() => this.Value.ToString();
 
         public static bool operator ==(VhId left, VhId right)
         {

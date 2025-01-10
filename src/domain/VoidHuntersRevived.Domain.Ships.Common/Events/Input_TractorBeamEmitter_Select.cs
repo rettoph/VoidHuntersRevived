@@ -12,9 +12,6 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Events
         public required EntityGlobalId TractorBeamEmitterGlobalId { get; init; }
         public required EntityGlobalId TargetNodeGlobalId { get; init; }
 
-        public VhId CalculateHash(in VhId source)
-        {
-            return HashBuilder<Input_TractorBeamEmitter_Select, VhId, EntityGlobalId, EntityGlobalId>.Instance.Calculate(source, this.TractorBeamEmitterGlobalId, this.TargetNodeGlobalId);
-        }
+        public VhId CalculateHash(in VhId source) => HashBuilder<Input_TractorBeamEmitter_Select, VhId, EntityGlobalId, EntityGlobalId>.Instance.Calculate(source, this.TractorBeamEmitterGlobalId, this.TargetNodeGlobalId);
     }
 }

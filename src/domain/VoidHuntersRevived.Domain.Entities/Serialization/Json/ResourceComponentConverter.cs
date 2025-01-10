@@ -31,9 +31,6 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             return instance ?? throw new NotImplementedException();
         }
 
-        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options) => throw new NotImplementedException();
     }
 }

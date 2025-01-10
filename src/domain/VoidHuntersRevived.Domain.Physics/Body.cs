@@ -126,10 +126,7 @@ namespace VoidHuntersRevived.Domain.Physics
             this.aether.AngularVelocity = fixedMathAngular;
         }
 
-        public void ApplyAngularImpulse(Fix64 impulse)
-        {
-            this.aether.ApplyAngularImpulse(impulse);
-        }
+        public void ApplyAngularImpulse(Fix64 impulse) => this.aether.ApplyAngularImpulse(impulse);
 
         public void ApplyForce(FixVector2 force, FixVector2 point)
         {
@@ -139,10 +136,7 @@ namespace VoidHuntersRevived.Domain.Physics
             this.aether.ApplyForce(aetherForce, aetherPoint);
         }
 
-        public void ApplyLinearImpulse(FixVector2 impulse)
-        {
-            this.aether.ApplyLinearImpulse(impulse.AsAetherVector2());
-        }
+        public void ApplyLinearImpulse(FixVector2 impulse) => this.aether.ApplyLinearImpulse(impulse.AsAetherVector2());
 
         public IFixture Create(FixtureId id, Polygon polygon, FixMatrix transformation)
         {

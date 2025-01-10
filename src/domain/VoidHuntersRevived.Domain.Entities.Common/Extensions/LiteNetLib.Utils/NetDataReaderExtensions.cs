@@ -4,9 +4,6 @@ namespace LiteNetLib.Utils
 {
     public static class NetDataReaderExtensions
     {
-        public static EntityGlobalId GetEntityGlobalId(this NetDataReader reader)
-        {
-            return new EntityGlobalId(reader.GetVhId());
-        }
+        public static EntityGlobalId GetEntityGlobalId(this NetDataReader reader) => new(reader.GetVhId());
     }
 }

@@ -34,9 +34,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
             return new Blueprint(name, head);
         }
 
-        public override void Write(Utf8JsonWriter writer, Blueprint value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Write(Utf8JsonWriter writer, Blueprint value, JsonSerializerOptions options) => throw new NotImplementedException();
     }
 }
