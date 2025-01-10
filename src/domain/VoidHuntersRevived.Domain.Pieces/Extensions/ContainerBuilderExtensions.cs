@@ -21,7 +21,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainPiecesServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterDomainPiecesServices), builder =>
+        public static ContainerBuilder RegisterDomainPiecesServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterDomainPiecesServices), builder =>
                                                                                                                {
                                                                                                                    builder.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();
                                                                                                                    builder.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -62,5 +64,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
                                                                                                                        config.Destructure.AsScalar(typeof(Id<Blueprint>));
                                                                                                                    });
                                                                                                                });
+        }
     }
 }

@@ -17,7 +17,10 @@ namespace LiteNetLib.Utils
             writer.Put(value.Y);
         }
 
-        public static void Put(this NetDataWriter writer, Fix64 value) => writer.Put(value.RawValue);
+        public static void Put(this NetDataWriter writer, Fix64 value)
+        {
+            writer.Put(value.RawValue);
+        }
 
         public static void Put(this NetDataWriter writer, FixVector2 value)
         {

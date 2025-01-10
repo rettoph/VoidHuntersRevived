@@ -11,6 +11,9 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
         private readonly ISpace _space = space;
 
         [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.StepSpace)]
-        public void OnStep(Step step) => this._space.Step(step);
+        public void OnStep(Step step)
+        {
+            this._space.Step(step);
+        }
     }
 }

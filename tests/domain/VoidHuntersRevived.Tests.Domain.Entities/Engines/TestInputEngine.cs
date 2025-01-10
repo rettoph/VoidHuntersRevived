@@ -13,10 +13,19 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Engines
         private IEntitySpawnService _entitySpawnService = null!;
 
         [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
-        public void OnInitialize(IStrategy simulation) => this._entitySpawnService = simulation.Engines.Get<IEntitySpawnService>();
+        public void OnInitialize(IStrategy simulation)
+        {
+            this._entitySpawnService = simulation.Engines.Get<IEntitySpawnService>();
+        }
 
-        public void Process(VhId eventId, TestSpawnInput data) => this._entitySpawnService.Spawn(eventId.Create(1), data.EntityTemplateKey, data.EntityGlobalId);
+        public void Process(VhId eventId, TestSpawnInput data)
+        {
+            this._entitySpawnService.Spawn(eventId.Create(1), data.EntityTemplateKey, data.EntityGlobalId);
+        }
 
-        public void Process(VhId eventId, TestDepawnInput data) => this._entitySpawnService.Despawn(eventId.Create(1), data.EntityGlobalId);
+        public void Process(VhId eventId, TestDepawnInput data)
+        {
+            this._entitySpawnService.Despawn(eventId.Create(1), data.EntityGlobalId);
+        }
     }
 }

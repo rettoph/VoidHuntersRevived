@@ -17,11 +17,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
             this._serializer = serializers.Get<Tick>();
         }
 
-        public override TickHistoryItem Deserialize(NetDataReader reader) => new()
+        public override TickHistoryItem Deserialize(NetDataReader reader)
         {
-            Tick = this._serializer.Deserialize(reader)
-        };
+            return new()
+            {
+                Tick = this._serializer.Deserialize(reader)
+            };
+        }
 
-        public override void Serialize(NetDataWriter writer, in TickHistoryItem instance) => this._serializer.Serialize(writer, instance.Tick);
+        public override void Serialize(NetDataWriter writer, in TickHistoryItem instance)
+        {
+            this._serializer.Serialize(writer, instance.Tick);
+        }
     }
 }

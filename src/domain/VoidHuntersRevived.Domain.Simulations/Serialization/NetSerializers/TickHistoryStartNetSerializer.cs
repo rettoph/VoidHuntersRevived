@@ -6,11 +6,17 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 {
     internal sealed class TickHistoryStartNetSerializer : NetSerializer<TickHistoryStart>
     {
-        public override TickHistoryStart Deserialize(NetDataReader reader) => new()
+        public override TickHistoryStart Deserialize(NetDataReader reader)
         {
-            CurrentTickId = reader.GetInt()
-        };
+            return new()
+            {
+                CurrentTickId = reader.GetInt()
+            };
+        }
 
-        public override void Serialize(NetDataWriter writer, in TickHistoryStart instance) => writer.Put(instance.CurrentTickId);
+        public override void Serialize(NetDataWriter writer, in TickHistoryStart instance)
+        {
+            writer.Put(instance.CurrentTickId);
+        }
     }
 }

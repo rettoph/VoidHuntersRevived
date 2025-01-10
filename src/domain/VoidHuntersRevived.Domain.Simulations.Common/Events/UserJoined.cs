@@ -10,6 +10,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Events
 
         public required UserDto UserDto { get; init; }
 
-        public VhId CalculateHash(in VhId source) => HashBuilder<UserJoined, int>.Instance.Calculate(this.UserDto.Id);
+        public VhId CalculateHash(in VhId source)
+        {
+            return HashBuilder<UserJoined, int>.Instance.Calculate(this.UserDto.Id);
+        }
     }
 }

@@ -113,9 +113,15 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             status.Value = EntityStatusEnum.SoftSpawned;
         }
 
-        public void Revert(VhId eventId, SpawnEntity data) => this.InternalRevert(eventId, data);
+        public void Revert(VhId eventId, SpawnEntity data)
+        {
+            this.InternalRevert(eventId, data);
+        }
 
-        public void Revert(VhId eventId, SpawnEntity<EntityInitializerDelegate> data) => this.InternalRevert(eventId, data);
+        public void Revert(VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
+        {
+            this.InternalRevert(eventId, data);
+        }
 
         public void InternalRevert(VhId eventId, SpawnEntity data)
         {

@@ -12,6 +12,9 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         private readonly ISimulationService _simulationService = simulationService;
 
         [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.PreInitialize)]
-        public void Initialize(LocalGameScene scene) => this._simulationService.Create(VhId.Empty, StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep);
+        public void Initialize(LocalGameScene scene)
+        {
+            this._simulationService.Create(VhId.Empty, StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep);
+        }
     }
 }

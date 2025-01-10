@@ -19,6 +19,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             this.PublishedAt = currentStep.TotalTime;
         }
 
-        public bool IsExpired(Step currentStep) => currentStep.TotalTime - this.PublishedAt >= Lifetime;
+        public bool IsExpired(Step currentStep)
+        {
+            return currentStep.TotalTime - this.PublishedAt >= Lifetime;
+        }
     }
 }

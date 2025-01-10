@@ -21,14 +21,29 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
             }
         }
 
-        public override string ToString() => $"Id = {this.Id}, Events: {this.Events.Length}, Hash = {this.Hash}";
+        public override string ToString()
+        {
+            return $"Id = {this.Id}, Events: {this.Events.Length}, Hash = {this.Hash}";
+        }
 
-        public Tick Next(EventDto[] events) => new(this.Id + 1, events);
+        public Tick Next(EventDto[] events)
+        {
+            return new(this.Id + 1, events);
+        }
 
-        public static Tick First(EventDto[] events) => new(0, events);
+        public static Tick First(EventDto[] events)
+        {
+            return new(0, events);
+        }
 
-        public static Tick Empty(int id) => new(id, []);
+        public static Tick Empty(int id)
+        {
+            return new(id, []);
+        }
 
-        public static Tick Create(int id, EventDto[] events) => new(id, events);
+        public static Tick Create(int id, EventDto[] events)
+        {
+            return new(id, events);
+        }
     }
 }

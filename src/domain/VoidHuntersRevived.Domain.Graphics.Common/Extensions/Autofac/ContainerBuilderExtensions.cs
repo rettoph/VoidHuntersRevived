@@ -9,6 +9,9 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Extensions.Autofac
         public static void RegisterPrimitiveType<TVertexInstance, TVertexStatic, TEffect>(this ContainerBuilder builder, string name)
             where TVertexInstance : unmanaged, IVertexType
             where TVertexStatic : unmanaged, IVertexType
-            where TEffect : Effect => builder.RegisterPolymorphicJsonType<IPrimitiveType<TVertexInstance, TVertexStatic, TEffect>, IPrimitiveType>(name);
+            where TEffect : Effect
+        {
+            builder.RegisterPolymorphicJsonType<IPrimitiveType<TVertexInstance, TVertexStatic, TEffect>, IPrimitiveType>(name);
+        }
     }
 }

@@ -125,7 +125,11 @@ namespace VoidHuntersRevived.Domain.Simulations
             }
         }
 
-        protected virtual void Revert(EventDto @event) => this._publishers[@event.Data.GetType()].Revert(@event);
+        protected virtual void Revert(EventDto @event)
+        {
+            this._publishers[@event.Data.GetType()].Revert(@event);
+        }
+
         public virtual void Publish(EventDto @event)
         {
             this.logger.Verbose("Publishing {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
@@ -134,11 +138,14 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public abstract void Input(VhId sourceId, IInputData data);
 
-        public void Enqueue(VhId sourceId, IEventData data) => this.Enqueue(new EventDto()
+        public void Enqueue(VhId sourceId, IEventData data)
         {
-            SourceId = sourceId,
-            Data = data
-        });
+            this.Enqueue(new EventDto()
+            {
+                SourceId = sourceId,
+                Data = data
+            });
+        }
 
         public void Enqueue(EventDto @event)
         {

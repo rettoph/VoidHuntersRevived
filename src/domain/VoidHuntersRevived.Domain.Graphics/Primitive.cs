@@ -115,9 +115,15 @@ namespace VoidHuntersRevived.Domain.Graphics
             }).ToArray();
         }
 
-        public void SetNextVertexUnsafe(TVertexInstance vertex) => this._instanceVertices[this.InstanceCount++] = vertex;
+        public void SetNextVertexUnsafe(TVertexInstance vertex)
+        {
+            this._instanceVertices[this.InstanceCount++] = vertex;
+        }
 
-        public ref TVertexInstance GetNextVertexUnsafe() => ref this._instanceVertices[this.InstanceCount++];
+        public ref TVertexInstance GetNextVertexUnsafe()
+        {
+            return ref this._instanceVertices[this.InstanceCount++];
+        }
 
         public void SetNextVertex(TVertexInstance vertex)
         {
@@ -142,7 +148,10 @@ namespace VoidHuntersRevived.Domain.Graphics
             return true;
         }
 
-        public virtual void Clear() => this.InstanceCount = 0;
+        public virtual void Clear()
+        {
+            this.InstanceCount = 0;
+        }
 
         public abstract void Draw(GameTime gameTime);
 

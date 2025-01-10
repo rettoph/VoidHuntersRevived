@@ -17,6 +17,9 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Events
         public required FixTransform2D Transform { get; init; }
         public required NodeSocketGlobalId? AttachToSocketVhId { get; init; }
 
-        public VhId CalculateHash(in VhId source) => HashBuilder<TractorBeamEmitter_Deselect, VhId, EntityGlobalId, VhId, bool, NodeSocketGlobalId>.Instance.Calculate(source, this.TractorBeamEmitterGlobalId, this.TargetData.Id, this.AttachToSocketVhId.HasValue, this.AttachToSocketVhId ?? default);
+        public VhId CalculateHash(in VhId source)
+        {
+            return HashBuilder<TractorBeamEmitter_Deselect, VhId, EntityGlobalId, VhId, bool, NodeSocketGlobalId>.Instance.Calculate(source, this.TractorBeamEmitterGlobalId, this.TargetData.Id, this.AttachToSocketVhId.HasValue, this.AttachToSocketVhId ?? default);
+        }
     }
 }

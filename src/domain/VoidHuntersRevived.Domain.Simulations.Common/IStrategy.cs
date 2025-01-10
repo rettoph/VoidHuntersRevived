@@ -24,11 +24,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Common
         /// </summary>
         /// <param name="event"></param>
         void Publish(VhId sourceId, IEventData data)
-            => this.Publish(new EventDto()
+        {
+            this.Publish(new EventDto()
             {
                 SourceId = sourceId,
                 Data = data
             });
+        }
 
 
         /// <summary>
@@ -45,11 +47,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Common
         /// <param name="sourceId"></param>
         /// <param name="data"></param>
         void Enqueue(VhId sourceId, IEventData data)
-            => this.Enqueue(new EventDto()
+        {
+            this.Enqueue(new EventDto()
             {
                 SourceId = sourceId,
                 Data = data
             });
+        }
 
 
         /// <summary>

@@ -41,10 +41,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             this.Root.Dispose();
         }
 
-        public T Get<T>() => (T)this._engines.Single(x => x is T);
+        public T Get<T>()
+        {
+            return (T)this._engines.Single(x => x is T);
+        }
 
-        public IEnumerator<IEngine> GetEnumerator() => this._engines.GetEnumerator();
+        public IEnumerator<IEngine> GetEnumerator()
+        {
+            return this._engines.GetEnumerator();
+        }
 
-        IEnumerator IEnumerable.GetEnumerator() => this._engines.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this._engines.GetEnumerator();
+        }
     }
 }

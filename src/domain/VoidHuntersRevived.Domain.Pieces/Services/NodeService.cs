@@ -9,9 +9,15 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
-        public ref Tree GetTree(in Node node) => ref this._entityQueryService.QueryByLocalId<Tree>(node.TreeLocalId);
+        public ref Tree GetTree(in Node node)
+        {
+            return ref this._entityQueryService.QueryByLocalId<Tree>(node.TreeLocalId);
+        }
 
-        public bool IsHead(in Node node) => this.GetTree(node).HeadLocalId == node.LocalId;
+        public bool IsHead(in Node node)
+        {
+            return this.GetTree(node).HeadLocalId == node.LocalId;
+        }
 
         public bool IsHead(in Node node, in GroupIndex treeGroupIndex)
         {

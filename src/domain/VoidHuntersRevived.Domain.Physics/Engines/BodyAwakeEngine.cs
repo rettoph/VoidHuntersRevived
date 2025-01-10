@@ -65,6 +65,9 @@ namespace VoidHuntersRevived.Domain.Physics.Engines
             body.SleepingAllowed = awake.SleepingAllowed;
         }
 
-        private void HandleBodyAwakeChanged(IBody args) => this._awakeChangedBodies.Enqueue(args);
+        private void HandleBodyAwakeChanged(IBody args)
+        {
+            this._awakeChangedBodies.Enqueue(args);
+        }
     }
 }

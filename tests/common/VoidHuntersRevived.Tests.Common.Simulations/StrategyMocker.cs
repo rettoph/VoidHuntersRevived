@@ -70,7 +70,10 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             });
         }
 
-        public void Input(IInputData data, bool verified) => this.Input(HashBuilder<IStrategyMocker, int>.Instance.Calculate(this._sourceIdGeneratorIndex++), data, verified);
+        public void Input(IInputData data, bool verified)
+        {
+            this.Input(HashBuilder<IStrategyMocker, int>.Instance.Calculate(this._sourceIdGeneratorIndex++), data, verified);
+        }
 
         public void Update(TimeSpan interval, int count)
         {
@@ -93,7 +96,10 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             }
         }
         public int CalculateTotalEntities<T>()
-            where T : unmanaged, IEntityComponent => this.Scope.Resolve<IEntityQueryService>().CalculateTotal<T>();
+            where T : unmanaged, IEntityComponent
+        {
+            return this.Scope.Resolve<IEntityQueryService>().CalculateTotal<T>();
+        }
 
         protected virtual void Dispose(bool disposing)
         {

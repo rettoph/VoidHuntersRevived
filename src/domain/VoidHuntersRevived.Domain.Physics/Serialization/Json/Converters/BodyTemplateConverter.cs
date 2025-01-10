@@ -39,6 +39,9 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json
             };
         }
 
-        public override void Write(Utf8JsonWriter writer, IBodyTemplate value, JsonSerializerOptions options) => throw new NotImplementedException();
+        public override void Write(Utf8JsonWriter writer, IBodyTemplate value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

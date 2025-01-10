@@ -29,6 +29,9 @@ namespace VoidHuntersRevived.Domain.Ships.Engines
         }
 
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
-        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<UserId> userId) => throw new NotImplementedException();
+        public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<UserId> userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

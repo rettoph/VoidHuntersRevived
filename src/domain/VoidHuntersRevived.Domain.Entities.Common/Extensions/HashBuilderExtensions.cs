@@ -8,7 +8,10 @@ namespace VoidHuntersRevived.Common.Utilities
             this HashBuilder<TNamespace, TName1> builder,
             in TName1 value1
         )
-            where TName1 : unmanaged => new(builder.Calculate(value1));
+            where TName1 : unmanaged
+        {
+            return new(builder.Calculate(value1));
+        }
 
         public static Id<TNamespace> CalculateId<TNamespace, TName1, TName2>(
             this HashBuilder<TNamespace, TName1, TName2> builder,
@@ -16,7 +19,10 @@ namespace VoidHuntersRevived.Common.Utilities
             in TName2 value2
         )
             where TName1 : unmanaged
-            where TName2 : unmanaged => new(builder.Calculate(value1, value2));
+            where TName2 : unmanaged
+        {
+            return new(builder.Calculate(value1, value2));
+        }
 
         public static Id<TNamespace> CalculateId<TNamespace, TName1, TName2, TName3>(
             this HashBuilder<TNamespace, TName1, TName2, TName3> builder,
@@ -26,7 +32,10 @@ namespace VoidHuntersRevived.Common.Utilities
         )
             where TName1 : unmanaged
             where TName2 : unmanaged
-            where TName3 : unmanaged => new(builder.Calculate(value1, value2, value3));
+            where TName3 : unmanaged
+        {
+            return new(builder.Calculate(value1, value2, value3));
+        }
 
         public static Id<TNamespace> CalculateId<TNamespace, TName1, TName2, TName3, TName4>(
             this HashBuilder<TNamespace, TName1, TName2, TName3, TName4> builder,
@@ -38,7 +47,10 @@ namespace VoidHuntersRevived.Common.Utilities
             where TName1 : unmanaged
             where TName2 : unmanaged
             where TName3 : unmanaged
-            where TName4 : unmanaged => new(builder.Calculate(in value1, in value2, in value3, in value4));
+            where TName4 : unmanaged
+        {
+            return new(builder.Calculate(in value1, in value2, in value3, in value4));
+        }
 
         public static Id<TNamespace> CalculateId<TNamespace, TName1, TName2, TName3, TName4, TName5>(
             this HashBuilder<TNamespace, TName1, TName2, TName3, TName4, TName5> builder,
@@ -52,6 +64,9 @@ namespace VoidHuntersRevived.Common.Utilities
             where TName2 : unmanaged
             where TName3 : unmanaged
             where TName4 : unmanaged
-            where TName5 : unmanaged => new(builder.Calculate(in value1, in value2, in value3, in value4, in value5));
+            where TName5 : unmanaged
+        {
+            return new(builder.Calculate(in value1, in value2, in value3, in value4, in value5));
+        }
     }
 }

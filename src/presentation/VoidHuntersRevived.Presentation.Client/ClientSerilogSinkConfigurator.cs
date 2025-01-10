@@ -9,6 +9,9 @@ namespace VoidHuntersRevived.Presentation.Client
     {
         private readonly ITerminal _terminal = terminal;
 
-        public void Configure(LoggerConfiguration config, string template) => config.WriteTo.Terminal(this._terminal, outputTemplate: template);// config.WriteTo.Console(outputTemplate: template);
+        public void Configure(LoggerConfiguration config, string template)
+        {
+            config.WriteTo.Terminal(this._terminal, outputTemplate: template);// config.WriteTo.Console(outputTemplate: template);
+        }
     }
 }

@@ -15,6 +15,9 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
             return fix64Value;
         }
 
-        public override void Write(Utf8JsonWriter writer, Fix64 value, JsonSerializerOptions options) => writer.WriteNumberValue((double)value);
+        public override void Write(Utf8JsonWriter writer, Fix64 value, JsonSerializerOptions options)
+        {
+            writer.WriteNumberValue((double)value);
+        }
     }
 }

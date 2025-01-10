@@ -11,7 +11,9 @@ namespace VoidHuntersRevived.Domain.Ships.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainShipsServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterDomainShipsServices), builder =>
+        public static ContainerBuilder RegisterDomainShipsServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterDomainShipsServices), builder =>
                                                                                                               {
                                                                                                                   builder.RegisterType<TractorBeamEmitterService>().AsImplementedInterfaces().InstancePerLifetimeScope();
                                                                                                                   builder.RegisterType<TacticalService>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -33,5 +35,6 @@ namespace VoidHuntersRevived.Domain.Ships.Extensions
                                                                                                                   builder.RegisterComponentSerializer<TractorBeamEmitterComponentSerializer>();
                                                                                                                   builder.RegisterComponentSerializer<UserIdComponentSerializer>();
                                                                                                               });
+        }
     }
 }

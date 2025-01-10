@@ -23,11 +23,20 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         private readonly IPrivateEntitySpawnService _privateEntitySpawnService = privateEntitySpawnService;
 
         [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
-        public void OnInitialize(IStrategy strategy) => this.BuildTeams();
+        public void OnInitialize(IStrategy strategy)
+        {
+            this.BuildTeams();
+        }
 
-        public Team GetDefaultTeam() => this._defaultTeamComponent;
+        public Team GetDefaultTeam()
+        {
+            return this._defaultTeamComponent;
+        }
 
-        public Team GetOpenTeam() => this._teamComponents.First().Value;
+        public Team GetOpenTeam()
+        {
+            return this._teamComponents.First().Value;
+        }
 
         private void BuildTeams()
         {

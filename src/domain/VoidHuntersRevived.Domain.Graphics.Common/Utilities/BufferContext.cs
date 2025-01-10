@@ -38,7 +38,10 @@ namespace VoidHuntersRevived.Domain.Graphics.Common.Utilities
             list.AddRange(indices);
         }
 
-        public override IEnumerable<PrimitiveTypeEnum> GetTypes() => this._types;
+        public override IEnumerable<PrimitiveTypeEnum> GetTypes()
+        {
+            return this._types;
+        }
 
         public override VertexBuffer[] BuildVertexBuffers(GraphicsDevice graphics)
         {

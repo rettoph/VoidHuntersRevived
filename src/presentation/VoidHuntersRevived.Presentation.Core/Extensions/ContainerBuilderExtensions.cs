@@ -16,7 +16,9 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterPresentationCoreServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterPresentationCoreServices), builder =>
+        public static ContainerBuilder RegisterPresentationCoreServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterPresentationCoreServices), builder =>
                                                                                                                    {
                                                                                                                        builder.Configure<LoggerConfiguration>((scope, config) =>
                                                                                                                        {
@@ -47,5 +49,6 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
                                                                                                                            configurator.Configure(config, template);
                                                                                                                        });
                                                                                                                    });
+        }
     }
 }

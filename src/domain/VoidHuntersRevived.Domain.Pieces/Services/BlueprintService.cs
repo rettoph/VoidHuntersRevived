@@ -9,8 +9,14 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
     {
         private readonly Dictionary<Id<Blueprint>, Blueprint> _blueprints = resources.GetAll<Blueprint>().Select(x => x.Value).Concat(blueprints).ToDictionary(x => x.Id, x => x);
 
-        public Blueprint GetById(Id<Blueprint> id) => this._blueprints[id];
+        public Blueprint GetById(Id<Blueprint> id)
+        {
+            return this._blueprints[id];
+        }
 
-        public IEnumerable<Blueprint> GetAll() => this._blueprints.Values;
+        public IEnumerable<Blueprint> GetAll()
+        {
+            return this._blueprints.Values;
+        }
     }
 }

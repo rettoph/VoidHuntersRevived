@@ -5,11 +5,14 @@ namespace LiteNetLib.Utils
 {
     public static class NetDataReaderExtensions
     {
-        public static Vector2 GetVector2(this NetDataReader reader) => new()
+        public static Vector2 GetVector2(this NetDataReader reader)
         {
-            X = reader.GetFloat(),
-            Y = reader.GetFloat()
-        };
+            return new()
+            {
+                X = reader.GetFloat(),
+                Y = reader.GetFloat()
+            };
+        }
 
         public static void GetVector2(this NetDataReader reader, out Vector2 value)
         {

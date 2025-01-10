@@ -21,13 +21,25 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             return this._seed.Create(raw).ToGlobalEntityId();
         }
 
-        public byte ReadByte() => this._data[this.Position++];
+        public byte ReadByte()
+        {
+            return this._data[this.Position++];
+        }
 
-        public bool ReadBoolean() => this.Read<bool>();
+        public bool ReadBoolean()
+        {
+            return this.Read<bool>();
+        }
 
-        public int ReadInt32() => this.Read<int>();
+        public int ReadInt32()
+        {
+            return this.Read<int>();
+        }
 
-        public uint ReadUInt32() => this.Read<uint>();
+        public uint ReadUInt32()
+        {
+            return this.Read<uint>();
+        }
 
         public unsafe T Read<T>()
             where T : unmanaged
@@ -42,6 +54,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Serialization
             }
         }
 
-        public void Skip(int bytes) => this.Position += bytes;
+        public void Skip(int bytes)
+        {
+            this.Position += bytes;
+        }
     }
 }

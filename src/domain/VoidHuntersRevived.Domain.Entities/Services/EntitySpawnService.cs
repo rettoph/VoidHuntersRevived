@@ -43,11 +43,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return this._entityQueryService.GetLocalId(globalId);
         }
 
-        void IEntitySpawnService.Despawn(VhId sourceId, EntityGlobalId globalId) => this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
+        void IEntitySpawnService.Despawn(VhId sourceId, EntityGlobalId globalId)
         {
-            IsPrivate = false,
-            GlobalId = globalId
-        });
+            this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
+            {
+                IsPrivate = false,
+                GlobalId = globalId
+            });
+        }
 
         void IEntitySpawnService.Despawn(VhId sourceId, EntityLocalId localId)
         {
@@ -84,10 +87,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             return this._entityQueryService.GetLocalId(globalId);
         }
 
-        void IPrivateEntitySpawnService.Despawn(VhId sourceId, EntityGlobalId globalId) => this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
+        void IPrivateEntitySpawnService.Despawn(VhId sourceId, EntityGlobalId globalId)
         {
-            IsPrivate = true,
-            GlobalId = globalId
-        });
+            this.Strategy.Publish(NameSpace<EntityService>.Instance.Create(sourceId), new DespawnEntity()
+            {
+                IsPrivate = true,
+                GlobalId = globalId
+            });
+        }
     }
 }

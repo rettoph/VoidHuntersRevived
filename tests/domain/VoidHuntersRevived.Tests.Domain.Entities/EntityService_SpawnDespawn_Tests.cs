@@ -110,8 +110,14 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             Assert.Equal(1, totals[this._lockstep]);
         }
 
-        private TestSpawnInput GenerateTestSpawnInput(int id) => new() { EntityGlobalId = HashBuilder<TestSpawnInput, int>.Instance.Calculate(id).ToGlobalEntityId(), EntityTemplateKey = TestEntityTemplateKey };
+        private TestSpawnInput GenerateTestSpawnInput(int id)
+        {
+            return new() { EntityGlobalId = HashBuilder<TestSpawnInput, int>.Instance.Calculate(id).ToGlobalEntityId(), EntityTemplateKey = TestEntityTemplateKey };
+        }
 
-        private static TestDepawnInput GenerateTestDepawnInput(int id) => new() { EntityGlobalId = HashBuilder<TestDepawnInput, int>.Instance.Calculate(id).ToGlobalEntityId() };
+        private static TestDepawnInput GenerateTestDepawnInput(int id)
+        {
+            return new() { EntityGlobalId = HashBuilder<TestDepawnInput, int>.Instance.Calculate(id).ToGlobalEntityId() };
+        }
     }
 }

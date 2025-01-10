@@ -59,16 +59,28 @@ namespace VoidHuntersRevived.Domain.Physics
             }
         }
 
-        public IBody GetBody(in EntityLocalId entityLocalId) => this._bodies[entityLocalId];
+        public IBody GetBody(in EntityLocalId entityLocalId)
+        {
+            return this._bodies[entityLocalId];
+        }
 
-        public void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb) => this.aether.QueryAABB(aetherFixture =>
+        public void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb)
+        {
+            this.aether.QueryAABB(aetherFixture =>
                                                                                               {
                                                                                                   return callback((Fixture)aetherFixture.Tag);
                                                                                               }, ref Unsafe.As<AABB, AetherAABB>(ref aabb));
+        }
 
-        public void Step(Step step) => this.aether.Step(step.ElapsedTime);
+        public void Step(Step step)
+        {
+            this.aether.Step(step.ElapsedTime);
+        }
 
-        public IEnumerable<IBody> AllBodies() => this._bodies.Values;
+        public IEnumerable<IBody> AllBodies()
+        {
+            return this._bodies.Values;
+        }
 
         public bool TryGetBody(in EntityLocalId entityLocalId, [MaybeNullWhen(false)] out IBody body)
         {
@@ -82,6 +94,9 @@ namespace VoidHuntersRevived.Domain.Physics
             return false;
         }
 
-        private void HandleBodyAwakeChanged(AetherWorld sender, AetherBody body) => this.OnBodyAwakeChanged((IBody)body.Tag);
+        private void HandleBodyAwakeChanged(AetherWorld sender, AetherBody body)
+        {
+            this.OnBodyAwakeChanged((IBody)body.Tag);
+        }
     }
 }

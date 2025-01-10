@@ -12,6 +12,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Events
 
         public required EntityGlobalId TreeGlobalId { get; init; }
 
-        public VhId CalculateHash(in VhId source) => HashBuilder<Tree_Clean, VhId, EntityGlobalId>.Instance.Calculate(source, this.TreeGlobalId);
+        public VhId CalculateHash(in VhId source)
+        {
+            return HashBuilder<Tree_Clean, VhId, EntityGlobalId>.Instance.Calculate(source, this.TreeGlobalId);
+        }
     }
 }

@@ -16,6 +16,9 @@ namespace VoidHuntersRevived.Game.Client
             this.Connect("localhost", 1337);
         }
 
-        public void Connect(string host, int port) => this.Client.Connect(host, port, Claim.Create("username", "Rettoph", ClaimAccessibilityEnum.Public));
+        public void Connect(string host, int port)
+        {
+            this.Client.Connect(host, port, Claim.Create("username", "Rettoph", ClaimAccessibilityEnum.Public));
+        }
     }
 }

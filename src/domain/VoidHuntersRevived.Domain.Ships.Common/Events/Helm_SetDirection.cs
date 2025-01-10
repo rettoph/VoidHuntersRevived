@@ -14,6 +14,9 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Events
         public required DirectionEnum Which { get; init; }
         public required bool Value { get; init; }
 
-        public VhId CalculateHash(in VhId source) => HashBuilder<Helm_SetDirection, VhId, EntityGlobalId, DirectionEnum, bool>.Instance.Calculate(source, this.ShipGlobalId, this.Which, this.Value);
+        public VhId CalculateHash(in VhId source)
+        {
+            return HashBuilder<Helm_SetDirection, VhId, EntityGlobalId, DirectionEnum, bool>.Instance.Calculate(source, this.ShipGlobalId, this.Which, this.Value);
+        }
     }
 }

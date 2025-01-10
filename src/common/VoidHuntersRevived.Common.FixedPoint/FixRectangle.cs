@@ -80,10 +80,16 @@ namespace VoidHuntersRevived.Common.FixedPoint.FixedPoint
             get { return (this.Y + this.Height); }
         }
 
-        public readonly bool Contains(FixMatrix transformation) => this.Left < transformation.M41 && transformation.M41 < this.Right
+        public readonly bool Contains(FixMatrix transformation)
+        {
+            return this.Left < transformation.M41 && transformation.M41 < this.Right
                 && this.Top < transformation.M42 && transformation.M42 < this.Bottom;
+        }
 
-        public readonly bool Contains(FixVector2 position) => this.Left < position.X && position.X < this.Right
+        public readonly bool Contains(FixVector2 position)
+        {
+            return this.Left < position.X && position.X < this.Right
                 && this.Top < position.Y && position.Y < this.Bottom;
+        }
     }
 }

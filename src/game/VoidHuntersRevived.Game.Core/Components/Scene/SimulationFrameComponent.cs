@@ -17,9 +17,15 @@ namespace VoidHuntersRevived.Game.Core.Components.Scene
         }
 
         [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.PostDraw)]
-        public void Draw(GameTime gameTime) => this._simulationService.Draw(gameTime);
+        public void Draw(GameTime gameTime)
+        {
+            this._simulationService.Draw(gameTime);
+        }
 
         [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.Update)]
-        public void Update(GameTime gameTime) => this._simulationService.Update(gameTime);
+        public void Update(GameTime gameTime)
+        {
+            this._simulationService.Update(gameTime);
+        }
     }
 }

@@ -24,7 +24,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public TickBuffer TickBuffer { get; } = ticks;
 
-        public override void Update(GameTime realTime) => base.Update(realTime);
+        public override void Update(GameTime realTime)
+        {
+            base.Update(realTime);
+        }
 
         protected override void DoStep(Step step)
         {
@@ -69,10 +72,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             return this.TickBuffer.TryPop(current.Id + 1, out next);
         }
 
-        public override void Input(VhId sourceId, IInputData data) => this._netScope.CreateMessage(new EventDto()
+        public override void Input(VhId sourceId, IInputData data)
         {
-            SourceId = sourceId,
-            Data = data
-        });
+            this._netScope.CreateMessage(new EventDto()
+            {
+                SourceId = sourceId,
+                Data = data
+            });
+        }
     }
 }

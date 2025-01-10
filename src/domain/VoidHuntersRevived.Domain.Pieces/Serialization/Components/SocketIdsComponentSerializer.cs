@@ -49,6 +49,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Components
             // base.Deserialize(sourceId, options, reader, ref initializer, id);
         }
 
-        protected override Sockets Read(in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity) => throw new NotImplementedException();
+        protected override Sockets Read(in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

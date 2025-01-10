@@ -7,11 +7,17 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         public readonly uint Index = index;
         public readonly EntityLocalId EntityLocalId = entityLocalId;
 
-        public override bool Equals(object? obj) => obj is FixtureId id &&
+        public override bool Equals(object? obj)
+        {
+            return obj is FixtureId id &&
                    this.Index == id.Index &&
                    EqualityComparer<EntityLocalId>.Default.Equals(this.EntityLocalId, id.EntityLocalId);
+        }
 
-        public override int GetHashCode() => HashCode.Combine(this.Index, this.EntityLocalId);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Index, this.EntityLocalId);
+        }
 
         public static bool operator ==(FixtureId left, FixtureId right)
         {
@@ -23,6 +29,9 @@ namespace VoidHuntersRevived.Domain.Physics.Common
             return !(left == right);
         }
 
-        public override string ToString() => $"{this.Index}:{this.EntityLocalId}";
+        public override string ToString()
+        {
+            return $"{this.Index}:{this.EntityLocalId}";
+        }
     }
 }

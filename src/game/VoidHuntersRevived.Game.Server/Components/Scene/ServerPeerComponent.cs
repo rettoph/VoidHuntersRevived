@@ -24,8 +24,14 @@ namespace VoidHuntersRevived.Game.Server.Components.Scene
         }
 
         [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PostUpdate)]
-        public void Update(GameTime gameTime) => this._server.Flush();
+        public void Update(GameTime gameTime)
+        {
+            this._server.Flush();
+        }
 
-        private void HandleUserConnected(IUserService sender, IUser args) => this._scope.Group.Users.Add(args);
+        private void HandleUserConnected(IUserService sender, IUser args)
+        {
+            this._scope.Group.Users.Add(args);
+        }
     }
 }

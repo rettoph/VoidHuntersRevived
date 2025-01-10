@@ -16,7 +16,10 @@ namespace VoidHuntersRevived.Domain.Providers
         }
         private UniqueNumberValueUnion _value;
 
-        public uint GetUInt32() => this._value.UInt32++;
+        public uint GetUInt32()
+        {
+            return this._value.UInt32++;
+        }
 
         public int GetInt32()
         {

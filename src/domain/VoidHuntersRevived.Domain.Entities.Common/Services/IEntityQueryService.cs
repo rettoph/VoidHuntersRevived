@@ -24,23 +24,33 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
 
         bool TryQueryByLocalId<T>(EntityLocalId localId, out T value)
             where T : unmanaged, IEntityComponent
-                => this.TryQueryByEGID(localId.Value, out value);
+        {
+            return this.TryQueryByEGID(localId.Value, out value);
+        }
 
         bool TryQueryByLocalId<T>(EntityLocalId localId, out GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent
-                => this.TryQueryByEGID(localId.Value, out groupIndex, out value);
+        {
+            return this.TryQueryByEGID(localId.Value, out groupIndex, out value);
+        }
 
         ref T QueryByLocalId<T>(EntityLocalId localId)
             where T : unmanaged, IEntityComponent
-                => ref this.QueryByEGID<T>(localId.Value);
+        {
+            return ref this.QueryByEGID<T>(localId.Value);
+        }
 
         ref T QueryByLocalId<T>(EntityLocalId localId, out GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent
-                => ref this.QueryByEGID<T>(localId.Value, out groupIndex);
+        {
+            return ref this.QueryByEGID<T>(localId.Value, out groupIndex);
+        }
 
         ref T QueryByLocalId<T>(EntityLocalId localId, out GroupIndex groupIndex, out bool exists)
             where T : unmanaged, IEntityComponent
-                => ref this.QueryByEGID<T>(localId.Value, out groupIndex, out exists);
+        {
+            return ref this.QueryByEGID<T>(localId.Value, out groupIndex, out exists);
+        }
 
         EntityLocalId GetLocalId(EntityGlobalId globalId);
         bool TryGetLocalId(EntityGlobalId globalId, out EntityLocalId localId);
@@ -171,9 +181,15 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         bool IsSpawned(EGID egid);
         bool IsSpawned(EGID egid, out GroupIndex groupIndex);
         bool IsSpawned(EntityLocalId localId)
-            => this.IsSpawned(localId.Value);
+        {
+            return this.IsSpawned(localId.Value);
+        }
+
         bool IsSpawned(EntityLocalId localId, out GroupIndex groupIndex)
-            => this.IsSpawned(localId.Value, out groupIndex);
+        {
+            return this.IsSpawned(localId.Value, out groupIndex);
+        }
+
         bool IsSpawned(EntityGlobalId globalId)
         {
             if (this.TryGetLocalId(globalId, out EntityLocalId localId) == false)
@@ -198,38 +214,65 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
         bool IsDespawned(EGID egid);
         bool IsDespawned(EGID egid, out GroupIndex groupIndex);
         bool IsDespawned(EntityLocalId localId)
-            => this.IsDespawned(localId.Value);
+        {
+            return this.IsDespawned(localId.Value);
+        }
+
         bool IsDespawned(EntityLocalId localId, out GroupIndex groupIndex)
-            => this.IsDespawned(localId.Value, out groupIndex);
+        {
+            return this.IsDespawned(localId.Value, out groupIndex);
+        }
+
         bool IsDespawned(EntityGlobalId globalId)
-            => this.IsDespawned(this.GetLocalId(globalId).Value);
+        {
+            return this.IsDespawned(this.GetLocalId(globalId).Value);
+        }
+
         bool IsDespawned(EntityGlobalId globalId, out GroupIndex groupIndex)
-            => this.IsDespawned(this.GetLocalId(globalId).Value, out groupIndex);
+        {
+            return this.IsDespawned(this.GetLocalId(globalId).Value, out groupIndex);
+        }
 
         ref EntityFilterCollection GetFilter<T>(CombinedFilterID combinedFilterId)
             where T : unmanaged, IEntityComponent;
 
         ref EntityFilterCollection GetFilter<T>(EGID filterEGID, FilterContextID filterContext)
             where T : unmanaged, IEntityComponent
-                => ref this.GetFilter<T>(new CombinedFilterID(unchecked((int)filterEGID.entityID), filterContext));
+        {
+            return ref this.GetFilter<T>(new CombinedFilterID(unchecked((int)filterEGID.entityID), filterContext));
+        }
+
         ref EntityFilterCollection GetFilter<T>(EntityLocalId filterLocalId, FilterContextID filterContext)
-            where T : unmanaged, IEntityComponent
-                => ref this.GetFilter<T>(filterLocalId.Value, filterContext);
+                    where T : unmanaged, IEntityComponent
+        {
+            return ref this.GetFilter<T>(filterLocalId.Value, filterContext);
+        }
+
         ref EntityFilterCollection GetFilter<T>(int filterId, FilterContextID contextID)
-            where T : unmanaged, IEntityComponent
-                => ref this.GetFilter<T>(new CombinedFilterID(filterId, contextID));
+                    where T : unmanaged, IEntityComponent
+        {
+            return ref this.GetFilter<T>(new CombinedFilterID(filterId, contextID));
+        }
+
         ref EntityFilterCollection GetFilter<T, TFilter>(int filterId)
-            where T : unmanaged, IEntityComponent
-                => ref this.GetFilter<T>(filterId, FilterContextHelper.GetFilterContext<T, TFilter>());
+                    where T : unmanaged, IEntityComponent
+        {
+            return ref this.GetFilter<T>(filterId, FilterContextHelper.GetFilterContext<T, TFilter>());
+        }
 
         #region BelongsTo Filters
         ref EntityFilterCollection GetFilter<TChild>(EntityFilterId<TChild> filterId)
             where TChild : unmanaged, IEntityComponent
-                => ref this.GetFilter<TChild>(filterId.CombinedFilterId);
+        {
+            return ref this.GetFilter<TChild>(filterId.CombinedFilterId);
+        }
+
         ref EntityFilterCollection GetFilter<TParent, TChild>(EntityLocalId filterLocalId)
-            where TParent : unmanaged, IEntityComponent
-            where TChild : unmanaged, IEntityComponent
-                => ref this.GetFilter<TChild>(EntityFilterId<TChild>.Create<TParent>(filterLocalId.Value).CombinedFilterId);
+                    where TParent : unmanaged, IEntityComponent
+                    where TChild : unmanaged, IEntityComponent
+        {
+            return ref this.GetFilter<TChild>(EntityFilterId<TChild>.Create<TParent>(filterLocalId.Value).CombinedFilterId);
+        }
         #endregion
 
         #region CompositeBelongsTo Filters
@@ -237,18 +280,25 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
              where TParent : unmanaged, IEntityComponent, IHasMany<TPrimary>
             where TPrimary : unmanaged, IEntityComponent, IBelongsTo<TParent, TPrimary>
             where TSecondary : unmanaged, IEntityComponent, ICompositeBelongsTo<TParent, TPrimary, TSecondary>
-                => ref this.GetFilter<TSecondary>(filterLocalId, FilterContextHelper.GetFilterContext<TParent, TPrimary, TSecondary>());
+        {
+            return ref this.GetFilter<TSecondary>(filterLocalId, FilterContextHelper.GetFilterContext<TParent, TPrimary, TSecondary>());
+        }
+
         ref EntityFilterCollection GetCompositeFilter<TParent, TPrimary, TSecondary>(TParent parent)
-            where TParent : unmanaged, IEntityComponent, IHasMany<TPrimary>
-            where TPrimary : unmanaged, IEntityComponent, IBelongsTo<TParent, TPrimary>
-            where TSecondary : unmanaged, IEntityComponent, ICompositeBelongsTo<TParent, TPrimary, TSecondary>
-                => ref this.GetFilter<TSecondary>(parent.ChildrenFilterId.EGID, FilterContextHelper.GetFilterContext<TParent, TPrimary, TSecondary>());
+                    where TParent : unmanaged, IEntityComponent, IHasMany<TPrimary>
+                    where TPrimary : unmanaged, IEntityComponent, IBelongsTo<TParent, TPrimary>
+                    where TSecondary : unmanaged, IEntityComponent, ICompositeBelongsTo<TParent, TPrimary, TSecondary>
+        {
+            return ref this.GetFilter<TSecondary>(parent.ChildrenFilterId.EGID, FilterContextHelper.GetFilterContext<TParent, TPrimary, TSecondary>());
+        }
 
         ref EntityFilterCollection GetCompositeFilter<TParent, TPrimary, TSecondary>(TPrimary primary)
             where TParent : unmanaged, IEntityComponent, IHasMany<TPrimary>
             where TPrimary : unmanaged, IEntityComponent, IBelongsTo<TParent, TPrimary>
             where TSecondary : unmanaged, IEntityComponent, ICompositeBelongsTo<TParent, TPrimary, TSecondary>
-                => ref this.GetFilter<TSecondary>(primary.ParentFilterId.EGID, FilterContextHelper.GetFilterContext<TParent, TPrimary, TSecondary>());
+        {
+            return ref this.GetFilter<TSecondary>(primary.ParentFilterId.EGID, FilterContextHelper.GetFilterContext<TParent, TPrimary, TSecondary>());
+        }
         #endregion
     }
 }

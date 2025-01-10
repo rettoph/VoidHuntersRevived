@@ -11,6 +11,9 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Events
 
         public required EntityGlobalId EntityGlobalId { get; init; }
 
-        public VhId CalculateHash(in VhId source) => HashBuilder<TestDepawnInput, VhId, EntityGlobalId>.Instance.Calculate(source, this.EntityGlobalId);
+        public VhId CalculateHash(in VhId source)
+        {
+            return HashBuilder<TestDepawnInput, VhId, EntityGlobalId>.Instance.Calculate(source, this.EntityGlobalId);
+        }
     }
 }

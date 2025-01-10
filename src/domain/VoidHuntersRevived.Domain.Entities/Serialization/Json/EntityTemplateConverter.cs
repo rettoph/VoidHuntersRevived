@@ -73,6 +73,9 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
             return template;
         }
 
-        public override void Write(Utf8JsonWriter writer, EntityTemplateFragment value, JsonSerializerOptions options) => throw new NotImplementedException();
+        public override void Write(Utf8JsonWriter writer, EntityTemplateFragment value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

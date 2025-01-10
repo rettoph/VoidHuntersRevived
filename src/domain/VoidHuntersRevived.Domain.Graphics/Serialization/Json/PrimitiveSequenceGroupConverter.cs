@@ -44,6 +44,9 @@ namespace VoidHuntersRevived.Domain.Graphics.Serialization.Json
             return instance ?? throw new NotImplementedException();
         }
 
-        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options) => throw new NotImplementedException();
+        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

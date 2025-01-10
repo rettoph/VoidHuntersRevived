@@ -4,6 +4,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Extensions.Svelto.ECS
 {
     public static class EGIDExtensions
     {
-        public static EntityLocalId ToEntityLocalId(this EGID egid) => new(egid);
+        public static EntityLocalId ToEntityLocalId(this EGID egid)
+        {
+            return new(egid);
+        }
     }
 }

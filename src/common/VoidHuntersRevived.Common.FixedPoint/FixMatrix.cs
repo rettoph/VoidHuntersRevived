@@ -553,21 +553,30 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// </summary>
         /// <param name="other">The <see cref="FixMatrix"/> to compare.</param>
         /// <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
-        public readonly bool Equals(FixMatrix other) => this == other;
+        public readonly bool Equals(FixMatrix other)
+        {
+            return this == other;
+        }
 
         /// <summary>
         /// Compares whether current instance is equal to specified <see cref="object"/> without any tolerance.
         /// </summary>
         /// <param name="obj">The <see cref="object"/> to compare.</param>
         /// <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
-        public override readonly bool Equals(object? obj) => obj is FixMatrix matrix
+        public override readonly bool Equals(object? obj)
+        {
+            return obj is FixMatrix matrix
                 && this == matrix;
+        }
 
         /// <summary>
         /// Gets the hash code of this <see cref="FixMatrix"/>.
         /// </summary>
         /// <returns>Hash code of this <see cref="FixMatrix"/>.</returns>
-        public override readonly int GetHashCode() => (this.M11.GetHashCode() + this.M12.GetHashCode() + this.M13.GetHashCode() + this.M14.GetHashCode() + this.M21.GetHashCode() + this.M22.GetHashCode() + this.M23.GetHashCode() + this.M24.GetHashCode() + this.M31.GetHashCode() + this.M32.GetHashCode() + this.M33.GetHashCode() + this.M34.GetHashCode() + this.M41.GetHashCode() + this.M42.GetHashCode() + this.M43.GetHashCode() + this.M44.GetHashCode());
+        public override readonly int GetHashCode()
+        {
+            return (this.M11.GetHashCode() + this.M12.GetHashCode() + this.M13.GetHashCode() + this.M14.GetHashCode() + this.M21.GetHashCode() + this.M22.GetHashCode() + this.M23.GetHashCode() + this.M24.GetHashCode() + this.M31.GetHashCode() + this.M32.GetHashCode() + this.M33.GetHashCode() + this.M34.GetHashCode() + this.M41.GetHashCode() + this.M42.GetHashCode() + this.M43.GetHashCode() + this.M44.GetHashCode());
+        }
 
         /// <summary>
         /// Creates a new <see cref="FixMatrix"/> which contains inversion of the specified matrix. 
@@ -1274,10 +1283,13 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// {M41:[<see cref="M41"/>] M42:[<see cref="M42"/>] M43:[<see cref="M43"/>] M44:[<see cref="M44"/>]}
         /// </summary>
         /// <returns>A <see cref="string"/> representation of this <see cref="FixMatrix"/>.</returns>
-        public override readonly string ToString() => "{M11:" + this.M11 + " M12:" + this.M12 + " M13:" + this.M13 + " M14:" + this.M14 + "}"
+        public override readonly string ToString()
+        {
+            return "{M11:" + this.M11 + " M12:" + this.M12 + " M13:" + this.M13 + " M14:" + this.M14 + "}"
                 + " {M21:" + this.M21 + " M22:" + this.M22 + " M23:" + this.M23 + " M24:" + this.M24 + "}"
                 + " {M31:" + this.M31 + " M32:" + this.M32 + " M33:" + this.M33 + " M34:" + this.M34 + "}"
                 + " {M41:" + this.M41 + " M42:" + this.M42 + " M43:" + this.M43 + " M44:" + this.M44 + "}";
+        }
 
         /// <summary>
         /// Swap the matrix rows and columns.
@@ -1330,11 +1342,14 @@ namespace VoidHuntersRevived.Common.FixedPoint
             sin = this.M12;
         }
 
-        public readonly FixTransform2D ToFixTransform2D() => new(
+        public readonly FixTransform2D ToFixTransform2D()
+        {
+            return new(
                 x: this.M41,
                 y: this.M42,
                 cos: this.M11,
                 sin: this.M12);
+        }
         #endregion
     }
 }

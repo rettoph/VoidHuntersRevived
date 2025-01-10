@@ -15,7 +15,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     public partial class TreeService
     {
-        public EntityLocalId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Key<IEntityTemplate> headNodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null) => this._entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity tree) =>
+        public EntityLocalId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Key<IEntityTemplate> headNodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
+        {
+            return this._entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity tree) =>
                                                                                                                                                                                                                                          {
                                                                                                                                                                                                                                              EntityLocalId headLocalId = entities.Spawn.Spawn(sourceId, headNodeTemplateKey, globalId.Value.Create(1).ToGlobalEntityId(), (IEntityService entities, in InitializingEntity entity) =>
                                                                                                                                                                                                                                              {
@@ -31,8 +33,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                                                                                                                                                                                                                                              tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
                                                                                                                                                                                                                                              initializerDelegate?.Invoke(entities, in tree);
                                                                                                                                                                                                                                          });
+        }
 
-        public EntityLocalId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Entities.Common.Serialization.EntityData nodes, EntityInitializerDelegate initializerDelegate) => this._entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity tree) =>
+        public EntityLocalId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Entities.Common.Serialization.EntityData nodes, EntityInitializerDelegate initializerDelegate)
+        {
+            return this._entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity tree) =>
                                                                                                                                                                                                                                        {
                                                                                                                                                                                                                                            EntityLocalId headLocalId = entities.Serialization.Deserialize(
                                                                                                                                                                                                                                                sourceId: sourceId,
@@ -52,8 +57,11 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                                                                                                                                                                                                                                            tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
                                                                                                                                                                                                                                            initializerDelegate(entities, in tree);
                                                                                                                                                                                                                                        });
+        }
 
-        public EntityLocalId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null) => this._entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity tree) =>
+        public EntityLocalId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
+        {
+            return this._entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity tree) =>
                                                                                                                                                                                                                     {
                                                                                                                                                                                                                         EntityLocalId headId = entities.Spawn.Spawn(sourceId, globalId, team, blueprint);
 
@@ -62,5 +70,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                                                                                                                                                                                                                         tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
                                                                                                                                                                                                                         initializerDelegate?.Invoke(entities, in tree);
                                                                                                                                                                                                                     });
+        }
     }
 }

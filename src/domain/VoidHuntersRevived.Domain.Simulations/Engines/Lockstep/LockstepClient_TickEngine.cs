@@ -24,9 +24,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
             this._logger.Verbose("Attempted to enqueue Tick {Id}, Response = {Response}", message.Body.Id, response);
         }
 
-        public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryStart> message) =>
+        public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryStart> message)
+        {
             //_ticks.Clear();
             this._logger.Verbose("CurrentTickId = {CurrentTickId}", message.Body.CurrentTickId);
+        }
 
         public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryItem> message)
         {

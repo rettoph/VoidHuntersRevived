@@ -14,7 +14,9 @@ namespace VoidHuntersRevived.Game.Core.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterGameCoreServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterGameCoreServices), builder =>
+        public static ContainerBuilder RegisterGameCoreServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterGameCoreServices), builder =>
                                                                                                            {
                                                                                                                builder.RegisterType<SimulationFrameComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
@@ -31,5 +33,6 @@ namespace VoidHuntersRevived.Game.Core.Extensions
                                                                                                                    EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
                                                                                                                });
                                                                                                            });
+        }
     }
 }

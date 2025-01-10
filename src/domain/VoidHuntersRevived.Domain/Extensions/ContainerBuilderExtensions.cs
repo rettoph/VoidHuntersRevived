@@ -19,7 +19,9 @@ namespace VoidHuntersRevived.Domain.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterDomainServices), builder =>
+        public static ContainerBuilder RegisterDomainServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterDomainServices), builder =>
                                                                                                          {
                                                                                                              builder
                                                                                                                  .RegisterDomainCoreServices()
@@ -33,6 +35,7 @@ namespace VoidHuntersRevived.Domain.Extensions
 
 
                                                                                                          });
+        }
 
         public static ContainerBuilder RegisterDomainCoreServices(this ContainerBuilder builder)
         {

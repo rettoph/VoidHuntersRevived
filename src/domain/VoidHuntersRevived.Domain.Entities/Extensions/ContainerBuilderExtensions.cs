@@ -19,7 +19,9 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainEntityServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterDomainEntityServices), builder =>
+        public static ContainerBuilder RegisterDomainEntityServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterDomainEntityServices), builder =>
                                                                                                                {
                                                                                                                    builder.RegisterType<ComponentSerializerService>().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
 
@@ -62,5 +64,6 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                                                                                                                        config.Destructure.AsScalar(typeof(EntityGlobalId));
                                                                                                                    });
                                                                                                                });
+        }
     }
 }

@@ -27,6 +27,9 @@ namespace VoidHuntersRevived.Domain.Physics
             this.Id = id;
         }
 
-        public void Dispose() => this._body.aether.Remove(this.aether);
+        public void Dispose()
+        {
+            this._body.aether.Remove(this.aether);
+        }
     }
 }

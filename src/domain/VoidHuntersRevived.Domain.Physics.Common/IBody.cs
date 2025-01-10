@@ -27,7 +27,9 @@ namespace VoidHuntersRevived.Domain.Physics.Common
         IFixture Create(FixtureId id, Polygon polygon, FixMatrix transformation);
         void Destroy(FixtureId id);
         void Destroy(IFixture fixture)
-            => this.Destroy(fixture.Id);
+        {
+            this.Destroy(fixture.Id);
+        }
 
         void SetTransform(FixTransform2D transform);
         void SetTransform(FixVector2 position, Fix64 rotation);

@@ -313,6 +313,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
     }
 }

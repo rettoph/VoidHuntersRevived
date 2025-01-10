@@ -57,11 +57,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             return true;
         }
 
-        public override void Input(VhId sourceId, IInputData data) => this._inputs.Add(new EventDto()
+        public override void Input(VhId sourceId, IInputData data)
         {
-            SourceId = sourceId,
-            Data = data
-        });
+            this._inputs.Add(new EventDto()
+            {
+                SourceId = sourceId,
+                Data = data
+            });
+        }
 
         protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)
         {

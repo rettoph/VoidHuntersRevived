@@ -2,7 +2,10 @@
 {
     public static class EntitiesDBExtensions
     {
-        public static EntityReference GetEntityReference(this EntitiesDB entitiesDB, uint entityId, ExclusiveGroupStruct groupId) => entitiesDB.GetEntityReference(new EGID(entityId, groupId));
+        public static EntityReference GetEntityReference(this EntitiesDB entitiesDB, uint entityId, ExclusiveGroupStruct groupId)
+        {
+            return entitiesDB.GetEntityReference(new EGID(entityId, groupId));
+        }
 
         public static ref T QueryEntityByIndex<T>(this EntitiesDB entitiesDB, uint index, ExclusiveGroupStruct groupID)
             where T : unmanaged, IEntityComponent

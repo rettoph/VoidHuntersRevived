@@ -28,10 +28,19 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 .ToArray();
         }
 
-        public virtual IReadOnlyDictionary<Key<IEntityTemplate>, EntityTemplateFragment[]> GetAll() => this._fragmentsByKey;
+        public virtual IReadOnlyDictionary<Key<IEntityTemplate>, EntityTemplateFragment[]> GetAll()
+        {
+            return this._fragmentsByKey;
+        }
 
-        public EntityTemplateFragment[] GetByKey(Key<IEntityTemplate> key) => this._fragmentsByKey[key];
+        public EntityTemplateFragment[] GetByKey(Key<IEntityTemplate> key)
+        {
+            return this._fragmentsByKey[key];
+        }
 
-        public Type[] GetAllDistinctComponentTypes() => this._distinctComponentTypes;
+        public Type[] GetAllDistinctComponentTypes()
+        {
+            return this._distinctComponentTypes;
+        }
     }
 }

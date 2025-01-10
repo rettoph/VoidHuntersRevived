@@ -17,7 +17,9 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainPhysicsServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterDomainPhysicsServices), builder =>
+        public static ContainerBuilder RegisterDomainPhysicsServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterDomainPhysicsServices), builder =>
                                                                                                                 {
                                                                                                                     builder.Register<AetherWorld>(c => new AetherWorld(AetherVector2.Zero)).InstancePerLifetimeScope();
 
@@ -45,5 +47,6 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
 
                                                                                                                     builder.RegisterPolymorphicJsonType<Rigid, IEntityComponent>(nameof(Rigid));
                                                                                                                 });
+        }
     }
 }

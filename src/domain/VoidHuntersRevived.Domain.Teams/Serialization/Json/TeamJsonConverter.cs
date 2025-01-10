@@ -31,6 +31,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
             return new Team(name);
         }
 
-        public override void Write(Utf8JsonWriter writer, Team value, JsonSerializerOptions options) => throw new NotImplementedException();
+        public override void Write(Utf8JsonWriter writer, Team value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

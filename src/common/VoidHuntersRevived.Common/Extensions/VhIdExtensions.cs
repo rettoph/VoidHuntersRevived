@@ -87,6 +87,9 @@ namespace VoidHuntersRevived.Common
             }
         }
 
-        public static unsafe VhId Create(this VhId nameSpace, string name) => nameSpace.Create(VhId.HashString(name));
+        public static unsafe VhId Create(this VhId nameSpace, string name)
+        {
+            return nameSpace.Create(VhId.HashString(name));
+        }
     }
 }

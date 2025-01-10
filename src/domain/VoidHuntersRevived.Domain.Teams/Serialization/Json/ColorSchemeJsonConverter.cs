@@ -41,6 +41,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
             return new ColorScheme(this._resources.Get(primary), this._resources.Get(secondary));
         }
 
-        public override void Write(Utf8JsonWriter writer, ColorScheme value, JsonSerializerOptions options) => throw new NotImplementedException();
+        public override void Write(Utf8JsonWriter writer, ColorScheme value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

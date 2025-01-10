@@ -17,7 +17,9 @@ namespace VoidHuntersRevived.Domain.Graphics.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainGraphicsServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterDomainGraphicsServices), builder =>
+        public static ContainerBuilder RegisterDomainGraphicsServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterDomainGraphicsServices), builder =>
                                                                                                                  {
                                                                                                                      builder.RegisterType<PrimitiveService>().AsImplementedInterfaces().SingleInstance();
                                                                                                                      builder.RegisterGeneric(typeof(PrimitiveService<>)).As(typeof(IPrimitiveService<>)).SingleInstance();
@@ -32,5 +34,6 @@ namespace VoidHuntersRevived.Domain.Graphics.Extensions
                                                                                                                      builder.RegisterType<PrimitiveEntityEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
                                                                                                                      builder.RegisterEngine<DrawPrimitivesEngine>();
                                                                                                                  });
+        }
     }
 }

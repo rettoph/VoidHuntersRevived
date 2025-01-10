@@ -30,7 +30,10 @@ namespace VoidHuntersRevived.Game.Client.Engines
             this._window.ClientSizeChanged += this.HandleClientSizeChanged;
         }
 
-        public void Dispose() => this._target_aa?.Dispose();
+        public void Dispose()
+        {
+            this._target_aa?.Dispose();
+        }
 
         private RenderTarget2D BuildRenderTarget()
         {

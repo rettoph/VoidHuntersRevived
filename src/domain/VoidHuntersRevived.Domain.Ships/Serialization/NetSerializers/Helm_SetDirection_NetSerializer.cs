@@ -7,12 +7,15 @@ namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
 {
     internal sealed class Helm_SetDirection_NetSerializer : NetSerializer<Helm_SetDirection>
     {
-        public override Helm_SetDirection Deserialize(NetDataReader reader) => new()
+        public override Helm_SetDirection Deserialize(NetDataReader reader)
         {
-            ShipGlobalId = reader.GetEntityGlobalId(),
-            Which = reader.GetEnum<DirectionEnum>(),
-            Value = reader.GetBool()
-        };
+            return new()
+            {
+                ShipGlobalId = reader.GetEntityGlobalId(),
+                Which = reader.GetEnum<DirectionEnum>(),
+                Value = reader.GetBool()
+            };
+        }
 
         public override void Serialize(NetDataWriter writer, in Helm_SetDirection instance)
         {

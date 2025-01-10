@@ -7,6 +7,9 @@ namespace VoidHuntersRevived.Tests.Common.Providers
         private int _noise = 0;
         private readonly VhId _seed = seed;
 
-        public VhId Next() => this._seed.Create(this._noise++);
+        public VhId Next()
+        {
+            return this._seed.Create(this._noise++);
+        }
     }
 }

@@ -28,9 +28,12 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
 
         private static readonly MethodInfo _buildEntityInitializerDelegateMethodInfo = typeof(EntityInitializerHelper).GetMethod(nameof(BuildEntityInitializerDelegate), 1, [Type.MakeGenericMethodParameter(0)]) ?? throw new Exception();
         public static EntityInitializerDelegate BuildEntityInitializerDelegate<T>(T instance)
-            where T : unmanaged, IEntityComponent => (IEntityService entities, in InitializingEntity entity) =>
+            where T : unmanaged, IEntityComponent
+        {
+            return (IEntityService entities, in InitializingEntity entity) =>
                                                               {
                                                                   entity.Initializer.Init(instance);
                                                               };
+        }
     }
 }

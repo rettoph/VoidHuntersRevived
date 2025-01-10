@@ -12,9 +12,15 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         private readonly IClientPeer _client = client;
 
         [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Setup)]
-        public void Initialize(MultiplayerGameScene scene) => this._client.Start();
+        public void Initialize(MultiplayerGameScene scene)
+        {
+            this._client.Start();
+        }
 
         [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PostUpdate)]
-        public void Update(GameTime gameTime) => this._client.Flush();
+        public void Update(GameTime gameTime)
+        {
+            this._client.Flush();
+        }
     }
 }

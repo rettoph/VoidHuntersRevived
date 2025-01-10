@@ -87,11 +87,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void Input(VhId sourceId, IInputData data) => this.Publish(new EventDto()
+        public override void Input(VhId sourceId, IInputData data)
         {
-            SourceId = sourceId,
-            Data = data
-        });
+            this.Publish(new EventDto()
+            {
+                SourceId = sourceId,
+                Data = data
+            });
+        }
 
         public override void Publish(EventDto @event)
         {

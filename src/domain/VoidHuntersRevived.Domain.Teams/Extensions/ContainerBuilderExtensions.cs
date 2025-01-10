@@ -15,7 +15,9 @@ namespace VoidHuntersRevived.Domain.Teams.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainTeamsServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterDomainTeamsServices), builder =>
+        public static ContainerBuilder RegisterDomainTeamsServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterDomainTeamsServices), builder =>
                                                                                                               {
                                                                                                                   builder.RegisterJsonConverter<TeamJsonConverter>();
                                                                                                                   builder.RegisterJsonConverter<ColorSchemeJsonConverter>();
@@ -32,5 +34,6 @@ namespace VoidHuntersRevived.Domain.Teams.Extensions
                                                                                                                       config.Destructure.AsScalar(typeof(Id<Team>));
                                                                                                                   });
                                                                                                               });
+        }
     }
 }

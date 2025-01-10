@@ -21,7 +21,10 @@ namespace VoidHuntersRevived.Domain.Serialization.Json
                 return array.ToNativeDynamicArray();
             }
 
-            protected override void Write(Utf8JsonWriter writer, NativeDynamicArrayCast<T> value, JsonSerializerOptions options) => throw new NotImplementedException();
+            protected override void Write(Utf8JsonWriter writer, NativeDynamicArrayCast<T> value, JsonSerializerOptions options)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 

@@ -28,6 +28,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
             return instance;
         }
 
-        public override void Serialize(NetDataWriter writer, in UserJoined instance) => this._userDtoSerializer.Serialize(writer, instance.UserDto);
+        public override void Serialize(NetDataWriter writer, in UserJoined instance)
+        {
+            this._userDtoSerializer.Serialize(writer, instance.UserDto);
+        }
     }
 }

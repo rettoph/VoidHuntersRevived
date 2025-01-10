@@ -17,9 +17,11 @@ namespace VoidHuntersRevived.Domain.Graphics
 
         public PrimitiveTypeEnum[] BufferTypes { get; } = [];
 
-        public void Dispose() =>
+        public void Dispose()
+        {
             // This is here just to make the linter happy
             // We have nothing to dispose of in an empty primitive
             GC.SuppressFinalize(this);
+        }
     }
 }

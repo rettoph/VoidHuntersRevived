@@ -79,7 +79,10 @@ namespace VoidHuntersRevived.Game.Client.Engines
             this._camera.Update(gameTime);
         }
 
-        public void Process(in Guid messageId, CursorScroll message) => this._zoom *= ((float)Math.Pow(1.5, message.Delta / 120));
+        public void Process(in Guid messageId, CursorScroll message)
+        {
+            this._zoom *= ((float)Math.Pow(1.5, message.Delta / 120));
+        }
 
         private Vector2 GetUserPosition()
         {

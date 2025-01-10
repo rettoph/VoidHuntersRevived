@@ -14,6 +14,9 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Events
         public required FixVector2 Value { get; init; }
         public bool Snap { get; init; }
 
-        public VhId CalculateHash(in VhId source) => HashBuilder<Tactical_SetTarget, VhId, EntityGlobalId, FixVector2>.Instance.Calculate(source, this.ShipGlobalId, this.Value);
+        public VhId CalculateHash(in VhId source)
+        {
+            return HashBuilder<Tactical_SetTarget, VhId, EntityGlobalId, FixVector2>.Instance.Calculate(source, this.ShipGlobalId, this.Value);
+        }
     }
 }

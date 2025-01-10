@@ -18,7 +18,9 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
             return entitySpawnService.Spawn(sourceId, treeId, team, globalId, blueprint.Head, default);
         }
 
-        private static EntityLocalId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, EntityGlobalId globalId, IBlueprintPiece blueprintPiece, NodeSocketGlobalId socketVhId) => entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
+        private static EntityLocalId Spawn(this IEntitySpawnService entitySpawnService, VhId sourceId, EntityGlobalId treeId, Team team, EntityGlobalId globalId, IBlueprintPiece blueprintPiece, NodeSocketGlobalId socketVhId)
+        {
+            return entitySpawnService.Spawn(sourceId, blueprintPiece.PieceTemplateKey, globalId, (IEntityService entities, in InitializingEntity entity) =>
                                                                                                                                                                                                                                              {
                                                                                                                                                                                                                                                  EntityLocalId bodyLocalId = entities.Query.GetLocalId(treeId);
 
@@ -55,5 +57,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Extensions.Entities
                                                                                                                                                                                                                                                      }
                                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                                              });
+        }
     }
 }

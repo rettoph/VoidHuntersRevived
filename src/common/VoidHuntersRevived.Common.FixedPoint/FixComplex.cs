@@ -37,11 +37,20 @@ namespace VoidHuntersRevived.Common.FixedPoint
             }
         }
 
-        public override readonly string ToString() => $"{{ Real = {this.Real}, Imaginary = {this.Imaginary} }}";
+        public override readonly string ToString()
+        {
+            return $"{{ Real = {this.Real}, Imaginary = {this.Imaginary} }}";
+        }
 
-        public override readonly bool Equals(object? obj) => obj is FixComplex complex && complex == this;
+        public override readonly bool Equals(object? obj)
+        {
+            return obj is FixComplex complex && complex == this;
+        }
 
-        public override readonly int GetHashCode() => HashCode.Combine(this.Imaginary, this.Real);
+        public override readonly int GetHashCode()
+        {
+            return HashCode.Combine(this.Imaginary, this.Real);
+        }
 
         public static bool operator ==(FixComplex left, FixComplex right)
         {

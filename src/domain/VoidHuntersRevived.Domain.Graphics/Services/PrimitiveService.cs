@@ -11,12 +11,21 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
     {
         private readonly IPrimitive[] _primitives = resourceService.GetAll<IPrimitiveType>().SelectMany(x => x.Value.Primitives).ToArray();
 
-        public IEnumerable<IPrimitive> GetAll() => this._primitives;
+        public IEnumerable<IPrimitive> GetAll()
+        {
+            return this._primitives;
+        }
 
         public IEnumerable<IPrimitive<TVertex>> GetAll<TVertex>()
-            where TVertex : unmanaged, IVertexType => this._primitives.OfType<IPrimitive<TVertex>>();
+            where TVertex : unmanaged, IVertexType
+        {
+            return this._primitives.OfType<IPrimitive<TVertex>>();
+        }
 
-        public IEnumerable<Type> GetAllVertexTypes() => this._primitives.Select(x => x.VertexType).Distinct();
+        public IEnumerable<Type> GetAllVertexTypes()
+        {
+            return this._primitives.Select(x => x.VertexType).Distinct();
+        }
     }
 
     public class PrimitiveService<TVertex> : IPrimitiveService<TVertex>
@@ -37,20 +46,32 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
             this._all = [.. this._grouped.Values];
         }
 
-        public IPrimitive<TVertex>[] GetAll() => this._all;
+        public IPrimitive<TVertex>[] GetAll()
+        {
+            return this._all;
+        }
 
-        public IPrimitive<TVertex> GetPrimitiveByTypeAndSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup) => this._grouped[new PrimitiveTypeSequenceGroup(type, sequenceGroup)];
+        public IPrimitive<TVertex> GetPrimitiveByTypeAndSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup)
+        {
+            return this._grouped[new PrimitiveTypeSequenceGroup(type, sequenceGroup)];
+        }
 
         private readonly struct PrimitiveTypeSequenceGroup(Key<IPrimitiveType> type, PrimitiveSequenceGroupEnum sequenceGroup)
         {
             public readonly Key<IPrimitiveType> Type = type;
             public readonly PrimitiveSequenceGroupEnum SequenceGroup = sequenceGroup;
 
-            public override bool Equals(object? obj) => obj is PrimitiveTypeSequenceGroup casted &&
+            public override bool Equals(object? obj)
+            {
+                return obj is PrimitiveTypeSequenceGroup casted &&
                        this.Type == casted.Type &&
                        this.SequenceGroup == casted.SequenceGroup;
+            }
 
-            public override int GetHashCode() => HashCode.Combine(this.Type, this.SequenceGroup);
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(this.Type, this.SequenceGroup);
+            }
         }
     }
 }

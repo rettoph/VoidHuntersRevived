@@ -7,12 +7,21 @@ namespace VoidHuntersRevived.Domain.Entities.Common
     {
         public readonly VhId Value = vhid;
 
-        public override bool Equals(object? obj) => obj is EntityGlobalId id &&
+        public override bool Equals(object? obj)
+        {
+            return obj is EntityGlobalId id &&
                    this.Value.Value == id.Value.Value;
+        }
 
-        public bool Equals(EntityGlobalId other) => this.Value.Value == other.Value.Value;
+        public bool Equals(EntityGlobalId other)
+        {
+            return this.Value.Value == other.Value.Value;
+        }
 
-        public override int GetHashCode() => HashCode.Combine(this.Value);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Value);
+        }
 
         public static bool operator ==(EntityGlobalId left, EntityGlobalId right)
         {
@@ -24,6 +33,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common
             return left.Value.Value != right.Value.Value;
         }
 
-        public override string ToString() => this.Value.ToString();
+        public override string ToString()
+        {
+            return this.Value.ToString();
+        }
     }
 }

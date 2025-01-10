@@ -22,7 +22,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainSimulationServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterDomainSimulationServices), builder =>
+        public static ContainerBuilder RegisterDomainSimulationServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterDomainSimulationServices), builder =>
                                                                                                                    {
                                                                                                                        builder.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
 
@@ -60,5 +62,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                                                                                                                        builder.RegisterLoggerContext<LockstepStrategy_Client>(StrategyLoggerContext);
                                                                                                                        builder.RegisterLoggerContext<LockstepStrategy_Server>(StrategyLoggerContext);
                                                                                                                    });
+        }
     }
 }
