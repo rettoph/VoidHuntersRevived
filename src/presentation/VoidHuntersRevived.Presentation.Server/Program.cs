@@ -36,7 +36,7 @@ engine.Scenes.Create<ServerGameScene>(configuration =>
 {
     configuration.WithContainerBuilder(builder =>
     {
-        builder.RegisterNetScope<IStrategy>(PeerType.Server, NetScopeIds.Game);
+        builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Server, NetScopeIds.Game);
     });
 });
 

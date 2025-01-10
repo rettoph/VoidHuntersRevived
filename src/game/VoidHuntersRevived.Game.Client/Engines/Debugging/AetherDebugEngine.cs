@@ -75,7 +75,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
             this._debug.RenderDebugData(this._camera.Projection, this._camera.View, this._camera.World);
         }
 
-        [SequenceGroup<DebugSequenceGroup>("Aether")]
+        [SequenceGroup<DebugSequenceGroupEnum>("Aether")]
         public void OnDebug(GameTime gameTime)
         {
             this._imgui.KeyValue("Bodies", this._world.BodyList.Count.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
             }
         }
 
-        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.PostDraw)]
+        [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.PostDraw)]
         public void DrawImGui(GameTime gameTime)
         {
             if (this._aetherExplorerEnabled == false)

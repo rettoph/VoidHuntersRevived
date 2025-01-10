@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Game.Client.Extensions
             ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionRight, Keys.E, DirectionEnum.Right);
             ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionLeft, Keys.Q, DirectionEnum.Left);
 
-            builder.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtons.Right, new (ButtonState, IInput)[]
+            builder.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtonsEnum.Right, new (ButtonState, IInput)[]
             {
                 (ButtonState.Pressed, new Input_TractorBeamEmitter_SetActive(true)),
                 (ButtonState.Released, new Input_TractorBeamEmitter_SetActive(false))

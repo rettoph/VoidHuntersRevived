@@ -51,8 +51,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 
                 builder.RegisterType<StrategyTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
 
-                builder.RegisterPeerTypeFilter<IClientEngine>(PeerType.Client);
-                builder.RegisterPeerTypeFilter<IServerEngine>(PeerType.Server);
+                builder.RegisterPeerTypeFilter<IClientEngine>(PeerTypeEnum.Client);
+                builder.RegisterPeerTypeFilter<IServerEngine>(PeerTypeEnum.Server);
                 builder.RegisterGraphicsEnabledFilter<IGraphicsEngine>(true);
                 builder.RegisterStrategyFilter<IPredictiveSynchronizationEngine, IPredictiveStrategy>();
 

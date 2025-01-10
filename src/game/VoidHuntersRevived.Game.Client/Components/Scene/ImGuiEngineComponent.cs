@@ -11,15 +11,15 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     internal class ImGuiEngineComponent : ISceneComponent<IStrategy>, IImGuiComponent
     {
-        private readonly ActionSequenceGroup<ImGuiSequenceGroup, GameTime> _imGuiActions = new(true);
+        private readonly ActionSequenceGroup<ImGuiSequenceGroupEnum, GameTime> _imGuiActions = new(true);
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PostInitialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.PostInitialize)]
         public void Initialize(IStrategy strategy)
         {
             this._imGuiActions.Add(strategy.Engines);
         }
 
-        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.PostDraw)]
+        [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.PostDraw)]
         public void DrawImGui(GameTime gameTime)
         {
             this._imGuiActions.Invoke(gameTime);

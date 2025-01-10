@@ -7,7 +7,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Engines
 {
     public interface IOnDebugEngine : IEngine
     {
-        [RequireSequenceGroup<DebugSequenceGroup>]
+        [RequireSequenceGroup<DebugSequenceGroupEnum>]
         void OnDebug(GameTime gameTime);
     }
 }

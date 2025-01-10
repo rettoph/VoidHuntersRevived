@@ -11,18 +11,18 @@ namespace VoidHuntersRevived.Game.Core.Components.Scene
     {
         private readonly ISimulationService _simulationService = simulationService;
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(VoidHuntersGameScene scene)
         {
         }
 
-        [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.PostDraw)]
+        [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.PostDraw)]
         public void Draw(GameTime gameTime)
         {
             this._simulationService.Draw(gameTime);
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.Update)]
+        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.Update)]
         public void Update(GameTime gameTime)
         {
             this._simulationService.Update(gameTime);

@@ -67,15 +67,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         private IEnumerable<IStrategy> BuildStrategies(StrategyTypeEnum[] strategies)
         {
             List<Type> strategyTypes = [];
-            if (this._netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Predictive))
+            if (this._netScope.Group.Peer.Type == PeerTypeEnum.Client && strategies.Contains(StrategyTypeEnum.Predictive))
             {
                 strategyTypes.Add(typeof(PredictiveStrategy));
             }
-            if (this._netScope.Group.Peer.Type == PeerType.Client && strategies.Contains(StrategyTypeEnum.Lockstep))
+            if (this._netScope.Group.Peer.Type == PeerTypeEnum.Client && strategies.Contains(StrategyTypeEnum.Lockstep))
             {
                 strategyTypes.Add(typeof(LockstepStrategy_Client));
             }
-            if (this._netScope.Group.Peer.Type == PeerType.Server && strategies.Contains(StrategyTypeEnum.Lockstep))
+            if (this._netScope.Group.Peer.Type == PeerTypeEnum.Server && strategies.Contains(StrategyTypeEnum.Lockstep))
             {
                 strategyTypes.Add(typeof(LockstepStrategy_Server));
             }

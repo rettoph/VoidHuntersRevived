@@ -16,14 +16,14 @@ namespace VoidHuntersRevived.Game.Server.Components.Scene
         private readonly IServerPeer _server = server;
         private readonly INetScope<IStrategy> _scope = scope;
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Setup)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Setup)]
         public void Initialize(ServerGameScene scene)
         {
             this._server.Start(1337, Claim.Public("username", "System"));
             this._server.Users.OnUserConnected += this.HandleUserConnected;
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PostUpdate)]
+        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PostUpdate)]
         public void Update(GameTime gameTime)
         {
             this._server.Flush();

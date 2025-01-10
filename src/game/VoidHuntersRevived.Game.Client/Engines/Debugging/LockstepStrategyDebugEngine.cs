@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         private bool _historyViewerEnabled;
         private string _filter = string.Empty;
 
-        [SequenceGroup<DebugSequenceGroup>("Strategy")]
+        [SequenceGroup<DebugSequenceGroupEnum>("Strategy")]
         public void OnDebug(GameTime gameTime)
         {
             var buttonStyle = this._historyViewerEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed;
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
             }
         }
 
-        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
+        [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
             if (this._historyViewerEnabled == false)

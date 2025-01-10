@@ -28,14 +28,14 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
                     if (strategy.HasValue)
                     {
                         IStateService states = scope.Resolve<IStateService>();
-                        config.Enrich.WithProperty(nameof(PeerType), states.GetByKey(StateKey<PeerType>.Create()));
+                        config.Enrich.WithProperty(nameof(PeerTypeEnum), states.GetByKey(StateKey<PeerTypeEnum>.Create()));
                         config.Enrich.WithProperty(nameof(StrategyTypeEnum), states.GetByKey(StateKey<StrategyTypeEnum>.Create()));
 
-                        template = $"[{{{nameof(PeerType)}}}][{{{nameof(StrategyTypeEnum)}}}][{{Timestamp:HH:mm:ss}} {{Level:u3}}] {{SourceContext}} - {{Message:lj}}{{NewLine}}{{Exception}}";
+                        template = $"[{{{nameof(PeerTypeEnum)}}}][{{{nameof(StrategyTypeEnum)}}}][{{Timestamp:HH:mm:ss}} {{Level:u3}}] {{SourceContext}} - {{Message:lj}}{{NewLine}}{{Exception}}";
                     }
 
                     IPathService fileTypePaths = scope.Resolve<IPathService>();
-                    FileLocation source = fileTypePaths.GetSourceLocation(DirectoryType.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
+                    FileLocation source = fileTypePaths.GetSourceLocation(DirectoryTypeEnum.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
                     DirectoryHelper.EnsureDirectoryExists(source);
 
                     config.WriteTo.File(

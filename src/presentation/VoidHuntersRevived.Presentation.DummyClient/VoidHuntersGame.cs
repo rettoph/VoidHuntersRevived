@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Presentation.Client
                 {
                     configuration.WithContainerBuilder(builder =>
                     {
-                        builder.RegisterNetScope<IStrategy>(PeerType.Client, NetScopeIds.Game);
+                        builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Client, NetScopeIds.Game);
                     });
                 });
                 //_engine.Guppies.Create<EditorGuppy>();

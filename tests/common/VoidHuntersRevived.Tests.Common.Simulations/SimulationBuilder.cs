@@ -72,7 +72,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
 
         public override SimulationMocker Build()
         {
-            IStrategyMocker[] strategies = this._strategies.Select(factory => factory(this.AutoMock.Container)).ToArray();
+            IStrategyMocker[] strategies = this._strategies.Select(factory => factory(this.autoMock.Container)).ToArray();
 
             SimulationMocker simulation = new(
                 instance: new Simulation(this.Id, strategies.Select(x => x.Instance).ToArray()),

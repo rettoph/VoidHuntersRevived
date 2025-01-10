@@ -12,15 +12,15 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
     internal sealed class DebugEngineComponent(IImGui imgui) : ISceneComponent<IStrategy>, IDebugComponent
     {
         private readonly IImGui _imgui = imgui;
-        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions = new(true);
+        private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _debugActions = new(true);
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IStrategy strategy)
         {
             this._debugActions.Add(strategy.Engines);
         }
 
-        [SequenceGroup<DebugSequenceGroup>(DebugSequenceGroup.Debug)]
+        [SequenceGroup<DebugSequenceGroupEnum>(DebugSequenceGroupEnum.Debug)]
         public void DrawDebug(GameTime gameTime)
         {
             foreach ((var group, var groupedDebugActions) in this._debugActions.Grouped)

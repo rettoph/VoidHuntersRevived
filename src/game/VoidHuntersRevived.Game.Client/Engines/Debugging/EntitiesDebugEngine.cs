@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IImGui _imgui = imgui;
 
-        [SequenceGroup<DebugSequenceGroup>("Entities")]
+        [SequenceGroup<DebugSequenceGroupEnum>("Entities")]
         public void OnDebug(GameTime gameTime)
         {
             this._imgui.KeyValue("Total", this._entityQueryService.CalculateTotal<EntityLocalId>().ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());

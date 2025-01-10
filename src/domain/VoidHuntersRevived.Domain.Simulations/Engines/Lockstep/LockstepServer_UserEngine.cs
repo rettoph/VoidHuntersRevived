@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
         {
             this.Strategy.Input(VhId.NewId(), new UserJoined()
             {
-                UserDto = args.ToDto(ClaimAccessibility.Public)
+                UserDto = args.ToDto(ClaimAccessibilityEnum.Public)
             });
         }
     }

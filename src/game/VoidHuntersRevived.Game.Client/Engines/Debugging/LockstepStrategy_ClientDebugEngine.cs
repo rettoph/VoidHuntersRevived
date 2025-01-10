@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Game.Client.Engines.Debugging
     {
         private readonly IImGui _imgui = imgui;
 
-        [SequenceGroup<DebugSequenceGroup>("Strategy")]
+        [SequenceGroup<DebugSequenceGroupEnum>("Strategy")]
         public void OnDebug(GameTime gameTime)
         {
             this._imgui.KeyValue("Tick", this.Strategy.CurrentTick.Id.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
