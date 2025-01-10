@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="xunit.assert" Version="2.9.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\Guppy\tests\Guppy.Tests.Common\Guppy.Tests.Common.csproj" />
     <ProjectReference Include="..\..\..\src\common\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
     <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
