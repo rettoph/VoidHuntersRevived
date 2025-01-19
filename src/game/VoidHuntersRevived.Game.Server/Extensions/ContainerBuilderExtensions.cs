@@ -10,10 +10,10 @@ namespace VoidHuntersRevived.Game.Server.Extensions
         public static ContainerBuilder RegisterGameServerServices(this ContainerBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameServerServices), builder =>
-                                                                                                             {
-                                                                                                                 builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                                                                                                                 builder.RegisterType<ServerPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                                                                                                             });
+            {
+                builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<ServerPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            });
         }
     }
 }

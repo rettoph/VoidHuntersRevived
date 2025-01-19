@@ -17,22 +17,22 @@ namespace VoidHuntersRevived.Game.Core.Extensions
         public static ContainerBuilder RegisterGameCoreServices(this ContainerBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameCoreServices), builder =>
-                                                                                                           {
-                                                                                                               builder.RegisterType<SimulationFrameComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            {
+                builder.RegisterType<SimulationFrameComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                                                                                                               builder.RegisterEngine<SimulationEngine>();
-                                                                                                               builder.RegisterEngine<UserEngine>();
+                builder.RegisterEngine<SimulationEngine>();
+                builder.RegisterEngine<UserEngine>();
 
-                                                                                                               builder.RegisterType<ShaderAntiAliasingEffect>().SingleInstance();
-                                                                                                               builder.RegisterType<VisibleEffect>().AsImplementedInterfaces().AsSelf().SingleInstance();
+                builder.RegisterType<ShaderAntiAliasingEffect>().SingleInstance();
+                builder.RegisterType<VisibleEffect>().AsImplementedInterfaces().AsSelf().SingleInstance();
 
-                                                                                                               builder.RegisterPrimitiveType<VertexVisible, VertexStaticVisible, VisibleEffect>("PrimitiveType.Visible");
+                builder.RegisterPrimitiveType<VertexVisible, VertexStaticVisible, VisibleEffect>("PrimitiveType.Visible");
 
-                                                                                                               builder.RegisterResourcePack(new ResourcePackConfiguration()
-                                                                                                               {
-                                                                                                                   EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
-                                                                                                               });
-                                                                                                           });
+                builder.RegisterResourcePack(new ResourcePackConfiguration()
+                {
+                    EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
+                });
+            });
         }
     }
 }

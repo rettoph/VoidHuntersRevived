@@ -31,9 +31,9 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Utilities
             where T : unmanaged, IEntityComponent
         {
             return (IEntityService entities, in InitializingEntity entity) =>
-                                                              {
-                                                                  entity.Initializer.Init(instance);
-                                                              };
+            {
+                entity.Initializer.Init(instance);
+            };
         }
     }
 }

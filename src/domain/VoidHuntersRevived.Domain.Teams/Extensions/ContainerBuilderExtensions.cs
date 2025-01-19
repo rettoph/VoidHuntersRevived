@@ -18,22 +18,22 @@ namespace VoidHuntersRevived.Domain.Teams.Extensions
         public static ContainerBuilder RegisterDomainTeamsServices(this ContainerBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainTeamsServices), builder =>
-                                                                                                              {
-                                                                                                                  builder.RegisterJsonConverter<TeamJsonConverter>();
-                                                                                                                  builder.RegisterJsonConverter<ColorSchemeJsonConverter>();
+            {
+                builder.RegisterJsonConverter<TeamJsonConverter>();
+                builder.RegisterJsonConverter<ColorSchemeJsonConverter>();
 
-                                                                                                                  builder.RegisterPolymorphicJsonType<ColorScheme, IEntityComponent>(nameof(ColorScheme));
-                                                                                                                  builder.RegisterPolymorphicJsonType<Team, IEntityComponent>(nameof(Team));
+                builder.RegisterPolymorphicJsonType<ColorScheme, IEntityComponent>(nameof(ColorScheme));
+                builder.RegisterPolymorphicJsonType<Team, IEntityComponent>(nameof(Team));
 
-                                                                                                                  builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                                                                                                                  builder.RegisterEngine<ColorSchemeEngine>();
+                builder.RegisterEngine<ColorSchemeEngine>();
 
-                                                                                                                  builder.Configure<LoggerConfiguration>((scope, config) =>
-                                                                                                                  {
-                                                                                                                      config.Destructure.AsScalar(typeof(Id<Team>));
-                                                                                                                  });
-                                                                                                              });
+                builder.Configure<LoggerConfiguration>((scope, config) =>
+                {
+                    config.Destructure.AsScalar(typeof(Id<Team>));
+                });
+            });
         }
     }
 }

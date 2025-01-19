@@ -20,20 +20,20 @@ namespace VoidHuntersRevived.Domain.Graphics.Extensions
         public static ContainerBuilder RegisterDomainGraphicsServices(this ContainerBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainGraphicsServices), builder =>
-                                                                                                                 {
-                                                                                                                     builder.RegisterType<PrimitiveService>().AsImplementedInterfaces().SingleInstance();
-                                                                                                                     builder.RegisterGeneric(typeof(PrimitiveService<>)).As(typeof(IPrimitiveService<>)).SingleInstance();
+            {
+                builder.RegisterType<PrimitiveService>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterGeneric(typeof(PrimitiveService<>)).As(typeof(IPrimitiveService<>)).SingleInstance();
 
-                                                                                                                     builder.RegisterJsonConverter<PrimitiveConverter>();
-                                                                                                                     builder.RegisterJsonConverter<PrimitiveSequenceGroupConverter>();
-                                                                                                                     builder.RegisterJsonConverter<PrimitiveTypeConverter>();
-                                                                                                                     builder.RegisterJsonConverter<PolymorphicConverter<IPrimitiveType>>();
+                builder.RegisterJsonConverter<PrimitiveConverter>();
+                builder.RegisterJsonConverter<PrimitiveSequenceGroupConverter>();
+                builder.RegisterJsonConverter<PrimitiveTypeConverter>();
+                builder.RegisterJsonConverter<PolymorphicConverter<IPrimitiveType>>();
 
-                                                                                                                     builder.RegisterResourceType<PrimitiveTypeResourceType>();
+                builder.RegisterResourceType<PrimitiveTypeResourceType>();
 
-                                                                                                                     builder.RegisterType<PrimitiveEntityEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
-                                                                                                                     builder.RegisterEngine<DrawPrimitivesEngine>();
-                                                                                                                 });
+                builder.RegisterType<PrimitiveEntityEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
+                builder.RegisterEngine<DrawPrimitivesEngine>();
+            });
         }
     }
 }

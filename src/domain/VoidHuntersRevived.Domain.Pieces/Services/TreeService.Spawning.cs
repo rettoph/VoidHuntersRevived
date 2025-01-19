@@ -18,58 +18,58 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         public EntityLocalId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Key<IEntityTemplate> headNodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
             return this._entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity tree) =>
-                                                                                                                                                                                                                                         {
-                                                                                                                                                                                                                                             EntityLocalId headLocalId = entities.Spawn.Spawn(sourceId, headNodeTemplateKey, globalId.Value.Create(1).ToGlobalEntityId(), (IEntityService entities, in InitializingEntity entity) =>
-                                                                                                                                                                                                                                             {
-                                                                                                                                                                                                                                                 EntityLocalId treeLocalId = entities.Query.GetLocalId(globalId);
+            {
+                EntityLocalId headLocalId = entities.Spawn.Spawn(sourceId, headNodeTemplateKey, globalId.Value.Create(1).ToGlobalEntityId(), (IEntityService entities, in InitializingEntity entity) =>
+                {
+                    EntityLocalId treeLocalId = entities.Query.GetLocalId(globalId);
 
-                                                                                                                                                                                                                                                 entity.Initializer.Init(team.TeamMemberComponent);
-                                                                                                                                                                                                                                                 entity.Initializer.Init(new Node(entity.LocalId, treeLocalId));
-                                                                                                                                                                                                                                                 entity.Initializer.Init(new Fixture(treeLocalId));
-                                                                                                                                                                                                                                             });
+                    entity.Initializer.Init(team.TeamMemberComponent);
+                    entity.Initializer.Init(new Node(entity.LocalId, treeLocalId));
+                    entity.Initializer.Init(new Fixture(treeLocalId));
+                });
 
-                                                                                                                                                                                                                                             tree.Initializer.Init(team.TeamMemberComponent);
-                                                                                                                                                                                                                                             tree.Initializer.Init(new Tree(tree.LocalId, headLocalId));
-                                                                                                                                                                                                                                             tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
-                                                                                                                                                                                                                                             initializerDelegate?.Invoke(entities, in tree);
-                                                                                                                                                                                                                                         });
+                tree.Initializer.Init(team.TeamMemberComponent);
+                tree.Initializer.Init(new Tree(tree.LocalId, headLocalId));
+                tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
+                initializerDelegate?.Invoke(entities, in tree);
+            });
         }
 
         public EntityLocalId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Entities.Common.Serialization.EntityData nodes, EntityInitializerDelegate initializerDelegate)
         {
             return this._entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity tree) =>
-                                                                                                                                                                                                                                       {
-                                                                                                                                                                                                                                           EntityLocalId headLocalId = entities.Serialization.Deserialize(
-                                                                                                                                                                                                                                               sourceId: sourceId,
-                                                                                                                                                                                                                                               options: new DeserializationOptions
-                                                                                                                                                                                                                                               {
-                                                                                                                                                                                                                                                   Seed = HashBuilder<TreeService, EntityGlobalId, byte>.Instance.Calculate(globalId, 1),
-                                                                                                                                                                                                                                                   Owner = globalId
-                                                                                                                                                                                                                                               },
-                                                                                                                                                                                                                                               data: nodes,
-                                                                                                                                                                                                                                               initializer: (IEntityService _, in InitializingEntity head) =>
-                                                                                                                                                                                                                                               {
-                                                                                                                                                                                                                                                   head.Initializer.Init(team.TeamMemberComponent);
-                                                                                                                                                                                                                                               });
+            {
+                EntityLocalId headLocalId = entities.Serialization.Deserialize(
+                    sourceId: sourceId,
+                    options: new DeserializationOptions
+                    {
+                        Seed = HashBuilder<TreeService, EntityGlobalId, byte>.Instance.Calculate(globalId, 1),
+                        Owner = globalId
+                    },
+                    data: nodes,
+                    initializer: (IEntityService _, in InitializingEntity head) =>
+                    {
+                        head.Initializer.Init(team.TeamMemberComponent);
+                    });
 
-                                                                                                                                                                                                                                           tree.Initializer.Init(team.TeamMemberComponent);
-                                                                                                                                                                                                                                           tree.Initializer.Init<Tree>(new Tree(tree.LocalId, headLocalId));
-                                                                                                                                                                                                                                           tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
-                                                                                                                                                                                                                                           initializerDelegate(entities, in tree);
-                                                                                                                                                                                                                                       });
+                tree.Initializer.Init(team.TeamMemberComponent);
+                tree.Initializer.Init<Tree>(new Tree(tree.LocalId, headLocalId));
+                tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
+                initializerDelegate(entities, in tree);
+            });
         }
 
         public EntityLocalId Spawn(VhId sourceId, EntityGlobalId globalId, Team team, Key<IEntityTemplate> treeTemplateKey, Blueprint blueprint, EntityInitializerDelegate? initializerDelegate = null)
         {
             return this._entitySpawnService.Spawn(sourceId, treeTemplateKey, globalId, (IEntityService entities, in InitializingEntity tree) =>
-                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                        EntityLocalId headId = entities.Spawn.Spawn(sourceId, globalId, team, blueprint);
+            {
+                EntityLocalId headId = entities.Spawn.Spawn(sourceId, globalId, team, blueprint);
 
-                                                                                                                                                                                                                        tree.Initializer.Init(team.TeamMemberComponent);
-                                                                                                                                                                                                                        tree.Initializer.Init(new Tree(tree.LocalId, headId));
-                                                                                                                                                                                                                        tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
-                                                                                                                                                                                                                        initializerDelegate?.Invoke(entities, in tree);
-                                                                                                                                                                                                                    });
+                tree.Initializer.Init(team.TeamMemberComponent);
+                tree.Initializer.Init(new Tree(tree.LocalId, headId));
+                tree.Initializer.Init(new Body(tree.LocalId, Fix64.Zero, FixTransform2D.Identity));
+                initializerDelegate?.Invoke(entities, in tree);
+            });
         }
     }
 }

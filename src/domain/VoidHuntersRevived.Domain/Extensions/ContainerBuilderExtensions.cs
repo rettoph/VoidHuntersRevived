@@ -22,19 +22,19 @@ namespace VoidHuntersRevived.Domain.Extensions
         public static ContainerBuilder RegisterDomainServices(this ContainerBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainServices), builder =>
-                                                                                                         {
-                                                                                                             builder
-                                                                                                                 .RegisterDomainCoreServices()
-                                                                                                                 .RegisterDomainEntityServices()
-                                                                                                                 .RegisterDomainSimulationServices()
-                                                                                                                 .RegisterDomainPhysicsServices()
-                                                                                                                 .RegisterDomainPiecesServices()
-                                                                                                                 .RegisterDomainShipsServices()
-                                                                                                                 .RegisterDomainTeamsServices()
-                                                                                                                 .RegisterDomainGraphicsServices();
+            {
+                builder
+                    .RegisterDomainCoreServices()
+                    .RegisterDomainEntityServices()
+                    .RegisterDomainSimulationServices()
+                    .RegisterDomainPhysicsServices()
+                    .RegisterDomainPiecesServices()
+                    .RegisterDomainShipsServices()
+                    .RegisterDomainTeamsServices()
+                    .RegisterDomainGraphicsServices();
 
 
-                                                                                                         });
+            });
         }
 
         public static ContainerBuilder RegisterDomainCoreServices(this ContainerBuilder builder)

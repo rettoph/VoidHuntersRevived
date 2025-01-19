@@ -22,31 +22,31 @@ namespace VoidHuntersRevived.Game.Client.Extensions
         public static ContainerBuilder RegisterGameClientServices(this ContainerBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameClientServices), builder =>
-                                                                                                             {
-                                                                                                                 builder.RegisterType<ClientPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                                                                                                                 builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                                                                                                                 builder.RegisterType<DebugEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                                                                                                                 builder.RegisterType<ImGuiEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                                                                                                                 builder.RegisterType<InvokeGarbageCollectionComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            {
+                builder.RegisterType<ClientPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<DebugEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<ImGuiEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<InvokeGarbageCollectionComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                                                                                                                 builder.RegisterEngine<CameraEngine>();
-                                                                                                                 builder.RegisterEngine<AetherDebugEngine>();
-                                                                                                                 builder.RegisterEngine<EntitiesDebugEngine>();
-                                                                                                                 builder.RegisterEngine<LockstepStrategy_ClientDebugEngine>();
-                                                                                                                 builder.RegisterEngine<LockstepStrategy_ServerDebugEngine>();
-                                                                                                                 builder.RegisterEngine<LockstepStrategyDebugEngine>();
-                                                                                                                 builder.RegisterEngine<StrategyDebugEngine>();
-                                                                                                                 builder.RegisterEngine<DrawVertexVisibleEngine>();
-                                                                                                                 builder.RegisterEngine<InputEngine>();
-                                                                                                                 builder.RegisterEngine<ShaderAntiAliasingEngine>();
+                builder.RegisterEngine<CameraEngine>();
+                builder.RegisterEngine<AetherDebugEngine>();
+                builder.RegisterEngine<EntitiesDebugEngine>();
+                builder.RegisterEngine<LockstepStrategy_ClientDebugEngine>();
+                builder.RegisterEngine<LockstepStrategy_ServerDebugEngine>();
+                builder.RegisterEngine<LockstepStrategyDebugEngine>();
+                builder.RegisterEngine<StrategyDebugEngine>();
+                builder.RegisterEngine<DrawVertexVisibleEngine>();
+                builder.RegisterEngine<InputEngine>();
+                builder.RegisterEngine<ShaderAntiAliasingEngine>();
 
-                                                                                                                 builder.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
-                                                                                                                 {
-                                                                                                                     configuration.SetSceneHasDebugWindow(true).SetSceneHasTerminalWindow(true);
-                                                                                                                 });
+                builder.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
+                {
+                    configuration.SetSceneHasDebugWindow(true).SetSceneHasTerminalWindow(true);
+                });
 
-                                                                                                                 ContainerBuilderExtensions.RegisterInputs(builder);
-                                                                                                             });
+                ContainerBuilderExtensions.RegisterInputs(builder);
+            });
         }
 
         private static void RegisterInputs(ContainerBuilder builder)

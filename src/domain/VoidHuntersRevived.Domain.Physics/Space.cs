@@ -67,9 +67,9 @@ namespace VoidHuntersRevived.Domain.Physics
         public void QueryAABB(QueryReportFixtureDelegate callback, ref AABB aabb)
         {
             this.aether.QueryAABB(aetherFixture =>
-                                                                                              {
-                                                                                                  return callback((Fixture)aetherFixture.Tag);
-                                                                                              }, ref Unsafe.As<AABB, AetherAABB>(ref aabb));
+            {
+                return callback((Fixture)aetherFixture.Tag);
+            }, ref Unsafe.As<AABB, AetherAABB>(ref aabb));
         }
 
         public void Step(Step step)
