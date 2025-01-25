@@ -1,8 +1,8 @@
-﻿using Autofac;
+﻿using Guppy.Core.Logging.Serilog.Extensions;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Extensions;
 using Guppy.Core.Network.Extensions;
 using Guppy.Game;
-using Guppy.Game.Common.Extensions;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -74,28 +74,23 @@ namespace VoidHuntersRevived.Presentation.Client
                         .RegisterGameCoreServices()
                         .RegisterGameServerServices()
                         .RegisterGameClientServices()
-                        .RegisterPresentationCoreServices();
+                        .RegisterPresentationCoreServices()
+                        .RegisterSerilogLoggingServices();
 
                     builder.RegisterType<ClientSerilogSinkConfigurator>().As<ISerilogSinkConfigurator>().InstancePerLifetimeScope();
                 }).Start();
 
                 if (this._internalServer)
                 {
-                    engine.Scenes.Create<ServerGameScene>(configuration =>
+                    engine.Scenes.Create<ServerGameScene>(builder =>
                     {
-                        configuration.WithContainerBuilder(builder =>
-                        {
-                            builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Server, NetScopeIds.Game);
-                        });
+                        builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Server, NetScopeIds.Game);
                     });
                 }
 
-                engine.Scenes.Create<MultiplayerGameScene>(configuration =>
+                engine.Scenes.Create<MultiplayerGameScene>(builder =>
                 {
-                    configuration.WithContainerBuilder(builder =>
-                    {
-                        builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Client, NetScopeIds.Game);
-                    });
+                    builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Client, NetScopeIds.Game);
                 });
                 //_engine.Guppies.Create<EditorGuppy>();
 

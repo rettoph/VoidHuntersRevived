@@ -1,4 +1,4 @@
-﻿using Serilog;
+﻿using Guppy.Core.Logging.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;

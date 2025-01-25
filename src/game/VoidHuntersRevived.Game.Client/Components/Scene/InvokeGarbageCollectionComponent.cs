@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Messaging.Common;
 using Guppy.Game.Common.Components;
-using Serilog;
+using Guppy.Core.Logging.Common;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene

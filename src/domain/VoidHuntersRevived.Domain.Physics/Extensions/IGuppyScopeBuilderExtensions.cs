@@ -1,6 +1,6 @@
-﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Common.Extensions.Autofac;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
 using Svelto.ECS;
 using tainicom.Aether.Physics2D.Common;
@@ -15,9 +15,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Physics.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainPhysicsServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterDomainPhysicsServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainPhysicsServices), builder =>
             {

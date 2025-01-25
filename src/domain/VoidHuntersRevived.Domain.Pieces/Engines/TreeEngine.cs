@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Serilog;
+using Guppy.Core.Logging.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Engines;

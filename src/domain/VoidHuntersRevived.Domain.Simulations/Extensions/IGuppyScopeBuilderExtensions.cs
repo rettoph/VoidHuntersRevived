@@ -1,6 +1,8 @@
-﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Common.Services;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Extensions;
 using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Game.Graphics.Common.Extensions;
 using LiteNetLib;
@@ -14,15 +16,14 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Engines.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
-using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainSimulationServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterDomainSimulationServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainSimulationServices), builder =>
             {
@@ -56,11 +57,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                 builder.RegisterGraphicsEnabledFilter<IGraphicsEngine>(true);
                 builder.RegisterStrategyFilter<IPredictiveSynchronizationEngine, IPredictiveStrategy>();
 
-                const string StrategyLoggerContext = nameof(Strategy);
-                builder.RegisterLoggerContext<Strategy>(StrategyLoggerContext);
-                builder.RegisterLoggerContext<PredictiveStrategy>(StrategyLoggerContext);
-                builder.RegisterLoggerContext<LockstepStrategy_Client>(StrategyLoggerContext);
-                builder.RegisterLoggerContext<LockstepStrategy_Server>(StrategyLoggerContext);
+                foreach (Type strategyType in builder.ParentScope!.Resolve<IAssemblyService>().GetTypes<IStrategy>())
+                {
+                    Type strategyEngineType = typeof(StrategyEngine<>).MakeGenericType(strategyType);
+
+                    builder.RegisterStrategyFilter(strategyEngineType, strategyType);
+                }
             });
         }
     }

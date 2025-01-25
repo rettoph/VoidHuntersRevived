@@ -1,32 +1,73 @@
 ﻿using Autofac;
-using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Files.Common;
+using Guppy.Core.Resources.Common.Configuration;
+using Guppy.Core.Resources.Common.Extensions;
+using Serilog;
+using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
+using VoidHuntersRevived.Domain.Graphics.Common.Extensions.Autofac;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Constants;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
+using VoidHuntersRevived.Game.Core.Components.Scene;
+using VoidHuntersRevived.Game.Core.Engines;
+using VoidHuntersRevived.Game.Core.Graphics.Effects;
 
-namespace VoidHuntersRevived.Game.Core.Modules
+namespace VoidHuntersRevived.Game.Core.Extensions
 {
-    public class ResourceModule : Module
+    public static class IGuppyScopeBuilderExtensions
     {
-        protected override void Load(ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterGameCoreServices(this IGuppyScopeBuilder builder)
         {
-            base.Load(builder);
+            return builder.EnsureRegisteredOnce(nameof(RegisterGameCoreServices), builder =>
+            {
+                builder.RegisterType<SimulationFrameComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            RegisterTeamEntityTemplates(builder);
-            RegisterPhysicsEntityTemplates(builder);
-            RegisterPiecesEntityTemplates(builder);
-            RegisterShipsEntityTemplates(builder);
+                builder.RegisterEngine<SimulationEngine>();
+                builder.RegisterEngine<UserEngine>();
+
+                builder.RegisterType<ShaderAntiAliasingEffect>().SingleInstance();
+                builder.RegisterType<VisibleEffect>().AsImplementedInterfaces().AsSelf().SingleInstance();
+
+                builder.RegisterPrimitiveType<VertexVisible, VertexStaticVisible, VisibleEffect>("PrimitiveType.Visible");
+
+                builder.RegisterResourcePack(new ResourcePackConfiguration()
+                {
+                    EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
+                });
+
+                builder.Configure<LoggerConfiguration>((scope, config) =>
+                {
+                    config.Destructure.AsScalar(typeof(Id<IEntityComponent>));
+                    config.Destructure.AsScalar(typeof(Id<EntityTemplateFragment>));
+                    config.Destructure.AsScalar(typeof(EntityLocalId));
+                    config.Destructure.AsScalar(typeof(EntityGlobalId));
+                    config.Destructure.AsScalar(typeof(Id<Blueprint>));
+                    config.Destructure.AsScalar(typeof(Id<Team>));
+                    config.Destructure.AsScalar<VhId>();
+                });
+
+                // Register core game resources
+                builder.RegisterTeamEntityTemplates()
+                    .RegisterPhysicsEntityTemplates()
+                    .RegisterPiecesEntityTemplates()
+                    .RegisterShipsEntityTemplates();
+            });
         }
 
-        private static void RegisterTeamEntityTemplates(ContainerBuilder builder)
+        private static IGuppyScopeBuilder RegisterTeamEntityTemplates(this IGuppyScopeBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Team.TeamEntityTemplate.Name, new EntityTemplateFragment()
             {
@@ -58,9 +99,11 @@ namespace VoidHuntersRevived.Game.Core.Modules
                     new TeamMember()
                 ]
             });
+
+            return builder;
         }
 
-        private static void RegisterPhysicsEntityTemplates(ContainerBuilder builder)
+        private static IGuppyScopeBuilder RegisterPhysicsEntityTemplates(this IGuppyScopeBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Physics.BodyEntityTemplate.Name, new EntityTemplateFragment()
             {
@@ -86,9 +129,11 @@ namespace VoidHuntersRevived.Game.Core.Modules
                     new Fixture()
                 ]
             });
+
+            return builder;
         }
 
-        private static void RegisterPiecesEntityTemplates(ContainerBuilder builder)
+        private static IGuppyScopeBuilder RegisterPiecesEntityTemplates(this IGuppyScopeBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Piece.TreeEntityTemplate.Name, new EntityTemplateFragment()
             {
@@ -137,9 +182,11 @@ namespace VoidHuntersRevived.Game.Core.Modules
                     typeof(Sockets)
                 ]
             });
+
+            return builder;
         }
 
-        private static void RegisterShipsEntityTemplates(ContainerBuilder builder)
+        private static IGuppyScopeBuilder RegisterShipsEntityTemplates(this IGuppyScopeBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Ship.ChainEntityTemplate.Name, new EntityTemplateFragment()
             {
@@ -190,6 +237,8 @@ namespace VoidHuntersRevived.Game.Core.Modules
                     }
                 ]
             });
+
+            return builder;
         }
     }
 }

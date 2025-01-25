@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Guppy.Core.Common.Extensions.System;
-using Guppy.Core.Common.Providers;
-using Serilog;
+using Guppy.Core.Logging.Common;
+using Guppy.Core.Logging.Common.Services;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
             foreach ((Type type, List<IEventEngine> subscribers) in subscriptions)
             {
                 Type publisherType = typeof(EventPublisher<>).MakeGenericType(type);
-                EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, [loggerProvider.GetOrCreate(publisherType), subscribers])!;
+                EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, [loggerProvider.GetLogger(publisherType), subscribers])!;
                 publishers.Add(type, publisher);
             }
         }

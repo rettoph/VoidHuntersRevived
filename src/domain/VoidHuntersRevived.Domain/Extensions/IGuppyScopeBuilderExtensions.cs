@@ -1,8 +1,6 @@
-﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
-using Serilog;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Extensions;
@@ -17,9 +15,9 @@ using VoidHuntersRevived.Domain.Teams.Extensions;
 
 namespace VoidHuntersRevived.Domain.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterDomainServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainServices), builder =>
             {
@@ -32,18 +30,11 @@ namespace VoidHuntersRevived.Domain.Extensions
                     .RegisterDomainShipsServices()
                     .RegisterDomainTeamsServices()
                     .RegisterDomainGraphicsServices();
-
-
             });
         }
 
-        public static ContainerBuilder RegisterDomainCoreServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterDomainCoreServices(this IGuppyScopeBuilder builder)
         {
-            builder.Configure<LoggerConfiguration>((scope, config) =>
-            {
-                config.Destructure.AsScalar<VhId>();
-            });
-
             builder.RegisterType<UniqueNumberProvider>().As<IUniqueNumberProvider>().InstancePerLifetimeScope();
 
             builder.RegisterJsonConverter<Fix64Converter>();

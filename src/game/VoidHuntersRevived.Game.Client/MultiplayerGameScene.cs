@@ -1,4 +1,4 @@
-﻿using Autofac;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Identity.Enums;
 using Guppy.Core.Network.Common.Peers;
@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Game.Client
     {
         public readonly IClientPeer Client = client;
 
-        protected override void Initialize(ILifetimeScope scope)
+        protected override void Initialize(IGuppyScope scope)
         {
             base.Initialize(scope);
 

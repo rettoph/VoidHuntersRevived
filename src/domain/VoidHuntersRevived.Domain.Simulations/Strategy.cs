@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Providers;
+using Guppy.Core.Logging.Common;
+using Guppy.Core.Logging.Common.Services;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
-using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly ActionSequenceGroup<OnStepSequenceGroupEnum, Step> _stepActions;
         private bool _disposed = false;
 
-        protected ILogger logger => this._logger ??= this._loggerService.Value.GetOrCreate(this.GetType());
+        protected ILogger logger => this._logger ??= this._loggerService.Value.GetLogger(this.GetType());
 
         public readonly StrategyTypeEnum Type;
         public ISimulation Simulation { get; private set; } = null!;

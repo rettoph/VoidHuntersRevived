@@ -1,4 +1,4 @@
-﻿using Serilog;
+﻿using Guppy.Core.Logging.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;

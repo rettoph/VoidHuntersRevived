@@ -1,5 +1,7 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Commands.Common;
+using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
 using Guppy.Game;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Enums;
@@ -17,9 +19,9 @@ using VoidHuntersRevived.Game.Core.Events;
 
 namespace VoidHuntersRevived.Game.Client.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterGameClientServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterGameClientServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameClientServices), builder =>
             {
@@ -45,18 +47,18 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                     configuration.SetSceneHasDebugWindow(true).SetSceneHasTerminalWindow(true);
                 });
 
-                ContainerBuilderExtensions.RegisterInputs(builder);
+                IGuppyScopeBuilderExtensions.RegisterInputs(builder);
             });
         }
 
-        private static void RegisterInputs(ContainerBuilder builder)
+        private static void RegisterInputs(IGuppyScopeBuilder builder)
         {
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionForward, Keys.W, DirectionEnum.Forward);
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnRight, Keys.D, DirectionEnum.TurnRight);
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionBackward, Keys.S, DirectionEnum.Backward);
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnLeft, Keys.A, DirectionEnum.TurnLeft);
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionRight, Keys.E, DirectionEnum.Right);
-            ContainerBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionLeft, Keys.Q, DirectionEnum.Left);
+            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionForward, Keys.W, DirectionEnum.Forward);
+            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnRight, Keys.D, DirectionEnum.TurnRight);
+            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionBackward, Keys.S, DirectionEnum.Backward);
+            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnLeft, Keys.A, DirectionEnum.TurnLeft);
+            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionRight, Keys.E, DirectionEnum.Right);
+            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionLeft, Keys.Q, DirectionEnum.Left);
 
             builder.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtonsEnum.Right, new (ButtonState, IInput)[]
             {
@@ -82,7 +84,7 @@ namespace VoidHuntersRevived.Game.Client.Extensions
             });
         }
 
-        private static void AddSetDirectionInput(ContainerBuilder services, string key, Keys defaultSource, DirectionEnum direction)
+        private static void AddSetDirectionInput(IGuppyScopeBuilder services, string key, Keys defaultSource, DirectionEnum direction)
         {
             services.RegisterInput(key, defaultSource,
             [

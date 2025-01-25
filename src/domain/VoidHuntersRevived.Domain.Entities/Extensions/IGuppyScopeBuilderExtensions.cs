@@ -1,12 +1,12 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Common.Services;
+using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Converters;
 using Guppy.Core.Serialization.Common.Extensions;
-using Serilog;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Engines;
@@ -17,9 +17,9 @@ using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainEntityServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterDomainEntityServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainEntityServices), builder =>
             {
@@ -48,21 +48,16 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
                 builder.RegisterType<BelongsToEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
 
-                const string EntityLoggerContext = "Entities";
-                builder.RegisterLoggerContext<EntityQueryService>(EntityLoggerContext);
-                builder.RegisterLoggerContext<EntitySerializationService>(EntityLoggerContext);
-                builder.RegisterLoggerContext<EntitySpawnService>(EntityLoggerContext);
-                builder.RegisterLoggerContext<EntityTemplateFragmentService>(EntityLoggerContext);
-                builder.RegisterLoggerContext<ComponentSerializerService>(EntityLoggerContext);
-                builder.RegisterLoggerContext<EntityTemplate>(EntityLoggerContext);
-
-                builder.Configure<LoggerConfiguration>((scope, config) =>
+                // Auto register an engine to dispose of instances as needed
+                foreach (Type disposableComponent in builder.ParentScope!.Resolve<IAssemblyService>().GetTypes<IEntityComponent>())
                 {
-                    config.Destructure.AsScalar(typeof(Id<IEntityComponent>));
-                    config.Destructure.AsScalar(typeof(Id<EntityTemplateFragment>));
-                    config.Destructure.AsScalar(typeof(EntityLocalId));
-                    config.Destructure.AsScalar(typeof(EntityGlobalId));
-                });
+                    if (disposableComponent.IsAssignableTo<IDisposable>())
+                    {
+                        builder.RegisterType(typeof(DisposableEngine<>).MakeGenericType(disposableComponent))
+                            .As<IEngine>()
+                            .InstancePerLifetimeScope();
+                    }
+                }
             });
         }
     }

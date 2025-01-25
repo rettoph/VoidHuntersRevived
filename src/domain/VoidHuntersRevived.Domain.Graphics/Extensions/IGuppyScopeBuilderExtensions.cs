@@ -1,6 +1,7 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Json.Converters;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
@@ -15,9 +16,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Graphics.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainGraphicsServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterDomainGraphicsServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainGraphicsServices), builder =>
             {

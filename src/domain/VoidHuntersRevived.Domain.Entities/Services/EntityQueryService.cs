@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Serilog;
+using Guppy.Core.Logging.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common;

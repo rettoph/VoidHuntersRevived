@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Extensions.System;
-using Serilog;
+using Guppy.Core.Logging.Common;
 using Svelto.DataStructures;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;

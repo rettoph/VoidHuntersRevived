@@ -1,6 +1,6 @@
 ﻿using Guppy.Game.Common;
 using Guppy.Game.Extensions.Serilog;
-using Serilog;
+using Guppy.Core.Logging.Common;
 using VoidHuntersRevived.Presentation.Core;
 
 namespace VoidHuntersRevived.Presentation.Client

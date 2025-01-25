@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
-using Serilog;
+using Guppy.Core.Logging.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;

@@ -1,8 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using Autofac;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Enums;
-using Guppy.Game.Common.Extensions;
+using Guppy.Core.Network.Common.Extensions;
 using Guppy.Game.Common.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
@@ -82,12 +81,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
             foreach (Type type in strategyTypes)
             {
-                IStrategy strategy = (IStrategy)this._scenes.Create(type, configuration =>
+                IStrategy strategy = (IStrategy)this._scenes.Create(type, builder =>
                 {
-                    configuration.WithContainerBuilder(builder =>
-                    {
-                        builder.RegisterNetScope<IStrategy>(this._netScope.Group.Peer.Type, this._netScope.Group.Id);
-                    });
+                    builder.RegisterNetScope<IStrategy>(this._netScope.Group.Peer.Type, this._netScope.Group.Id);
                 });
 
                 yield return strategy;

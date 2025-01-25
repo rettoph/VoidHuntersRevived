@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Providers;
+using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Graphics.Common.Constants;

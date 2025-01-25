@@ -1,10 +1,8 @@
-﻿using System.Text.Json.Serialization;
-using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
+﻿using Autofac;
+using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
-using Serilog;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
@@ -13,9 +11,9 @@ using VoidHuntersRevived.Domain.Teams.Services;
 
 namespace VoidHuntersRevived.Domain.Teams.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainTeamsServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterDomainTeamsServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainTeamsServices), builder =>
             {
@@ -28,11 +26,6 @@ namespace VoidHuntersRevived.Domain.Teams.Extensions
                 builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
                 builder.RegisterEngine<ColorSchemeEngine>();
-
-                builder.Configure<LoggerConfiguration>((scope, config) =>
-                {
-                    config.Destructure.AsScalar(typeof(Id<Team>));
-                });
             });
         }
     }

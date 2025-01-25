@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Guppy.Core.Common.Providers;
+using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Resources.Common.Services;

@@ -1,5 +1,4 @@
 ﻿using Guppy.Game.Common;
-using Guppy.Game.Extensions.Serilog;
 using Serilog;
 using VoidHuntersRevived.Presentation.Core;
 
@@ -11,7 +10,8 @@ namespace VoidHuntersRevived.Presentation.Client
 
         public void Configure(LoggerConfiguration config, string template)
         {
-            config.WriteTo.Terminal(this._terminal, outputTemplate: template);// config.WriteTo.Console(outputTemplate: template);
+            throw new NotImplementedException();
+            //config.WriteTo.Terminal(this._terminal, outputTemplate: template);// config.WriteTo.Console(outputTemplate: template);
         }
     }
 }

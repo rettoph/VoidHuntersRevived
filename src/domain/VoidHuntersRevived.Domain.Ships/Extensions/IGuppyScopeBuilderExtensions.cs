@@ -1,5 +1,7 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Network.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Ships.Engines;
 using VoidHuntersRevived.Domain.Ships.Serialization.Components;
@@ -9,9 +11,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Ships.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainShipsServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterDomainShipsServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainShipsServices), builder =>
             {

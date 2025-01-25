@@ -1,4 +1,4 @@
-﻿using Serilog;
+﻿using Guppy.Core.Logging.Common;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;

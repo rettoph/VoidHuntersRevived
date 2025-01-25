@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Providers;
+using Guppy.Core.Logging.Common.Services;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common.Providers;
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                             this._uniqueNumberProvider,
                             factory,
                             functions,
-                            loggerService.GetOrCreate<EntityTemplate>()
+                            loggerService.GetLogger<EntityTemplate>()
                         );
                     });
         }

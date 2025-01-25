@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common.Collections;
-using Guppy.Core.Common.Providers;
+using Guppy.Core.Logging.Common.Services;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Graphics.Common.Constants;
 using Microsoft.Xna.Framework;

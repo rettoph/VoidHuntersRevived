@@ -1,13 +1,11 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
-using Serilog;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
-using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Pieces.Engines;
@@ -19,9 +17,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Pieces.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterDomainPiecesServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterDomainPiecesServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainPiecesServices), builder =>
             {
@@ -58,11 +56,6 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
                 builder.RegisterComponentSerializer<TreeComponentSerializer>();
 
                 builder.RegisterResourceType<BlueprintResourceType>();
-
-                builder.Configure<LoggerConfiguration>((scope, config) =>
-                {
-                    config.Destructure.AsScalar(typeof(Id<Blueprint>));
-                });
             });
         }
     }
