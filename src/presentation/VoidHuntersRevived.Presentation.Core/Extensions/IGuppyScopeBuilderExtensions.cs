@@ -1,16 +1,21 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Enums;
 using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Files.Common.Services;
+using Guppy.Core.Logging.Common.Enums;
+using Guppy.Core.Logging.Common.Extensions;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Services;
-using Serilog;
+using Svelto.ECS;
+using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
+using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Presentation.Core.Extensions
 {
@@ -18,36 +23,41 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
     {
         public static IGuppyScopeBuilder RegisterPresentationCoreServices(this IGuppyScopeBuilder builder)
         {
-            return builder.EnsureRegisteredOnce(nameof(RegisterPresentationCoreServices), builder =>
+            builder.ConfigureLogger((scope, config) =>
             {
-                builder.Configure<LoggerConfiguration>((scope, config) =>
+                IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
+                if (strategy.HasValue)
                 {
-                    IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
+                    IStateService states = scope.Resolve<IStateService>();
+                    config.EnrichWith(nameof(PeerTypeEnum), states.GetByKey(StateKey<PeerTypeEnum>.Create()));
+                    config.EnrichWith(nameof(StrategyTypeEnum), states.GetByKey(StateKey<StrategyTypeEnum>.Create()));
+                }
 
-                    string template = "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} - {Message:lj}{NewLine}{Exception}";
-                    if (strategy.HasValue)
-                    {
-                        IStateService states = scope.Resolve<IStateService>();
-                        config.Enrich.WithProperty(nameof(PeerTypeEnum), states.GetByKey(StateKey<PeerTypeEnum>.Create()));
-                        config.Enrich.WithProperty(nameof(StrategyTypeEnum), states.GetByKey(StateKey<StrategyTypeEnum>.Create()));
+                config.SetParameterType(LogMessageParameterTypeEnum.Scalar, [
+                    typeof(EntityLocalId),
+                    typeof(EntityGlobalId),
+                    typeof(VhId),
+                    typeof(Id<Blueprint>),
+                    typeof(Id<Team>),
+                    typeof(Id<IEntityComponent>),
+                    typeof(Id<EntityTemplateFragment>)
+                ]);
+            });
 
-                        template = $"[{{{nameof(PeerTypeEnum)}}}][{{{nameof(StrategyTypeEnum)}}}][{{Timestamp:HH:mm:ss}} {{Level:u3}}] {{SourceContext}} - {{Message:lj}}{{NewLine}}{{Exception}}";
-                    }
+            return builder.ConfigureFileLogMessageSink((scope, config) =>
+            {
+                IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
+                string outputTemplate = strategy.HasValue == true
+                    ? $"[{{{nameof(PeerTypeEnum)}}}][{{{nameof(StrategyTypeEnum)}}}][{{Timestamp:HH:mm:ss}} {{Level:u3}}] {{SourceContext}} - {{Message:lj}}{{NewLine}}{{Exception}}"
+                    : "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} - {Message:lj}{NewLine}{Exception}";
 
-                    IPathService fileTypePaths = scope.Resolve<IPathService>();
-                    FileLocation source = fileTypePaths.GetSourceLocation(DirectoryTypeEnum.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
-                    DirectoryHelper.EnsureDirectoryExists(source);
+                IPathService fileTypePaths = scope.Resolve<IPathService>();
+                FileLocation source = fileTypePaths.GetSourceLocation(DirectoryTypeEnum.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
+                DirectoryHelper.EnsureDirectoryExists(source);
 
-                    config.WriteTo.File(
-                        path: source.Path,
-                        outputTemplate: template,
-                        retainedFileCountLimit: 5,
-                        shared: true
-                    );
-
-                    ISerilogSinkConfigurator configurator = scope.Resolve<ISerilogSinkConfigurator>();
-                    configurator.Configure(config, template);
-                });
+                config.Enabled = true;
+                config.Path = source;
+                config.OutputTemplate = outputTemplate;
             });
         }
     }

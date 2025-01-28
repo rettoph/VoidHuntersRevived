@@ -3,6 +3,7 @@ using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Core.Network.Extensions;
 using Guppy.Game;
+using Guppy.Game.Common.Extensions;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -77,7 +78,7 @@ namespace VoidHuntersRevived.Presentation.Client
                         .RegisterPresentationCoreServices()
                         .RegisterSerilogLoggingServices();
 
-                    builder.RegisterType<ClientSerilogSinkConfigurator>().As<ISerilogSinkConfigurator>().InstancePerLifetimeScope();
+                    builder.ConfigureTerminalLogMessageSink();
                 }).Start();
 
                 if (this._internalServer)

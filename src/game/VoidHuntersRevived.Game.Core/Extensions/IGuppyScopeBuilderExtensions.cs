@@ -4,9 +4,6 @@ using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions;
-using Serilog;
-using Svelto.ECS;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -14,7 +11,6 @@ using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Graphics.Common.Extensions.Autofac;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Constants;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
@@ -46,17 +42,6 @@ namespace VoidHuntersRevived.Game.Core.Extensions
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
                 {
                     EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
-                });
-
-                builder.Configure<LoggerConfiguration>((scope, config) =>
-                {
-                    config.Destructure.AsScalar(typeof(Id<IEntityComponent>));
-                    config.Destructure.AsScalar(typeof(Id<EntityTemplateFragment>));
-                    config.Destructure.AsScalar(typeof(EntityLocalId));
-                    config.Destructure.AsScalar(typeof(EntityGlobalId));
-                    config.Destructure.AsScalar(typeof(Id<Blueprint>));
-                    config.Destructure.AsScalar(typeof(Id<Team>));
-                    config.Destructure.AsScalar<VhId>();
                 });
 
                 // Register core game resources

@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="4.2.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\libraries\Guppy\src\engine\Guppy.Engine\Guppy.Engine.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Graphics\VoidHuntersRevived.Domain.Graphics.csproj" />
     <ProjectReference Include="..\..\domain\VoidHuntersRevived.Domain.Physics\VoidHuntersRevived.Domain.Physics.csproj" />
