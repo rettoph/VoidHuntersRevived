@@ -1,5 +1,6 @@
-﻿using Autofac;
+﻿using Guppy.Core.Logging.Serilog.Extensions;
 using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Extensions;
 using Guppy.Core.Network.Extensions;
 using Guppy.Game;
 using Guppy.Game.Common.Extensions;
@@ -69,17 +70,19 @@ namespace VoidHuntersRevived.Presentation.Client
                     .RegisterDomainServices()
                     .RegisterGameCoreServices()
                     .RegisterGameClientServices()
-                    .RegisterPresentationCoreServices();
+                    .RegisterPresentationCoreServices()
+                    .RegisterSerilogLoggingServices();
 
-                    builder.RegisterType<ClientSerilogSinkConfigurator>().As<ISerilogSinkConfigurator>().InstancePerLifetimeScope();
+                    builder.ConfigureTerminalLogMessageSink((scope, config) =>
+                    {
+                        config.Enabled = true;
+                        config.OutputTemplate = scope.GetLoggerOutputTemplate();
+                    });
                 }).Start();
 
-                engine.Scenes.Create<MultiplayerGameScene>(configuration =>
+                engine.Scenes.Create<MultiplayerGameScene>(builder =>
                 {
-                    configuration.WithContainerBuilder(builder =>
-                    {
-                        builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Client, NetScopeIds.Game);
-                    });
+                    builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Client, NetScopeIds.Game);
                 });
                 //_engine.Guppies.Create<EditorGuppy>();
 

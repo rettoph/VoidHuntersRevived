@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Enums;
 using Guppy.Core.Files.Common.Helpers;
@@ -16,6 +17,7 @@ using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
+using VoidHuntersRevived.Presentation.Core.Configurations;
 
 namespace VoidHuntersRevived.Presentation.Core.Extensions
 {
@@ -44,20 +46,23 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
                 ]);
             });
 
-            return builder.ConfigureFileLogMessageSink((scope, config) =>
+            builder.Configure<LoggerOutputTemplateConfiguration>((scope, config) =>
             {
                 IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
-                string outputTemplate = strategy.HasValue == true
+                config.Value = strategy.HasValue == true
                     ? $"[{{{nameof(PeerTypeEnum)}}}][{{{nameof(StrategyTypeEnum)}}}][{{Timestamp:HH:mm:ss}} {{Level:u3}}] {{SourceContext}} - {{Message:lj}}{{NewLine}}{{Exception}}"
                     : "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} - {Message:lj}{NewLine}{Exception}";
+            });
 
+            return builder.ConfigureFileLogMessageSink((scope, config) =>
+            {
                 IPathService fileTypePaths = scope.Resolve<IPathService>();
                 FileLocation source = fileTypePaths.GetSourceLocation(DirectoryTypeEnum.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
                 DirectoryHelper.EnsureDirectoryExists(source);
 
                 config.Enabled = true;
                 config.Path = source;
-                config.OutputTemplate = outputTemplate;
+                config.OutputTemplate = scope.GetLoggerOutputTemplate();
             });
         }
     }

@@ -78,7 +78,11 @@ namespace VoidHuntersRevived.Presentation.Client
                         .RegisterPresentationCoreServices()
                         .RegisterSerilogLoggingServices();
 
-                    builder.ConfigureTerminalLogMessageSink();
+                    builder.ConfigureTerminalLogMessageSink((scope, config) =>
+                    {
+                        config.Enabled = true;
+                        config.OutputTemplate = scope.GetLoggerOutputTemplate();
+                    });
                 }).Start();
 
                 if (this._internalServer)

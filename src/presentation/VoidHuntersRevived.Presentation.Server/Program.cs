@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Commands.Common.Services;
+using Guppy.Core.Logging.Common.Extensions;
 using Guppy.Core.Logging.Serilog.Extensions;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
@@ -12,7 +13,6 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Game.Core.Extensions;
 using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Game.Server.Extensions;
-using VoidHuntersRevived.Presentation.Client;
 using VoidHuntersRevived.Presentation.Core;
 using VoidHuntersRevived.Presentation.Core.Extensions;
 
@@ -25,7 +25,11 @@ var engine = new GameEngine(VoidHuntersContextBuilder.ServerContext, builder =>
         .RegisterPresentationCoreServices()
         .RegisterSerilogLoggingServices();
 
-    builder.RegisterType<ServerSerilogSinkConfigurator>().As<ISerilogSinkConfigurator>().InstancePerLifetimeScope();
+    builder.ConfigureConsoleLogMessageSink((scope, config) =>
+    {
+        config.Enabled = true;
+        config.OutputTemplate = scope.GetLoggerOutputTemplate();
+    });
 }).Start();
 
 AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
