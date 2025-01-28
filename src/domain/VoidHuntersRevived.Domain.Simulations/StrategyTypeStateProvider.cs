@@ -1,6 +1,5 @@
-﻿using Autofac;
-using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.Autofac;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Enums;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -12,9 +11,9 @@ namespace VoidHuntersRevived.Domain.Simulations
     {
         private readonly Lazy<IOptional<IStrategy>>? _strategy;
 
-        public StrategyTypeStateProvider(ILifetimeScope scope)
+        public StrategyTypeStateProvider(IGuppyScope scope)
         {
-            if (scope.IsRoot() == false)
+            if (scope.Type == GuppyScopeTypeEnum.Child)
             {
                 this._strategy = scope.Resolve<Lazy<IOptional<IStrategy>>>();
             }

@@ -48,14 +48,19 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
                 builder.RegisterType<BelongsToEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
 
-                // Auto register an engine to dispose of instances as needed
-                foreach (Type disposableComponent in builder.ParentScope!.Resolve<IAssemblyService>().GetTypes<IEntityComponent>())
+                // This should only really happen when unit testing
+                // Otherwise there should always be a parent scope (boot, global, ect)
+                if (builder.ParentScope is not null)
                 {
-                    if (disposableComponent.IsAssignableTo<IDisposable>())
+                    // Auto register an engine to dispose of instances as needed
+                    foreach (Type disposableComponent in builder.ParentScope.Resolve<IAssemblyService>().GetTypes<IEntityComponent>())
                     {
-                        builder.RegisterType(typeof(DisposableEngine<>).MakeGenericType(disposableComponent))
-                            .As<IEngine>()
-                            .InstancePerLifetimeScope();
+                        if (disposableComponent.IsAssignableTo<IDisposable>())
+                        {
+                            builder.RegisterType(typeof(DisposableEngine<>).MakeGenericType(disposableComponent))
+                                .As<IEngine>()
+                                .InstancePerLifetimeScope();
+                        }
                     }
                 }
             });

@@ -16,21 +16,24 @@ using VoidHuntersRevived.Game.Server.Extensions;
 using VoidHuntersRevived.Presentation.Core;
 using VoidHuntersRevived.Presentation.Core.Extensions;
 
-var engine = new GameEngine(VoidHuntersContextBuilder.ServerContext, builder =>
-{
-    builder.RegisterConsoleGameServices().RegisterCoreNetworkServices()
-        .RegisterDomainServices()
-        .RegisterGameCoreServices()
-        .RegisterGameServerServices()
-        .RegisterPresentationCoreServices()
-        .RegisterSerilogLoggingServices();
-
-    builder.ConfigureConsoleLogMessageSink((scope, config) =>
+var engine = new GameEngine(
+    environment: VoidHuntersEnvironmentBuilder.ServerEnvironment,
+    builder: builder =>
     {
-        config.Enabled = true;
-        config.OutputTemplate = scope.GetLoggerOutputTemplate();
-    });
-}).Start();
+        builder.RegisterConsoleGameServices().RegisterCoreNetworkServices()
+            .RegisterDomainServices()
+            .RegisterGameCoreServices()
+            .RegisterGameServerServices()
+            .RegisterPresentationCoreServices()
+            .RegisterSerilogLoggingServices();
+
+        builder.ConfigureConsoleLogMessageSink((scope, config) =>
+        {
+            config.Enabled = true;
+            config.OutputTemplate = scope.GetLoggerOutputTemplate();
+        });
+    }
+).Start();
 
 AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
 {

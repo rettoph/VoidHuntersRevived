@@ -18,7 +18,7 @@ using VoidHuntersRevived.Domain.Entities.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities
 {
-    internal sealed class EntityTemplate : IEntityTemplate
+    public class EntityTemplate : IEntityTemplate
     {
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityFactory _factory;

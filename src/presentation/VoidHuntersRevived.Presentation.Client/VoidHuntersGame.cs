@@ -67,23 +67,26 @@ namespace VoidHuntersRevived.Presentation.Client
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                var engine = new GameEngine(VoidHuntersContextBuilder.ClientContext, builder =>
-                {
-                    builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window)
-                        .RegisterCoreNetworkServices()
-                        .RegisterDomainServices()
-                        .RegisterGameCoreServices()
-                        .RegisterGameServerServices()
-                        .RegisterGameClientServices()
-                        .RegisterPresentationCoreServices()
-                        .RegisterSerilogLoggingServices();
-
-                    builder.ConfigureTerminalLogMessageSink((scope, config) =>
+                var engine = new GameEngine(
+                    environment: VoidHuntersEnvironmentBuilder.ClientEnvironment,
+                    builder: builder =>
                     {
-                        config.Enabled = true;
-                        config.OutputTemplate = scope.GetLoggerOutputTemplate();
-                    });
-                }).Start();
+                        builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window)
+                            .RegisterCoreNetworkServices()
+                            .RegisterDomainServices()
+                            .RegisterGameCoreServices()
+                            .RegisterGameServerServices()
+                            .RegisterGameClientServices()
+                            .RegisterPresentationCoreServices()
+                            .RegisterSerilogLoggingServices();
+
+                        builder.ConfigureTerminalLogMessageSink((scope, config) =>
+                        {
+                            config.Enabled = true;
+                            config.OutputTemplate = scope.GetLoggerOutputTemplate();
+                        });
+                    }
+                ).Start();
 
                 if (this._internalServer)
                 {

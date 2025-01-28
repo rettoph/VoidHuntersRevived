@@ -1,4 +1,4 @@
-﻿using Autofac;
+﻿using Guppy.Core.Common;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
     public interface IStrategyMocker : IDisposable
     {
         IStrategy Instance { get; }
-        ILifetimeScope Scope { get; }
+        IGuppyScope Scope { get; }
 
         void Update(TimeSpan interval, int count);
         void Input(IInputData data, bool verified);
@@ -40,13 +40,13 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         private readonly List<EventDto> _inputs = [];
 
         public TStrategy Instance { get; }
-        public ILifetimeScope Scope { get; }
+        public IGuppyScope Scope { get; }
 
         IStrategy IStrategyMocker.Instance => this.Instance;
 
-        public StrategyMocker(IContainer container)
+        public StrategyMocker(IGuppyScope parentScope)
         {
-            this.Scope = container.BeginLifetimeScope();
+            this.Scope = parentScope.CreateChildScope(null);
             this.Instance = this.Scope.Resolve<TStrategy>();
         }
 

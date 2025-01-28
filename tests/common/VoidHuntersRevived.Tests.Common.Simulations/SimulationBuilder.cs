@@ -1,12 +1,12 @@
-﻿using Autofac;
-using Autofac.Extras.Moq;
-using Guppy.Core.Common.Providers;
+﻿using Autofac.Extras.Moq;
+using Guppy.Core.Common;
+using Guppy.Core.Logging.Common;
+using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Tests.Common;
 using Guppy.Tests.Common.Extensions;
 using Moq;
-using Serilog;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common.Constants;
@@ -20,9 +20,9 @@ using VoidHuntersRevived.Tests.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations
 {
-    public class SimulationBuilder : AutoMocker<SimulationBuilder, SimulationMocker>
+    public class SimulationBuilder : GuppyScopeMocker<SimulationBuilder, SimulationMocker>
     {
-        private readonly List<Func<IContainer, IStrategyMocker>> _strategies = [];
+        private readonly List<Func<IGuppyScope, IStrategyMocker>> _strategies = [];
 
         public VhId Id;
 
@@ -56,23 +56,28 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                     .Setup(settings => settings.GetValue(Settings.StepInterval), () => stepInterval)
                     .Setup(settings => settings.GetValue(Settings.StepsPerTick), () => stepsPerTick);
 
+
                 mocker.Mocker<ILoggerService>()
-                    .Setup(loggers => loggers.GetOrCreate(It.IsAny<Type>()), () => new Mocker<ILogger>().GetInstance())
-                    .Setup(loggers => loggers.GetOrCreate<It.IsAnyType>(), () => new Mocker<ILogger>().GetInstance());
+                    .Setup(loggers => loggers.GetLogger(It.IsAny<Type>()), () => new Mocker<ILogger>().GetInstance())
+                    .Setup(loggers => loggers.GetLogger<It.IsAnyType>(), new InvocationFunc(invocation =>
+                    {
+                        Type loggerContext = invocation.Method.ReturnType.GenericTypeArguments[0];
+                        return Mocker.GetGenericInstance(typeof(ILogger<>), loggerContext);
+                    }));
             });
         }
 
         public SimulationBuilder AddStrategy<TStrategy>()
             where TStrategy : IStrategy
         {
-            this._strategies.Add(container => new StrategyMocker<TStrategy>(container));
+            this._strategies.Add(scope => new StrategyMocker<TStrategy>(scope));
 
             return this;
         }
 
         public override SimulationMocker Build()
         {
-            IStrategyMocker[] strategies = this._strategies.Select(factory => factory(this.autoMock.Container)).ToArray();
+            IStrategyMocker[] strategies = this._strategies.Select(factory => factory(this.scope)).ToArray();
 
             SimulationMocker simulation = new(
                 instance: new Simulation(this.Id, strategies.Select(x => x.Instance).ToArray()),

@@ -57,11 +57,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                 builder.RegisterGraphicsEnabledFilter<IGraphicsEngine>(true);
                 builder.RegisterStrategyFilter<IPredictiveSynchronizationEngine, IPredictiveStrategy>();
 
-                foreach (Type strategyType in builder.ParentScope!.Resolve<IAssemblyService>().GetTypes<IStrategy>())
+                if (builder.ParentScope is not null)
                 {
-                    Type strategyEngineType = typeof(StrategyEngine<>).MakeGenericType(strategyType);
+                    foreach (Type strategyType in builder.ParentScope.Resolve<IAssemblyService>().GetTypes<IStrategy>())
+                    {
+                        Type strategyEngineType = typeof(StrategyEngine<>).MakeGenericType(strategyType);
 
-                    builder.RegisterStrategyFilter(strategyEngineType, strategyType);
+                        builder.RegisterStrategyFilter(strategyEngineType, strategyType);
+                    }
                 }
             });
         }
