@@ -11,7 +11,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
-    internal class LockstepStrategyDebugEngine(
+    public class LockstepStrategyDebugEngine(
         IImGui imgui,
         IImGuiObjectExplorerService objectExplorer,
         IScene guppy) : StrategyEngine<ILockstepStrategy>, IImGuiComponent, IOnDebugEngine

@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Server.Guppy
 {
-    internal class ConfigureSimulationsComponent(ISimulationService simulationService) : ISceneComponent<ServerGameScene>
+    public class ConfigureSimulationsComponent(ISimulationService simulationService) : ISceneComponent<ServerGameScene>
     {
         private readonly ISimulationService _simulationService = simulationService;
 

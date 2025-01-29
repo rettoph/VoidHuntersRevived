@@ -2,14 +2,21 @@
 using Guppy.Core.Commands.Common;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
-using Guppy.Game;
+using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Extensions;
+using Guppy.Game.Common;
+using Guppy.Game.Common.Extensions;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Enums;
 using Guppy.Game.MonoGame.Common.Extensions;
 using Microsoft.Xna.Framework.Input;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
+using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Game.Client.Components.Scene;
 using VoidHuntersRevived.Game.Client.Constants;
 using VoidHuntersRevived.Game.Client.Engines;
@@ -25,26 +32,66 @@ namespace VoidHuntersRevived.Game.Client.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameClientServices), builder =>
             {
-                builder.RegisterType<ClientPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<DebugEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<ImGuiEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<InvokeGarbageCollectionComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-                builder.RegisterEngine<CameraEngine>();
-                builder.RegisterEngine<AetherDebugEngine>();
-                builder.RegisterEngine<EntitiesDebugEngine>();
-                builder.RegisterEngine<LockstepStrategy_ClientDebugEngine>();
-                builder.RegisterEngine<LockstepStrategy_ServerDebugEngine>();
-                builder.RegisterEngine<LockstepStrategyDebugEngine>();
-                builder.RegisterEngine<StrategyDebugEngine>();
-                builder.RegisterEngine<DrawVertexVisibleEngine>();
-                builder.RegisterEngine<InputEngine>();
-                builder.RegisterEngine<ShaderAntiAliasingEngine>();
-
-                builder.Configure<ISceneConfiguration<IStrategy>>((scope, configuration) =>
+                builder.RegisterSceneFilter<IScene>(builder =>
                 {
-                    configuration.SetSceneHasDebugWindow(true).SetSceneHasTerminalWindow(true);
+                    builder.RegisterType<InvokeGarbageCollectionComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                });
+
+                builder.RegisterSceneFilter<MultiplayerGameScene>(builder =>
+                {
+                    builder.RegisterType<ClientPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                });
+
+                builder.RegisterSceneFilter<LocalGameScene>(builder =>
+                {
+                    builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                });
+
+                builder.RegisterSceneFilter<IStrategy>(builder =>
+                {
+                    builder.AddSceneHasDebugWindow(true).AddSceneHasTerminalWindow(true);
+
+                    builder.RegisterType<DebugEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterType<ImGuiEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+                    builder.RegisterEngine<AetherDebugEngine>();
+                    builder.RegisterEngine<EntitiesDebugEngine>();
+                    builder.RegisterEngine<DrawVertexVisibleEngine>();
+                    builder.RegisterEngine<ShaderAntiAliasingEngine>();
+
+                    builder.RegisterSceneFilter<Strategy>(builder =>
+                    {
+                        builder.RegisterEngine<StrategyDebugEngine>();
+                    });
+
+                    builder.RegisterSceneFilter<LockstepStrategy_Client>(builder =>
+                    {
+                        builder.RegisterEngine<LockstepStrategy_ClientDebugEngine>();
+                    });
+
+                    builder.RegisterSceneFilter<LockstepStrategy_Server>(builder =>
+                    {
+                        builder.RegisterEngine<LockstepStrategy_ServerDebugEngine>();
+                    });
+
+                    builder.RegisterSceneFilter<ILockstepStrategy>(builder =>
+                    {
+                        builder.RegisterEngine<LockstepStrategyDebugEngine>();
+                    });
+
+                    builder.Filter(
+                        filter => filter.RequirePeerType(PeerTypeEnum.Client).RequireScene<ILockstepStrategy>(),
+                        builder =>
+                        {
+                            builder.RegisterEngine<InputEngine>();
+                        });
+
+                    builder.Filter(
+                        filter => filter.RequirePeerType(PeerTypeEnum.Client).RequireScene<IPredictiveStrategy>(),
+                        builder =>
+                        {
+                            builder.RegisterEngine<CameraEngine>();
+                        });
                 });
 
                 IGuppyScopeBuilderExtensions.RegisterInputs(builder);

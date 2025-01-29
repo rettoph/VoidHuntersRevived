@@ -20,7 +20,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
-    internal class AetherDebugEngine : StrategyEngine,
+    public class AetherDebugEngine : StrategyEngine,
         IOnDrawEngine,
         IImGuiComponent,
         IOnDebugEngine

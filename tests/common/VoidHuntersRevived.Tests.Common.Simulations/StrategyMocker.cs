@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
     }
 
     public class StrategyMocker<TStrategy> : IStrategyMocker<TStrategy>, IDisposable
-        where TStrategy : IStrategy
+        where TStrategy : class, IStrategy
     {
         private readonly GameTime _gameTime = new();
         private int _sourceIdGeneratorIndex = 0;

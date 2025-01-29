@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
+using Guppy.Game.Common.Extensions;
 using VoidHuntersRevived.Game.Server.Components.Scene;
 using VoidHuntersRevived.Game.Server.Guppy;
 
@@ -12,8 +13,11 @@ namespace VoidHuntersRevived.Game.Server.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameServerServices), builder =>
             {
-                builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<ServerPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterSceneFilter<ServerGameScene>(builder =>
+                {
+                    builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterType<ServerPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                });
             });
         }
     }

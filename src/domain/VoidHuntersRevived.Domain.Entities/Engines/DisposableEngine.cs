@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Engines
 {
-    internal sealed class DisposableEngine<T>(ILogger logger) : IEngine, IReactOnRemoveEx<T>, IQueryingEntitiesEngine
+    public sealed class DisposableEngine<T>(ILogger logger) : IEngine, IReactOnRemoveEx<T>, IQueryingEntitiesEngine
         where T : unmanaged, IEntityComponent, IDisposable
     {
         private static readonly string _tName = typeof(T).GetFormattedName();

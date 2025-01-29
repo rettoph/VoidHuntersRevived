@@ -12,8 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
-    internal class LockstepServer_UserEngine(INetScope<IStrategy> scope) : StrategyEngine<ILockstepStrategy>,
-        IServerEngine,
+    public class LockstepServer_UserEngine(INetScope<IStrategy> scope) : StrategyEngine<ILockstepStrategy>,
         IOnInitializeEngine
     {
         private readonly INetScope _scope = scope;

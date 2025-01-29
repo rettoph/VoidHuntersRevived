@@ -6,7 +6,7 @@ using VoidHuntersRevived.Domain.Pieces.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 {
-    internal class BlueprintResourceType(IFileService files) : SimpleResourceType<Blueprint>
+    public class BlueprintResourceType(IFileService files) : SimpleResourceType<Blueprint>
     {
         private readonly IFileService _files = files;
 

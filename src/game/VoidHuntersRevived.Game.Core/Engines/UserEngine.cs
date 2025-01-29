@@ -14,7 +14,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Game.Core.Engines
 {
-    internal sealed class UserEngine(
+    public sealed class UserEngine(
         ITreeService treeService,
         ITeamService teamService,
         IBlueprintService blueprintService) : StrategyEngine, IGetReadyEngine,

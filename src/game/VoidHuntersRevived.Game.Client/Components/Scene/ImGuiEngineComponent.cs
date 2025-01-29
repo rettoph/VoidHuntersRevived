@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    internal class ImGuiEngineComponent : ISceneComponent<IStrategy>, IImGuiComponent
+    public class ImGuiEngineComponent : ISceneComponent<IStrategy>, IImGuiComponent
     {
         private readonly ActionSequenceGroup<ImGuiSequenceGroupEnum, GameTime> _imGuiActions = new(true);
 

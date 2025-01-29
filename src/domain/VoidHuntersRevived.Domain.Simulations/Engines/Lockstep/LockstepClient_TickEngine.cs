@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Logging.Common;
+using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
-using Guppy.Core.Logging.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
@@ -8,8 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
-    internal class LockstepClient_TickEngine(ILogger logger, TickBuffer ticks) : StrategyEngine<ILockstepStrategy>,
-        IClientEngine,
+    public class LockstepClient_TickEngine(ILogger logger, TickBuffer ticks) : StrategyEngine<ILockstepStrategy>,
         ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<INetIncomingMessage<TickHistoryStart>>,
         ISubscriber<INetIncomingMessage<TickHistoryItem>>,

@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 
 namespace VoidHuntersRevived.Game.Client.Engines.Debugging
 {
-    internal class StrategyDebugEngine(IImGui imgui) : StrategyEngine<Strategy>, IOnDebugEngine
+    public class StrategyDebugEngine(IImGui imgui) : StrategyEngine<Strategy>, IOnDebugEngine
     {
         private readonly IImGui _imgui = imgui;
 

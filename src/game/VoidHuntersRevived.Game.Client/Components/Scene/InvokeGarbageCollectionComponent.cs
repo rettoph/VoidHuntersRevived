@@ -1,11 +1,11 @@
-﻿using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Logging.Common;
+using Guppy.Core.Messaging.Common;
 using Guppy.Game.Common.Components;
-using Guppy.Core.Logging.Common;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    internal class InvokeGarbageCollectionComponent(ILogger logger) : ISceneComponent,
+    public class InvokeGarbageCollectionComponent(ILogger logger) : ISceneComponent,
         ISubscriber<Input_Invoke_Garbage_Collection>
     {
         private readonly ILogger _logger = logger;

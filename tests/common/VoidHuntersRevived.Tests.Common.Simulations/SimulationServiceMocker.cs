@@ -1,5 +1,4 @@
-﻿using Autofac.Extras.Moq;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common.Enums;
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Resources.Common;
@@ -13,27 +12,20 @@ using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Extensions;
-using VoidHuntersRevived.Domain.Simulations;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Services;
 using VoidHuntersRevived.Tests.Common.Entities.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations
 {
-    public class SimulationBuilder : GuppyScopeMocker<SimulationBuilder, SimulationMocker>
+    public class SimulationServiceMocker : GuppyScopeMocker<SimulationServiceMocker, SimulationService>
     {
-        private readonly List<Func<IGuppyScope, IStrategyMocker>> _strategies = [];
-
-        public VhId Id;
-
-        public SimulationBuilder(
-            VhId id,
+        public SimulationServiceMocker(
             SettingValue<Fix64> stepInterval,
             SettingValue<int> stepsPerTick,
-            IEnumerable<EntityTemplateFragment> entityTemplateFragments)
+            IEnumerable<EntityTemplateFragment> entityTemplateFragments) : base(GuppyScopeTypeEnum.Root)
         {
-            this.Id = id;
-
             this.Register(builder =>
             {
                 builder
@@ -67,23 +59,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             });
         }
 
-        public SimulationBuilder AddStrategy<TStrategy>()
-            where TStrategy : class, IStrategy
+        public void MockSimulation(VhId id, StrategyTypeEnum[] strategies)
         {
-            this._strategies.Add(scope => new StrategyMocker<TStrategy>(scope));
-
-            return this;
-        }
-
-        public override SimulationMocker Build()
-        {
-            IStrategyMocker[] strategies = this._strategies.Select(factory => factory(this.scope)).ToArray();
-
-            SimulationMocker simulation = new(
-                instance: new Simulation(this.Id, strategies.Select(x => x.Instance).ToArray()),
-                strategies: strategies);
-
-            return simulation;
+            this.Build().Create(id, strategies);
         }
     }
 }

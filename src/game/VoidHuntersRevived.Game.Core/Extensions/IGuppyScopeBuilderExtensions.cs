@@ -4,6 +4,7 @@ using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions;
+using Guppy.Game.Common.Extensions;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -15,6 +16,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Constants;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Game.Core.Components.Scene;
@@ -29,10 +31,16 @@ namespace VoidHuntersRevived.Game.Core.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameCoreServices), builder =>
             {
-                builder.RegisterType<SimulationFrameComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterSceneFilter<VoidHuntersGameScene>(builder =>
+                {
+                    builder.RegisterType<SimulationFrameComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                });
 
-                builder.RegisterEngine<SimulationEngine>();
-                builder.RegisterEngine<UserEngine>();
+                builder.RegisterSceneFilter<IStrategy>(builder =>
+                {
+                    builder.RegisterEngine<SimulationEngine>();
+                    builder.RegisterEngine<UserEngine>();
+                });
 
                 builder.RegisterType<ShaderAntiAliasingEffect>().SingleInstance();
                 builder.RegisterType<VisibleEffect>().AsImplementedInterfaces().AsSelf().SingleInstance();

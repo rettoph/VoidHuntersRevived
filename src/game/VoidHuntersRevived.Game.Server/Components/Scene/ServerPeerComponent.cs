@@ -11,7 +11,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
-    internal class ServerPeerComponent(IServerPeer server, INetScope<IStrategy> scope) : ISceneComponent<ServerGameScene>, IUpdatableComponent
+    public class ServerPeerComponent(IServerPeer server, INetScope<IStrategy> scope) : ISceneComponent<ServerGameScene>, IUpdatableComponent
     {
         private readonly IServerPeer _server = server;
         private readonly INetScope<IStrategy> _scope = scope;

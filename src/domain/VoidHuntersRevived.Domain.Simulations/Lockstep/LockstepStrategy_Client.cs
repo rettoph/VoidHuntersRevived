@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
@@ -17,7 +16,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         ISettingService settings,
         Lazy<IEngineService> engineService,
         Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, engineService, loggerService),
-        IClientEngine,
         IDisposable
     {
         private readonly INetScope<IStrategy> _netScope = netScope;

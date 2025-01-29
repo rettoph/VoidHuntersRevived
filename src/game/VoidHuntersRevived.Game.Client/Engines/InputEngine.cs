@@ -24,11 +24,10 @@ using VoidHuntersRevived.Game.Core.Events;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    internal class InputEngine(
+    public class InputEngine(
         ICamera2D camera,
         INetScope<IStrategy> netScope
     ) : StrategyEngine<ILockstepStrategy>,
-        IClientEngine,
         IOnInitializeEngine<IStrategy>,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,

@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
@@ -18,7 +17,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         ISettingService settings,
         Lazy<IEngineService> engineService,
         Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, engineService, loggerService),
-        IServerEngine,
         ISubscriber<INetIncomingMessage<EventDto>>
     {
         private readonly List<EventDto> _inputs = [];

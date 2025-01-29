@@ -7,7 +7,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Core.Components.Scene
 {
-    internal class SimulationFrameComponent(ISimulationService simulationService) : ISceneComponent<VoidHuntersGameScene>, IDrawableComponent, IUpdatableComponent
+    public class SimulationFrameComponent(ISimulationService simulationService) : ISceneComponent<VoidHuntersGameScene>, IDrawableComponent, IUpdatableComponent
     {
         private readonly ISimulationService _simulationService = simulationService;
 

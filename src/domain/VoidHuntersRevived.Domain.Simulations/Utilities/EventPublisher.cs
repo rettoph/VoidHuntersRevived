@@ -15,12 +15,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
         public abstract void Revert(EventDto @event);
 
         public static void PopulatePublishers(
-            IEngineService engines,
+            IEngineService engineService,
             ILoggerService loggerProvider,
             Dictionary<Type, EventPublisher> publishers)
         {
             Dictionary<Type, List<IEventEngine>> subscriptions = [];
-            foreach (IEventEngine system in engines.OfType<IEventEngine>())
+            foreach (IEventEngine system in engineService.OfType<IEventEngine>())
             {
                 foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventEngine<>)))
                 {

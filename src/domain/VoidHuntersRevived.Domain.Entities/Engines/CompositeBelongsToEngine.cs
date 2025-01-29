@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     /// </summary>
     /// <typeparam name="TSecondary"></typeparam>
     /// <typeparam name="TParent"></typeparam>
-    internal sealed class CompositeBelongsToEngine<TParent, TPrimary, TSecondary>(IEntityQueryService entityQueryService, ILogger logger) : StrategyEngine, IOnSpawnEngine<TPrimary, TSecondary>
+    public sealed class CompositeBelongsToEngine<TParent, TPrimary, TSecondary>(IEntityQueryService entityQueryService, ILogger logger) : StrategyEngine, IOnSpawnEngine<TPrimary, TSecondary>
         where TParent : unmanaged, IHasMany<TPrimary>
         where TPrimary : unmanaged, IBelongsTo<TParent, TPrimary>
         where TSecondary : unmanaged, ICompositeBelongsTo<TParent, TPrimary, TSecondary>

@@ -4,7 +4,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Events;
 
 namespace VoidHuntersRevived.Game.Core.Engines
 {
-    internal sealed class SimulationEngine(
+    public sealed class SimulationEngine(
     //ITreeService treeService,
     //ITeamService teamService,
     //IEntityTemplateFragmentService entityTemplateService,

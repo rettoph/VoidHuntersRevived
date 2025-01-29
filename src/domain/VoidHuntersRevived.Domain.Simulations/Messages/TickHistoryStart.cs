@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Domain.Simulations.Messages
 {
-    internal class TickHistoryStart
+    public class TickHistoryStart
     {
         public required int CurrentTickId { get; init; }
     }

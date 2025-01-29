@@ -15,8 +15,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Engines
 {
-    internal sealed class CameraEngine : StrategyEngine,
-        IClientEngine,
+    public sealed class CameraEngine : StrategyEngine,
         IOnDrawEngine,
         IInputSubscriber<CursorScroll>
     {

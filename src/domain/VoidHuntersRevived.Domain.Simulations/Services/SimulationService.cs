@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Predictive;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    internal sealed partial class SimulationService : ISimulationService, IDisposable
+    public sealed partial class SimulationService : ISimulationService, IDisposable
     {
         private readonly INetScope<IStrategy> _netScope;
         private readonly ISceneService _scenes;

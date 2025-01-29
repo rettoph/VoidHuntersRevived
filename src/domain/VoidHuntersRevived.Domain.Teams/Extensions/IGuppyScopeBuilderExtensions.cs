@@ -2,8 +2,10 @@
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
+using Guppy.Game.Common.Extensions;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Engines;
@@ -23,9 +25,12 @@ namespace VoidHuntersRevived.Domain.Teams.Extensions
                 builder.RegisterPolymorphicJsonType<ColorScheme, IEntityComponent>(nameof(ColorScheme));
                 builder.RegisterPolymorphicJsonType<Team, IEntityComponent>(nameof(Team));
 
-                builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterSceneFilter<IStrategy>(builder =>
+                {
+                    builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                builder.RegisterEngine<ColorSchemeEngine>();
+                    builder.RegisterEngine<ColorSchemeEngine>();
+                });
             });
         }
     }

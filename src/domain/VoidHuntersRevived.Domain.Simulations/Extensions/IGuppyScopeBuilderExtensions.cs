@@ -4,8 +4,10 @@ using Guppy.Core.Common.Services;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Core.StateMachine.Common.Providers;
+using Guppy.Game.Common.Extensions;
 using Guppy.Game.Graphics.Common.Extensions;
 using LiteNetLib;
+using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Engines;
@@ -27,19 +29,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainSimulationServices), builder =>
             {
-                builder.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
-
-                builder.RegisterType<TickBuffer>().InstancePerLifetimeScope();
-
                 builder.RegisterNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
                 builder.RegisterNetMessageType<TickHistoryStart>(DeliveryMethod.ReliableOrdered, 0);
                 builder.RegisterNetMessageType<TickHistoryItem>(DeliveryMethod.ReliableOrdered, 0);
                 builder.RegisterNetMessageType<TickHistoryEnd>(DeliveryMethod.ReliableOrdered, 0);
-
-                builder.RegisterEngine<LockstepClient_TickEngine>();
-                builder.RegisterEngine<LockstepServer_TickEngine>();
-                builder.RegisterEngine<LockstepServer_UserEngine>();
-
                 builder.RegisterNetMessageType<EventDto>(DeliveryMethod.ReliableUnordered, 0);
 
                 builder.RegisterNetSerializer<TickHistoryEndNetSerializer>();
@@ -50,22 +43,45 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                 builder.RegisterNetSerializer<Simulation_Begin_NetSerializer>();
                 builder.RegisterNetSerializer<UserJoinedNetSerializer>();
 
-                builder.RegisterType<StrategyTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
-
-                builder.RegisterPeerTypeFilter<IClientEngine>(PeerTypeEnum.Client);
-                builder.RegisterPeerTypeFilter<IServerEngine>(PeerTypeEnum.Server);
-                builder.RegisterGraphicsEnabledFilter<IGraphicsEngine>(true);
-                builder.RegisterStrategyFilter<IPredictiveSynchronizationEngine, IPredictiveStrategy>();
-
-                if (builder.ParentScope is not null)
+                builder.RegisterSceneFilter<IVoidHuntersGameScene>(builder =>
                 {
-                    foreach (Type strategyType in builder.ParentScope.ResolveService<IAssemblyService>().GetTypes<IStrategy>())
-                    {
-                        Type strategyEngineType = typeof(StrategyEngine<>).MakeGenericType(strategyType);
+                    builder.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
+                });
 
-                        builder.RegisterStrategyFilter(strategyEngineType, strategyType);
+                builder.RegisterSceneFilter<IStrategy>(builder =>
+                {
+                    builder.RegisterType<TickBuffer>().InstancePerLifetimeScope();
+
+                    builder.RegisterType<StrategyTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
+
+                    builder.RegisterGraphicsEnabledFilter<IGraphicsEngine>(true);
+                    builder.RegisterStrategyFilter<IPredictiveSynchronizationEngine, IPredictiveStrategy>();
+
+                    builder.Filter(
+                        filter => filter.RequirePeerType(PeerTypeEnum.Client).RequireScene<ILockstepStrategy>(),
+                        builder =>
+                        {
+                            builder.RegisterEngine<LockstepClient_TickEngine>();
+                        });
+
+                    builder.Filter(
+                        filter => filter.RequirePeerType(PeerTypeEnum.Server).RequireScene<ILockstepStrategy>(),
+                        builder =>
+                        {
+                            builder.RegisterEngine<LockstepServer_TickEngine>();
+                            builder.RegisterEngine<LockstepServer_UserEngine>();
+                        });
+
+                    if (builder.ParentScope is not null)
+                    {
+                        foreach (Type strategyType in builder.ParentScope.ResolveService<IAssemblyService>().GetTypes<IStrategy>())
+                        {
+                            Type strategyEngineType = typeof(StrategyEngine<>).MakeGenericType(strategyType);
+
+                            builder.RegisterStrategyFilter(strategyEngineType, strategyType);
+                        }
                     }
-                }
+                });
             });
         }
     }

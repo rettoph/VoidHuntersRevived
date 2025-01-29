@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Engines
     /// </summary>
     /// <typeparam name="TBelongsTo"></typeparam>
     /// <typeparam name="TParent"></typeparam>
-    internal sealed class BelongsToEngine<TParent, TBelongsTo>(IEntityQueryService entityQueryService, ILogger logger) : StrategyEngine, IOnSpawnEngine<TBelongsTo>
+    public sealed class BelongsToEngine<TParent, TBelongsTo>(IEntityQueryService entityQueryService, ILogger logger) : StrategyEngine, IOnSpawnEngine<TBelongsTo>
         where TParent : unmanaged, IHasMany<TBelongsTo>
         where TBelongsTo : unmanaged, IBelongsTo<TParent, TBelongsTo>
     {

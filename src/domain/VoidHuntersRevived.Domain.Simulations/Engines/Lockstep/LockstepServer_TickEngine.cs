@@ -10,8 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Engines.Lockstep
 {
-    internal class LockstepServer_TickEngine(INetScope<IStrategy> scope) : StrategyEngine<ILockstepStrategy>,
-        IServerEngine,
+    public class LockstepServer_TickEngine(INetScope<IStrategy> scope) : StrategyEngine<ILockstepStrategy>,
         IOnTickEngine,
         IEventEngine<UserJoined>
     {
