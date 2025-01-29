@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 
                 if (builder.ParentScope is not null)
                 {
-                    foreach (Type strategyType in builder.ParentScope.Resolve<IAssemblyService>().GetTypes<IStrategy>())
+                    foreach (Type strategyType in builder.ParentScope.ResolveService<IAssemblyService>().GetTypes<IStrategy>())
                     {
                         Type strategyEngineType = typeof(StrategyEngine<>).MakeGenericType(strategyType);
 

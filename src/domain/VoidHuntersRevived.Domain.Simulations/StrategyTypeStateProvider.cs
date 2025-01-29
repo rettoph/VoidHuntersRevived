@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Providers;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -13,9 +14,9 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public StrategyTypeStateProvider(IGuppyScope scope)
         {
-            if (scope.Type == GuppyScopeTypeEnum.Child)
+            if (scope.GetScopeType() == GuppyScopeTypeEnum.Child)
             {
-                this._strategy = scope.Resolve<Lazy<IOptional<IStrategy>>>();
+                this._strategy = scope.ResolveService<Lazy<IOptional<IStrategy>>>();
             }
         }
 

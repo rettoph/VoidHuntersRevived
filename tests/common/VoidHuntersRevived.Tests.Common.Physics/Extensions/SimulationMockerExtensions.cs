@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Tests.Common.Physics.Extensions
     {
         public static IStrategyMocker AssertBodyCount(this IStrategyMocker strategy, int count)
         {
-            Assert.Equal(count, strategy.Scope.Resolve<ISpace>().BodyCount);
+            Assert.Equal(count, strategy.Scope.ResolveService<ISpace>().BodyCount);
 
             return strategy;
         }

@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
                 if (this._predictedEvents.TryDequeue(out PredictedEvent? oldPrediction))
                 {
-                    _predictionPool.TryReturn(ref oldPrediction);
+                    _predictionPool.TryReturn(oldPrediction);
                 }
             }
         }

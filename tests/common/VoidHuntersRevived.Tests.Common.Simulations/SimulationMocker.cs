@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             where TStrategy : IStrategy
             where T : class
         {
-            return this.Get<TStrategy>().Scope.Resolve<T>();
+            return this.Get<TStrategy>().Scope.ResolveService<T>();
         }
 
         public SimulationMocker Update(TimeSpan interval, int count)

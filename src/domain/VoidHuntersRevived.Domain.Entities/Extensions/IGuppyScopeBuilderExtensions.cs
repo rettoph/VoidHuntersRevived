@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                 if (builder.ParentScope is not null)
                 {
                     // Auto register an engine to dispose of instances as needed
-                    foreach (Type disposableComponent in builder.ParentScope.Resolve<IAssemblyService>().GetTypes<IEntityComponent>())
+                    foreach (Type disposableComponent in builder.ParentScope.ResolveService<IAssemblyService>().GetTypes<IEntityComponent>())
                     {
                         if (disposableComponent.IsAssignableTo<IDisposable>())
                         {
