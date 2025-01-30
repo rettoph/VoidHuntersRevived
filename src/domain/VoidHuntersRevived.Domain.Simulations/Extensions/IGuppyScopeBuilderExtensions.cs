@@ -57,20 +57,22 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                     builder.RegisterGraphicsEnabledFilter<IGraphicsEngine>(true);
                     builder.RegisterStrategyFilter<IPredictiveSynchronizationEngine, IPredictiveStrategy>();
 
-                    builder.Filter(
-                        filter => filter.RequirePeerType(PeerTypeEnum.Client).RequireScene<ILockstepStrategy>(),
-                        builder =>
+                    builder.RegisterSceneFilter<ILockstepStrategy>(builder =>
+                    {
+                        builder.RegisterType<QueueTickService>().As<ITickService>().InstancePerLifetimeScope();
+
+                        builder.RegisterPeerTypeFilter(PeerTypeEnum.Client, builder =>
                         {
                             builder.RegisterEngine<LockstepClient_TickEngine>();
+                            builder.RegisterType<LinkedListTickService>().As<ITickService>().InstancePerLifetimeScope();
                         });
 
-                    builder.Filter(
-                        filter => filter.RequirePeerType(PeerTypeEnum.Server).RequireScene<ILockstepStrategy>(),
-                        builder =>
+                        builder.RegisterPeerTypeFilter(PeerTypeEnum.Server, builder =>
                         {
                             builder.RegisterEngine<LockstepServer_TickEngine>();
                             builder.RegisterEngine<LockstepServer_UserEngine>();
                         });
+                    });
 
                     if (builder.ParentScope is not null)
                     {
