@@ -13,11 +13,10 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     public sealed class LockstepStrategy_Server(
-        IBus bus,
         ISettingService settings,
         Lazy<IEngineService> engineService,
         Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, engineService, loggerService),
-        ISubscriber<INetIncomingMessage<EventDto>>
+            ISubscriber<INetIncomingMessage<EventDto>>
     {
         private readonly List<EventDto> _inputs = [];
 

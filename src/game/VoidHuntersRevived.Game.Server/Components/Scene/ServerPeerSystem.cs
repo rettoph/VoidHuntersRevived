@@ -1,22 +1,22 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
-using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
-    public class ServerPeerComponent(IServerPeer server, INetScope<IStrategy> scope) : ISceneComponent<ServerGameScene>, IUpdatableComponent
+    public class ServerPeerSystem(IServerPeer server, INetScope<IStrategy> scope) : ISceneSystem<ServerGameScene>, IUpdatableSystem
     {
         private readonly IServerPeer _server = server;
         private readonly INetScope<IStrategy> _scope = scope;
 
-        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Setup)]
+        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Setup)]
         public void Initialize(ServerGameScene scene)
         {
             this._server.Start(1337, Claim.Public("username", "System"));

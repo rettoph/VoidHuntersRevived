@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         public SimulationServiceMocker(
             SettingValue<Fix64> stepInterval,
             SettingValue<int> stepsPerTick,
-            IEnumerable<EntityTemplateFragment> entityTemplateFragments) : base(GuppyScopeTypeEnum.Root)
+            IEnumerable<EntityTemplateFragment> entityTemplateFragments) : base(GuppyScopeTypeEnum.Global)
         {
             this.Register(builder =>
             {

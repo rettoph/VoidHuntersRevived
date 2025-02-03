@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         {
             this._fragments = resources.GetAll<EntityTemplateFragment>()
                 .Where(x => x.HasValue)
-                .Select(x => x.Value)
+                .Select(x => x.Value!)
                 .ToArray();
 
             this._fragmentsByKey = this._fragments

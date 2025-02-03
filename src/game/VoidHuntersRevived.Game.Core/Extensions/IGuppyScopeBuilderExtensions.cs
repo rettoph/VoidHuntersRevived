@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Game.Core.Extensions
             {
                 builder.RegisterSceneFilter<VoidHuntersGameScene>(builder =>
                 {
-                    builder.RegisterType<SimulationFrameComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterSceneSystem<SimulationFrameSystem>();
                 });
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>

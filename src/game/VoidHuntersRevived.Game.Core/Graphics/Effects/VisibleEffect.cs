@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Game.Core.Graphics.Effects
         IResourceService resourceService
     ) : Effect(
         graphicsDevice,
-        resourceService.Get(Resources.EffectCodes.Visible).Value.Data),
+        resourceService.Get(Resources.EffectCodes.Visible).Value?.Data ?? []),
             IWorldViewProjectionEffect
     {
         public Matrix WorldViewProjection

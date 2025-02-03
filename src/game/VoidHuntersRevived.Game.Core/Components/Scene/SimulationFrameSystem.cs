@@ -1,17 +1,17 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common.Components;
+using Guppy.Core.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Core.Components.Scene
 {
-    public class SimulationFrameComponent(ISimulationService simulationService) : ISceneComponent<VoidHuntersGameScene>, IDrawableComponent, IUpdatableComponent
+    public class SimulationFrameSystem(ISimulationService simulationService) : ISceneSystem<VoidHuntersGameScene>, IDrawableSystem, IUpdatableSystem
     {
         private readonly ISimulationService _simulationService = simulationService;
 
-        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
         public void Initialize(VoidHuntersGameScene scene)
         {
         }

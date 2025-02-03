@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Commands.Common;
+﻿using Guppy.Core.Commands.Common;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Network.Common.Enums;
@@ -34,25 +33,25 @@ namespace VoidHuntersRevived.Game.Client.Extensions
             {
                 builder.RegisterSceneFilter<IScene>(builder =>
                 {
-                    builder.RegisterType<InvokeGarbageCollectionComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterSceneSystem<InvokeGarbageCollectionSystem>();
                 });
 
                 builder.RegisterSceneFilter<MultiplayerGameScene>(builder =>
                 {
-                    builder.RegisterType<ClientPeerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterSceneSystem<ClientPeerSystem>();
                 });
 
                 builder.RegisterSceneFilter<LocalGameScene>(builder =>
                 {
-                    builder.RegisterType<ConfigureSimulationsComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterSceneSystem<ConfigureSimulationsSystem>();
                 });
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
                     builder.AddSceneHasDebugWindow(true).AddSceneHasTerminalWindow(true);
 
-                    builder.RegisterType<DebugEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                    builder.RegisterType<ImGuiEngineComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterSceneSystem<DebugEngineSystem>();
+                    builder.RegisterSceneSystem<ImGuiEngineSystem>();
 
                     builder.RegisterEngine<AetherDebugEngine>();
                     builder.RegisterEngine<EntitiesDebugEngine>();
