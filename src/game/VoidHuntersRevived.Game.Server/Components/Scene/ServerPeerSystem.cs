@@ -11,19 +11,19 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
-    public class ServerPeerSystem(IServerPeer server, INetScope<IStrategy> scope) : ISceneSystem<ServerGameScene>, IUpdatableSystem
+    public class ServerPeerSystem(IServerPeer server, INetScope<IStrategy> scope) : ISceneSystem<ServerGameScene>, IUpdateSystem
     {
         private readonly IServerPeer _server = server;
         private readonly INetScope<IStrategy> _scope = scope;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Setup)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
         public void Initialize(ServerGameScene scene)
         {
             this._server.Start(1337, Claim.Public("username", "System"));
             this._server.Users.OnUserConnected += this.HandleUserConnected;
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PostUpdate)]
+        [SequenceGroup<UpdateSequenceGroupEnum>(UpdateSequenceGroupEnum.PostUpdate)]
         public void Update(GameTime gameTime)
         {
             this._server.Flush();

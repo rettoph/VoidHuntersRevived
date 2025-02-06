@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
     {
         private readonly EntityTemplateService _entityTemplateService = entityTemplateService;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Setup)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
         public void Initialize(IStrategy strategy)
         {
             // this._entityTemplateService.TestInitialize(strategy);

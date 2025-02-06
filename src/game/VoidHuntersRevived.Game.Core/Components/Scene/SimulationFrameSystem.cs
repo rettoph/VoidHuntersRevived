@@ -7,22 +7,22 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Core.Components.Scene
 {
-    public class SimulationFrameSystem(ISimulationService simulationService) : ISceneSystem<VoidHuntersGameScene>, IDrawableSystem, IUpdatableSystem
+    public class SimulationFrameSystem(ISimulationService simulationService) : ISceneSystem<VoidHuntersGameScene>, IDrawSystem, IUpdateSystem
     {
         private readonly ISimulationService _simulationService = simulationService;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(VoidHuntersGameScene scene)
         {
         }
 
-        [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.PostDraw)]
+        [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.PostDraw)]
         public void Draw(GameTime gameTime)
         {
             this._simulationService.Draw(gameTime);
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.Update)]
+        [SequenceGroup<UpdateSequenceGroupEnum>(UpdateSequenceGroupEnum.Update)]
         public void Update(GameTime gameTime)
         {
             this._simulationService.Update(gameTime);

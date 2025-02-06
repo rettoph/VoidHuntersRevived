@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
     {
         private readonly ActionSequenceGroup<ImGuiSequenceGroupEnum, GameTime> _imGuiActions = new(true);
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.PostInitialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PostInitialize)]
         public void Initialize(IStrategy strategy)
         {
             this._imGuiActions.Add(strategy.Engines);

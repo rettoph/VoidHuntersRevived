@@ -12,7 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class EntityTemplateService : StrategySystem, IEntityTemplateService, IOnInitializeEngine
+    public class EntityTemplateService : StrategySystem, IEntityTemplateService, IOnInitializeSystem
     {
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityTemplateFragmentService _entityTemplateFragmentService;

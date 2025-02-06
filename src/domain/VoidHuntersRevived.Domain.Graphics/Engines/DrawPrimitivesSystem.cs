@@ -12,7 +12,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Systems
     public class DrawPrimitivesSystem(
         IPrimitiveService primitiveService
     ) : StrategySystem,
-        IOnInitializeEngine,
+        IOnInitializeSystem,
         IOnDrawSystem
     {
         private readonly IPrimitiveService _primitiveService = primitiveService;

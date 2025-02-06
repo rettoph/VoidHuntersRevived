@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
 {
     public class LockstepServer_UserSystem(INetScope<IStrategy> scope) : StrategySystem<ILockstepStrategy>,
-        IOnInitializeEngine
+        IOnInitializeSystem
     {
         private readonly INetScope _scope = scope;
 

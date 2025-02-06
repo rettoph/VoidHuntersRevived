@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
     public class TeamService(
         IEntityTemplateService entityTemplateService,
         IPrivateEntitySpawnService privateEntitySpawnService
-    ) : StrategySystem, ITeamService, IOnInitializeEngine
+    ) : StrategySystem, ITeamService, IOnInitializeSystem
     {
         private Team _defaultTeamComponent;
         private readonly Dictionary<Id<Team>, Team> _teamComponents = [];

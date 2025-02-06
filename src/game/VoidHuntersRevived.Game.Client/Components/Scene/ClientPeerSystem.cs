@@ -7,17 +7,17 @@ using Microsoft.Xna.Framework;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    public class ClientPeerSystem(IClientPeer client) : ISceneSystem<MultiplayerGameScene>, IUpdatableSystem
+    public class ClientPeerSystem(IClientPeer client) : ISceneSystem<MultiplayerGameScene>, IUpdateSystem
     {
         private readonly IClientPeer _client = client;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Setup)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
         public void Initialize(MultiplayerGameScene scene)
         {
             this._client.Start();
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PostUpdate)]
+        [SequenceGroup<UpdateSequenceGroupEnum>(UpdateSequenceGroupEnum.PostUpdate)]
         public void Update(GameTime gameTime)
         {
             this._client.Flush();

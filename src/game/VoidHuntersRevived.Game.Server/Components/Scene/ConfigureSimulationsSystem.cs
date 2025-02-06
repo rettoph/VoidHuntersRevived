@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Game.Server.Guppy
     {
         private readonly ISimulationService _simulationService = simulationService;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.PreInitialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
         public void Initialize(ServerGameScene scene)
         {
             this._simulationService.Create(VhId.Empty, StrategyTypeEnum.Lockstep);

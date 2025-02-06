@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Systems
         void OnInitialize(TStrategy strategy);
     }
 
-    public interface IOnInitializeEngine : IOnInitializeSystem<IStrategy>
+    public interface IOnInitializeSystem : IOnInitializeSystem<IStrategy>
     {
 
     }
