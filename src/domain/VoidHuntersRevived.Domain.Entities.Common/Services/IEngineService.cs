@@ -6,6 +6,7 @@ namespace VoidHuntersRevived.Domain.Entities.Common.Services
     {
         void Initialize();
 
+        [Obsolete]
         T Get<T>();
     }
 }

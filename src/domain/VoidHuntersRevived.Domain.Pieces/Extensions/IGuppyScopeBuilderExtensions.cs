@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
-using VoidHuntersRevived.Domain.Pieces.Engines;
+using VoidHuntersRevived.Domain.Pieces.Systems;
 using VoidHuntersRevived.Domain.Pieces.ResourceTypes;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Components;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
@@ -54,12 +54,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
                     builder.RegisterType<NodeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
                     builder.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                    builder.RegisterEngine<CouplingEngine>();
-                    builder.RegisterEngine<NodeFixtureEngine>();
-                    builder.RegisterEngine<SocketIdsEngine>();
-                    builder.RegisterEngine<ThrustableEngine>();
-                    builder.RegisterEngine<TractorableEngine>();
-                    builder.RegisterEngine<TreeEngine>();
+                    builder.RegisterEngine<CouplingSystem>();
+                    builder.RegisterEngine<NodeFixtureSystem>();
+                    builder.RegisterEngine<SocketIdsSystem>();
+                    builder.RegisterEngine<ThrustableSystem>();
+                    builder.RegisterEngine<TractorableSystem>();
+                    builder.RegisterEngine<TreeSystem>();
                 });
             });
         }

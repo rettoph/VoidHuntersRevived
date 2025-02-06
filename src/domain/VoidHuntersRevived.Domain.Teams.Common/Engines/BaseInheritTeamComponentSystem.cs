@@ -1,0 +1,41 @@
+﻿using Svelto.ECS;
+using VoidHuntersRevived.Common.Extensions;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
+using VoidHuntersRevived.Domain.Teams.Common.Components;
+
+namespace VoidHuntersRevived.Domain.Teams.Common.Systems
+{
+    /// <summary>
+    /// Allows for entity components to be overwritten by their teams
+    /// </summary>
+    public abstract class BaseInheritTeamComponentSystem<TComponent>(IEntityQueryService entityQueryService) : StrategySystem, IReactOnAddEx<TComponent>
+        where TComponent : unmanaged, IEntityComponent
+    {
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
+
+        public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<TComponent> entities, ExclusiveGroupStruct groupID)
+        {
+            if (this._entityQueryService.HasAll<EntityTemplate, TeamMember>(groupID, out var components) == false)
+            {
+                return;
+            }
+
+            var (instanceComponents, _) = entities;
+            var (_, teamMembers, _) = components;
+
+            for (uint i = rangeOfEntities.start; i < rangeOfEntities.end; i++)
+            {
+                ref TComponent instanceComponent = ref instanceComponents[i];
+
+                ref TeamMember teamMember = ref teamMembers[i];
+                if (this._entityQueryService.TryQueryByEGID<TComponent>(teamMember.ParentFilterId.EGID, out TComponent teamComponent) && teamComponent.IsDefault() == false)
+                {
+                    instanceComponent = teamComponent;
+                    continue;
+                }
+            }
+        }
+    }
+}

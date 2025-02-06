@@ -7,13 +7,14 @@ using Svelto.ECS;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Physics.Engines;
 using VoidHuntersRevived.Domain.Physics.ResourceTypes;
 using VoidHuntersRevived.Domain.Physics.Serialization.Components;
 using VoidHuntersRevived.Domain.Physics.Serialization.Json;
 using VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters;
+using VoidHuntersRevived.Domain.Physics.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 
 namespace VoidHuntersRevived.Domain.Physics.Extensions
 {
@@ -35,13 +36,12 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
                 {
                     builder.Register<AetherWorld>(c => new AetherWorld(AetherVector2.Zero)).InstancePerLifetimeScope();
 
-                    builder.RegisterEngine<BodyAwakeEngine>();
-                    builder.RegisterEngine<BodyCollisionEngine>();
-                    builder.RegisterEngine<BodyLocationEngine>();
-                    builder.RegisterEngine<BodyLocationPredictiveSynchronizationEngine>();
-                    builder.RegisterEngine<BodyPhysicsBubbleEngine>();
-                    builder.RegisterEngine<SpaceEngine>();
-                    builder.RegisterEngine<RigidFixtureEngine>();
+                    builder.RegisterEngine<BodyAwakeSystem>();
+                    builder.RegisterEngine<BodyCollisionSystem>();
+                    builder.RegisterEngine<BodyLocationSystem>();
+                    builder.RegisterEngine<BodyPhysicsBubbleSystem>();
+                    builder.RegisterEngine<SpaceSystem>();
+                    builder.RegisterEngine<RigidFixtureSystem>();
                     builder.RegisterEngine<Space>();
 
                     builder.RegisterComponentSerializer<AwakeComponentSerializer>();
@@ -50,6 +50,11 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
                     builder.RegisterComponentSerializer<PhysicsBubbleComponentSerializer>();
                     builder.RegisterComponentSerializer<BodyComponentSerializer>();
                     builder.RegisterComponentSerializer<FixtureComponentSerializer>();
+
+                    builder.RegisterSceneFilter<IPredictiveStrategy>(builder =>
+                    {
+                        builder.RegisterEngine<BodyLocationPredictiveSynchronizationSystem>();
+                    });
                 });
             });
         }

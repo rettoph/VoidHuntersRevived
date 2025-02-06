@@ -20,8 +20,8 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Game.Core.Components.Scene;
-using VoidHuntersRevived.Game.Core.Engines;
 using VoidHuntersRevived.Game.Core.Graphics.Effects;
+using VoidHuntersRevived.Game.Core.Systems;
 
 namespace VoidHuntersRevived.Game.Core.Extensions
 {
@@ -38,8 +38,8 @@ namespace VoidHuntersRevived.Game.Core.Extensions
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
-                    builder.RegisterEngine<SimulationEngine>();
-                    builder.RegisterEngine<UserEngine>();
+                    builder.RegisterEngine<SimulationSystem>();
+                    builder.RegisterEngine<UserSystem>();
                 });
 
                 builder.RegisterType<ShaderAntiAliasingEffect>().SingleInstance();

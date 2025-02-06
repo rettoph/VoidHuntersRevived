@@ -3,8 +3,6 @@ using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Resources.Common.Services;
-using Guppy.Game.Common.Attributes;
-using Guppy.Game.Graphics.Common.Constants;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -17,7 +15,6 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
-    [SetSceneConfiguration<bool>(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, false)]
     public abstract class LockstepStrategy : Strategy, ILockstepStrategy
     {
         private readonly ActionSequenceGroup<OnTickSequenceGroupEnum, Tick> _tickActions;

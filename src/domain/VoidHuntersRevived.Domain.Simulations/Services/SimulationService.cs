@@ -3,6 +3,7 @@ using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Game.Common.Services;
+using Guppy.Game.Graphics.Common.Extensions;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -65,24 +66,25 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         private IEnumerable<IStrategy> BuildStrategies(StrategyTypeEnum[] strategies)
         {
-            List<Type> strategyTypes = [];
+            List<(Type type, bool graphical)> strategyTypes = [];
             if (this._netScope.Group.Peer.Type == PeerTypeEnum.Client && strategies.Contains(StrategyTypeEnum.Predictive))
             {
-                strategyTypes.Add(typeof(PredictiveStrategy));
+                strategyTypes.Add((typeof(PredictiveStrategy), true));
             }
             if (this._netScope.Group.Peer.Type == PeerTypeEnum.Client && strategies.Contains(StrategyTypeEnum.Lockstep))
             {
-                strategyTypes.Add(typeof(LockstepStrategy_Client));
+                strategyTypes.Add((typeof(LockstepStrategy_Client), false));
             }
             if (this._netScope.Group.Peer.Type == PeerTypeEnum.Server && strategies.Contains(StrategyTypeEnum.Lockstep))
             {
-                strategyTypes.Add(typeof(LockstepStrategy_Server));
+                strategyTypes.Add((typeof(LockstepStrategy_Server), false));
             }
 
-            foreach (Type type in strategyTypes)
+            foreach ((Type type, bool graphical) in strategyTypes)
             {
                 IStrategy strategy = (IStrategy)this._scenes.Create(type, builder =>
                 {
+                    builder.AddGraphicsEnabled(graphical);
                     builder.RegisterNetScope<IStrategy>(this._netScope.Group.Peer.Type, this._netScope.Group.Id);
                 });
 

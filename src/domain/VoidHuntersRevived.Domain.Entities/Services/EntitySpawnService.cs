@@ -3,7 +3,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Events;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         EntityQueryService entityQueryService,
         IEntityTemplateService entityTemplateService,
         IEntityService entityService,
-        ILogger logger) : StrategyEngine, IEntitySpawnService, IPrivateEntitySpawnService
+        ILogger logger) : StrategySystem, IEntitySpawnService, IPrivateEntitySpawnService
     {
         private readonly EntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;

@@ -10,7 +10,7 @@ using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
         IEntitySerializationService entitySerializationService,
-        ILogger logger) : StrategyEngine, INodeSocketService
+        ILogger logger) : StrategySystem, INodeSocketService
     {
         private static readonly Fix64 _openNodemaximumDistance = Fix64.One;
 

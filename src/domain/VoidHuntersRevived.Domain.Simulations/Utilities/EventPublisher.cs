@@ -5,7 +5,7 @@ using Guppy.Core.Logging.Common.Services;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Simulations.Utilities
 {
@@ -19,12 +19,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
             ILoggerService loggerProvider,
             Dictionary<Type, EventPublisher> publishers)
         {
-            Dictionary<Type, List<IEventEngine>> subscriptions = [];
-            foreach (IEventEngine system in engineService.OfType<IEventEngine>())
+            Dictionary<Type, List<IEventSystem>> subscriptions = [];
+            foreach (IEventSystem system in engineService.OfType<IEventSystem>())
             {
                 foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventEngine<>)))
                 {
-                    if (!subscriptions.TryGetValue(subscriberType.GenericTypeArguments[0], out List<IEventEngine>? subSystems))
+                    if (!subscriptions.TryGetValue(subscriberType.GenericTypeArguments[0], out List<IEventSystem>? subSystems))
                     {
                         subscriptions[subscriberType.GenericTypeArguments[0]] = subSystems = [];
                     }
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
                 }
             }
 
-            foreach ((Type type, List<IEventEngine> subscribers) in subscriptions)
+            foreach ((Type type, List<IEventSystem> subscribers) in subscriptions)
             {
                 Type publisherType = typeof(EventPublisher<>).MakeGenericType(type);
                 EventPublisher publisher = (EventPublisher)Activator.CreateInstance(publisherType, [loggerProvider.GetLogger(publisherType), subscribers])!;
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
             return publishers;
         }
     }
-    internal class EventPublisher<T>(ILogger logger, List<IEventEngine> subscribers) : EventPublisher
+    internal class EventPublisher<T>(ILogger logger, List<IEventSystem> subscribers) : EventPublisher
         where T : class, IEventData
     {
         private readonly IEventEngine<T>[] _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();

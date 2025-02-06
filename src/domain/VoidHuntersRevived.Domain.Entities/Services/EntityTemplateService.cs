@@ -7,31 +7,32 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class EntityTemplateService : StrategyEngine, IEntityTemplateService, IQueryingEntitiesEngine, IOnInitializeEngine
+    public class EntityTemplateService : StrategySystem, IEntityTemplateService, IOnInitializeEngine
     {
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityTemplateFragmentService _entityTemplateFragmentService;
         private readonly Lazy<IComponentSerializerService> _componentSerializerService;
+        private readonly EntitiesDB _entitiesDb;
 
         private readonly Dictionary<Key<IEntityTemplate>, IEntityTemplate> _templates;
-
-        public EntitiesDB entitiesDB { get; set; } = null!;
 
         public EntityTemplateService(
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityTemplateFragmentService entityTemplateFragmentService,
             ILoggerService loggerService,
             Lazy<IComponentSerializerService> componentSerializerService,
-            EnginesRoot enginesRoot)
+            EnginesRoot enginesRoot,
+            EntitiesDB entitiesDb)
         {
             this._uniqueNumberProvider = uniqueNumberProvider;
             this._entityTemplateFragmentService = entityTemplateFragmentService;
             this._componentSerializerService = componentSerializerService;
+            this._entitiesDb = entitiesDb;
 
             // Create EntityTemplateProviders for all registered EntityTemplate instances
             IEntityFactory factory = enginesRoot.GenerateEntityFactory();
@@ -59,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             foreach (IEntityTemplate entityTemplateProvider in this._templates.Values)
             {
                 entityTemplateProvider.Initialize(
-                    entitiesDB: this.entitiesDB,
+                    entitiesDB: this._entitiesDb,
                     engineService: this.Strategy.Engines,
                     componentSerializerService: this._componentSerializerService.Value);
             }

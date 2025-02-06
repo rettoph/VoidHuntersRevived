@@ -4,7 +4,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Teams.Services
     public class TeamService(
         IEntityTemplateService entityTemplateService,
         IPrivateEntitySpawnService privateEntitySpawnService
-    ) : StrategyEngine, ITeamService, IOnInitializeEngine
+    ) : StrategySystem, ITeamService, IOnInitializeEngine
     {
         private Team _defaultTeamComponent;
         private readonly Dictionary<Id<Team>, Team> _teamComponents = [];

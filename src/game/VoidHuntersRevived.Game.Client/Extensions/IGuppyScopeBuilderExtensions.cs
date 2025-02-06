@@ -5,6 +5,7 @@ using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
+using Guppy.Game.Graphics.Common.Extensions;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Enums;
 using Guppy.Game.MonoGame.Common.Extensions;
@@ -18,9 +19,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Game.Client.Components.Scene;
 using VoidHuntersRevived.Game.Client.Constants;
-using VoidHuntersRevived.Game.Client.Engines;
-using VoidHuntersRevived.Game.Client.Engines.Debugging;
 using VoidHuntersRevived.Game.Client.Messages;
+using VoidHuntersRevived.Game.Client.Systems;
+using VoidHuntersRevived.Game.Client.Systems.Debugging;
 using VoidHuntersRevived.Game.Core.Events;
 
 namespace VoidHuntersRevived.Game.Client.Extensions
@@ -53,43 +54,46 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                     builder.RegisterSceneSystem<DebugEngineSystem>();
                     builder.RegisterSceneSystem<ImGuiEngineSystem>();
 
-                    builder.RegisterEngine<AetherDebugEngine>();
-                    builder.RegisterEngine<EntitiesDebugEngine>();
-                    builder.RegisterEngine<DrawVertexVisibleEngine>();
-                    builder.RegisterEngine<ShaderAntiAliasingEngine>();
+                    builder.RegisterGraphicsEnabledFilter(true, builder =>
+                    {
+                        builder.RegisterEngine<AetherDebugSystem>();
+                        builder.RegisterEngine<EntitiesDebugSystem>();
+                        builder.RegisterEngine<DrawVertexVisibleSystem>();
+                        builder.RegisterEngine<ShaderAntiAliasingSystem>();
+                    });
 
                     builder.RegisterSceneFilter<Strategy>(builder =>
                     {
-                        builder.RegisterEngine<StrategyDebugEngine>();
+                        builder.RegisterEngine<StrategyDebugSystem>();
                     });
 
                     builder.RegisterSceneFilter<LockstepStrategy_Client>(builder =>
                     {
-                        builder.RegisterEngine<LockstepStrategy_ClientDebugEngine>();
+                        builder.RegisterEngine<LockstepStrategy_ClientDebugSystem>();
                     });
 
                     builder.RegisterSceneFilter<LockstepStrategy_Server>(builder =>
                     {
-                        builder.RegisterEngine<LockstepStrategy_ServerDebugEngine>();
+                        builder.RegisterEngine<LockstepStrategy_ServerDebugSystem>();
                     });
 
                     builder.RegisterSceneFilter<ILockstepStrategy>(builder =>
                     {
-                        builder.RegisterEngine<LockstepStrategyDebugEngine>();
+                        builder.RegisterEngine<LockstepStrategyDebugSystem>();
                     });
 
                     builder.Filter(
                         filter => filter.RequirePeerType(PeerTypeEnum.Client).RequireScene<ILockstepStrategy>(),
                         builder =>
                         {
-                            builder.RegisterEngine<InputEngine>();
+                            builder.RegisterEngine<InputSystem>();
                         });
 
                     builder.Filter(
                         filter => filter.RequirePeerType(PeerTypeEnum.Client).RequireScene<IPredictiveStrategy>(),
                         builder =>
                         {
-                            builder.RegisterEngine<CameraEngine>();
+                            builder.RegisterEngine<CameraSystem>();
                         });
                 });
 

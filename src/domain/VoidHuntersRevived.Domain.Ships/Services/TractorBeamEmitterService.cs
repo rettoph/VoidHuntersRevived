@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
@@ -22,7 +22,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         ITreeService treeService,
         INodeSocketService socketService,
         ITeamService teamService,
-        ILogger logger) : StrategyEngine, ITractorBeamEmitterService
+        ILogger logger) : StrategySystem, ITractorBeamEmitterService
     {
         private static readonly Fix64 _queryRadius = (Fix64)3;
 

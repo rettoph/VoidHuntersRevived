@@ -3,7 +3,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Engines;
+using VoidHuntersRevived.Domain.Entities.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Providers
 {
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 
                     if (interfaceType.GetGenericTypeDefinition() == typeof(IBelongsTo<,>))
                     {
-                        Type belongsToEngineType = typeof(BelongsToEngine<,>).MakeGenericType(interfaceType.GenericTypeArguments);
+                        Type belongsToEngineType = typeof(BelongsToSystem<,>).MakeGenericType(interfaceType.GenericTypeArguments);
                         IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
 
                         yield return belongsToEngine;

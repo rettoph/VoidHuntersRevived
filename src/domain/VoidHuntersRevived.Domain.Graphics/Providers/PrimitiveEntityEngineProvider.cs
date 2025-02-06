@@ -4,7 +4,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
-using VoidHuntersRevived.Domain.Graphics.Engines;
+using VoidHuntersRevived.Domain.Graphics.Systems;
 
 namespace VoidHuntersRevived.Domain.Graphics.Providers
 {
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Providers
 
         private static IEngine BuildEngine(Type vertexType, object vertexTypePrimitiveService, IEntityQueryService entityQueryService)
         {
-            Type engineType = typeof(PrimitiveEntityEngine<>).MakeGenericType(vertexType);
+            Type engineType = typeof(PrimitiveEntitySystem<>).MakeGenericType(vertexType);
             ThrowIf.Type.IsNotAssignableFrom<IEngine>(engineType);
 
             IEngine genericEngine = (IEngine)(Activator.CreateInstance(engineType, [vertexTypePrimitiveService, entityQueryService]) ?? throw new NotImplementedException());

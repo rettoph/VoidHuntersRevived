@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using EntityTemplateComponent = VoidHuntersRevived.Domain.Entities.Common.Components.EntityTemplate;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IEntityTemplateService entityTemplateService,
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
-        ILogger logger) : StrategyEngine, IEntitySerializationService
+        ILogger logger) : StrategySystem, IEntitySerializationService
     {
         private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;

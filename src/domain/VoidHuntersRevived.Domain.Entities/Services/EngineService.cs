@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Services;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Services;
 using Svelto.ECS;
@@ -9,6 +10,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public sealed class EngineService(
+        IScopedSystemService systemService,
         IFiltered<IEngine> engines,
         IBrokerService brokers,
         Lazy<IFiltered<IEngineProvider>> engineProviders,
@@ -16,12 +18,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
     {
         private readonly IBrokerService _brokers = brokers;
         private readonly Lazy<IFiltered<IEngineProvider>> _engineProviders = engineProviders;
-        private readonly List<IEngine> _engines = [.. engines];
+        private readonly List<IEngine> _engines = systemService.GetAll<IEngine>().Concat(engines).Distinct().ToList();
 
         public EnginesRoot Root { get; } = enginesRoot;
 
         public void Initialize()
         {
+            var test = this._engines.GroupBy(x => x.GetType()).OrderByDescending(x => x.Count()).First().ToList();
+
             this._engines.AddRange(this._engineProviders.Value.SelectMany(x => x.GetEngines()));
 
             foreach (IEngine engine in this._engines)

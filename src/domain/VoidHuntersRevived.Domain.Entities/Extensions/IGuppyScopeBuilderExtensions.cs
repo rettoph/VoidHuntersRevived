@@ -10,11 +10,12 @@ using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Entities.Engines;
+using VoidHuntersRevived.Domain.Entities.Extensions.Svelto;
 using VoidHuntersRevived.Domain.Entities.Providers;
 using VoidHuntersRevived.Domain.Entities.ResourceTypes;
 using VoidHuntersRevived.Domain.Entities.Serialization.Json;
 using VoidHuntersRevived.Domain.Entities.Services;
+using VoidHuntersRevived.Domain.Entities.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Extensions
@@ -33,13 +34,17 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
+                    builder.RegisterSceneSystem<EntitySubmissionSystem>();
+                    builder.RegisterSceneSystem<InitializeEntityServicesSystem>();
+
                     builder.RegisterType<ComponentSerializerService>().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
 
                     builder.RegisterType<EntityTemplateFragmentService>().As<IEntityTemplateFragmentService>().SingleInstance();
-                    builder.RegisterType<EntityTemplateService>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
+                    builder.RegisterType<EntityTemplateService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
 
                     builder.RegisterType<EntitiesSubmissionScheduler>().AsSelf().InstancePerLifetimeScope();
                     builder.RegisterType<EnginesRoot>().InstancePerLifetimeScope();
+                    builder.Register<EntitiesDB>(ctx => ctx.Resolve<EnginesRoot>().GetEntitiesDB());
 
                     builder.RegisterType<EngineService>().As<IEngineService>().InstancePerLifetimeScope();
 
@@ -47,8 +52,6 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                     builder.RegisterType<EntityQueryService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
                     builder.RegisterType<EntitySpawnService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
                     builder.RegisterType<EntitySerializationService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-                    builder.RegisterType<EntitySubmissionEngine>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
                     builder.RegisterType<BelongsToEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
 
@@ -62,7 +65,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                         {
                             if (disposableComponent.IsAssignableTo<IDisposable>())
                             {
-                                builder.RegisterType(typeof(DisposableEngine<>).MakeGenericType(disposableComponent))
+                                builder.RegisterType(typeof(DisposableSystem<>).MakeGenericType(disposableComponent))
                                     .As<IEngine>()
                                     .InstancePerLifetimeScope();
                             }

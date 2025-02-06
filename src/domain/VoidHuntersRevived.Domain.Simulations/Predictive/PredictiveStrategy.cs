@@ -1,23 +1,20 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common.Collections;
 using Guppy.Core.Logging.Common.Services;
-using Guppy.Game.Common.Attributes;
-using Guppy.Game.Graphics.Common.Constants;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
-    [SetSceneConfiguration<bool>(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, true)]
     public sealed class PredictiveStrategy(
         Lazy<IEngineService> engineService,
         Lazy<ILoggerService> loggerService) : Strategy(StrategyTypeEnum.Predictive, engineService, loggerService), IPredictiveStrategy
@@ -26,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private ILockstepStrategy _lockstep = null!;
         private readonly Step _step = new();
         private double _lastStepTime;
-        private IPredictiveSynchronizationEngine[] _synchronizations = [];
+        private IPredictiveSynchronizationSystem[] _synchronizations = [];
         private readonly DictionaryQueue<VhId, PredictedEvent> _predictedEvents = new();
         private readonly Queue<EventDto> _confirmedEvents = new();
 
@@ -36,9 +33,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             this._lockstep = simulation.First(StrategyTypeEnum.Lockstep) as ILockstepStrategy ?? throw new NotImplementedException();
             this._lockstep.OnEvent += this.HandleLockstepEvent;
-            this._synchronizations = this.Engines.OfType<IPredictiveSynchronizationEngine>().ToArray();
+            this._synchronizations = this.Engines.OfType<IPredictiveSynchronizationSystem>().ToArray();
 
-            foreach (IPredictiveSynchronizationEngine synchronization in this._synchronizations)
+            foreach (IPredictiveSynchronizationSystem synchronization in this._synchronizations)
             {
                 synchronization.Initialize(this._lockstep);
             }
@@ -66,7 +63,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             base.DoStep(step);
 
-            foreach (IPredictiveSynchronizationEngine synchronization in this._synchronizations)
+            foreach (IPredictiveSynchronizationSystem synchronization in this._synchronizations)
             {
                 synchronization.Synchronize(step);
             }

@@ -5,21 +5,20 @@ using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Game.Common.Extensions;
-using Guppy.Game.Graphics.Common.Extensions;
 using LiteNetLib;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Engines;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Engines.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Services;
+using VoidHuntersRevived.Domain.Simulations.Systems.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Extensions
 {
@@ -54,8 +53,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 
                     builder.RegisterType<StrategyTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
 
-                    builder.RegisterGraphicsEnabledFilter<IGraphicsEngine>(true);
-                    builder.RegisterStrategyFilter<IPredictiveSynchronizationEngine, IPredictiveStrategy>();
+                    builder.RegisterStrategyFilter<IPredictiveSynchronizationSystem, IPredictiveStrategy>();
 
                     builder.RegisterSceneFilter<ILockstepStrategy>(builder =>
                     {
@@ -63,14 +61,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Client, builder =>
                         {
-                            builder.RegisterEngine<LockstepClient_TickEngine>();
+                            builder.RegisterEngine<LockstepClient_TickSystem>();
                             builder.RegisterType<LinkedListTickService>().As<ITickService>().InstancePerLifetimeScope();
                         });
 
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Server, builder =>
                         {
-                            builder.RegisterEngine<LockstepServer_TickEngine>();
-                            builder.RegisterEngine<LockstepServer_UserEngine>();
+                            builder.RegisterEngine<LockstepServer_TickSystem>();
+                            builder.RegisterEngine<LockstepServer_UserSystem>();
                         });
                     });
 
@@ -78,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                     {
                         foreach (Type strategyType in builder.ParentScope.ResolveService<IAssemblyService>().GetTypes<IStrategy>())
                         {
-                            Type strategyEngineType = typeof(StrategyEngine<>).MakeGenericType(strategyType);
+                            Type strategyEngineType = typeof(StrategySystem<>).MakeGenericType(strategyType);
 
                             builder.RegisterStrategyFilter(strategyEngineType, strategyType);
                         }
