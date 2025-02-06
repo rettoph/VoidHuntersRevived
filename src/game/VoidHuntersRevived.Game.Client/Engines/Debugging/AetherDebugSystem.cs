@@ -3,6 +3,7 @@ using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.Graphics.Common;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
@@ -15,13 +16,12 @@ using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Game.Client.Systems.Debugging
 {
     public class AetherDebugSystem : StrategySystem,
-        IOnDrawSystem,
+        IDrawSystem,
         IImGuiComponent,
         IOnDebugSystem
     {
@@ -64,8 +64,8 @@ namespace VoidHuntersRevived.Game.Client.Systems.Debugging
             this._buttonGreenStyle = resourceService.Get(Resources.ImGuiStyles.ButtonGreen);
         }
 
-        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.Draw)]
-        public void OnDraw(GameTime gameTime)
+        [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.Draw)]
+        public void Draw(GameTime gameTime)
         {
             if (this._debugViewEnabled == false)
             {

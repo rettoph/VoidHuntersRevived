@@ -1,4 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Svelto.ECS;
@@ -10,7 +12,6 @@ using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Graphics.Common.Extensions;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Graphics.Systems
@@ -18,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Systems
     public sealed class PrimitiveEntitySystem<TVertex>(
         IPrimitiveService<TVertex> primitiveService,
         IEntityQueryService entityQueryService
-    ) : StrategySystem, IReactOnAddEx<Common.Components.Primitive<TVertex>>, IOnDrawSystem, IQueryingEntitiesEngine
+    ) : StrategySystem, IReactOnAddEx<Common.Components.Primitive<TVertex>>, IDrawSystem, IQueryingEntitiesEngine
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {
         private readonly IPrimitiveService<TVertex> _primitiveService = primitiveService;
@@ -26,8 +27,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Systems
 
         public EntitiesDB entitiesDB { get; set; } = null!;
 
-        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.PreDraw)]
-        public void OnDraw(GameTime gameTime)
+        [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.PreDraw)]
+        public void Draw(GameTime gameTime)
         {
             foreach (IPrimitive<TVertex> primitive in this._primitiveService.GetAll())
             {

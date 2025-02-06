@@ -1,5 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Network.Common;
+using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.Graphics.Common;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Messages;
@@ -11,12 +13,11 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Game.Client.Systems
 {
     public sealed class CameraSystem : StrategySystem,
-        IOnDrawSystem,
+        IDrawSystem,
         IInputSubscriber<CursorScroll>
     {
         private readonly ICamera2D _camera;
@@ -44,8 +45,8 @@ namespace VoidHuntersRevived.Game.Client.Systems
         }
 
 
-        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.PreDraw)]
-        public void OnDraw(GameTime gameTime)
+        [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.PreDraw)]
+        public void Draw(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {

@@ -1,5 +1,7 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
@@ -13,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Systems
         IPrimitiveService primitiveService
     ) : StrategySystem,
         IOnInitializeSystem,
-        IOnDrawSystem
+        IDrawSystem
     {
         private readonly IPrimitiveService _primitiveService = primitiveService;
         private readonly ActionSequenceGroup<PrimitiveSequenceGroupEnum, GameTime> _primitiveActions = new(true);
@@ -24,8 +26,8 @@ namespace VoidHuntersRevived.Domain.Graphics.Systems
             this._primitiveActions.Add(this._primitiveService.GetAll());
         }
 
-        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.Draw)]
-        public void OnDraw(GameTime gameTime)
+        [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.Draw)]
+        public void Draw(GameTime gameTime)
         {
             this._primitiveActions.Invoke(gameTime);
         }
