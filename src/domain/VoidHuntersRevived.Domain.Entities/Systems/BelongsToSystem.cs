@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
     /// Magic engine that will handle adding and removing new entities with <see cref="BelongsTo{,}"/> components
     /// to their respective parent filters.
     /// 
-    /// Instances of this engine are automatically created within the <see cref="Providers.BelongsToEngineProvider"/>
+    /// Instances of this engine are automatically created within the <see cref="Providers.BelongsToSystemProvider"/>
     /// </summary>
     /// <typeparam name="TBelongsTo"></typeparam>
     /// <typeparam name="TParent"></typeparam>

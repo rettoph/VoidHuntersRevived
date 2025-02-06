@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
+using Guppy.Core.Common.Providers;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Converters;
@@ -8,7 +9,6 @@ using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Game.Common.Extensions;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Extensions.Svelto;
 using VoidHuntersRevived.Domain.Entities.Providers;
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                     builder.RegisterType<EntitySpawnService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
                     builder.RegisterType<EntitySerializationService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                    builder.RegisterType<BelongsToEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
+                    builder.RegisterType<BelongsToSystemProvider>().As<IScopedSystemProvider>().InstancePerLifetimeScope();
 
 
                     // This should only really happen when unit testing

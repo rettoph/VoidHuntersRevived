@@ -1,12 +1,12 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
+using Guppy.Core.Common.Providers;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Json.Converters;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Graphics.Common.Extensions;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
 using VoidHuntersRevived.Domain.Graphics.Providers;
@@ -40,7 +40,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Extensions
                     builder.RegisterGraphicsEnabledFilter(true, builder =>
                     {
                         builder.RegisterEngine<DrawPrimitivesSystem>();
-                        builder.RegisterType<PrimitiveEntityEngineProvider>().As<IEngineProvider>().InstancePerLifetimeScope();
+                        builder.RegisterType<PrimitiveEntitySystemProvider>().As<IScopedSystemProvider>().InstancePerLifetimeScope();
                     });
                 });
             });

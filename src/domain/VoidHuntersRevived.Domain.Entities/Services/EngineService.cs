@@ -4,7 +4,6 @@ using Guppy.Core.Common.Services;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Services;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
@@ -13,11 +12,9 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IScopedSystemService systemService,
         IFiltered<IEngine> engines,
         IBrokerService brokers,
-        Lazy<IFiltered<IEngineProvider>> engineProviders,
         EnginesRoot enginesRoot) : IEngineService
     {
         private readonly IBrokerService _brokers = brokers;
-        private readonly Lazy<IFiltered<IEngineProvider>> _engineProviders = engineProviders;
         private readonly List<IEngine> _engines = systemService.GetAll<IEngine>().Concat(engines).Distinct().ToList();
 
         public EnginesRoot Root { get; } = enginesRoot;
@@ -25,8 +22,10 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public void Initialize()
         {
             var test = this._engines.GroupBy(x => x.GetType()).OrderByDescending(x => x.Count()).First().ToList();
-
-            this._engines.AddRange(this._engineProviders.Value.SelectMany(x => x.GetEngines()));
+            if (test.Count > 1)
+            {
+                throw new Exception();
+            }
 
             foreach (IEngine engine in this._engines)
             {

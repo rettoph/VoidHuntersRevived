@@ -1,22 +1,22 @@
-﻿using Guppy.Core.Logging.Common;
-using Svelto.ECS;
+﻿using Guppy.Core.Common.Providers;
+using Guppy.Core.Common.Systems;
+using Guppy.Core.Logging.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Providers
 {
-    internal class BelongsToEngineProvider(
+    public class BelongsToSystemProvider(
         IEntityTemplateFragmentService entityTemplateService,
         IEntityQueryService entityQueryService,
-        ILogger logger) : IEngineProvider
+        ILogger logger) : IScopedSystemProvider
     {
         private readonly IEntityTemplateFragmentService _entityTemplateService = entityTemplateService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
 
-        public IEnumerable<IEngine> GetEngines()
+        public IEnumerable<IScopedSystem> GetSystems()
         {
             foreach (Type componentType in this._entityTemplateService.GetAllDistinctComponentTypes())
             {
@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
                     if (interfaceType.GetGenericTypeDefinition() == typeof(IBelongsTo<,>))
                     {
                         Type belongsToEngineType = typeof(BelongsToSystem<,>).MakeGenericType(interfaceType.GenericTypeArguments);
-                        IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
+                        IScopedSystem belongsToEngine = (IScopedSystem?)Activator.CreateInstance(belongsToEngineType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
 
                         yield return belongsToEngine;
                     }
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
                     if (interfaceType.GetGenericTypeDefinition() == typeof(ICompositeBelongsTo<,,>))
                     {
                         Type belongsToEngineType = typeof(CompositeBelongsToEngine<,,>).MakeGenericType(interfaceType.GenericTypeArguments);
-                        IEngine belongsToEngine = (IEngine?)Activator.CreateInstance(belongsToEngineType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
+                        IScopedSystem belongsToEngine = (IScopedSystem?)Activator.CreateInstance(belongsToEngineType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
 
                         yield return belongsToEngine;
                     }
