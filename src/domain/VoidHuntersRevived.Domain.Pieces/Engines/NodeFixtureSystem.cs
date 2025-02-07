@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
     ) : ISceneSystem,
         IOnSpawnSystem<Node, Fixture>,
         IOnDespawnSystem<Node, Fixture>,
-        IOnStepSystem
+        IStepSystem
     {
         private readonly INodeSocketService _socketService = socketService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
@@ -63,8 +63,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
                 : HashBuilder<IReactOnRemoveEx<Node>, EntityGlobalId>.Instance.Calculate(entity.GlobalId);
         }
 
-        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SyncronizeEntities)]
-        public void OnStep(Step step)
+        [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.SyncronizeEntities)]
+        public void Step(Step step)
         {
             while (this._dirtyTrees.TryDequeue(out EntityLocalId dirtyTreeLocalId, out VhId dirtyTreeEventId))
             {

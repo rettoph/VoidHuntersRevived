@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
         IOnSpawnSystem<Thrustable>,
         IOnDespawnSystem<Thrustable>,
         IEventSystem<Tree_Clean>,
-        IOnStepSystem
+        IStepSystem
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ISpace _space = space;
@@ -92,8 +92,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
             }
         }
 
-        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.ProcessInput)]
-        public void OnStep(Step step)
+        [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.ProcessInput)]
+        public void Step(Step step)
         {
             foreach (var ((localIds, enableds, helms, count), _) in this._entityQueryService.QueryEntities<EntityLocalId, Enabled, Helm>())
             {

@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Systems
     {
         void Initialize(ILockstepStrategy lockstep);
 
-        [RequireSequenceGroup<OnStepSequenceGroupEnum>]
+        [RequireSequenceGroup<StepSequenceGroupEnum>]
         void Synchronize(Step step);
     }
 }

@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
         IInputSubscriber<Input_Spam_Click>,
-        IOnTickSystem
+        ITickSystem
     {
         private bool _spamClick;
 
@@ -126,8 +126,8 @@ namespace VoidHuntersRevived.Game.Client.Systems
             });
         }
 
-        [SequenceGroup<OnTickSequenceGroupEnum>(OnTickSequenceGroupEnum.InputEvents)]
-        public void OnTick(Tick tick)
+        [SequenceGroup<TickSequenceGroupEnum>(TickSequenceGroupEnum.InputEvents)]
+        public void Tick(Tick tick)
         {
             if (this._spamClick)
             {

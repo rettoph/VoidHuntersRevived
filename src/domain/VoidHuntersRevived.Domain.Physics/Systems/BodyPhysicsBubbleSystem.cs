@@ -17,7 +17,7 @@ using BodyComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Body;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    public class BodyPhysicsBubbleSystem(IEntityQueryService entityQueryService, ISpace space) : ISceneSystem, IOnStepSystem, IOnDespawnSystem<Enabled>
+    public class BodyPhysicsBubbleSystem(IEntityQueryService entityQueryService, ISpace space) : ISceneSystem, IStepSystem, IOnDespawnSystem<Enabled>
     {
         private static readonly Fix64 _two = (Fix64)2;
 
@@ -26,8 +26,8 @@ namespace VoidHuntersRevived.Domain.Physics.Systems
         private FixRectangle[] _bubbleBuffer = new FixRectangle[8];
         private int _bubbleBufferCount = 0;
 
-        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SyncronizeEntities)]
-        public void OnStep(Step step)
+        [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.SyncronizeEntities)]
+        public void Step(Step step)
         {
             this._bubbleBufferCount = 0;
             foreach (var ((bubbles, bodyComponents, count), _) in this._entityQueryService.QueryEntities<PhysicsBubble, BodyComponent>())

@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities.Events
 {
-    internal class TestDepawnInput : IInputData
+    public class TestDepawnInput : IInputData
     {
         public bool IsPredictable => true;
 

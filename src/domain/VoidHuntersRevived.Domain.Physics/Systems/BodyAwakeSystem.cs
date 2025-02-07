@@ -10,7 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    public sealed class BodyAwakeSystem : ISceneSystem, IOnStepSystem
+    public sealed class BodyAwakeSystem : ISceneSystem, IStepSystem
     {
         private readonly ILogger _logger;
         private readonly IEntityQueryService _entityQueryService;
@@ -31,8 +31,8 @@ namespace VoidHuntersRevived.Domain.Physics.Systems
             this._space.OnBodyAwakeChanged += this.HandleBodyAwakeChanged;
         }
 
-        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SyncronizeEntities)]
-        public void OnStep(Step step)
+        [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.SyncronizeEntities)]
+        public void Step(Step step)
         {
             //foreach (var ((ids, awakes, count), _) in _entities.QueryEntities<EntityId, Awake>())
             //{

@@ -13,7 +13,7 @@ using FixtureComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Fix
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    public sealed class BodyLocationSystem : ISceneSystem, IOnStepSystem
+    public sealed class BodyLocationSystem : ISceneSystem, IStepSystem
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;
@@ -29,8 +29,8 @@ namespace VoidHuntersRevived.Domain.Physics.Systems
         }
 
 
-        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SyncronizeEntities)]
-        public void OnStep(Step step)
+        [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.SyncronizeEntities)]
+        public void Step(Step step)
         {
             foreach (var ((localIds, bodyComponents, enableds, awakes, count), _) in this._entityQueryService.QueryEntities<EntityLocalId, BodyComponent, Enabled, Awake>())
             {

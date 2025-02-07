@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
         ILockstepStrategy strategy,
         INetScope<IStrategy> scope
     ) : ISceneSystem,
-        IOnTickSystem,
+        ITickSystem,
         IEventSystem<UserJoined>
     {
         private readonly INetScope<IStrategy> _scope = scope;
@@ -57,8 +57,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
             }).AddRecipient(user.NetPeer);
         }
 
-        [SequenceGroup<OnTickSequenceGroupEnum>(OnTickSequenceGroupEnum.PublishEvents)]
-        public void OnTick(Tick tick)
+        [SequenceGroup<TickSequenceGroupEnum>(TickSequenceGroupEnum.PublishEvents)]
+        public void Tick(Tick tick)
         {
             // Broadcast the current tick to all connected peers
             this._scope.CreateMessage(in tick)

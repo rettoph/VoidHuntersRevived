@@ -23,15 +23,15 @@ namespace VoidHuntersRevived.Domain.Ships.Systems
         ILogger logger,
         INodeSocketService socketService
     ) : ISceneSystem,
-        IOnStepSystem
+        IStepSystem
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ISpace _space = space;
         private readonly ILogger _logger = logger;
         private readonly INodeSocketService _socketService = socketService;
 
-        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.ProcessInput)]
-        public void OnStep(Step step)
+        [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.ProcessInput)]
+        public void Step(Step step)
         {
             foreach (var ((localIds, tacticals, tractorBeamEmitters, count), _) in this._entityQueryService.QueryEntities<EntityLocalId, Tactical, TractorBeamEmitter>())
             {

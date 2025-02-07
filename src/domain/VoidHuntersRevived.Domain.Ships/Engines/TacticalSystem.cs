@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Ships.Systems
         IEntityQueryService entityQueryService
     ) : ISceneSystem,
         IEventSystem<Tactical_SetTarget>,
-        IOnStepSystem
+        IStepSystem
     {
         private static readonly Fix64 _aimDamping = Fix64.One / (Fix64)32;
 
@@ -35,8 +35,8 @@ namespace VoidHuntersRevived.Domain.Ships.Systems
             }
         }
 
-        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SyncronizeEntities)]
-        public void OnStep(Step step)
+        [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.SyncronizeEntities)]
+        public void Step(Step step)
         {
             foreach (var ((tacticals, count), _) in this._entityQueryService.QueryEntities<Tactical>())
             {

@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         private readonly Lazy<ILoggerService> _loggerService;
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
-        private readonly ActionSequenceGroup<OnStepSequenceGroupEnum, Step> _stepActions;
+        private readonly ActionSequenceGroup<StepSequenceGroupEnum, Step> _stepActions;
         private bool _disposed = false;
 
         protected ILogger logger => this._logger ??= this._loggerService.Value.GetLogger(this.GetType());
@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this._loggerService = loggerService;
             this._enqueued = new Queue<EventDto>();
             this._publishers = [];
-            this._stepActions = new ActionSequenceGroup<OnStepSequenceGroupEnum, Step>(false);
+            this._stepActions = new ActionSequenceGroup<StepSequenceGroupEnum, Step>(false);
 
             this.Type = type;
 
@@ -84,7 +84,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             this._stepActions.Invoke(step);
         }
 
-        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.PublishEvents)]
+        [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.PublishEvents)]
         private void Step_PublishEvents(Step step)
         {
             while (this._enqueued.TryDequeue(out EventDto? enqueued))

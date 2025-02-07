@@ -5,9 +5,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Systems
 {
-    public interface IOnTickSystem : ISceneSystem
+    public interface ITickSystem : ISceneSystem
     {
-        [RequireSequenceGroup<OnTickSequenceGroupEnum>]
-        void OnTick(Tick tick);
+        [RequireSequenceGroup<TickSequenceGroupEnum>]
+        void Tick(Tick tick);
     }
 }

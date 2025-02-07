@@ -7,12 +7,12 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    public sealed class SpaceSystem(ISpace space) : ISceneSystem, IOnStepSystem
+    public sealed class SpaceSystem(ISpace space) : ISceneSystem, IStepSystem
     {
         private readonly ISpace _space = space;
 
-        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.StepSpace)]
-        public void OnStep(Step step)
+        [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.StepSpace)]
+        public void Step(Step step)
         {
             this._space.Step(step);
         }

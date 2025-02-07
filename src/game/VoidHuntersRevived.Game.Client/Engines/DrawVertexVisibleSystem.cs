@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
     public class DrawVertexVisibleSystem(
         IEntityQueryService entityQueryService
     ) : ISceneSystem,
-        IOnStepSystem,
+        IStepSystem,
         IOnSpawnSystem<VertexVisible>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
@@ -49,8 +49,8 @@ namespace VoidHuntersRevived.Game.Client.Systems
         /// Copy Svelto entity data to vertex
         /// </summary>
         /// <param name="param"></param>
-        [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SyncronizeEntities)]
-        public void OnStep(Step step)
+        [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.SyncronizeEntities)]
+        public void Step(Step step)
         {
             foreach (var ((vertices, colorSchemes, fixtures, _, count), _) in this._entityQueryService.QueryEntities<VertexVisible, ColorScheme, Fixture>())
             {

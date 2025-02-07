@@ -4,9 +4,9 @@ using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Systems
 {
-    public interface IOnStepSystem : ISceneSystem
+    public interface IStepSystem : ISceneSystem
     {
-        [RequireSequenceGroup<OnStepSequenceGroupEnum>]
-        void OnStep(Step step);
+        [RequireSequenceGroup<StepSequenceGroupEnum>]
+        void Step(Step step);
     }
 }
