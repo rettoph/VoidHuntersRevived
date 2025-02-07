@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Systems;
 using Guppy.Game.ImGui.Common;
@@ -9,15 +10,28 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    public sealed class DebugEngineSystem(IImGui imgui) : ISceneSystem<IStrategy>, IDebugSystem
+    public sealed class DebugEngineSystem(
+        IStrategy strategy,
+        IImGui imgui
+    ) : ISceneSystem,
+        IInitializeSystem,
+        IDeinitializeSystem,
+        IDebugSystem
     {
+        private readonly IStrategy _strategy = strategy;
         private readonly IImGui _imgui = imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _debugActions = new(true);
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
-        public void Initialize(IStrategy strategy)
+        public void Initialize()
         {
-            this._debugActions.Add(strategy.Systems);
+            this._debugActions.Add(this._strategy.Systems);
+        }
+
+        [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.PreInitialize)]
+        public void Deinitialize()
+        {
+            this._debugActions.Remove(this._strategy.Systems);
         }
 
         [SequenceGroup<DebugSequenceGroupEnum>(DebugSequenceGroupEnum.Debug)]

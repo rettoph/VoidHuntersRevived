@@ -13,8 +13,8 @@ using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common.Exceptions;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
@@ -49,7 +49,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
 
             this._logger.Verbose("Selecting {NodeGlobalId} with TractorBeamEmitter {TractorBeamEmitterGlobalId}", nodeGlobalId, tractorBeamEmitterGlobalId);
-            this.Strategy.Publish(
+            this._strategy.Publish(
                 sourceId: NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId),
                 data: new TractorBeamEmitter_Select()
                 {
@@ -106,7 +106,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             while (this._deselecteds.TryDequeue(out (EntityLocalId localId, EntityLocalId headLocalId, Body body) deselected))
             {
                 this._logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterLocalId}", deselected.localId, tractorBeamEmitterGlobalId);
-                this.Strategy.Publish(new EventDto()
+                this._strategy.Publish(new EventDto()
                 {
                     SourceId = nextSourceId,
                     Data = new TractorBeamEmitter_Deselect()

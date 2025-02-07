@@ -14,17 +14,17 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
 {
     public class LockstepServer_UserSystem(
+        ILockstepStrategy strategy,
         INetScope<IStrategy> scope
     ) : ISceneSystem,
-        IInitializeSystem<ILockstepStrategy>
+        IInitializeSystem
     {
         private readonly INetScope _scope = scope;
-        private ILockstepStrategy _strategy = null!;
+        private readonly ILockstepStrategy _strategy = strategy;
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
-        public void Initialize(ILockstepStrategy strategy)
+        public void Initialize()
         {
-            this._strategy = strategy;
             this._scope.Group.Users.OnUserJoined += this.HandleUserJoined;
         }
 

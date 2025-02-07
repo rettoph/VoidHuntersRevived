@@ -35,7 +35,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public LockstepStrategy(
             ISettingService settings,
-            Lazy<ILoggerService> loggerService) : base(StrategyTypeEnum.Lockstep, loggerService)
+            IGuppyScope scope,
+            Lazy<ILoggerService> loggerService) : base(StrategyTypeEnum.Lockstep, scope, loggerService)
         {
             this._tickActions = new ActionSequenceGroup<OnTickSequenceGroupEnum, Tick>(false);
             this._history = [];
@@ -54,9 +55,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             this.CurrentTick = Tick.First([]);
         }
 
-        public override void Initialize(ISimulation simulation)
+        protected override void Initialize()
         {
-            base.Initialize(simulation);
+            base.Initialize();
 
             this._tickActions.Add([this.Tick_PublishEvents]);
             this._tickActions.Add(this.Systems);

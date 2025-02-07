@@ -90,13 +90,13 @@ namespace VoidHuntersRevived.Presentation.Client
 
                 if (this._internalServer)
                 {
-                    engine.Scenes.Create<ServerGameScene>(builder =>
+                    engine.SceneService.CreateAndInitialize<ServerGameScene>(builder =>
                     {
                         builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Server, NetScopeIds.Game);
                     });
                 }
 
-                engine.Scenes.Create<MultiplayerGameScene>(builder =>
+                engine.SceneService.CreateAndInitialize<MultiplayerGameScene>(builder =>
                 {
                     builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Client, NetScopeIds.Game);
                 });

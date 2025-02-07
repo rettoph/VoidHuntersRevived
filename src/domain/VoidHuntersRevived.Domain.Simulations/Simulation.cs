@@ -16,16 +16,22 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public IReadOnlyCollection<IStrategy> Strategies { get; }
 
-        public Simulation(VhId id, IEnumerable<IStrategy> strategies)
+        public Simulation(VhId id, Func<ISimulation, IEnumerable<IStrategy>> strategiesBuilder)
         {
-            this._strategies = strategies.ToList();
+            this._strategies = strategiesBuilder(this).ToList();
 
             this.Id = id;
             this.Strategies = new ReadOnlyCollection<IStrategy>(this._strategies);
 
+
+        }
+
+        public void Initialize()
+        {
+            // Ensure all internal strategies are initialized
             foreach (IStrategy strategy in this._strategies)
             {
-                strategy.Initialize(this);
+                strategy.Initialize();
             }
         }
 

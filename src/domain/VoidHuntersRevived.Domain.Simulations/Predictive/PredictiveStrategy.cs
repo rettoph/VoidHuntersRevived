@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Collections;
 using Guppy.Core.Logging.Common.Services;
 using Microsoft.Xna.Framework;
@@ -15,7 +16,8 @@ using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     public sealed class PredictiveStrategy(
-        Lazy<ILoggerService> loggerService) : Strategy(StrategyTypeEnum.Predictive, loggerService), IPredictiveStrategy
+        IGuppyScope scope,
+        Lazy<ILoggerService> loggerService) : Strategy(StrategyTypeEnum.Predictive, scope, loggerService), IPredictiveStrategy
     {
         private static readonly Pool<PredictedEvent> _predictionPool = new(ushort.MaxValue);
         private ILockstepStrategy _lockstep = null!;
@@ -25,11 +27,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private readonly DictionaryQueue<VhId, PredictedEvent> _predictedEvents = new();
         private readonly Queue<EventDto> _confirmedEvents = new();
 
-        public override void Initialize(ISimulation simulation)
+        protected override void Initialize()
         {
-            base.Initialize(simulation);
+            base.Initialize();
 
-            this._lockstep = simulation.First(StrategyTypeEnum.Lockstep) as ILockstepStrategy ?? throw new NotImplementedException();
+            this._lockstep = this.Simulation.First(StrategyTypeEnum.Lockstep) as ILockstepStrategy ?? throw new NotImplementedException();
             this._lockstep.OnEvent += this.HandleLockstepEvent;
             this._synchronizations = this.Systems.OfType<IPredictiveSynchronizationSystem>().ToArray();
 

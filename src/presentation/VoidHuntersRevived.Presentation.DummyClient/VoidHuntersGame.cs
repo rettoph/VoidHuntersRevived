@@ -83,7 +83,7 @@ namespace VoidHuntersRevived.Presentation.Client
                     }
                 ).Start();
 
-                engine.Scenes.Create<MultiplayerGameScene>(builder =>
+                engine.SceneService.CreateAndInitialize<MultiplayerGameScene>(builder =>
                 {
                     builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Client, NetScopeIds.Game);
                 });

@@ -1,8 +1,9 @@
-﻿using VoidHuntersRevived.Game.Core;
+﻿using Guppy.Core.Common;
+using VoidHuntersRevived.Game.Core;
 
 namespace VoidHuntersRevived.Game.Server
 {
-    public sealed class ServerGameScene : VoidHuntersGameScene
+    public sealed class ServerGameScene(IGuppyScope scope) : VoidHuntersGameScene(scope)
     {
     }
 }

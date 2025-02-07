@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Services;
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Logging.Common.Services;
 using Guppy.Game.Common;
@@ -32,7 +33,8 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Strategy(
             StrategyTypeEnum type,
-            Lazy<ILoggerService> loggerService)
+            IGuppyScope scope,
+            Lazy<ILoggerService> loggerService) : base(scope)
         {
             this._loggerService = loggerService;
             this._enqueued = new Queue<EventDto>();
@@ -47,18 +49,21 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Visible = false;
         }
 
-        public virtual void Initialize(ISimulation simulation)
+        protected override void Initialize()
         {
-            this.Simulation = simulation;
+            this.Simulation = this.Resolve<ISimulation>();
 
-            EventPublisher.PopulatePublishers(this.Systems, this._loggerService.Value, this._publishers);
+            base.Initialize();
 
             this._stepActions.Add([this.Step_PublishEvents]); // Special case - add the internal queue submission method
             this._stepActions.Add(this.Systems);
+        }
 
-            // Call all engine initializers
-            Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<OnInitializeSequenceGroupEnum>.Invoke(this.Systems, initializeDelegate, false, [this]);
+        protected override void InitializeSystems(IScopedSystemService systemService)
+        {
+            EventPublisher.PopulatePublishers(systemService, this._loggerService.Value, this._publishers);
+
+            base.InitializeSystems(systemService);
         }
 
         public override void Update(GameTime gameTime)

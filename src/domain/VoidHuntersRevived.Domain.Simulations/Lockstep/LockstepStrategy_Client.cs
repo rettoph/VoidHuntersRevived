@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common;
 using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Resources.Common.Services;
@@ -13,7 +14,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         INetScope<IStrategy> netScope,
         TickBuffer ticks,
         ISettingService settings,
-        Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, loggerService)
+        IGuppyScope scope,
+        Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, scope, loggerService)
     {
         private readonly INetScope<IStrategy> _netScope = netScope;
 

@@ -40,7 +40,7 @@ AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
     engine.Dispose();
 });
 
-engine.Scenes.Create<ServerGameScene>(builder =>
+engine.SceneService.CreateAndInitialize<ServerGameScene>(builder =>
 {
     builder.RegisterNetScope<IStrategy>(PeerTypeEnum.Server, NetScopeIds.Game);
 });
@@ -61,5 +61,5 @@ while (true)
         continue;
     }
 
-    engine.Scenes.GetAll().Last().Resolve<ICommandService>().Invoke(input);
+    engine.SceneService.GetAll().Last().Resolve<ICommandService>().Invoke(input);
 }

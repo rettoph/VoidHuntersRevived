@@ -1,4 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Core.Logging.Common.Services;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -7,13 +9,13 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class EntityTemplateService : StrategySystem, IEntityTemplateService, IOnInitializeSystem
+    public class EntityTemplateService : StrategySystem, IEntityTemplateService, IInitializeSystem
     {
+        private readonly IStrategy _strategy;
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityTemplateFragmentService _entityTemplateFragmentService;
         private readonly Lazy<IComponentSerializerService> _componentSerializerService;
@@ -22,6 +24,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly Dictionary<Key<IEntityTemplate>, EntityTemplate> _templates;
 
         public EntityTemplateService(
+            IStrategy strategy,
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityTemplateFragmentService entityTemplateFragmentService,
             ILoggerService loggerService,
@@ -29,6 +32,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             EnginesRoot enginesRoot,
             EntitiesDB entitiesDb)
         {
+            this._strategy = strategy;
             this._uniqueNumberProvider = uniqueNumberProvider;
             this._entityTemplateFragmentService = entityTemplateFragmentService;
             this._componentSerializerService = componentSerializerService;
@@ -54,14 +58,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     });
         }
 
-        [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.PreInitialize)]
-        public void OnInitialize(IStrategy strategy)
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
+        public void Initialize()
         {
             foreach (EntityTemplate entityTemplate in this._templates.Values)
             {
                 entityTemplate.Initialize(
                     entitiesDB: this._entitiesDb,
-                    systemService: this.Strategy.Systems,
+                    systemService: this._strategy.Systems,
                     componentSerializerService: this._componentSerializerService.Value);
             }
         }

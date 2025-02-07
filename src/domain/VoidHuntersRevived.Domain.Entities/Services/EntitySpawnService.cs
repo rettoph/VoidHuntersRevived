@@ -1,9 +1,11 @@
 ﻿using Guppy.Core.Logging.Common;
+using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
@@ -12,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IStrategy strategy,
         IEntityTemplateService entityTemplateService,
         IEntityService entityService,
-        ILogger logger) : IEntitySpawnService, IPrivateEntitySpawnService
+        ILogger logger) : StrategySystem, ISceneSystem, IEntitySpawnService, IPrivateEntitySpawnService
     {
         private readonly IStrategy _strategy = strategy;
         private readonly EntityQueryService _entityQueryService = entityQueryService;

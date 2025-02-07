@@ -1,6 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
-using Guppy.Core.Common.Systems;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Systems;
@@ -14,11 +12,11 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 namespace VoidHuntersRevived.Game.Client.Systems.Debugging
 {
     public class LockstepStrategyDebugSystem(
+        ILockstepStrategy strategy,
         IImGui imgui,
         IImGuiObjectExplorerService objectExplorer,
         IScene guppy
     ) : ISceneSystem,
-        IInitializeSystem<ILockstepStrategy>,
         IImGuiSystem,
         IDebugSystem
     {
@@ -27,15 +25,9 @@ namespace VoidHuntersRevived.Game.Client.Systems.Debugging
         private readonly IImGui _imgui = imgui;
         private readonly IImGuiObjectExplorerService _objectExplorer = objectExplorer;
         private readonly IScene _scene = guppy;
+        private readonly ILockstepStrategy _strategy = strategy;
         private bool _historyViewerEnabled;
         private string _filter = string.Empty;
-        private ILockstepStrategy _strategy = null!;
-
-        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
-        public void Initialize(ILockstepStrategy strategy)
-        {
-            this._strategy = strategy;
-        }
 
         [SequenceGroup<DebugSequenceGroupEnum>("Strategy")]
         public void DrawDebug(GameTime gameTime)

@@ -1,6 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
-using Guppy.Core.Common.Systems;
 using Guppy.Core.Network.Common;
 using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
@@ -14,21 +12,15 @@ using VoidHuntersRevived.Domain.Simulations.Messages;
 namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
 {
     public class LockstepServer_TickSystem(
+        ILockstepStrategy strategy,
         INetScope<IStrategy> scope
     ) : ISceneSystem,
-        IInitializeSystem<ILockstepStrategy>,
         IOnTickSystem,
         IEventSystem<UserJoined>
     {
         private readonly INetScope<IStrategy> _scope = scope;
         private readonly List<Tick> _history = [];
-        private ILockstepStrategy _strategy = null!;
-
-        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
-        public void Initialize(ILockstepStrategy strategy)
-        {
-            this._strategy = strategy;
-        }
+        private readonly ILockstepStrategy _strategy = strategy;
 
         public void Process(VhId id, UserJoined data)
         {

@@ -1,7 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Collections;
-using Guppy.Core.Common.Enums;
-using Guppy.Core.Common.Systems;
 using Guppy.Core.Logging.Common;
 using Guppy.Game.Common.Systems;
 using Svelto.ECS;
@@ -23,12 +21,12 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 namespace VoidHuntersRevived.Domain.Pieces.Systems
 {
     public sealed class NodeFixtureSystem(
+        IStrategy strategy,
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
         INodeSocketService socketService,
         ILogger logger
     ) : ISceneSystem,
-        IInitializeSystem<IStrategy>,
         IOnSpawnSystem<Node, Fixture>,
         IOnDespawnSystem<Node, Fixture>,
         IOnStepSystem
@@ -38,13 +36,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;
         private readonly DictionaryQueue<EntityLocalId, VhId> _dirtyTrees = new();
-        private IStrategy _strategy = null!;
-
-        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
-        public void Initialize(IStrategy strategy)
-        {
-            this._strategy = strategy;
-        }
+        private readonly IStrategy _strategy = strategy;
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group02)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, ref Entity<Node, Fixture> entity)

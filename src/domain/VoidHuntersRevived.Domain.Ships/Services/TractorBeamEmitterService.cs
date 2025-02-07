@@ -8,12 +8,14 @@ using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
     public sealed partial class TractorBeamEmitterService(
+        IStrategy strategy,
         ISpace space,
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
@@ -22,10 +24,13 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         ITreeService treeService,
         INodeSocketService socketService,
         ITeamService teamService,
-        ILogger logger) : StrategySystem, ITractorBeamEmitterService
+        ILogger logger
+    ) : StrategySystem,
+        ITractorBeamEmitterService
     {
         private static readonly Fix64 _queryRadius = (Fix64)3;
 
+        private readonly IStrategy _strategy = strategy;
         private readonly ISpace _space = space;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;

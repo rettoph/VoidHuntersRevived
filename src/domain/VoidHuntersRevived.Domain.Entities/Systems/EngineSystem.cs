@@ -1,20 +1,21 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {
-    public class EngineSystem(EnginesRoot enginesRoot) : ISceneSystem, IOnInitializeSystem<IStrategy>
+    public class EngineSystem(IStrategy strategy, EnginesRoot enginesRoot) : ISceneSystem, IInitializeSystem
     {
+        private readonly IStrategy _strategy = strategy;
         private readonly EnginesRoot _enginesRoot = enginesRoot;
 
-        [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Begin)]
-        public void OnInitialize(IStrategy strategy)
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
+        public void Initialize()
         {
-            foreach (IEngine engine in strategy.Systems.OfType<IEngine>())
+            foreach (IEngine engine in this._strategy.Systems.OfType<IEngine>())
             {
                 this._enginesRoot.AddEngine(engine);
             }

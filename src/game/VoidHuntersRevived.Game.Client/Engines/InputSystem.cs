@@ -1,4 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Core.Network.Common;
 using Guppy.Game.Common.Systems;
 using Guppy.Game.Graphics.Common;
@@ -26,10 +28,11 @@ using VoidHuntersRevived.Game.Core.Events;
 namespace VoidHuntersRevived.Game.Client.Systems
 {
     public class InputSystem(
+        IStrategy strategy,
         ICamera2D camera,
         INetScope<IStrategy> netScope
     ) : ISceneSystem,
-        IOnInitializeSystem<IStrategy>,
+        IInitializeSystem,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
         IInputSubscriber<Input_Spam_Click>,
@@ -39,18 +42,17 @@ namespace VoidHuntersRevived.Game.Client.Systems
 
         private readonly ICamera2D _camera = camera;
         private readonly INetScope<IStrategy> _netScope = netScope;
+        private readonly IStrategy _strategy = strategy;
 
         private IEntityQueryService _readEntityQueryService = null!;
         private ITractorBeamEmitterService _readTractorBeamEmitterService = null!;
         private INodeSocketService _readSocketService = null!;
-        private IStrategy _strategy = null!;
 
         private Vector2 CurrentTargetPosition => this._camera.Unproject(Mouse.GetState().Position.ToVector2());
 
-        [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
-        public void OnInitialize(IStrategy strategy)
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
+        public void Initialize()
         {
-            this._strategy = strategy;
             IStrategy readStrategy = this._strategy.Simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
 
             this._readEntityQueryService = readStrategy.Resolve<IEntityQueryService>();

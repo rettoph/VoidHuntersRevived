@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Peers;
@@ -11,13 +12,13 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Server.Components.Scene
 {
-    public class ServerPeerSystem(IServerPeer server, INetScope<IStrategy> scope) : ISceneSystem<ServerGameScene>, IUpdateSystem
+    public class ServerPeerSystem(IServerPeer server, INetScope<IStrategy> scope) : ISceneSystem, IInitializeSystem, IUpdateSystem
     {
         private readonly IServerPeer _server = server;
         private readonly INetScope<IStrategy> _scope = scope;
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
-        public void Initialize(ServerGameScene scene)
+        public void Initialize()
         {
             this._server.Start(1337, Claim.Public("username", "System"));
             this._server.Users.OnUserConnected += this.HandleUserConnected;

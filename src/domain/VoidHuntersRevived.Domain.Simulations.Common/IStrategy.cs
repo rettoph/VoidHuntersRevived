@@ -9,8 +9,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Common
         StrategyTypeEnum Type { get; }
         ISimulation Simulation { get; }
 
-        void Initialize(ISimulation simulation);
-
         /// <summary>
         /// Publish an event
         /// </summary>

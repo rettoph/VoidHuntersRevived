@@ -7,12 +7,12 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
-    public class ConfigureSimulationsSystem(ISimulationService simulationService) : ISceneSystem<LocalGameScene>
+    public class ConfigureSimulationsSystem(ISimulationService simulationService) : ISceneSystem
     {
         private readonly ISimulationService _simulationService = simulationService;
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
-        public void Initialize(LocalGameScene scene)
+        public void Initialize()
         {
             this._simulationService.Create(VhId.Empty, StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep);
         }

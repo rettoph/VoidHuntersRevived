@@ -1,11 +1,11 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 
@@ -14,7 +14,9 @@ namespace VoidHuntersRevived.Domain.Teams.Services
     public class TeamService(
         IEntityTemplateService entityTemplateService,
         IPrivateEntitySpawnService privateEntitySpawnService
-    ) : StrategySystem, ITeamService, IOnInitializeSystem
+    ) : StrategySystem,
+        ITeamService,
+        IInitializeSystem
     {
         private Team _defaultTeamComponent;
         private readonly Dictionary<Id<Team>, Team> _teamComponents = [];
@@ -22,8 +24,8 @@ namespace VoidHuntersRevived.Domain.Teams.Services
         private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly IPrivateEntitySpawnService _privateEntitySpawnService = privateEntitySpawnService;
 
-        [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
-        public void OnInitialize(IStrategy strategy)
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
+        public void Initialize()
         {
             this.BuildTeams();
         }

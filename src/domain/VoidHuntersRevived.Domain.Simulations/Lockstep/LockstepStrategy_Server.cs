@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common;
 using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
@@ -13,14 +14,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     public sealed class LockstepStrategy_Server(
         ISettingService settings,
-        Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, loggerService),
+        IGuppyScope scope,
+        Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, scope, loggerService),
             ISubscriber<INetIncomingMessage<EventDto>>
     {
         private readonly List<EventDto> _inputs = [];
 
-        public override void Initialize(ISimulation simulation)
+        protected override void Initialize()
         {
-            base.Initialize(simulation);
+            base.Initialize();
 
             this.Input(VhId.NewId(), new Simulation_Begin());
         }

@@ -1,28 +1,20 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
-using Guppy.Core.Common.Systems;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Systems;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Extensions;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Simulations;
+using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Game.Client.Systems.Debugging
 {
-    public class StrategyDebugSystem(IImGui imgui) :
+    public class StrategyDebugSystem(IStrategy strategy, IImGui imgui) :
         ISceneSystem,
-        IInitializeSystem<Strategy>,
         IDebugSystem
     {
         private readonly IImGui _imgui = imgui;
-        private Strategy _strategy = null!;
-
-        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
-        public void Initialize(Strategy strategy)
-        {
-            this._strategy = strategy;
-        }
+        private readonly Strategy _strategy = (Strategy)strategy;
 
         [SequenceGroup<DebugSequenceGroupEnum>("Strategy")]
         public void DrawDebug(GameTime gameTime)
