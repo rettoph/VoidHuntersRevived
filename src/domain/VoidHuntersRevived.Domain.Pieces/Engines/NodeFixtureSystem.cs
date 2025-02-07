@@ -6,7 +6,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -24,8 +24,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
         IEntitySpawnService entitySpawnService,
         INodeSocketService socketService,
         ILogger logger) : StrategySystem,
-            IOnSpawnEngine<Node, Fixture>,
-            IOnDespawnEngine<Node, Fixture>,
+            IOnSpawnSystem<Node, Fixture>,
+            IOnDespawnSystem<Node, Fixture>,
             IOnStepSystem
     {
         private readonly INodeSocketService _socketService = socketService;

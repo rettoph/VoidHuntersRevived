@@ -2,7 +2,7 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
         IEntityQueryService entityQueryService
     ) : StrategySystem,
             IOnStepSystem,
-            IOnSpawnEngine<VertexVisible>
+            IOnSpawnSystem<VertexVisible>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 

@@ -3,7 +3,7 @@ using Guppy.Core.Logging.Common;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions.Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -16,8 +16,8 @@ using FixtureComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Fix
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
     public sealed class RigidFixtureSystem : StrategySystem,
-        IOnSpawnEngine<Rigid, FixtureComponent>,
-        IOnDespawnEngine<Rigid, FixtureComponent>
+        IOnSpawnSystem<Rigid, FixtureComponent>,
+        IOnDespawnSystem<Rigid, FixtureComponent>
     {
         private readonly ISpace _space;
         private readonly IEntityQueryService _entityQueryService;

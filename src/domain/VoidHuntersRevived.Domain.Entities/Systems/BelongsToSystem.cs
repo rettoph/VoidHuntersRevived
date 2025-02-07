@@ -5,7 +5,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
     /// </summary>
     /// <typeparam name="TBelongsTo"></typeparam>
     /// <typeparam name="TParent"></typeparam>
-    public sealed class BelongsToSystem<TParent, TBelongsTo>(IEntityQueryService entityQueryService, ILogger logger) : StrategySystem, IOnSpawnEngine<TBelongsTo>
+    public sealed class BelongsToSystem<TParent, TBelongsTo>(IEntityQueryService entityQueryService, ILogger logger) : StrategySystem, IOnSpawnSystem<TBelongsTo>
         where TParent : unmanaged, IHasMany<TBelongsTo>
         where TBelongsTo : unmanaged, IBelongsTo<TParent, TBelongsTo>
     {

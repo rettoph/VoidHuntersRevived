@@ -5,7 +5,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
     /// </summary>
     /// <typeparam name="TSecondary"></typeparam>
     /// <typeparam name="TParent"></typeparam>
-    public sealed class CompositeBelongsToEngine<TParent, TPrimary, TSecondary>(IEntityQueryService entityQueryService, ILogger logger) : StrategySystem, IOnSpawnEngine<TPrimary, TSecondary>
+    public sealed class CompositeBelongsToEngine<TParent, TPrimary, TSecondary>(IEntityQueryService entityQueryService, ILogger logger) : StrategySystem, IOnSpawnSystem<TPrimary, TSecondary>
         where TParent : unmanaged, IHasMany<TPrimary>
         where TPrimary : unmanaged, IBelongsTo<TParent, TPrimary>
         where TSecondary : unmanaged, ICompositeBelongsTo<TParent, TPrimary, TSecondary>

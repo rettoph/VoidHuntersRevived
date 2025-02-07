@@ -2,7 +2,7 @@
 using Guppy.Core.Logging.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
     public sealed class TreeSystem(
         IEntitySpawnService entitySpawnService,
         ILogger logger) : StrategySystem,
-        IOnDespawnEngine<Tree>
+        IOnDespawnSystem<Tree>
     {
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;

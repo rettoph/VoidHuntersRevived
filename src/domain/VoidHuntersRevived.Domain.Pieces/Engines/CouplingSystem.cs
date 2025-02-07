@@ -2,7 +2,7 @@
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
@@ -11,8 +11,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 namespace VoidHuntersRevived.Domain.Pieces.Systems
 {
     public sealed class CouplingSystem(INodeSocketService socketService) : StrategySystem,
-        IOnSpawnEngine<Coupling>,
-        IOnDespawnEngine<Coupling>
+        IOnSpawnSystem<Coupling>,
+        IOnDespawnSystem<Coupling>
     {
         private readonly INodeSocketService _socketService = socketService;
 

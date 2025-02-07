@@ -4,7 +4,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
@@ -19,8 +19,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 namespace VoidHuntersRevived.Domain.Pieces.Systems
 {
     public class ThrustableSystem(IEntityQueryService entityQueryService, ISpace space) : StrategySystem,
-        IOnSpawnEngine<Thrustable>,
-        IOnDespawnEngine<Thrustable>,
+        IOnSpawnSystem<Thrustable>,
+        IOnDespawnSystem<Thrustable>,
         IEventEngine<Tree_Clean>,
         IOnStepSystem
     {

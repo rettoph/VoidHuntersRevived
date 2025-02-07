@@ -7,7 +7,7 @@ using Guppy.Core.Common.Interfaces;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Engines;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Entities.Utilities
@@ -94,7 +94,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnSpawnEngine<TComponent>[] _engines = engines.OfType<IOnSpawnEngine<TComponent>>().ToArray();
+        private readonly IOnSpawnSystem<TComponent>[] _engines = engines.OfType<IOnSpawnSystem<TComponent>>().ToArray();
 
         SequenceGroup<OnSpawnSequenceGroupEnum> IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -103,7 +103,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             ref TComponent component = ref this._entitiesDB.QueryEntityByIndex<TComponent>(entity.Index, entity.Group);
             Entity<TComponent> entityC = new(in entity, ref component);
 
-            foreach (IOnSpawnEngine<TComponent> engine in this._engines)
+            foreach (IOnSpawnSystem<TComponent> engine in this._engines)
             {
                 engine.OnSpawn(sourceEventId, entityTemplate, ref entityC);
             }
@@ -115,7 +115,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent2 : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnSpawnEngine<TComponent1, TComponent2>[] _engines = engines.OfType<IOnSpawnEngine<TComponent1, TComponent2>>().ToArray();
+        private readonly IOnSpawnSystem<TComponent1, TComponent2>[] _engines = engines.OfType<IOnSpawnSystem<TComponent1, TComponent2>>().ToArray();
 
         SequenceGroup<OnSpawnSequenceGroupEnum> IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -124,7 +124,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             var (component1s, component2s, _) = this._entitiesDB.QueryEntities<TComponent1, TComponent2>(entity.Group);
             Entity<TComponent1, TComponent2> entityC = new(in entity, ref component1s[entity.Index], ref component2s[entity.Index]);
 
-            foreach (IOnSpawnEngine<TComponent1, TComponent2> engine in this._engines)
+            foreach (IOnSpawnSystem<TComponent1, TComponent2> engine in this._engines)
             {
                 engine.OnSpawn(sourceEventId, entityTemplate, ref entityC);
             }
@@ -135,7 +135,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnDespawnEngine<TComponent>[] _engines = engines.OfType<IOnDespawnEngine<TComponent>>().ToArray();
+        private readonly IOnDespawnSystem<TComponent>[] _engines = engines.OfType<IOnDespawnSystem<TComponent>>().ToArray();
 
         SequenceGroup<OnDespawnSequenceGroupEnum> IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -144,7 +144,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             ref TComponent component = ref this._entitiesDB.QueryEntityByIndex<TComponent>(entity.Index, entity.Group);
             Entity<TComponent> entityC = new(in entity, ref component);
 
-            foreach (IOnDespawnEngine<TComponent> engine in this._engines)
+            foreach (IOnDespawnSystem<TComponent> engine in this._engines)
             {
                 engine.OnDespawn(sourceEventId, entityTemplate, ref entityC);
             }
@@ -156,7 +156,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent2 : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnDespawnEngine<TComponent1, TComponent2>[] _engines = engines.OfType<IOnDespawnEngine<TComponent1, TComponent2>>().ToArray();
+        private readonly IOnDespawnSystem<TComponent1, TComponent2>[] _engines = engines.OfType<IOnDespawnSystem<TComponent1, TComponent2>>().ToArray();
 
         SequenceGroup<OnDespawnSequenceGroupEnum> IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -165,7 +165,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             var (component1s, component2s, _) = this._entitiesDB.QueryEntities<TComponent1, TComponent2>(entity.Group);
             Entity<TComponent1, TComponent2> entityC = new(in entity, ref component1s[entity.Index], ref component2s[entity.Index]);
 
-            foreach (IOnDespawnEngine<TComponent1, TComponent2> engine in this._engines)
+            foreach (IOnDespawnSystem<TComponent1, TComponent2> engine in this._engines)
             {
                 engine.OnDespawn(sourceEventId, entityTemplate, ref entityC);
             }
