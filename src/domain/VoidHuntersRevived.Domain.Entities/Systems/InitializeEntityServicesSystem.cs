@@ -13,10 +13,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
     {
         private readonly EntityTemplateService _entityTemplateService = entityTemplateService;
 
-        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
         public void Initialize()
         {
-            // this._entityTemplateService.TestInitialize(strategy);
+            this._entityTemplateService.Initialize();
         }
     }
 }

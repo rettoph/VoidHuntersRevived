@@ -14,7 +14,6 @@ using VoidHuntersRevived.Domain.Physics.Serialization.Json;
 using VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters;
 using VoidHuntersRevived.Domain.Physics.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 
 namespace VoidHuntersRevived.Domain.Physics.Extensions
@@ -54,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
 
                     builder.RegisterSceneFilter<IPredictiveStrategy>(builder =>
                     {
-                        builder.RegisterEngine<BodyLocationPredictiveSynchronizationSystem>();
+                        builder.RegisterSceneSystem<BodyLocationPredictiveSynchronizationSystem>();
                     });
                 });
             });

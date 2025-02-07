@@ -1,26 +1,19 @@
-﻿using Guppy.Core.Logging.Common;
-using Guppy.Game.Common.Systems;
-using VoidHuntersRevived.Common;
+﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public partial class EntitySpawnService(
-        EntityQueryService entityQueryService,
         IStrategy strategy,
-        IEntityTemplateService entityTemplateService,
-        IEntityService entityService,
-        ILogger logger) : StrategySystem, ISceneSystem, IEntitySpawnService, IPrivateEntitySpawnService
+        IEntityQueryService entityQueryService
+    ) : IEntitySpawnService,
+        IPrivateEntitySpawnService
     {
         private readonly IStrategy _strategy = strategy;
-        private readonly EntityQueryService _entityQueryService = entityQueryService;
-        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
-        private readonly IEntityService _entityService = entityService;
-        private readonly ILogger _logger = logger;
+        private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
         EntityLocalId IEntitySpawnService.Spawn(VhId sourceId, Key<IEntityTemplate> entityTemplateKey, EntityGlobalId globalId)
         {

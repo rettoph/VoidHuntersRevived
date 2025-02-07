@@ -1,15 +1,25 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Core.Logging.Common;
+using Guppy.Game.Common.Systems;
+using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Events;
+using VoidHuntersRevived.Domain.Entities.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
-namespace VoidHuntersRevived.Domain.Entities.Services
+namespace VoidHuntersRevived.Domain.Entities.Systems
 {
-    public partial class EntitySpawnService :
+    public class EntitySpawnServiceEventSystem(
+        EntityQueryService entityQueryService,
+        IStrategy strategy,
+        IEntityService entityService,
+        IEntityTemplateService entityTemplateService,
+        ILogger logger
+    ) : ISceneSystem,
         IEventSystem<SpawnEntity>,
         IEventSystem<SpawnEntity<EntityInitializerDelegate>>,
         IEventSystem<SoftSpawnEntity>,
@@ -19,6 +29,12 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         IRevertEventEngine<DespawnEntity>,
         IEventSystem<HardDespawnEntity>
     {
+        private readonly EntityQueryService _entityQueryService = entityQueryService;
+        private readonly IStrategy _strategy = strategy;
+        private readonly IEntityService _entityService = entityService;
+        private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
+        private readonly ILogger _logger = logger;
+
         public void Process(VhId eventId, SpawnEntity data)
         {
             if (this._entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId existingLocalId) == true)

@@ -1,11 +1,11 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Svelto.ECS;
+using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Systems
 {
-    public interface IPredictiveSynchronizationSystem : IEngine
+    public interface IPredictiveSynchronizationSystem : ISceneSystem
     {
         void Initialize(ILockstepStrategy lockstep);
 

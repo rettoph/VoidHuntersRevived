@@ -1,20 +1,25 @@
 ﻿using Guppy.Core.Logging.Common;
+using Svelto.ECS;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Entities.Common.Components;
+using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
+using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
-    public sealed partial class TractorBeamEmitterService(
+    public partial class TractorBeamEmitterService(
         IStrategy strategy,
         ISpace space,
         IEntityQueryService entityQueryService,
@@ -25,8 +30,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         INodeSocketService socketService,
         ITeamService teamService,
         ILogger logger
-    ) : StrategySystem,
-        ITractorBeamEmitterService
+    ) : ITractorBeamEmitterService
     {
         private static readonly Fix64 _queryRadius = (Fix64)3;
 
@@ -40,6 +44,105 @@ namespace VoidHuntersRevived.Domain.Ships.Services
         private readonly ITeamService _teamService = teamService;
         private readonly INodeSocketService _socketService = socketService;
         private readonly ILogger _logger = logger;
+
+        public void Select(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, EntityGlobalId nodeGlobalId)
+        {
+            if (this._entityQueryService.IsSpawned(nodeGlobalId, out GroupIndex nodeGroupIndex) == false)
+            {
+                this._logger.Warning("Node {NodeGlobalId} does not exist", nodeGlobalId);
+                return;
+            }
+
+            if (this._entityQueryService.TryQueryByGroupIndex<Node>(nodeGroupIndex, out Node node) == false)
+            {
+                this._logger.Warning("Node {NodeGlobalId} is not a valid Node", nodeGlobalId);
+                return;
+            }
+
+            if (this._entityQueryService.TryQueryByGroupIndex<Fixture>(nodeGroupIndex, out Fixture fixture) == false)
+            {
+                this._logger.Warning("Node {NodeGlobalId} is not a valid Fixture", nodeGlobalId);
+                return;
+            }
+
+            if (this._entityQueryService.IsSpawned(node.TreeLocalId) == false)
+            {
+                this._logger.Warning("Node {NodeGlobalId} Tree {TreeLocalId} does not exist", nodeGlobalId, node.TreeLocalId);
+                return;
+            }
+
+            this._logger.Verbose("Selecting {NodeGlobalId} with TractorBeamEmitter {TractorBeamEmitterGlobalId}", nodeGlobalId, tractorBeamEmitterGlobalId);
+            this._strategy.Publish(
+                sourceId: NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId),
+                data: new TractorBeamEmitter_Select()
+                {
+                    TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
+                    TargetData = this._entitySerializationService.Serialize(nodeGroupIndex.GroupID, nodeGroupIndex.Index, SerializationOptions.Default),
+                    Transform = fixture.WorldTransform
+                });
+
+
+            if (this._nodeService.IsHead(in node))
+            {
+                this._logger.Verbose("Despawning Node {NodeGlobalId} Tree {TreeLocalId}", nodeGlobalId, node.TreeLocalId);
+                this._entitySpawnService.Despawn(sourceId, node.TreeLocalId);
+            }
+            else
+            {
+                this._logger.Verbose("Despawning Node {NodeGlobalId}", nodeGlobalId);
+                this._entitySpawnService.Despawn(sourceId, nodeGlobalId);
+            }
+        }
+
+        private readonly Queue<(EntityLocalId localId, EntityLocalId headLocalId, Body body)> _deselecteds = new();
+        public void Deselect(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, NodeSocketGlobalId? attachToSocketVhId)
+        {
+            if (this._entityQueryService.TryGetLocalId(tractorBeamEmitterGlobalId, out EntityLocalId tracorBeamEmitterLocalId) == false)
+            {
+                throw new NotImplementedException();
+            }
+
+            ref var filter = ref this._entityQueryService.GetFilter<TractorBeamEmitter, Tractorable>(tracorBeamEmitterLocalId);
+            foreach (var (indices, groupId) in filter)
+            {
+                var (localIds, statuses, trees, transforms, _) = this._entityQueryService.QueryEntities<EntityLocalId, EntityStatus, Tree, Body>(groupId);
+
+                for (int i = 0; i < indices.count; i++)
+                {
+                    uint index = indices[i];
+                    EntityLocalId localId = localIds[index];
+
+                    if (statuses[index].IsDespawned)
+                    {
+                        this._logger.Warning("Unable to deselect {TractorableId}, despawned. Multiple deselect calls in a single frame?", localId);
+                        continue;
+                    }
+
+
+                    this._deselecteds.Enqueue((localId, trees[index].HeadLocalId, transforms[index]));
+
+                    filter.Remove(localId);
+                }
+            }
+
+            VhId nextSourceId = NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId);
+            while (this._deselecteds.TryDequeue(out (EntityLocalId localId, EntityLocalId headLocalId, Body body) deselected))
+            {
+                this._logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterLocalId}", deselected.localId, tractorBeamEmitterGlobalId);
+                this._strategy.Publish(new EventDto()
+                {
+                    SourceId = nextSourceId,
+                    Data = new TractorBeamEmitter_Deselect()
+                    {
+                        TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
+                        TargetData = this._entitySerializationService.Serialize(deselected.headLocalId, SerializationOptions.Default),
+                        Transform = deselected.body.Transform,
+                        AttachToSocketVhId = attachToSocketVhId
+                    }
+                });
+                this._entitySpawnService.Despawn(nextSourceId, deselected.localId);
+            }
+        }
 
         public bool Query(EntityLocalId tractorBeamEmitterLocalId, FixVector2 target, out Node targetNode)
         {

@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Common;
@@ -8,7 +9,10 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    public class BodyLocationPredictiveSynchronizationSystem(ISpace space) : StrategySystem, IPredictiveSynchronizationSystem
+    public class BodyLocationPredictiveSynchronizationSystem(
+        ISpace space
+    ) : ISceneSystem,
+        IPredictiveSynchronizationSystem
     {
         private readonly ISpace _predictiveSpace = space;
         private ISpace _lockstepSpace = null!;

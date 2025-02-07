@@ -4,6 +4,7 @@ using Guppy.Core.Common.Extensions;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Game.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
+using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Serialization.Components;
 using VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Ships.Services;
@@ -25,12 +26,13 @@ namespace VoidHuntersRevived.Domain.Ships.Extensions
             {
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
-                    builder.RegisterType<TractorBeamEmitterService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterType<TractorBeamEmitterService>().As<ITractorBeamEmitterService>().InstancePerLifetimeScope();
                     builder.RegisterType<TacticalService>().AsImplementedInterfaces().InstancePerLifetimeScope();
                     builder.RegisterType<UserIdSystem>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
                     builder.RegisterSceneSystem<HelmSystem>();
                     builder.RegisterSceneSystem<TacticalSystem>();
+                    builder.RegisterSceneSystem<TractorBeamEmitterSelectAndDeselectEventSystem>();
                     builder.RegisterSceneSystem<TractorBeamEmitterInputSystem>();
                     builder.RegisterSceneSystem<TractorBeamEmitterUpdateSystem>();
 

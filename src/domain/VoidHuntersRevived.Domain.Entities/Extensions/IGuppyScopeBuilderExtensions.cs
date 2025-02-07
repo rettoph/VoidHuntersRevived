@@ -40,18 +40,19 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                     builder.RegisterType<ComponentSerializerService>().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
 
                     builder.RegisterType<EntityTemplateFragmentService>().As<IEntityTemplateFragmentService>().SingleInstance();
-                    builder.RegisterType<EntityTemplateService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterType<EntityTemplateService>().AsSelf().As<IEntityTemplateService>().InstancePerLifetimeScope();
 
                     builder.RegisterType<EntitiesSubmissionScheduler>().AsSelf().InstancePerLifetimeScope();
                     builder.RegisterType<EnginesRoot>().InstancePerLifetimeScope();
                     builder.Register<EntitiesDB>(ctx => ctx.Resolve<EnginesRoot>().GetEntitiesDB());
 
                     builder.RegisterType<EntityService>().As<IEntityService>().InstancePerLifetimeScope();
-                    builder.RegisterType<EntityQueryService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
-                    builder.RegisterType<EntitySpawnService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterType<EntityQueryService>().AsSelf().As<IEntityQueryService>().InstancePerLifetimeScope();
+                    builder.RegisterType<EntitySpawnService>().As<IEntitySpawnService>().As<IPrivateEntitySpawnService>().InstancePerLifetimeScope();
                     builder.RegisterType<EntitySerializationService>().As<IEntitySerializationService>().InstancePerLifetimeScope();
 
                     builder.RegisterSceneSystem<EngineSystem>();
+                    builder.RegisterSceneSystem<EntitySpawnServiceEventSystem>();
                     builder.RegisterType<BelongsToSystemProvider>().As<IScopedSystemProvider>().InstancePerLifetimeScope();
 
 

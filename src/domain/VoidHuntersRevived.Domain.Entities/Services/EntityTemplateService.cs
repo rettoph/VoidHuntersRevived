@@ -1,7 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
-using Guppy.Core.Common.Systems;
-using Guppy.Core.Logging.Common.Services;
+﻿using Guppy.Core.Logging.Common.Services;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common.Providers;
@@ -9,11 +6,10 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class EntityTemplateService : StrategySystem, IEntityTemplateService, IInitializeSystem
+    public class EntityTemplateService : IEntityTemplateService
     {
         private readonly IStrategy _strategy;
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
@@ -58,7 +54,6 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     });
         }
 
-        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
         public void Initialize()
         {
             foreach (EntityTemplate entityTemplate in this._templates.Values)
