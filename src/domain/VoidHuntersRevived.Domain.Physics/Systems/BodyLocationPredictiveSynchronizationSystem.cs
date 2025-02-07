@@ -3,8 +3,8 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Physics.Systems
 
         public void Initialize(ILockstepStrategy lockstep)
         {
-            this._lockstepSpace = lockstep.Engines.Get<ISpace>();
+            this._lockstepSpace = lockstep.Resolve<ISpace>();
         }
 
         [SequenceGroup<OnStepSequenceGroupEnum>(OnStepSequenceGroupEnum.SubmitChanges)]

@@ -6,10 +6,9 @@ using Guppy.Game.Common.Extensions;
 using Svelto.ECS;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
-using VoidHuntersRevived.Domain.Teams.Systems;
 using VoidHuntersRevived.Domain.Teams.Services;
+using VoidHuntersRevived.Domain.Teams.Systems;
 
 namespace VoidHuntersRevived.Domain.Teams.Extensions
 {
@@ -29,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Teams.Extensions
                 {
                     builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                    builder.RegisterEngine<ColorSchemeSystem>();
+                    builder.RegisterSceneSystem<ColorSchemeSystem>();
                 });
             });
         }

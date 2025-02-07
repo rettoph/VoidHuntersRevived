@@ -1,17 +1,19 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Network.Common;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Ships.Systems
 {
-    internal class UserIdSystem(IEntityQueryService entityQueryService) : StrategySystem,
+    public class UserIdSystem(
+        IEntityQueryService entityQueryService
+    ) : ISceneSystem,
         IOnSpawnSystem<UserId>,
         IOnDespawnSystem<UserId>
     {

@@ -6,6 +6,7 @@ using Guppy.Game.Common.Extensions;
 using Svelto.ECS;
 using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
+using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Physics.ResourceTypes;
 using VoidHuntersRevived.Domain.Physics.Serialization.Components;
@@ -35,14 +36,14 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
                     builder.Register<AetherWorld>(c => new AetherWorld(AetherVector2.Zero)).InstancePerLifetimeScope();
+                    builder.RegisterType<Space>().As<ISpace>().InstancePerLifetimeScope();
 
-                    builder.RegisterEngine<BodyAwakeSystem>();
-                    builder.RegisterEngine<BodyCollisionSystem>();
-                    builder.RegisterEngine<BodyLocationSystem>();
-                    builder.RegisterEngine<BodyPhysicsBubbleSystem>();
-                    builder.RegisterEngine<SpaceSystem>();
-                    builder.RegisterEngine<RigidFixtureSystem>();
-                    builder.RegisterEngine<Space>();
+                    builder.RegisterSceneSystem<BodyAwakeSystem>();
+                    builder.RegisterSceneSystem<BodyCollisionSystem>();
+                    builder.RegisterSceneSystem<BodyLocationSystem>();
+                    builder.RegisterSceneSystem<BodyPhysicsBubbleSystem>();
+                    builder.RegisterSceneSystem<SpaceSystem>();
+                    builder.RegisterSceneSystem<RigidFixtureSystem>();
 
                     builder.RegisterComponentSerializer<AwakeComponentSerializer>();
                     builder.RegisterComponentSerializer<CollisionComponentSerializer>();

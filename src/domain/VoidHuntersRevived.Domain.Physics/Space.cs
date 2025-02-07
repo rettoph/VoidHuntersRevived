@@ -5,11 +5,10 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Physics.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Physics
 {
-    public class Space : StrategySystem, ISpace
+    public class Space : ISpace
     {
         private readonly Dictionary<EntityLocalId, Body> _bodies;
         private readonly ILogger _logger;

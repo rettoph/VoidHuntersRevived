@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Logging.Common;
+using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
@@ -9,7 +10,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    public sealed class BodyAwakeSystem : StrategySystem, IOnStepSystem
+    public sealed class BodyAwakeSystem : ISceneSystem, IOnStepSystem
     {
         private readonly ILogger _logger;
         private readonly IEntityQueryService _entityQueryService;

@@ -1,22 +1,23 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Logging.Common;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions.Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Pieces.Systems
 {
     public sealed class TractorableSystem(
         ITacticalService tacticalService,
         IEntityQueryService entityQueryService,
-        ILogger logger) : StrategySystem,
+        ILogger logger
+    ) : ISceneSystem,
         IOnSpawnSystem<Tractorable>,
         IOnDespawnSystem<Tractorable>
     {

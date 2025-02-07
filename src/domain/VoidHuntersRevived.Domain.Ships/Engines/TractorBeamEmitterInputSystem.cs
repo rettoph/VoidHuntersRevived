@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common;
+﻿using Guppy.Game.Common.Systems;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
@@ -7,9 +8,9 @@ namespace VoidHuntersRevived.Domain.Ships.Systems
 {
     public sealed class TractorBeamEmitterInputSystem(
         ITractorBeamEmitterService tractorBeamEmitterService
-    ) : StrategySystem,
-        IEventEngine<Input_TractorBeamEmitter_Select>,
-        IEventEngine<Input_TractorBeamEmitter_Deselect>
+    ) : ISceneSystem,
+        IEventSystem<Input_TractorBeamEmitter_Select>,
+        IEventSystem<Input_TractorBeamEmitter_Deselect>
     {
         private readonly ITractorBeamEmitterService _tractorBeamEmitterService = tractorBeamEmitterService;
 

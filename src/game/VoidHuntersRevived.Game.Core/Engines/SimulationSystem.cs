@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common;
+﻿using Guppy.Game.Common.Systems;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
@@ -9,7 +10,8 @@ namespace VoidHuntersRevived.Game.Core.Systems
     //ITeamService teamService,
     //IEntityTemplateFragmentService entityTemplateService,
     //IBlueprintService blueprintService
-    ) : StrategySystem, IEventEngine<Simulation_Begin>
+    ) : ISceneSystem,
+        IEventSystem<Simulation_Begin>
     {
         //private readonly ITreeService _treeService = treeService;
         //private readonly ITeamService _teamService = teamService;

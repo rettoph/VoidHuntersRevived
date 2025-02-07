@@ -1,8 +1,8 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Game.Common.Systems;
+using Svelto.ECS;
 using VoidHuntersRevived.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Teams.Common.Systems
@@ -10,8 +10,12 @@ namespace VoidHuntersRevived.Domain.Teams.Common.Systems
     /// <summary>
     /// Allows for entity components to be overwritten by their teams
     /// </summary>
-    public abstract class BaseInheritTeamComponentSystem<TComponent>(IEntityQueryService entityQueryService) : StrategySystem, IReactOnAddEx<TComponent>
-        where TComponent : unmanaged, IEntityComponent
+    public abstract class BaseInheritTeamComponentSystem<TComponent>(
+        IEntityQueryService entityQueryService
+    ) : ISceneSystem,
+        IEngine,
+        IReactOnAddEx<TComponent>
+            where TComponent : unmanaged, IEntityComponent
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 

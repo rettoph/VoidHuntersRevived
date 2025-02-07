@@ -1,11 +1,11 @@
-﻿using VoidHuntersRevived.Domain.Entities.Common.Services;
+﻿using Guppy.Game.Common.Systems;
+using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    public sealed class BodyCollisionSystem : StrategySystem
+    public sealed class BodyCollisionSystem : ISceneSystem
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;

@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             if (scope.GetScopeType() == GuppyScopeTypeEnum.Child)
             {
-                this._strategy = scope.ResolveService<Lazy<IOptional<IStrategy>>>();
+                this._strategy = scope.Resolve<Lazy<IOptional<IStrategy>>>();
             }
         }
 

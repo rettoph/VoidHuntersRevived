@@ -1,14 +1,17 @@
 ﻿using Guppy.Core.Logging.Common;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
+using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
 {
-    public class LockstepClient_TickSystem(ILogger logger, TickBuffer ticks) : StrategySystem<ILockstepStrategy>,
+    public class LockstepClient_TickSystem(
+        ILogger logger,
+        TickBuffer ticks
+    ) : ISceneSystem,
         ISubscriber<INetIncomingMessage<Tick>>,
         ISubscriber<INetIncomingMessage<TickHistoryStart>>,
         ISubscriber<INetIncomingMessage<TickHistoryItem>>,

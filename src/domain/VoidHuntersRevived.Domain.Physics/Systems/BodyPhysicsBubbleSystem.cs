@@ -1,13 +1,14 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.FixedPoint.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
-using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -16,7 +17,7 @@ using BodyComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Body;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    public class BodyPhysicsBubbleSystem(IEntityQueryService entityQueryService, ISpace space) : StrategySystem, IOnStepSystem, IOnDespawnSystem<Enabled>
+    public class BodyPhysicsBubbleSystem(IEntityQueryService entityQueryService, ISpace space) : ISceneSystem, IOnStepSystem, IOnDespawnSystem<Enabled>
     {
         private static readonly Fix64 _two = (Fix64)2;
 

@@ -1,6 +1,5 @@
 ﻿using Guppy.Game.Common;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common
@@ -9,7 +8,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Common
     {
         StrategyTypeEnum Type { get; }
         ISimulation Simulation { get; }
-        IEngineService Engines { get; }
 
         void Initialize(ISimulation simulation);
 

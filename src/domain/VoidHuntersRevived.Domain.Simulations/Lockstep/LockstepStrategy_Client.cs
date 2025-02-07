@@ -4,7 +4,6 @@ using Guppy.Core.Network.Common;
 using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
@@ -14,9 +13,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         INetScope<IStrategy> netScope,
         TickBuffer ticks,
         ISettingService settings,
-        Lazy<IEngineService> engineService,
-        Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, engineService, loggerService),
-        IDisposable
+        Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, loggerService)
     {
         private readonly INetScope<IStrategy> _netScope = netScope;
 

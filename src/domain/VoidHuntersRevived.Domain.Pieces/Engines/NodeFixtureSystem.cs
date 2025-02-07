@@ -1,14 +1,17 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Collections;
+using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Core.Logging.Common;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
@@ -23,16 +26,25 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
         INodeSocketService socketService,
-        ILogger logger) : StrategySystem,
-            IOnSpawnSystem<Node, Fixture>,
-            IOnDespawnSystem<Node, Fixture>,
-            IOnStepSystem
+        ILogger logger
+    ) : ISceneSystem,
+        IInitializeSystem<IStrategy>,
+        IOnSpawnSystem<Node, Fixture>,
+        IOnDespawnSystem<Node, Fixture>,
+        IOnStepSystem
     {
         private readonly INodeSocketService _socketService = socketService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
         private readonly ILogger _logger = logger;
         private readonly DictionaryQueue<EntityLocalId, VhId> _dirtyTrees = new();
+        private IStrategy _strategy = null!;
+
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
+        public void Initialize(IStrategy strategy)
+        {
+            this._strategy = strategy;
+        }
 
         [SequenceGroup<OnSpawnSequenceGroupEnum>(OnSpawnSequenceGroupEnum.Group02)]
         public void OnSpawn(VhId sourceEventId, IEntityTemplate entityTemplate, ref Entity<Node, Fixture> entity)
@@ -68,7 +80,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
                 {
                     EntityGlobalId dirtyTreGlobalId = this._entityQueryService.GetGlobalId(dirtyTreeLocalId);
 
-                    this.Strategy.Publish(dirtyTreeEventId, new Tree_Clean()
+                    this._strategy.Publish(dirtyTreeEventId, new Tree_Clean()
                     {
                         IsPrivate = true,
                         TreeGlobalId = dirtyTreGlobalId

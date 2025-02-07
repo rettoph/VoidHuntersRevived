@@ -6,21 +6,18 @@ using Guppy.Core.Logging.Common.Services;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
-    public abstract partial class Strategy : Scene, IStrategy, IDisposable
+    public abstract partial class Strategy : Scene, IStrategy
     {
         private ILogger? _logger;
         private readonly Lazy<ILoggerService> _loggerService;
-        private readonly Lazy<IEngineService> _engineService;
         private readonly Queue<EventDto> _enqueued;
         private readonly Dictionary<Type, EventPublisher> _publishers;
-        private readonly ActionSequenceGroup<OnDrawSequenceGroupEnum, GameTime> _drawActions;
         private readonly ActionSequenceGroup<OnStepSequenceGroupEnum, Step> _stepActions;
         private bool _disposed = false;
 
@@ -28,7 +25,6 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public readonly StrategyTypeEnum Type;
         public ISimulation Simulation { get; private set; } = null!;
-        public IEngineService Engines => this._engineService.Value;
 
         public Step CurrentStep { get; private set; }
 
@@ -36,15 +32,12 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         protected Strategy(
             StrategyTypeEnum type,
-            Lazy<IEngineService> engineService,
             Lazy<ILoggerService> loggerService)
         {
-            this._engineService = engineService;
             this._loggerService = loggerService;
             this._enqueued = new Queue<EventDto>();
             this._publishers = [];
             this._stepActions = new ActionSequenceGroup<OnStepSequenceGroupEnum, Step>(false);
-            this._drawActions = new ActionSequenceGroup<OnDrawSequenceGroupEnum, GameTime>(true);
 
             this.Type = type;
 
@@ -58,44 +51,14 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.Simulation = simulation;
 
-            this.Engines.Initialize();
-
-            EventPublisher.PopulatePublishers(this.Engines, this._loggerService.Value, this._publishers);
-
-            this._drawActions.Add(this.Engines);
+            EventPublisher.PopulatePublishers(this.Systems, this._loggerService.Value, this._publishers);
 
             this._stepActions.Add([this.Step_PublishEvents]); // Special case - add the internal queue submission method
-            this._stepActions.Add(this.Engines);
+            this._stepActions.Add(this.Systems);
 
             // Call all engine initializers
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<OnInitializeSequenceGroupEnum>.Invoke(this.Engines, initializeDelegate, false, [this]);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this._disposed == false)
-            {
-                if (disposing == true)
-                {
-                    this.Engines.Dispose();
-                }
-
-                this._disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            this._drawActions.Invoke(gameTime);
+            DelegateSequenceGroup<OnInitializeSequenceGroupEnum>.Invoke(this.Systems, initializeDelegate, false, [this]);
         }
 
         public override void Update(GameTime gameTime)
@@ -151,6 +114,35 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             this.logger.Verbose("Enqueing {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
             this._enqueued.Enqueue(@event);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this._disposed)
+            {
+                if (disposing)
+                {
+                    this.Resolve<IGuppyScope>().Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                this._disposed = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Strategy()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

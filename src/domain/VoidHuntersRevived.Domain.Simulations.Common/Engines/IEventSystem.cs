@@ -1,13 +1,13 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Systems
 {
-    public interface IEventSystem : IEngine
+    public interface IEventSystem : ISceneSystem
     {
     }
 
-    public interface IEventEngine<T> : IEventSystem
+    public interface IEventSystem<T> : IEventSystem
         where T : IEventData
     {
         void Process(VhId eventId, T data);

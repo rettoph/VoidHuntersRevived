@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Common;
+﻿using Guppy.Game.Common.Systems;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
@@ -8,8 +9,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 namespace VoidHuntersRevived.Domain.Ships.Systems
 {
     public sealed class HelmSystem(
-        IEntityQueryService entityQueryService) : StrategySystem,
-        IEventEngine<Helm_SetDirection>
+        IEntityQueryService entityQueryService
+    ) : ISceneSystem,
+        IEventSystem<Helm_SetDirection>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 

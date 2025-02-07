@@ -61,20 +61,20 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Client, builder =>
                         {
-                            builder.RegisterEngine<LockstepClient_TickSystem>();
+                            builder.RegisterSceneSystem<LockstepClient_TickSystem>();
                             builder.RegisterType<LinkedListTickService>().As<ITickService>().InstancePerLifetimeScope();
                         });
 
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Server, builder =>
                         {
-                            builder.RegisterEngine<LockstepServer_TickSystem>();
-                            builder.RegisterEngine<LockstepServer_UserSystem>();
+                            builder.RegisterSceneSystem<LockstepServer_TickSystem>();
+                            builder.RegisterSceneSystem<LockstepServer_UserSystem>();
                         });
                     });
 
                     if (builder.ParentScope is not null)
                     {
-                        foreach (Type strategyType in builder.ParentScope.ResolveService<IAssemblyService>().GetTypes<IStrategy>())
+                        foreach (Type strategyType in builder.ParentScope.Resolve<IAssemblyService>().GetTypes<IStrategy>())
                         {
                             Type strategyEngineType = typeof(StrategySystem<>).MakeGenericType(strategyType);
 

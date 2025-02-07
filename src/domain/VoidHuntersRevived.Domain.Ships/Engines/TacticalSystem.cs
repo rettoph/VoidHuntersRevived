@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -12,8 +13,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 namespace VoidHuntersRevived.Domain.Ships.Systems
 {
     public sealed class TacticalSystem(
-        IEntityQueryService entityQueryService) : StrategySystem,
-        IEventEngine<Tactical_SetTarget>,
+        IEntityQueryService entityQueryService
+    ) : ISceneSystem,
+        IEventSystem<Tactical_SetTarget>,
         IOnStepSystem
     {
         private static readonly Fix64 _aimDamping = Fix64.One / (Fix64)32;

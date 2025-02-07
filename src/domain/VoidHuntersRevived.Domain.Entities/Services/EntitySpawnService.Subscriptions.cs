@@ -10,14 +10,14 @@ using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public partial class EntitySpawnService :
-        IEventEngine<SpawnEntity>,
-        IEventEngine<SpawnEntity<EntityInitializerDelegate>>,
-        IEventEngine<SoftSpawnEntity>,
+        IEventSystem<SpawnEntity>,
+        IEventSystem<SpawnEntity<EntityInitializerDelegate>>,
+        IEventSystem<SoftSpawnEntity>,
         IRevertEventEngine<SpawnEntity>,
         IRevertEventEngine<SpawnEntity<EntityInitializerDelegate>>,
-        IEventEngine<DespawnEntity>,
+        IEventSystem<DespawnEntity>,
         IRevertEventEngine<DespawnEntity>,
-        IEventEngine<HardDespawnEntity>
+        IEventSystem<HardDespawnEntity>
     {
         public void Process(VhId eventId, SpawnEntity data)
         {
@@ -31,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             // This is enqueued before HardSpawn is executed
             // Spawns any other entities. This ensture the first entitiy SoftSpawn
             // event is called first every time.
-            this.Strategy.Enqueue(new EventDto()
+            this._strategy.Enqueue(new EventDto()
             {
                 SourceId = eventId,
                 Data = new SoftSpawnEntity()
@@ -62,7 +62,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             // This is enqueued before HardSpawn is executed
             // Spawns any other entities. This ensture the first entitiy SoftSpawn
             // event is called first every time.
-            this.Strategy.Enqueue(new EventDto()
+            this._strategy.Enqueue(new EventDto()
             {
                 SourceId = eventId,
                 Data = new SoftSpawnEntity()
@@ -144,7 +144,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             this.SoftDespawn(eventId, ref status, ref entity, template);
 
-            this.Strategy.Enqueue(new EventDto()
+            this._strategy.Enqueue(new EventDto()
             {
                 SourceId = eventId,
                 Data = new HardDespawnEntity()
@@ -177,7 +177,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             this.SoftDespawn(eventId, ref status, ref entity, template);
 
-            this.Strategy.Enqueue(new EventDto()
+            this._strategy.Enqueue(new EventDto()
             {
                 SourceId = eventId,
                 Data = new HardDespawnEntity()

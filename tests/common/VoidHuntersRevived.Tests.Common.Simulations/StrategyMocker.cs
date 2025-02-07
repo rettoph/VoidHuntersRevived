@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         public StrategyMocker(IGuppyScope parentScope)
         {
             this.Scope = parentScope.CreateChildScope(null);
-            this.Instance = this.Scope.ResolveService<TStrategy>();
+            this.Instance = this.Scope.Resolve<TStrategy>();
         }
 
         public void Input(VhId sourceId, IInputData data, bool verified)
@@ -85,7 +85,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                 {
                     if (lockstep.StepsSinceTick == lockstep.StepsPerTick)
                     {
-                        TickBuffer ticks = this.Scope.ResolveService<TickBuffer>();
+                        TickBuffer ticks = this.Scope.Resolve<TickBuffer>();
 
                         ticks.TryEnqueue(Tick.Create(lockstep.CurrentTick.Id + 1, [.. this._inputs]));
                         this._inputs.Clear();
@@ -98,7 +98,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         public int CalculateTotalEntities<T>()
             where T : unmanaged, IEntityComponent
         {
-            return this.Scope.ResolveService<IEntityQueryService>().CalculateTotal<T>();
+            return this.Scope.Resolve<IEntityQueryService>().CalculateTotal<T>();
         }
 
         protected virtual void Dispose(bool disposing)

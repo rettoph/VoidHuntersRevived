@@ -12,11 +12,11 @@ using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Game.Client.Systems
 {
-    public sealed class CameraSystem : StrategySystem,
+    public sealed class CameraSystem :
+        ISceneSystem,
         IDrawSystem,
         IInputSubscriber<CursorScroll>
     {

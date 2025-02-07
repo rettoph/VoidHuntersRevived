@@ -1,21 +1,21 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Logging.Common;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions.Svelto.ECS;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using BodyComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Body;
 using FixtureComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Fixture;
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    public sealed class RigidFixtureSystem : StrategySystem,
+    public sealed class RigidFixtureSystem : ISceneSystem,
         IOnSpawnSystem<Rigid, FixtureComponent>,
         IOnDespawnSystem<Rigid, FixtureComponent>
     {

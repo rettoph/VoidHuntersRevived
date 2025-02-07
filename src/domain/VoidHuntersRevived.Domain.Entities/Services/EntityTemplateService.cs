@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly Lazy<IComponentSerializerService> _componentSerializerService;
         private readonly EntitiesDB _entitiesDb;
 
-        private readonly Dictionary<Key<IEntityTemplate>, IEntityTemplate> _templates;
+        private readonly Dictionary<Key<IEntityTemplate>, EntityTemplate> _templates;
 
         public EntityTemplateService(
             IUniqueNumberProvider uniqueNumberProvider,
@@ -43,7 +43,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                     keySelector: kvp => kvp.Key,
                     elementSelector: kvp =>
                     {
-                        return (IEntityTemplate)new EntityTemplate(
+                        return new EntityTemplate(
                             kvp.Key,
                             this._entityTemplateFragmentService,
                             this._uniqueNumberProvider,
@@ -57,11 +57,11 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.PreInitialize)]
         public void OnInitialize(IStrategy strategy)
         {
-            foreach (IEntityTemplate entityTemplateProvider in this._templates.Values)
+            foreach (EntityTemplate entityTemplate in this._templates.Values)
             {
-                entityTemplateProvider.Initialize(
+                entityTemplate.Initialize(
                     entitiesDB: this._entitiesDb,
-                    engineService: this.Strategy.Engines,
+                    systemService: this.Strategy.Systems,
                     componentSerializerService: this._componentSerializerService.Value);
             }
         }

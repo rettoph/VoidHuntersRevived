@@ -11,21 +11,20 @@ using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Graphics.Common.Extensions;
 using VoidHuntersRevived.Domain.Graphics.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Graphics.Systems
 {
     public sealed class PrimitiveEntitySystem<TVertex>(
         IPrimitiveService<TVertex> primitiveService,
-        IEntityQueryService entityQueryService
-    ) : StrategySystem, IReactOnAddEx<Common.Components.Primitive<TVertex>>, IDrawSystem, IQueryingEntitiesEngine
+        IEntityQueryService entityQueryService,
+        EntitiesDB entitiesDb
+    ) : ISceneSystem, IDrawSystem, IEngine, IReactOnAddEx<Common.Components.Primitive<TVertex>>
         where TVertex : unmanaged, IVertexType, IEntityComponent
     {
         private readonly IPrimitiveService<TVertex> _primitiveService = primitiveService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
-
-        public EntitiesDB entitiesDB { get; set; } = null!;
+        private readonly EntitiesDB _entitiesDb = entitiesDb;
 
         [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.PreDraw)]
         public void Draw(GameTime gameTime)
@@ -39,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Systems
         public void Add((uint start, uint end) rangeOfEntities, in EntityCollection<Common.Components.Primitive<TVertex>> entities, ExclusiveGroupStruct groupID)
         {
             var (primitives, nativeIds, _) = entities;
-            var (teamMembers, _, count) = this.entitiesDB.QueryEntities<TeamMember>(groupID);
+            var (teamMembers, _, count) = this._entitiesDb.QueryEntities<TeamMember>(groupID);
 
             if (count == 0)
             {
@@ -49,7 +48,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Systems
                     Common.Components.Primitive<TVertex> primitive = primitives[i];
 
                     this._primitiveService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
-                        .GetFilter<TVertex>(this.entitiesDB)
+                        .GetFilter<TVertex>(this._entitiesDb)
                         .Add(nativeIds[i], groupID, i);
                 }
 
@@ -68,20 +67,20 @@ namespace VoidHuntersRevived.Domain.Graphics.Systems
                 }
 
                 this._primitiveService.GetPrimitiveByTypeAndSequenceGroup(primitive.Type, primitive.SequenceGroup)
-                    .GetFilter<TVertex>(this.entitiesDB)
+                    .GetFilter<TVertex>(this._entitiesDb)
                     .Add(nativeIds[i], groupID, i);
             }
         }
 
         private void CopyEntityDataToVertexBuffer(IPrimitive<TVertex> primitive)
         {
-            ref EntityFilterCollection filter = ref primitive.GetFilter<TVertex>(this.entitiesDB);
+            ref EntityFilterCollection filter = ref primitive.GetFilter<TVertex>(this._entitiesDb);
 
             foreach (var (indices, group) in filter)
             {
                 primitive.EnsureFit(indices.count);
 
-                var (vertices, statuses, _) = this.entitiesDB.QueryEntities<TVertex, EntityStatus>(group);
+                var (vertices, statuses, _) = this._entitiesDb.QueryEntities<TVertex, EntityStatus>(group);
 
                 for (int i = 0; i < indices.count; i++)
                 {

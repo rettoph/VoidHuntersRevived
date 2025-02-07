@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Game.Core.Graphics.Effects;
 
 namespace VoidHuntersRevived.Game.Client.Systems
 {
-    internal class ShaderAntiAliasingSystem : StrategySystem, IDisposable
+    internal class ShaderAntiAliasingSystem : ISceneSystem, IDisposable
     {
         private readonly GraphicsDevice _graphics;
         private readonly SpriteBatch _spriteBatch;
@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
             return new RenderTarget2D(this._graphics, this._graphics.Viewport.Width, this._graphics.Viewport.Height, true, SurfaceFormat.Color, DepthFormat.None, this._graphics.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
         }
 
-        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.PreDraw)]
+        [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.PreDraw)]
         [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Duck typing")]
         public void PreDraw(GameTime gameTime)
         {
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
             this._graphics.Clear(Color.Transparent);
         }
 
-        [SequenceGroup<OnDrawSequenceGroupEnum>(OnDrawSequenceGroupEnum.PostDraw)]
+        [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.PostDraw)]
         [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Duck typing")]
         public void PostDraw(GameTime gameTime)
         {

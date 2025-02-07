@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework.Input;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
@@ -52,48 +51,47 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                     builder.AddSceneHasDebugWindow(true).AddSceneHasTerminalWindow(true);
 
                     builder.RegisterSceneSystem<DebugEngineSystem>();
-                    builder.RegisterSceneSystem<ImGuiEngineSystem>();
 
                     builder.RegisterGraphicsEnabledFilter(true, builder =>
                     {
-                        builder.RegisterEngine<AetherDebugSystem>();
-                        builder.RegisterEngine<EntitiesDebugSystem>();
-                        builder.RegisterEngine<DrawVertexVisibleSystem>();
-                        builder.RegisterEngine<ShaderAntiAliasingSystem>();
+                        builder.RegisterSceneSystem<AetherDebugSystem>();
+                        builder.RegisterSceneSystem<EntitiesDebugSystem>();
+                        builder.RegisterSceneSystem<DrawVertexVisibleSystem>();
+                        builder.RegisterSceneSystem<ShaderAntiAliasingSystem>();
                     });
 
                     builder.RegisterSceneFilter<Strategy>(builder =>
                     {
-                        builder.RegisterEngine<StrategyDebugSystem>();
+                        builder.RegisterSceneSystem<StrategyDebugSystem>();
                     });
 
                     builder.RegisterSceneFilter<LockstepStrategy_Client>(builder =>
                     {
-                        builder.RegisterEngine<LockstepStrategy_ClientDebugSystem>();
+                        builder.RegisterSceneSystem<LockstepStrategy_ClientDebugSystem>();
                     });
 
                     builder.RegisterSceneFilter<LockstepStrategy_Server>(builder =>
                     {
-                        builder.RegisterEngine<LockstepStrategy_ServerDebugSystem>();
+                        builder.RegisterSceneSystem<LockstepStrategy_ServerDebugSystem>();
                     });
 
                     builder.RegisterSceneFilter<ILockstepStrategy>(builder =>
                     {
-                        builder.RegisterEngine<LockstepStrategyDebugSystem>();
+                        builder.RegisterSceneSystem<LockstepStrategyDebugSystem>();
                     });
 
                     builder.Filter(
                         filter => filter.RequirePeerType(PeerTypeEnum.Client).RequireScene<ILockstepStrategy>(),
                         builder =>
                         {
-                            builder.RegisterEngine<InputSystem>();
+                            builder.RegisterSceneSystem<InputSystem>();
                         });
 
                     builder.Filter(
                         filter => filter.RequirePeerType(PeerTypeEnum.Client).RequireScene<IPredictiveStrategy>(),
                         builder =>
                         {
-                            builder.RegisterEngine<CameraSystem>();
+                            builder.RegisterSceneSystem<CameraSystem>();
                         });
                 });
 

@@ -15,7 +15,6 @@ using VoidHuntersRevived.Domain.Graphics.Services;
 using VoidHuntersRevived.Domain.Graphics.Systems;
 using VoidHuntersRevived.Domain.Pieces.ResourceTypes;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Graphics.Extensions
 {
@@ -39,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Extensions
 
                     builder.RegisterGraphicsEnabledFilter(true, builder =>
                     {
-                        builder.RegisterEngine<DrawPrimitivesSystem>();
+                        builder.RegisterSceneSystem<DrawPrimitivesSystem>();
                         builder.RegisterType<PrimitiveEntitySystemProvider>().As<IScopedSystemProvider>().InstancePerLifetimeScope();
                     });
                 });

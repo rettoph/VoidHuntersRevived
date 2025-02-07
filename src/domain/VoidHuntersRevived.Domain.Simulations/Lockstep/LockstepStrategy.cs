@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common.Constants;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
@@ -34,10 +33,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public event OnEventDelegate<EventDto>? OnEvent;
 
-        internal LockstepStrategy(
+        public LockstepStrategy(
             ISettingService settings,
-            Lazy<IEngineService> engineService,
-            Lazy<ILoggerService> loggerService) : base(StrategyTypeEnum.Lockstep, engineService, loggerService)
+            Lazy<ILoggerService> loggerService) : base(StrategyTypeEnum.Lockstep, loggerService)
         {
             this._tickActions = new ActionSequenceGroup<OnTickSequenceGroupEnum, Tick>(false);
             this._history = [];
@@ -61,7 +59,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             base.Initialize(simulation);
 
             this._tickActions.Add([this.Tick_PublishEvents]);
-            this._tickActions.Add(this.Engines);
+            this._tickActions.Add(this.Systems);
         }
 
         public override void Update(GameTime realTime)

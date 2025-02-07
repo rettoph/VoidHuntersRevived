@@ -16,14 +16,14 @@ using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Game.Client.Systems.Debugging
 {
-    public class AetherDebugSystem : StrategySystem,
+    public class AetherDebugSystem :
+        ISceneSystem,
         IDrawSystem,
-        IImGuiComponent,
-        IOnDebugSystem
+        IImGuiSystem,
+        IDebugSystem
     {
         public static string? Group => typeof(World).Name;
 
@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Game.Client.Systems.Debugging
         }
 
         [SequenceGroup<DebugSequenceGroupEnum>("Aether")]
-        public void OnDebug(GameTime gameTime)
+        public void DrawDebug(GameTime gameTime)
         {
             this._imgui.KeyValue("Bodies", this._world.BodyList.Count.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
             this._imgui.KeyValue("Contacts", this._world.ContactCount.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());

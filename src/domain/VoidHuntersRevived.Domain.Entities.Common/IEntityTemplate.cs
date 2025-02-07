@@ -3,7 +3,6 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 using VoidHuntersRevived.Domain.Entities.Common.Options;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Entities.Common
@@ -15,11 +14,6 @@ namespace VoidHuntersRevived.Domain.Entities.Common
     {
         Key<IEntityTemplate> Key { get; }
         ComponentBuilderDictionary Components { get; }
-
-        void Initialize(
-            EntitiesDB entitiesDB,
-            IEngineService engineService,
-            IComponentSerializerService componentSerializerService);
 
         EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, out EntityLocalId localId);
         void SoftSpawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);

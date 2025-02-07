@@ -1,12 +1,14 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
 using Guppy.Game.ImGui.Common.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Game.Client.Systems.Debugging
@@ -14,7 +16,11 @@ namespace VoidHuntersRevived.Game.Client.Systems.Debugging
     public class LockstepStrategyDebugSystem(
         IImGui imgui,
         IImGuiObjectExplorerService objectExplorer,
-        IScene guppy) : StrategySystem<ILockstepStrategy>, IImGuiComponent, IOnDebugSystem
+        IScene guppy
+    ) : ISceneSystem,
+        IInitializeSystem<ILockstepStrategy>,
+        IImGuiSystem,
+        IDebugSystem
     {
         public string? Group => nameof(IStrategy);
 
@@ -23,9 +29,16 @@ namespace VoidHuntersRevived.Game.Client.Systems.Debugging
         private readonly IScene _scene = guppy;
         private bool _historyViewerEnabled;
         private string _filter = string.Empty;
+        private ILockstepStrategy _strategy = null!;
+
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
+        public void Initialize(ILockstepStrategy strategy)
+        {
+            this._strategy = strategy;
+        }
 
         [SequenceGroup<DebugSequenceGroupEnum>("Strategy")]
-        public void OnDebug(GameTime gameTime)
+        public void DrawDebug(GameTime gameTime)
         {
             var buttonStyle = this._historyViewerEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed;
 
@@ -46,12 +59,12 @@ namespace VoidHuntersRevived.Game.Client.Systems.Debugging
                 return;
             }
 
-            this._imgui.Begin($"Tick History Explorer - {this.Strategy.Type}, {this._scene.Name} {this._scene.Id}", ref this._historyViewerEnabled);
+            this._imgui.Begin($"Tick History Explorer - {this._strategy.Type}, {this._scene.Name} {this._scene.Id}", ref this._historyViewerEnabled);
             this._imgui.InputText("Filter", ref this._filter, 255);
 
             using (this._imgui.ApplyID(nameof(ILockstepStrategy.History)))
             {
-                this._objectExplorer.DrawObjectExplorer(this.Strategy.History, this._filter, 8);
+                this._objectExplorer.DrawObjectExplorer(this._strategy.History, this._filter, 8);
             }
 
             this._imgui.End();

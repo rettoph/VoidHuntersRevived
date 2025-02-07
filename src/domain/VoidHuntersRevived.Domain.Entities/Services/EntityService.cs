@@ -1,10 +1,9 @@
 ﻿using Guppy.Core.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class EntityService : StrategySystem, IEntityService, IDisposable
+    public class EntityService : IEntityService, IDisposable
     {
         private bool _disposed = false;
         private readonly UnmanagedReference<IEntityService> _ref;

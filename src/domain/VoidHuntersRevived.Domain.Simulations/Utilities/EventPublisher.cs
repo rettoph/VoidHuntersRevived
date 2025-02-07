@@ -1,9 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
 using Guppy.Core.Common.Extensions.System;
+using Guppy.Core.Common.Services;
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Logging.Common.Services;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
@@ -15,14 +15,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
         public abstract void Revert(EventDto @event);
 
         public static void PopulatePublishers(
-            IEngineService engineService,
+            IScopedSystemService systemService,
             ILoggerService loggerProvider,
             Dictionary<Type, EventPublisher> publishers)
         {
             Dictionary<Type, List<IEventSystem>> subscriptions = [];
-            foreach (IEventSystem system in engineService.OfType<IEventSystem>())
+            foreach (IEventSystem system in systemService.OfType<IEventSystem>())
             {
-                foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventEngine<>)))
+                foreach (Type subscriberType in system.GetType().GetConstructedGenericTypes(typeof(IEventSystem<>)))
                 {
                     if (!subscriptions.TryGetValue(subscriberType.GenericTypeArguments[0], out List<IEventSystem>? subSystems))
                     {
@@ -41,11 +41,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
             }
         }
 
-        public static Dictionary<Type, EventPublisher> BuildPublishers(IEngineService engines, ILoggerService loggerService)
+        public static Dictionary<Type, EventPublisher> BuildPublishers(IScopedSystemService systemService, ILoggerService loggerService)
         {
             Dictionary<Type, EventPublisher> publishers = [];
 
-            EventPublisher.PopulatePublishers(engines, loggerService, publishers);
+            EventPublisher.PopulatePublishers(systemService, loggerService, publishers);
 
             return publishers;
         }
@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
     internal class EventPublisher<T>(ILogger logger, List<IEventSystem> subscribers) : EventPublisher
         where T : class, IEventData
     {
-        private readonly IEventEngine<T>[] _subscribers = subscribers.OfType<IEventEngine<T>>().ToArray();
+        private readonly IEventSystem<T>[] _subscribers = subscribers.OfType<IEventSystem<T>>().ToArray();
         private readonly IRevertEventEngine<T>[] _reverters = subscribers.OfType<IRevertEventEngine<T>>().ToArray();
         private readonly ILogger _logger = logger;
 
@@ -66,7 +66,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Utilities
         {
             this._logger.Verbose("Publishing Event {EventId} {EventType}", id.Value, typeof(T).Name);
 
-            foreach (IEventEngine<T> subscriber in this._subscribers)
+            foreach (IEventSystem<T> subscriber in this._subscribers)
             {
                 subscriber.Process(id, data);
             }

@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Logging.Common;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -20,7 +21,8 @@ namespace VoidHuntersRevived.Domain.Ships.Systems
         IEntityQueryService entityQueryService,
         ISpace space,
         ILogger logger,
-        INodeSocketService socketService) : StrategySystem,
+        INodeSocketService socketService
+    ) : ISceneSystem,
         IOnStepSystem
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;

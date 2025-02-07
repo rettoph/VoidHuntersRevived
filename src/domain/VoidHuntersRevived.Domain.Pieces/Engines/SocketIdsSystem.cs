@@ -1,20 +1,21 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Pieces.Systems
 {
     public sealed class SocketIdsSystem(
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
-        INodeSocketService socketService) : StrategySystem,
+        INodeSocketService socketService
+    ) : ISceneSystem,
         IOnDespawnSystem<Sockets>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;

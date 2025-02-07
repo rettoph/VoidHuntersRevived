@@ -1,5 +1,5 @@
-using Autofac;
 using Guppy.Core.Resources.Common;
+using Guppy.Game.Common.Extensions;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Common.Utilities;
@@ -7,13 +7,12 @@ using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
-using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Tests.Common.Simulations;
 using VoidHuntersRevived.Tests.Domain.Entities.Components;
-using VoidHuntersRevived.Tests.Domain.Entities.Systems;
 using VoidHuntersRevived.Tests.Domain.Entities.Events;
+using VoidHuntersRevived.Tests.Domain.Entities.Systems;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {
@@ -48,7 +47,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                 .AddStrategy<LockstepStrategy_Client>()
                 .Register(builder =>
                 {
-                    builder.RegisterEngine<TestInputSystem>();
+                    builder.RegisterSceneSystem<TestInputSystem>();
                     builder.RegisterInstance(Enumerable.Empty<IComponentSerializer>());
                 })
                 .Build();

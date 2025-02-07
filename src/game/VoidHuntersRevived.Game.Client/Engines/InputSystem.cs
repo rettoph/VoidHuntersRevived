@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Network.Common;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.Graphics.Common;
 using Guppy.Game.Input.Common;
 using Microsoft.Xna.Framework;
@@ -16,9 +17,9 @@ using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Game.Client.Messages;
 using VoidHuntersRevived.Game.Core.Events;
 
@@ -27,7 +28,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
     public class InputSystem(
         ICamera2D camera,
         INetScope<IStrategy> netScope
-    ) : StrategySystem<ILockstepStrategy>,
+    ) : ISceneSystem,
         IOnInitializeSystem<IStrategy>,
         IInputSubscriber<Input_Helm_SetDirection>,
         IInputSubscriber<Input_TractorBeamEmitter_SetActive>,
@@ -42,17 +43,19 @@ namespace VoidHuntersRevived.Game.Client.Systems
         private IEntityQueryService _readEntityQueryService = null!;
         private ITractorBeamEmitterService _readTractorBeamEmitterService = null!;
         private INodeSocketService _readSocketService = null!;
+        private IStrategy _strategy = null!;
 
         private Vector2 CurrentTargetPosition => this._camera.Unproject(Mouse.GetState().Position.ToVector2());
 
         [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
         public void OnInitialize(IStrategy strategy)
         {
-            IStrategy readStrategy = this.Strategy.Simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
+            this._strategy = strategy;
+            IStrategy readStrategy = this._strategy.Simulation.First(StrategyTypeEnum.Predictive, StrategyTypeEnum.Lockstep) ?? throw new NotImplementedException();
 
-            this._readEntityQueryService = readStrategy.Engines.Get<IEntityService>().Query;
-            this._readTractorBeamEmitterService = readStrategy.Engines.Get<ITractorBeamEmitterService>();
-            this._readSocketService = readStrategy.Engines.Get<INodeSocketService>();
+            this._readEntityQueryService = readStrategy.Resolve<IEntityQueryService>();
+            this._readTractorBeamEmitterService = readStrategy.Resolve<ITractorBeamEmitterService>();
+            this._readSocketService = readStrategy.Resolve<INodeSocketService>();
         }
 
         public void Process(in Guid messageId, Input_Helm_SetDirection message)
@@ -61,7 +64,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
 
             this.ForEachCurrentUserEntity((shipLocalId, shipGlobalId) =>
             {
-                this.Strategy.Simulation.Input(
+                this._strategy.Simulation.Input(
                     sourceId: sourceId,
                     data: new Helm_SetDirection()
                     {
@@ -87,7 +90,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
 
                     EntityGlobalId targetNodeGlobalId = this._readEntityQueryService.GetGlobalId(targetNode.LocalId);
 
-                    this.Strategy.Simulation.Input(
+                    this._strategy.Simulation.Input(
                         sourceId: sourceId,
                         data: new Tactical_SetTarget()
                         {
@@ -96,7 +99,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
                             Snap = true
                         });
 
-                    this.Strategy.Simulation.Input(
+                    this._strategy.Simulation.Input(
                         sourceId: sourceId,
                         data: new Input_TractorBeamEmitter_Select()
                         {
@@ -110,7 +113,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
                     NodeSocketGlobalId? attachToSocketLocalId = this._readSocketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Target, out NodeSocket nodeSocket)
                                 ? this._readSocketService.GetGlobalId(nodeSocket.LocalId) : null;
 
-                    this.Strategy.Simulation.Input(
+                    this._strategy.Simulation.Input(
                         sourceId: sourceId,
                         data: new Input_TractorBeamEmitter_Deselect()
                         {
@@ -144,7 +147,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
                     return;
                 }
 
-                this.Strategy.Simulation.Input(
+                this._strategy.Simulation.Input(
                     sourceId: tick.Hash,
                     data: new Tactical_SetTarget()
                     {

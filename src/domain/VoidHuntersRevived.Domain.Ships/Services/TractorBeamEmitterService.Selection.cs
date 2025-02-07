@@ -19,8 +19,8 @@ using VoidHuntersRevived.Domain.Simulations.Common.Exceptions;
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
     public partial class TractorBeamEmitterService : ITractorBeamEmitterService,
-        IEventEngine<TractorBeamEmitter_Select>,
-        IEventEngine<TractorBeamEmitter_Deselect>
+        IEventSystem<TractorBeamEmitter_Select>,
+        IEventSystem<TractorBeamEmitter_Deselect>
     {
         public void Select(VhId sourceId, EntityGlobalId tractorBeamEmitterGlobalId, EntityGlobalId nodeGlobalId)
         {
@@ -121,7 +121,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
         }
 
-        void IEventEngine<TractorBeamEmitter_Select>.Process(VhId eventId, TractorBeamEmitter_Select data)
+        void IEventSystem<TractorBeamEmitter_Select>.Process(VhId eventId, TractorBeamEmitter_Select data)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
         }
 
-        void IEventEngine<TractorBeamEmitter_Deselect>.Process(VhId eventId, TractorBeamEmitter_Deselect data)
+        void IEventSystem<TractorBeamEmitter_Deselect>.Process(VhId eventId, TractorBeamEmitter_Deselect data)
         {
             try
             {

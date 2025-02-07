@@ -1,4 +1,4 @@
-﻿using Svelto.ECS;
+﻿using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -17,8 +17,9 @@ namespace VoidHuntersRevived.Game.Core.Systems
     public sealed class UserSystem(
         ITreeService treeService,
         ITeamService teamService,
-        IBlueprintService blueprintService) : StrategySystem, IGetReadyEngine,
-        IEventEngine<UserJoined>
+        IBlueprintService blueprintService
+    ) : ISceneSystem,
+        IEventSystem<UserJoined>
     {
         private readonly ITreeService _treeService = treeService;
         private readonly ITeamService _teamService = teamService;

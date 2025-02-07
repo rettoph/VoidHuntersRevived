@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -12,7 +13,7 @@ using FixtureComponent = VoidHuntersRevived.Domain.Physics.Common.Components.Fix
 
 namespace VoidHuntersRevived.Domain.Physics.Systems
 {
-    public sealed class BodyLocationSystem : StrategySystem, IOnStepSystem
+    public sealed class BodyLocationSystem : ISceneSystem, IOnStepSystem
     {
         private readonly IEntityQueryService _entityQueryService;
         private readonly ISpace _space;

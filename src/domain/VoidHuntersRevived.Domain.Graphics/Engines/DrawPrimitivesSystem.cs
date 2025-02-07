@@ -13,9 +13,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Systems
 {
     public class DrawPrimitivesSystem(
         IPrimitiveService primitiveService
-    ) : StrategySystem,
-        IOnInitializeSystem,
-        IDrawSystem
+    ) : ISceneSystem, IOnInitializeSystem, IDrawSystem
     {
         private readonly IPrimitiveService _primitiveService = primitiveService;
         private readonly ActionSequenceGroup<PrimitiveSequenceGroupEnum, GameTime> _primitiveActions = new(true);

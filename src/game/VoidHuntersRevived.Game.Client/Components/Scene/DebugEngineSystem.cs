@@ -1,8 +1,8 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
-using Guppy.Game.Common.Systems;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IStrategy strategy)
         {
-            this._debugActions.Add(strategy.Engines);
+            this._debugActions.Add(strategy.Systems);
         }
 
         [SequenceGroup<DebugSequenceGroupEnum>(DebugSequenceGroupEnum.Debug)]

@@ -1,21 +1,34 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Core.Network.Common;
+using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
 {
-    public class LockstepServer_TickSystem(INetScope<IStrategy> scope) : StrategySystem<ILockstepStrategy>,
+    public class LockstepServer_TickSystem(
+        INetScope<IStrategy> scope
+    ) : ISceneSystem,
+        IInitializeSystem<ILockstepStrategy>,
         IOnTickSystem,
-        IEventEngine<UserJoined>
+        IEventSystem<UserJoined>
     {
         private readonly INetScope<IStrategy> _scope = scope;
         private readonly List<Tick> _history = [];
+        private ILockstepStrategy _strategy = null!;
+
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
+        public void Initialize(ILockstepStrategy strategy)
+        {
+            this._strategy = strategy;
+        }
 
         public void Process(VhId id, UserJoined data)
         {
@@ -26,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
                 return;
             }
 
-            int currentTickId = this.Strategy.CurrentTick.Id;
+            int currentTickId = this._strategy.CurrentTick.Id;
 
             this._scope.CreateMessage(new TickHistoryStart()
             {

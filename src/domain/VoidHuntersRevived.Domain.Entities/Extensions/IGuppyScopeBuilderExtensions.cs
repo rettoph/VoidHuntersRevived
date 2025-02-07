@@ -46,13 +46,12 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                     builder.RegisterType<EnginesRoot>().InstancePerLifetimeScope();
                     builder.Register<EntitiesDB>(ctx => ctx.Resolve<EnginesRoot>().GetEntitiesDB());
 
-                    builder.RegisterType<EngineService>().As<IEngineService>().InstancePerLifetimeScope();
-
-                    builder.RegisterType<EntityService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterType<EntityService>().As<IEntityService>().InstancePerLifetimeScope();
                     builder.RegisterType<EntityQueryService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
                     builder.RegisterType<EntitySpawnService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
-                    builder.RegisterType<EntitySerializationService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterType<EntitySerializationService>().As<IEntitySerializationService>().InstancePerLifetimeScope();
 
+                    builder.RegisterSceneSystem<EngineSystem>();
                     builder.RegisterType<BelongsToSystemProvider>().As<IScopedSystemProvider>().InstancePerLifetimeScope();
 
 
@@ -61,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                     if (builder.ParentScope is not null)
                     {
                         // Auto register an engine to dispose of instances as needed
-                        foreach (Type disposableComponent in builder.ParentScope.ResolveService<IAssemblyService>().GetTypes<IEntityComponent>())
+                        foreach (Type disposableComponent in builder.ParentScope.Resolve<IAssemblyService>().GetTypes<IEntityComponent>())
                         {
                             if (disposableComponent.IsAssignableTo<IDisposable>())
                             {

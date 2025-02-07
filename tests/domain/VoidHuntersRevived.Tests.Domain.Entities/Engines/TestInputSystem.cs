@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -8,14 +9,14 @@ using VoidHuntersRevived.Tests.Domain.Entities.Events;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities.Systems
 {
-    internal class TestInputSystem : StrategySystem, IOnInitializeSystem<IStrategy>, IEventEngine<TestSpawnInput>, IEventEngine<TestDepawnInput>
+    public class TestInputSystem : ISceneSystem, IOnInitializeSystem<IStrategy>, IEventSystem<TestSpawnInput>, IEventSystem<TestDepawnInput>
     {
         private IEntitySpawnService _entitySpawnService = null!;
 
         [SequenceGroup<OnInitializeSequenceGroupEnum>(OnInitializeSequenceGroupEnum.Initialize)]
         public void OnInitialize(IStrategy simulation)
         {
-            this._entitySpawnService = simulation.Engines.Get<IEntitySpawnService>();
+            this._entitySpawnService = simulation.Resolve<IEntitySpawnService>();
         }
 
         public void Process(VhId eventId, TestSpawnInput data)

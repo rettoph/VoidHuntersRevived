@@ -9,17 +9,12 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class EntityQueryService(ILogger logger) : IEntityQueryService, IQueryingEntitiesEngine
+    public class EntityQueryService(EntitiesDB entitiesDb, ILogger logger) : IEntityQueryService
     {
-        public EntitiesDB entitiesDB { get; set; } = null!;
+        private readonly EntitiesDB _entitiesDb = entitiesDb;
         private readonly Dictionary<EntityGlobalId, EntityLocalId> _globalLocalIds = [];
         private readonly Dictionary<EntityLocalId, EntityGlobalId> _localGlobalIds = [];
         private readonly ILogger _logger = logger;
-
-        public void Ready()
-        {
-            //
-        }
 
         public EntityLocalId GetLocalId(EntityGlobalId globalId)
         {
@@ -164,13 +159,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TryQueryByEGID<T>(EGID egid, out T value)
             where T : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.TryGetEntity<T>(egid, out value);
+            return this._entitiesDb.TryGetEntity<T>(egid, out value);
         }
 
         public bool TryQueryByEGID<T>(EGID egid, out GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent
         {
-            if (this.entitiesDB.TryQueryEntitiesAndIndex<T>(egid, out uint index, out var components))
+            if (this._entitiesDb.TryQueryEntitiesAndIndex<T>(egid, out uint index, out var components))
             {
                 value = components[index];
                 groupIndex = new GroupIndex(egid.groupID, index);
@@ -186,7 +181,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public ref T QueryByEGID<T>(EGID egid)
             where T : unmanaged, IEntityComponent
         {
-            var components = this.entitiesDB.QueryEntitiesAndIndex<T>(egid, out uint index);
+            var components = this._entitiesDb.QueryEntitiesAndIndex<T>(egid, out uint index);
 
             return ref components[index];
         }
@@ -194,7 +189,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public ref T QueryByEGID<T>(EGID egid, out GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent
         {
-            var components = this.entitiesDB.QueryEntitiesAndIndex<T>(egid, out uint index);
+            var components = this._entitiesDb.QueryEntitiesAndIndex<T>(egid, out uint index);
 
             groupIndex = new GroupIndex(egid.groupID, index);
 
@@ -204,7 +199,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public ref T QueryByEGID<T>(EGID egid, out GroupIndex groupIndex, out bool exists)
             where T : unmanaged, IEntityComponent
         {
-            if (this.entitiesDB.TryQueryEntitiesAndIndex<T>(egid, out uint index, out var components))
+            if (this._entitiesDb.TryQueryEntitiesAndIndex<T>(egid, out uint index, out var components))
             {
                 exists = true;
                 groupIndex = new GroupIndex(egid.groupID, index);
@@ -219,20 +214,20 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool Has<T>(ExclusiveGroupStruct groupID)
             where T : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.HasAny<T>(groupID);
+            return this._entitiesDb.HasAny<T>(groupID);
         }
 
         public bool Has<T1>(ExclusiveGroupStruct groupId, out EntityCollection<T1> entities)
             where T1 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.HasAny(groupId, out entities);
+            return this._entitiesDb.HasAny(groupId, out entities);
         }
 
         public bool HasAll<T1, T2>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2> entities)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.HasAll(groupId, out entities);
+            return this._entitiesDb.HasAll(groupId, out entities);
         }
 
         public bool HasAll<T1, T2, T3>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2, T3> entities)
@@ -240,7 +235,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.HasAll(groupId, out entities);
+            return this._entitiesDb.HasAll(groupId, out entities);
         }
 
         public bool HasAll<T1, T2, T3, T4>(ExclusiveGroupStruct groupId, out EntityCollection<T1, T2, T3, T4> entities)
@@ -249,13 +244,13 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.HasAll(groupId, out entities);
+            return this._entitiesDb.HasAll(groupId, out entities);
         }
 
         public ref T QueryByGroupIndex<T>(GroupIndex groupIndex)
             where T : unmanaged, IEntityComponent
         {
-            var (entities, _) = this.entitiesDB.QueryEntities<T>(groupIndex.GroupID);
+            var (entities, _) = this._entitiesDb.QueryEntities<T>(groupIndex.GroupID);
 
             return ref entities[groupIndex.Index];
         }
@@ -263,7 +258,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TryQueryByGroupIndex<T>(GroupIndex groupIndex, out T value)
             where T : unmanaged, IEntityComponent
         {
-            if (!this.entitiesDB.HasAny<T>(groupIndex.GroupID))
+            if (!this._entitiesDb.HasAny<T>(groupIndex.GroupID))
             {
                 value = default;
                 return false;
@@ -276,7 +271,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public ref T QueryByGroupIndex<T>(ExclusiveGroupStruct groupId, uint index)
             where T : unmanaged, IEntityComponent
         {
-            var (entities, _) = this.entitiesDB.QueryEntities<T>(groupId);
+            var (entities, _) = this._entitiesDb.QueryEntities<T>(groupId);
 
             return ref entities[index];
         }
@@ -284,7 +279,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public bool TryQueryByGroupIndex<T>(ExclusiveGroupStruct groupId, uint index, out T value)
             where T : unmanaged, IEntityComponent
         {
-            if (!this.entitiesDB.HasAny<T>(groupId))
+            if (!this._entitiesDb.HasAny<T>(groupId))
             {
                 value = default;
                 return false;
@@ -297,14 +292,14 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public EntityCollection<T1> QueryEntities<T1>(ExclusiveGroupStruct groupID)
             where T1 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1>(groupID);
+            return this._entitiesDb.QueryEntities<T1>(groupID);
         }
 
         public EntityCollection<T1, T2> QueryEntities<T1, T2>(ExclusiveGroupStruct groupID)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1, T2>(groupID);
+            return this._entitiesDb.QueryEntities<T1, T2>(groupID);
         }
 
         public EntityCollection<T1, T2, T3> QueryEntities<T1, T2, T3>(ExclusiveGroupStruct groupID)
@@ -312,7 +307,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1, T2, T3>(groupID);
+            return this._entitiesDb.QueryEntities<T1, T2, T3>(groupID);
         }
 
         public EntityCollection<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(ExclusiveGroupStruct groupID)
@@ -321,20 +316,20 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groupID);
+            return this._entitiesDb.QueryEntities<T1, T2, T3, T4>(groupID);
         }
 
         public GroupsEnumerable<T1> QueryEntities<T1>()
             where T1 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1>(EntityGroupList<T1>.Values);
+            return this._entitiesDb.QueryEntities<T1>(EntityGroupList<T1>.Values);
         }
 
         public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>()
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1, T2>(EntityGroupList<T1, T2>.Values);
+            return this._entitiesDb.QueryEntities<T1, T2>(EntityGroupList<T1, T2>.Values);
         }
 
         public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>()
@@ -342,7 +337,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1, T2, T3>(EntityGroupList<T1, T2, T3>.Values);
+            return this._entitiesDb.QueryEntities<T1, T2, T3>(EntityGroupList<T1, T2, T3>.Values);
         }
 
         public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>()
@@ -351,20 +346,20 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(EntityGroupList<T1, T2, T3, T4>.Values);
+            return this._entitiesDb.QueryEntities<T1, T2, T3, T4>(EntityGroupList<T1, T2, T3, T4>.Values);
         }
 
         public GroupsEnumerable<T1> QueryEntities<T1>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1>(groups);
+            return this._entitiesDb.QueryEntities<T1>(groups);
         }
 
         public GroupsEnumerable<T1, T2> QueryEntities<T1, T2>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
             where T1 : unmanaged, IEntityComponent
             where T2 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1, T2>(groups);
+            return this._entitiesDb.QueryEntities<T1, T2>(groups);
         }
 
         public GroupsEnumerable<T1, T2, T3> QueryEntities<T1, T2, T3>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
@@ -372,7 +367,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T2 : unmanaged, IEntityComponent
             where T3 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1, T2, T3>(groups);
+            return this._entitiesDb.QueryEntities<T1, T2, T3>(groups);
         }
 
         public GroupsEnumerable<T1, T2, T3, T4> QueryEntities<T1, T2, T3, T4>(LocalFasterReadOnlyList<ExclusiveGroupStruct> groups)
@@ -381,7 +376,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             where T3 : unmanaged, IEntityComponent
             where T4 : unmanaged, IEntityComponent
         {
-            return this.entitiesDB.QueryEntities<T1, T2, T3, T4>(groups);
+            return this._entitiesDb.QueryEntities<T1, T2, T3, T4>(groups);
         }
 
         public LocalFasterReadOnlyList<ExclusiveGroupStruct> FindGroups<T1>()
@@ -490,7 +485,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         public ref EntityFilterCollection GetFilter<T>(CombinedFilterID filterId)
             where T : unmanaged, IEntityComponent
         {
-            ref var filter = ref this.entitiesDB.GetFilters().GetOrCreatePersistentFilter<T>(filterId);
+            ref var filter = ref this._entitiesDb.GetFilters().GetOrCreatePersistentFilter<T>(filterId);
 
             return ref filter;
         }

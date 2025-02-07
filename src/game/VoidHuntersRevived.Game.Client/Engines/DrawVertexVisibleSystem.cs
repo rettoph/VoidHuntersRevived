@@ -1,10 +1,11 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Entities.Common.Systems;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -15,9 +16,9 @@ namespace VoidHuntersRevived.Game.Client.Systems
 {
     public class DrawVertexVisibleSystem(
         IEntityQueryService entityQueryService
-    ) : StrategySystem,
-            IOnStepSystem,
-            IOnSpawnSystem<VertexVisible>
+    ) : ISceneSystem,
+        IOnStepSystem,
+        IOnSpawnSystem<VertexVisible>
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 

@@ -27,10 +27,10 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
         {
             builder.ConfigureLogger((scope, config) =>
             {
-                IOptional<IStrategy> strategy = scope.ResolveService<IOptional<IStrategy>>();
+                IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
                 if (strategy.HasValue)
                 {
-                    IStateService states = scope.ResolveService<IStateService>();
+                    IStateService states = scope.Resolve<IStateService>();
                     config.EnrichWith(nameof(PeerTypeEnum), states.GetByKey(StateKey<PeerTypeEnum>.Create()));
                     config.EnrichWith(nameof(StrategyTypeEnum), states.GetByKey(StateKey<StrategyTypeEnum>.Create()));
                 }
@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
 
             builder.Configure<LoggerOutputTemplateConfiguration>((scope, config) =>
             {
-                IOptional<IStrategy> strategy = scope.ResolveService<IOptional<IStrategy>>();
+                IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
                 config.Value = strategy.HasValue == true
                     ? $"[{{{nameof(PeerTypeEnum)}}}][{{{nameof(StrategyTypeEnum)}}}][{{Timestamp:HH:mm:ss}} {{Level:u3}}] {{SourceContext}} - {{Message:lj}}{{NewLine}}{{Exception}}"
                     : "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} - {Message:lj}{NewLine}{Exception}";
@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
 
             return builder.ConfigureFileLogMessageSink((scope, config) =>
             {
-                IPathService fileTypePaths = scope.ResolveService<IPathService>();
+                IPathService fileTypePaths = scope.Resolve<IPathService>();
                 FileLocation source = fileTypePaths.GetSourceLocation(DirectoryTypeEnum.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
                 DirectoryHelper.EnsureDirectoryExists(source);
 

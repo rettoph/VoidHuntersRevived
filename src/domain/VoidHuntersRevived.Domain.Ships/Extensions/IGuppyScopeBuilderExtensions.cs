@@ -4,12 +4,11 @@ using Guppy.Core.Common.Extensions;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Game.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
-using VoidHuntersRevived.Domain.Ships.Systems;
 using VoidHuntersRevived.Domain.Ships.Serialization.Components;
 using VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Ships.Services;
+using VoidHuntersRevived.Domain.Ships.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Ships.Extensions
 {
@@ -30,10 +29,10 @@ namespace VoidHuntersRevived.Domain.Ships.Extensions
                     builder.RegisterType<TacticalService>().AsImplementedInterfaces().InstancePerLifetimeScope();
                     builder.RegisterType<UserIdSystem>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                    builder.RegisterEngine<HelmSystem>();
-                    builder.RegisterEngine<TacticalSystem>();
-                    builder.RegisterEngine<TractorBeamEmitterInputSystem>();
-                    builder.RegisterEngine<TractorBeamEmitterUpdateSystem>();
+                    builder.RegisterSceneSystem<HelmSystem>();
+                    builder.RegisterSceneSystem<TacticalSystem>();
+                    builder.RegisterSceneSystem<TractorBeamEmitterInputSystem>();
+                    builder.RegisterSceneSystem<TractorBeamEmitterUpdateSystem>();
 
                     builder.RegisterComponentSerializer<HelmComponentSerializer>();
                     builder.RegisterComponentSerializer<TacticalComponentSerializer>();
