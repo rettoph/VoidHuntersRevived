@@ -7,6 +7,7 @@ using Svelto.ECS;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
+using VoidHuntersRevived.Domain.Teams.Common.Services;
 using VoidHuntersRevived.Domain.Teams.Services;
 using VoidHuntersRevived.Domain.Teams.Systems;
 
@@ -26,8 +27,9 @@ namespace VoidHuntersRevived.Domain.Teams.Extensions
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
-                    builder.RegisterType<TeamService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterType<TeamService>().AsSelf().As<ITeamService>().InstancePerLifetimeScope();
 
+                    builder.RegisterSceneSystem<TeamServiceInitializationSystem>();
                     builder.RegisterSceneSystem<ColorSchemeSystem>();
                 });
             });

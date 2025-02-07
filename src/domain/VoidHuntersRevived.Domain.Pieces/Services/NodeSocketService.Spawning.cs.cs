@@ -12,7 +12,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
-    public partial class SocketService : INodeSocketService
+    public partial class NodeSocketService : INodeSocketService
     {
         public EntityLocalId Spawn(VhId sourceId, NodeSocket targetNodeSocket, EntityGlobalId globalId, Key<IEntityTemplate> nodeTemplateKey, EntityInitializerDelegate? initializerDelegate = null)
         {
@@ -47,7 +47,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Services
                 sourceId: sourceId,
                 options: new DeserializationOptions
                 {
-                    Seed = HashBuilder<SocketService, VhId, NodeSocketGlobalId>.Instance.Calculate(sourceId, targetNodeSocketGlobalId),
+                    Seed = HashBuilder<NodeSocketService, VhId, NodeSocketGlobalId>.Instance.Calculate(sourceId, targetNodeSocketGlobalId),
                     Owner = treeGlobalId
                 },
                 data: nodes,

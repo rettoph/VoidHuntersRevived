@@ -16,7 +16,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Ships.Systems
 {
-    public class TractorBeamEmitterSelectAndDeselectEventSystem(
+    public class TractorBeamEmitterServiceEventSystem(
         INodeSocketService nodeSocketService,
         ITreeService treeService,
         ITeamService teamService,

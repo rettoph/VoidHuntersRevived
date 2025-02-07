@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Ships.Extensions
 
                     builder.RegisterSceneSystem<HelmSystem>();
                     builder.RegisterSceneSystem<TacticalSystem>();
-                    builder.RegisterSceneSystem<TractorBeamEmitterSelectAndDeselectEventSystem>();
+                    builder.RegisterSceneSystem<TractorBeamEmitterServiceEventSystem>();
                     builder.RegisterSceneSystem<TractorBeamEmitterInputSystem>();
                     builder.RegisterSceneSystem<TractorBeamEmitterUpdateSystem>();
 

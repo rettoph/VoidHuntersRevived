@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
@@ -9,6 +8,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
+using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.ResourceTypes;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Components;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
@@ -48,10 +48,10 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
-                    builder.RegisterType<BlueprintService>().AsImplementedInterfaces().SingleInstance();
-                    builder.RegisterType<TreeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                    builder.RegisterType<NodeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                    builder.RegisterType<SocketService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterType<BlueprintService>().As<IBlueprintService>().SingleInstance();
+                    builder.RegisterType<TreeService>().As<ITreeService>().InstancePerLifetimeScope();
+                    builder.RegisterType<NodeService>().As<INodeService>().InstancePerLifetimeScope();
+                    builder.RegisterType<NodeSocketService>().As<INodeSocketService>().InstancePerLifetimeScope();
 
                     builder.RegisterSceneSystem<CouplingSystem>();
                     builder.RegisterSceneSystem<NodeFixtureSystem>();

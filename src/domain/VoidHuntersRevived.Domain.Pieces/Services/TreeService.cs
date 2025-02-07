@@ -2,13 +2,13 @@
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Pieces.Services
 {
     public partial class TreeService(
         IEntityQueryService entityQueryService,
-        IEntitySpawnService entitySpawnService) : StrategySystem, ITreeService
+        IEntitySpawnService entitySpawnService
+    ) : ITreeService
     {
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
