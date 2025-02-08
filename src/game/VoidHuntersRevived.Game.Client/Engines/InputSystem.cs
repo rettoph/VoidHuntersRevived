@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Systems;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Game.Common.Systems;
 using Guppy.Game.Graphics.Common;
@@ -10,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
@@ -60,9 +62,10 @@ namespace VoidHuntersRevived.Game.Client.Systems
             this._readSocketService = readStrategy.Resolve<INodeSocketService>();
         }
 
-        public void Process(in Guid messageId, Input_Helm_SetDirection message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(in int messageId, Input_Helm_SetDirection message)
         {
-            VhId sourceId = new(messageId);
+            VhId sourceId = new(HashBuilder<InputSystem, int>.Instance.Calculate(messageId).Value);
 
             this.ForEachCurrentUserEntity((shipLocalId, shipGlobalId) =>
             {
@@ -77,9 +80,10 @@ namespace VoidHuntersRevived.Game.Client.Systems
             });
         }
 
-        public void Process(in Guid messageId, Input_TractorBeamEmitter_SetActive message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(in int messageId, Input_TractorBeamEmitter_SetActive message)
         {
-            VhId sourceId = new(messageId);
+            VhId sourceId = new(HashBuilder<InputSystem, int>.Instance.Calculate(messageId).Value);
 
             this.ForEachCurrentUserEntity((tractorBeamEmitterLocalId, tractorBeamEmitterGlobalId) =>
             {
@@ -129,18 +133,6 @@ namespace VoidHuntersRevived.Game.Client.Systems
         [SequenceGroup<TickSequenceGroupEnum>(TickSequenceGroupEnum.InputEvents)]
         public void Tick(Tick tick)
         {
-            if (this._spamClick)
-            {
-                this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
-                this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(false));
-                int count = Random.Shared.Next(1, 5);
-                for (int i = 0; i < count; i++)
-                {
-                    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(true));
-                    this.Process(Guid.NewGuid(), new Input_TractorBeamEmitter_SetActive(false));
-                }
-            }
-
             this.ForEachCurrentUserEntity((shipLocalId, shipGlobalId) =>
             {
                 ref Tactical tactical = ref this._readEntityQueryService.QueryByLocalId<Tactical>(shipLocalId);
@@ -160,7 +152,8 @@ namespace VoidHuntersRevived.Game.Client.Systems
             });
         }
 
-        public void Process(in Guid messageId, Input_Spam_Click message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(in int messageId, Input_Spam_Click message)
         {
             this._spamClick = message.Value;
         }

@@ -1,15 +1,16 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
+using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Enums;
 using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Logging.Common.Enums;
 using Guppy.Core.Logging.Common.Extensions;
+using Guppy.Core.Network.Common.Constants;
 using Guppy.Core.Network.Common.Enums;
-using Guppy.Core.StateMachine.Common;
-using Guppy.Core.StateMachine.Common.Services;
+using Guppy.Game.Common.Constants;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -27,12 +28,16 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
         {
             builder.ConfigureLogger((scope, config) =>
             {
-                IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
-                if (strategy.HasValue)
+                Type? sceneType = scope.GetVariable<GuppyGameVariables.Scope.SceneType>()?.Value;
+                if (sceneType is not null && sceneType.IsAssignableTo<IStrategy>())
                 {
-                    IStateService states = scope.Resolve<IStateService>();
-                    config.EnrichWith(nameof(PeerTypeEnum), states.GetByKey(StateKey<PeerTypeEnum>.Create()));
-                    config.EnrichWith(nameof(StrategyTypeEnum), states.GetByKey(StateKey<StrategyTypeEnum>.Create()));
+                    config.EnrichWith(nameof(StrategyTypeEnum), sceneType.GetFormattedName());
+                }
+
+                PeerTypeEnum? peerTypeEnum = scope.GetVariable<GuppyNetworkVariables.Scope.PeerType>()?.Value;
+                if (peerTypeEnum is not null)
+                {
+                    config.EnrichWith(nameof(PeerTypeEnum), peerTypeEnum);
                 }
 
                 config.SetParameterType(LogMessageParameterTypeEnum.Scalar, [

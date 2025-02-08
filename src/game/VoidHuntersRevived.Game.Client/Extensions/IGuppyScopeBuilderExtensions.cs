@@ -108,24 +108,24 @@ namespace VoidHuntersRevived.Game.Client.Extensions
             IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionRight, Keys.E, DirectionEnum.Right);
             IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionLeft, Keys.Q, DirectionEnum.Left);
 
-            builder.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtonsEnum.Right, new (ButtonState, IInput)[]
+            builder.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtonsEnum.Right, new (ButtonState, IInputMessage)[]
             {
                 (ButtonState.Pressed, new Input_TractorBeamEmitter_SetActive(true)),
                 (ButtonState.Released, new Input_TractorBeamEmitter_SetActive(false))
             });
 
 
-            builder.RegisterInput(Inputs.ToggleFps, Keys.F12, new (ButtonState, IInput)[]
+            builder.RegisterInput(Inputs.ToggleFps, Keys.F12, new (ButtonState, IInputMessage)[]
             {
                 (ButtonState.Released, new Input_Toggle_FPS())
             });
 
-            builder.RegisterInput(Inputs.InvokeGarbageCollection, Keys.F10, new (ButtonState, IInput)[]
+            builder.RegisterInput(Inputs.InvokeGarbageCollection, Keys.F10, new (ButtonState, IInputMessage)[]
             {
                 (ButtonState.Released, new Input_Invoke_Garbage_Collection())
             });
 
-            builder.RegisterInput(Inputs.SpamClick, Keys.NumPad0, new (ButtonState, IInput)[]
+            builder.RegisterInput(Inputs.SpamClick, Keys.NumPad0, new (ButtonState, IInputMessage)[]
             {
                 (ButtonState.Pressed, Input_Spam_Click.True),
                 (ButtonState.Released, Input_Spam_Click.False),

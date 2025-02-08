@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
 using Guppy.Core.Logging.Common.Services;
-using Guppy.Core.Messaging.Common;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
@@ -16,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         ISettingService settings,
         IGuppyScope scope,
         Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, scope, loggerService),
-            ISubscriber<INetIncomingMessage<EventDto>>
+            INetIncomingMessageSubscriber<EventDto>
     {
         private readonly List<EventDto> _inputs = [];
 
@@ -77,7 +78,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             return true;
         }
 
-        public void Process(in Guid messsageId, INetIncomingMessage<EventDto> message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(INetIncomingMessage<EventDto> message)
         {
             if (message.Body.Data is not IInputData input)
             {

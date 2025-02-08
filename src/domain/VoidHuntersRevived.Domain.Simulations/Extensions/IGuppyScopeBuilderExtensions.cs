@@ -1,19 +1,14 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
-using Guppy.Core.Common.Services;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
-using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Game.Common.Extensions;
 using LiteNetLib;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers;
@@ -51,10 +46,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                 {
                     builder.RegisterType<TickBuffer>().InstancePerLifetimeScope();
 
-                    builder.RegisterType<StrategyTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
-
-                    builder.RegisterStrategyFilter<IPredictiveSynchronizationSystem, IPredictiveStrategy>();
-
                     builder.RegisterSceneFilter<ILockstepStrategy>(builder =>
                     {
                         builder.RegisterType<QueueTickService>().As<ITickService>().InstancePerLifetimeScope();
@@ -71,16 +62,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                             builder.RegisterSceneSystem<LockstepServer_UserSystem>();
                         });
                     });
-
-                    if (builder.ParentScope is not null)
-                    {
-                        foreach (Type strategyType in builder.ParentScope.Resolve<IAssemblyService>().GetTypes<IStrategy>())
-                        {
-                            Type strategyEngineType = typeof(StrategySystem<>).MakeGenericType(strategyType);
-
-                            builder.RegisterStrategyFilter(strategyEngineType, strategyType);
-                        }
-                    }
                 });
             });
         }

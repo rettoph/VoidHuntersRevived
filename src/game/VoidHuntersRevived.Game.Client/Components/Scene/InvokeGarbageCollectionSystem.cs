@@ -1,18 +1,21 @@
-﻿using Guppy.Core.Logging.Common;
-using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Logging.Common;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Game.Common.Systems;
+using Guppy.Game.Input.Common;
 using VoidHuntersRevived.Game.Client.Messages;
 
 namespace VoidHuntersRevived.Game.Client.Components.Scene
 {
     public class InvokeGarbageCollectionSystem(ILogger logger) : ISceneSystem,
-        ISubscriber<Input_Invoke_Garbage_Collection>
+        IInputSubscriber<Input_Invoke_Garbage_Collection>
     {
         private readonly ILogger _logger = logger;
         private DateTime _lastInvocation;
         private DateTime _lastWarning;
 
-        public void Process(in Guid messageId, Input_Invoke_Garbage_Collection message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(in int messageId, Input_Invoke_Garbage_Collection message)
         {
             if (DateTime.Now - this._lastInvocation < TimeSpan.FromMilliseconds(100))
             {

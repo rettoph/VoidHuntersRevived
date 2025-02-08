@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Systems;
@@ -79,7 +80,8 @@ namespace VoidHuntersRevived.Game.Client.Systems
             this._camera.Update(gameTime);
         }
 
-        public void Process(in Guid messageId, CursorScroll message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(in int messageId, CursorScroll message)
         {
             this._zoom *= ((float)Math.Pow(1.5, message.Delta / 120));
         }

@@ -1,5 +1,6 @@
-﻿using Guppy.Core.Logging.Common;
-using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Logging.Common;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
@@ -12,27 +13,30 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
         ILogger logger,
         TickBuffer ticks
     ) : ISceneSystem,
-        ISubscriber<INetIncomingMessage<Tick>>,
-        ISubscriber<INetIncomingMessage<TickHistoryStart>>,
-        ISubscriber<INetIncomingMessage<TickHistoryItem>>,
-        ISubscriber<INetIncomingMessage<TickHistoryEnd>>
+        INetIncomingMessageSubscriber<Tick>,
+        INetIncomingMessageSubscriber<TickHistoryStart>,
+        INetIncomingMessageSubscriber<TickHistoryItem>,
+        INetIncomingMessageSubscriber<TickHistoryEnd>
     {
         private readonly TickBuffer _ticks = ticks;
         private readonly ILogger _logger = logger;
 
-        public void Process(in Guid messsageId, INetIncomingMessage<Tick> message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(INetIncomingMessage<Tick> message)
         {
             TickBuffer.EnqueueTickResponseEnum response = this._ticks.TryEnqueue(message.Body);
             this._logger.Verbose("Attempted to enqueue Tick {Id}, Response = {Response}", message.Body.Id, response);
         }
 
-        public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryStart> message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(INetIncomingMessage<TickHistoryStart> message)
         {
             //_ticks.Clear();
             this._logger.Verbose("CurrentTickId = {CurrentTickId}", message.Body.CurrentTickId);
         }
 
-        public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryItem> message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(INetIncomingMessage<TickHistoryItem> message)
         {
             Tick? previous = this._ticks.Previous(message.Body.Tick.Id);
             int id = (previous?.Id ?? 0) + 1;
@@ -49,7 +53,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
             this._logger.Verbose("Attempted to enqueue Tick {TickId}, Response = {Response}", id, response);
         }
 
-        public void Process(in Guid messsageId, INetIncomingMessage<TickHistoryEnd> message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(INetIncomingMessage<TickHistoryEnd> message)
         {
             Tick? previous = this._ticks.Previous(message.Body.CurrentTickId);
             int id = (previous?.Id ?? 0) + 1;
