@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Logging.Common;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Logging.Common;
 using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common;
@@ -10,6 +11,7 @@ using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Exceptions;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
@@ -30,7 +32,8 @@ namespace VoidHuntersRevived.Domain.Ships.Systems
         private readonly ITeamService _teamService = teamService;
         private readonly ILogger _logger = logger;
 
-        public void Process(VhId eventId, TractorBeamEmitter_Select data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, TractorBeamEmitter_Select data)
         {
             try
             {
@@ -61,7 +64,8 @@ namespace VoidHuntersRevived.Domain.Ships.Systems
             }
         }
 
-        public void Process(VhId eventId, TractorBeamEmitter_Deselect data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, TractorBeamEmitter_Deselect data)
         {
             try
             {

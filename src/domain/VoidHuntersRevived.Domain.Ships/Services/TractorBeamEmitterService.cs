@@ -72,14 +72,12 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
 
             this._logger.Verbose("Selecting {NodeGlobalId} with TractorBeamEmitter {TractorBeamEmitterGlobalId}", nodeGlobalId, tractorBeamEmitterGlobalId);
-            this._strategy.Publish(
-                sourceId: NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId),
-                data: new TractorBeamEmitter_Select()
-                {
-                    TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
-                    TargetData = this._entitySerializationService.Serialize(nodeGroupIndex.GroupID, nodeGroupIndex.Index, SerializationOptions.Default),
-                    Transform = fixture.WorldTransform
-                });
+            this._strategy.Publish(NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId), new TractorBeamEmitter_Select()
+            {
+                TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
+                TargetData = this._entitySerializationService.Serialize(nodeGroupIndex.GroupID, nodeGroupIndex.Index, SerializationOptions.Default),
+                Transform = fixture.WorldTransform
+            });
 
 
             if (this._nodeService.IsHead(in node))
@@ -129,16 +127,12 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             while (this._deselecteds.TryDequeue(out (EntityLocalId localId, EntityLocalId headLocalId, Body body) deselected))
             {
                 this._logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterLocalId}", deselected.localId, tractorBeamEmitterGlobalId);
-                this._strategy.Publish(new EventDto()
+                this._strategy.Publish(nextSourceId, new TractorBeamEmitter_Deselect()
                 {
-                    SourceId = nextSourceId,
-                    Data = new TractorBeamEmitter_Deselect()
-                    {
-                        TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
-                        TargetData = this._entitySerializationService.Serialize(deselected.headLocalId, SerializationOptions.Default),
-                        Transform = deselected.body.Transform,
-                        AttachToSocketVhId = attachToSocketVhId
-                    }
+                    TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
+                    TargetData = this._entitySerializationService.Serialize(deselected.headLocalId, SerializationOptions.Default),
+                    Transform = deselected.body.Transform,
+                    AttachToSocketVhId = attachToSocketVhId
                 });
                 this._entitySpawnService.Despawn(nextSourceId, deselected.localId);
             }

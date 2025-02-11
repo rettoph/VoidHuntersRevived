@@ -1,6 +1,8 @@
-﻿using Guppy.Game.Common.Systems;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Tests.Domain.Entities.Events;
 
@@ -10,12 +12,14 @@ namespace VoidHuntersRevived.Tests.Domain.Entities.Systems
     {
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
 
-        public void Process(VhId eventId, TestSpawnInput data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, TestSpawnInput data)
         {
             this._entitySpawnService.Spawn(eventId.Create(1), data.EntityTemplateKey, data.EntityGlobalId);
         }
 
-        public void Process(VhId eventId, TestDepawnInput data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, TestDepawnInput data)
         {
             this._entitySpawnService.Despawn(eventId.Create(1), data.EntityGlobalId);
         }

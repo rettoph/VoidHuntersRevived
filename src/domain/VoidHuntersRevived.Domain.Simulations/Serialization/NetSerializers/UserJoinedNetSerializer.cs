@@ -6,7 +6,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Events;
 
 namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 {
-    internal sealed class UserJoinedNetSerializer : NetSerializer<UserJoined>
+    public sealed class UserJoinedNetSerializer : NetSerializer<UserJoined>
     {
         private INetSerializer<UserDto> _userDtoSerializer = null!;
 

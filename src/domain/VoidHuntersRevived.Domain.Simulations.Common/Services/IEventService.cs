@@ -8,48 +8,25 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Services
         /// Publish an event
         /// </summary>
         /// <param name="event"></param>
-        void Publish(EventDto @event);
+        void Publish<TEvent>(TEvent @event)
+            where TEvent : class, IStepEvent;
 
-        /// <summary>
-        /// Publish an event
-        /// </summary>
-        /// <param name="event"></param>
-        void Publish(VhId sourceId, IEventData data)
-        {
-            this.Publish(new EventDto()
-            {
-                SourceId = sourceId,
-                Data = data
-            });
-        }
 
         /// <summary>
         /// Publish input event
         /// </summary>
         /// <param name="sourceId"></param>
         /// <param name="data"></param>
-        void Input(VhId sourceId, IInputData data);
+        void Input<TInput>(TInput input)
+            where TInput : class, IStepInput;
+
 
         /// <summary>
         /// <para>Enqueue an event to be published after the next <see cref="Step"/>.</para>
-        /// <para><see cref="IEventData"/> instances may only be enqueued if <see cref="IEventData.IsPrivate"/> == false</para>
-        /// </summary>
-        /// <param name="sourceId"></param>
-        /// <param name="data"></param>
-        void Enqueue(VhId sourceId, IEventData data)
-        {
-            this.Enqueue(new EventDto()
-            {
-                SourceId = sourceId,
-                Data = data
-            });
-        }
-
-        /// <summary>
-        /// <para>Enqueue an event to be published after the next <see cref="Step"/>.</para>
-        /// <para><see cref="IEventData"/> instances may only be enqueued if <see cref="IEventData.IsPrivate"/> == false</para>
+        /// <para><see cref="IStepEvent"/> instances may only be enqueued if <see cref="IStepEvent.IsPrivate"/> == false</para>
         /// </summary>
         /// <param name="event"></param>
-        void Enqueue(EventDto @event);
+        void Enqueue<TEvent>(IStepEvent @event)
+            where TEvent : class, IStepEvent;
     }
 }

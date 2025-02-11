@@ -15,6 +15,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Enums;
 using VoidHuntersRevived.Domain.Pieces.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Pieces.Systems
@@ -62,7 +63,8 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
             filter.Remove(thrustable.LocalId);
         }
 
-        public void Process(VhId eventId, Tree_Clean data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, Tree_Clean data)
         {
             if (!this._entityQueryService.TryGetLocalId(data.TreeGlobalId, out EntityLocalId treeLocalId))
             {

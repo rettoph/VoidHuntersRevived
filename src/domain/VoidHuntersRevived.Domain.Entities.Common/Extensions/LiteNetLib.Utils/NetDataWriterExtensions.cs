@@ -8,5 +8,10 @@ namespace LiteNetLib.Utils
         {
             writer.Put(value.Value);
         }
+
+        public static void Put<T>(this NetDataWriter writer, Id<T> value)
+        {
+            writer.Put(value.Value);
+        }
     }
 }

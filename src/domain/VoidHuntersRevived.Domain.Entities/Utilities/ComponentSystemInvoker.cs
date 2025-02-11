@@ -95,7 +95,9 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnSpawnSystem<TComponent>[] _engines = systems.OfType<IOnSpawnSystem<TComponent>>().ToArray();
+        private readonly IOnSpawnSystem<TComponent>[] _engines = systems.OfType<IOnSpawnSystem<TComponent>>()
+            .Where(x => x.GetType().GetMethod(nameof(IOnSpawnSystem<TComponent>.OnSpawn))!.GetSequenceGroup<OnSpawnSequenceGroupEnum>(x) == sequenceGroup)
+            .ToArray();
 
         SequenceGroup<OnSpawnSequenceGroupEnum> IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -116,7 +118,9 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent2 : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnSpawnSystem<TComponent1, TComponent2>[] _engines = systems.OfType<IOnSpawnSystem<TComponent1, TComponent2>>().ToArray();
+        private readonly IOnSpawnSystem<TComponent1, TComponent2>[] _engines = systems.OfType<IOnSpawnSystem<TComponent1, TComponent2>>()
+            .Where(x => x.GetType().GetMethod(nameof(IOnSpawnSystem<TComponent1, TComponent2>.OnSpawn))!.GetSequenceGroup<OnSpawnSequenceGroupEnum>(x) == sequenceGroup)
+            .ToArray();
 
         SequenceGroup<OnSpawnSequenceGroupEnum> IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -136,7 +140,9 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnDespawnSystem<TComponent>[] _engines = systems.OfType<IOnDespawnSystem<TComponent>>().ToArray();
+        private readonly IOnDespawnSystem<TComponent>[] _engines = systems.OfType<IOnDespawnSystem<TComponent>>()
+            .Where(x => x.GetType().GetMethod(nameof(IOnDespawnSystem<TComponent>.OnDespawn))!.GetSequenceGroup<OnDespawnSequenceGroupEnum>(x) == sequenceGroup)
+            .ToArray();
 
         SequenceGroup<OnDespawnSequenceGroupEnum> IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -157,7 +163,9 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent2 : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnDespawnSystem<TComponent1, TComponent2>[] _engines = systems.OfType<IOnDespawnSystem<TComponent1, TComponent2>>().ToArray();
+        private readonly IOnDespawnSystem<TComponent1, TComponent2>[] _engines = systems.OfType<IOnDespawnSystem<TComponent1, TComponent2>>()
+            .Where(x => x.GetType().GetMethod(nameof(IOnDespawnSystem<TComponent1, TComponent2>.OnDespawn))!.GetSequenceGroup<OnDespawnSequenceGroupEnum>(x) == sequenceGroup)
+            .ToArray();
 
         SequenceGroup<OnDespawnSequenceGroupEnum> IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 

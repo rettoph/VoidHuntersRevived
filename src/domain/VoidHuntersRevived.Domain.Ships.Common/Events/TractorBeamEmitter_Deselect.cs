@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Ships.Common.Events
 {
-    public sealed class TractorBeamEmitter_Deselect : IEventData
+    public sealed class TractorBeamEmitter_Deselect : IStepEvent<TractorBeamEmitter_Deselect>
     {
         public bool IsPredictable => true;
 

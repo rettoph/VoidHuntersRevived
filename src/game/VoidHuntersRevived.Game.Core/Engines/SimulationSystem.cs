@@ -1,5 +1,7 @@
-﻿using Guppy.Game.Common.Systems;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
@@ -18,7 +20,8 @@ namespace VoidHuntersRevived.Game.Core.Systems
         //private readonly IEntityTemplateFragmentService _entityTemplateService = entityTemplateService;
         //private readonly IBlueprintService _blueprintService = blueprintService;
 
-        public void Process(VhId eventId, Simulation_Begin data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, Simulation_Begin data)
         {
             //_trees.Spawn(eventId.Create(1), Teams.TeamZero, EntityTemplates.Chain, _pieces.All<ThrusterDescriptor>().First().EntityTemplate, null);
             //_trees.Spawn(eventId.Create(int.MaxValue), Teams.TeamZero, EntityTemplates.Chain, _blueprints.GetAll().First(), null);

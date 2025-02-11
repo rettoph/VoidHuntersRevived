@@ -6,7 +6,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Ships.Common.Events
 {
-    public class Helm_SetDirection : IInputData
+    public class Helm_SetDirection : IStepInput<Helm_SetDirection>
     {
         public bool IsPredictable => true;
 

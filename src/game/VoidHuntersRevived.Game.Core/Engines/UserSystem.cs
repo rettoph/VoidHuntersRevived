@@ -1,4 +1,5 @@
-﻿using Guppy.Game.Common.Systems;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -7,6 +8,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Pieces.Common;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
@@ -25,7 +27,8 @@ namespace VoidHuntersRevived.Game.Core.Systems
         private readonly ITeamService _teamService = teamService;
         private readonly IBlueprintService _blueprintService = blueprintService;
 
-        public void Process(VhId eventId, UserJoined data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, UserJoined data)
         {
             // IEntityTemplate<HullEntityTemplate> hull = _entityTemplateService.GetAll<HullEntityTemplate>().Last();
 

@@ -37,11 +37,11 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
                 return tick;
             }
 
-            var items = new EventDto[count];
+            var items = new EnqueuedStepInput[count];
 
             for (int i = 0; i < count; i++)
             {
-                if (this._serializers.Deserialize(reader) is EventDto input)
+                if (this._serializers.Deserialize(reader) is EnqueuedStepInput input)
                 {
                     items[i] = input;
                 }
@@ -61,9 +61,9 @@ namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
             writer.Put(instance.Hash);
             writer.Put(instance.Id);
 
-            byte count = (byte)instance.Events.Length;
+            byte count = (byte)instance.Inputs.Length;
             writer.Put(count);
-            foreach (EventDto input in instance.Events)
+            foreach (EnqueuedStepInput input in instance.Inputs)
             {
                 this._serializers.Serialize(writer, input);
             }

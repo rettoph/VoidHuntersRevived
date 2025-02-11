@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Ships.Common.Events
 {
-    public class Input_TractorBeamEmitter_Select : IInputData
+    public class Input_TractorBeamEmitter_Select : IStepInput<Input_TractorBeamEmitter_Select>
     {
         public bool IsPredictable => true;
 

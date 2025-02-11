@@ -69,13 +69,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             return this.TickBuffer.TryPop(current.Id + 1, out next);
         }
 
-        public override void Input(VhId sourceId, IInputData data)
+        public override void Input(EnqueuedStepInput input)
         {
-            this._netScope.CreateMessage(new EventDto()
-            {
-                SourceId = sourceId,
-                Data = data
-            });
+            this._netScope.CreateMessage(input);
         }
     }
 }

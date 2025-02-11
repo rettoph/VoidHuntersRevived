@@ -23,17 +23,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainSimulationServices), builder =>
             {
-                builder.RegisterNetMessageType<Tick>(DeliveryMethod.ReliableUnordered, 0);
-                builder.RegisterNetMessageType<TickHistoryStart>(DeliveryMethod.ReliableOrdered, 0);
-                builder.RegisterNetMessageType<TickHistoryItem>(DeliveryMethod.ReliableOrdered, 0);
-                builder.RegisterNetMessageType<TickHistoryEnd>(DeliveryMethod.ReliableOrdered, 0);
-                builder.RegisterNetMessageType<EventDto>(DeliveryMethod.ReliableUnordered, 0);
+                builder.RegisterNetMessageType<Tick, TickNetSerializer>(DeliveryMethod.ReliableUnordered, 0);
+                builder.RegisterNetMessageType<TickHistoryStart, TickHistoryStartNetSerializer>(DeliveryMethod.ReliableOrdered, 0);
+                builder.RegisterNetMessageType<TickHistoryItem, TickHistoryItemNetSerializer>(DeliveryMethod.ReliableOrdered, 0);
+                builder.RegisterNetMessageType<TickHistoryEnd, TickHistoryEndNetSerializer>(DeliveryMethod.ReliableOrdered, 0);
+                builder.RegisterNetMessageType<EnqueuedStepInput, EnqueuedStepInputNetSerializer>(DeliveryMethod.ReliableUnordered, 0);
 
-                builder.RegisterNetSerializer<TickHistoryEndNetSerializer>();
-                builder.RegisterNetSerializer<TickHistoryItemNetSerializer>();
-                builder.RegisterNetSerializer<TickHistoryStartNetSerializer>();
-                builder.RegisterNetSerializer<TickNetSerializer>();
-                builder.RegisterNetSerializer<EventDtoNetSerializer>();
                 builder.RegisterNetSerializer<Simulation_Begin_NetSerializer>();
                 builder.RegisterNetSerializer<UserJoinedNetSerializer>();
 

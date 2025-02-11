@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public sealed class HardDespawnEntity : IEventData
+    public sealed class HardDespawnEntity : IStepEvent<HardDespawnEntity>
     {
         public required bool IsPrivate { get; init; }
         public required bool IsPredictable { get; init; }

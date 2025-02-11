@@ -3,7 +3,7 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Events
 {
-    public class Simulation_Begin : IInputData
+    public class Simulation_Begin : IStepInput<Simulation_Begin>
     {
         public bool IsPredictable => false;
 

@@ -1,26 +1,26 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Services;
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Logging.Common.Services;
+using Guppy.Core.Messaging.Common;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Strategy : Scene, IStrategy
     {
         private ILogger? _logger;
+        private readonly IMessageBus _messageBus;
         private readonly Lazy<ILoggerService> _loggerService;
-        private readonly Queue<EventDto> _enqueued;
-        private readonly Dictionary<Type, EventPublisher> _publishers;
+        private readonly Queue<EnqueuedStepEvent> _enqueued;
         private readonly ActionSequenceGroup<StepSequenceGroupEnum, Step> _stepActions;
-        private bool _disposed = false;
+        private readonly bool _disposed = false;
 
         protected ILogger logger => this._logger ??= this._loggerService.Value.GetLogger(this.GetType());
 
@@ -37,8 +37,8 @@ namespace VoidHuntersRevived.Domain.Simulations
             Lazy<ILoggerService> loggerService) : base(scope)
         {
             this._loggerService = loggerService;
-            this._enqueued = new Queue<EventDto>();
-            this._publishers = [];
+            this._messageBus = scope.Resolve<IMessageBus>();
+            this._enqueued = new Queue<EnqueuedStepEvent>();
             this._stepActions = new ActionSequenceGroup<StepSequenceGroupEnum, Step>(false);
 
             this.Type = type;
@@ -57,13 +57,6 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             this._stepActions.Add([this.Step_PublishEvents]); // Special case - add the internal queue submission method
             this._stepActions.Add(this.Systems);
-        }
-
-        protected override void InitializeSystems(IScopedSystemService systemService)
-        {
-            EventPublisher.PopulatePublishers(systemService, this._loggerService.Value, this._publishers);
-
-            base.InitializeSystems(systemService);
         }
 
         public override void Update(GameTime gameTime)
@@ -87,67 +80,30 @@ namespace VoidHuntersRevived.Domain.Simulations
         [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.PublishEvents)]
         private void Step_PublishEvents(Step step)
         {
-            while (this._enqueued.TryDequeue(out EventDto? enqueued))
+            while (this._enqueued.TryDequeue(out EnqueuedStepEvent? enqueued))
             {
-                this.Publish(enqueued);
+                enqueued.Data.Publish(enqueued.Id.Value, this._messageBus);
             }
         }
 
-        protected virtual void Revert(EventDto @event)
+        protected virtual void Revert(Id<IStepEvent> id, IStepEvent data)
         {
-            this._publishers[@event.Data.GetType()].Revert(@event);
+            this.logger.Verbose("Reverting {EventName}, {EventId}", data.GetType().Name, id);
+            data.Revert(id.Value, this._messageBus);
         }
 
-        public virtual void Publish(EventDto @event)
+        public virtual void Publish(Id<IStepEvent> id, IStepEvent data)
         {
-            this.logger.Verbose("Publishing {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
-            this._publishers[@event.Data.GetType()].Publish(@event);
+            this.logger.Verbose("Publishing {EventName}, {EventId}", data.GetType().Name, id);
+            data.Publish(id.Value, this._messageBus);
         }
 
-        public abstract void Input(VhId sourceId, IInputData data);
+        public abstract void Input(EnqueuedStepInput input);
 
-        public void Enqueue(VhId sourceId, IEventData data)
+        public void Enqueue(EnqueuedStepEvent @event)
         {
-            this.Enqueue(new EventDto()
-            {
-                SourceId = sourceId,
-                Data = data
-            });
-        }
-
-        public void Enqueue(EventDto @event)
-        {
-            this.logger.Verbose("Enqueing {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
+            this.logger.Verbose("Enqueing {EventName}, {EventId}", @event.GetType().Name, @event.Id.Value);
             this._enqueued.Enqueue(@event);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this._disposed)
-            {
-                if (disposing)
-                {
-                    this.Resolve<IGuppyScope>().Dispose();
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                this._disposed = true;
-            }
-        }
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~Strategy()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            this.Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }

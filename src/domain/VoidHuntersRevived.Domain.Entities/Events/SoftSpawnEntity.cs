@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Entities.Events
 {
-    public sealed class SoftSpawnEntity : IEventData
+    public sealed class SoftSpawnEntity : IStepEvent<SoftSpawnEntity>
     {
         public required bool IsPrivate { get; init; }
         public bool IsPredictable => true;

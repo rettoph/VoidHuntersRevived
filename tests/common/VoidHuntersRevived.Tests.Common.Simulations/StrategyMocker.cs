@@ -18,8 +18,8 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         IGuppyScope Scope { get; }
 
         void Update(TimeSpan interval, int count);
-        void Input(IInputData data, bool verified);
-        void Input(VhId sourceId, IInputData data, bool verified);
+        void Input(IStepInput data, bool verified);
+        void Input(VhId sourceId, IStepInput data, bool verified);
 
         int CalculateTotalEntities<T>()
             where T : unmanaged, IEntityComponent;
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         private readonly GameTime _gameTime = new();
         private int _sourceIdGeneratorIndex = 0;
         private bool _disposed;
-        private readonly List<EventDto> _inputs = [];
+        private readonly List<IStepEvent> _inputs = [];
 
         public TStrategy Instance { get; }
         public IGuppyScope Scope { get; }
@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             this.Instance = this.Scope.Resolve<TStrategy>();
         }
 
-        public void Input(VhId sourceId, IInputData data, bool verified)
+        public void Input(VhId sourceId, IStepInput data, bool verified)
         {
             if (this.Instance is PredictiveStrategy)
             {
@@ -63,14 +63,14 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                 return;
             }
 
-            this._inputs.Add(new EventDto()
+            this._inputs.Add(new IStepEvent()
             {
                 SourceId = sourceId,
                 Data = data
             });
         }
 
-        public void Input(IInputData data, bool verified)
+        public void Input(IStepInput data, bool verified)
         {
             this.Input(HashBuilder<IStrategyMocker, int>.Instance.Calculate(this._sourceIdGeneratorIndex++), data, verified);
         }

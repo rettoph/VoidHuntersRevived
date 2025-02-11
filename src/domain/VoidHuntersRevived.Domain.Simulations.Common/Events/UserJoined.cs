@@ -4,7 +4,7 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Events
 {
-    public sealed class UserJoined : IInputData
+    public class UserJoined : IStepInput<UserJoined>
     {
         public bool IsPredictable => false;
 

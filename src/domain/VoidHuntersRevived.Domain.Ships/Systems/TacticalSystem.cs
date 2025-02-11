@@ -8,6 +8,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Ships.Systems
@@ -22,7 +23,8 @@ namespace VoidHuntersRevived.Domain.Ships.Systems
 
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
 
-        public void Process(VhId eventId, Tactical_SetTarget data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, Tactical_SetTarget data)
         {
             EntityLocalId shipLocalId = this._entityQueryService.GetLocalId(data.ShipGlobalId);
             ref Tactical tactical = ref this._entityQueryService.QueryByLocalId<Tactical>(shipLocalId);

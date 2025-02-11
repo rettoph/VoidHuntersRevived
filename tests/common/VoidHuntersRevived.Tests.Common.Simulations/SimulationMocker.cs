@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return this;
         }
 
-        public SimulationMocker Input(VhId sourceId, IInputData data, bool verified)
+        public SimulationMocker Input(VhId sourceId, IStepInput data, bool verified)
         {
             foreach (IStrategyMocker strategy in this.Strategies)
             {
@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return this;
         }
 
-        public SimulationMocker Input(IInputData data, bool verified)
+        public SimulationMocker Input(IStepInput data, bool verified)
         {
             foreach (IStrategyMocker strategy in this.Strategies)
             {
@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return this;
         }
 
-        public SimulationMocker Input<TStrategy>(VhId sourceId, IInputData data, bool verified)
+        public SimulationMocker Input<TStrategy>(VhId sourceId, IStepInput data, bool verified)
             where TStrategy : IStrategy
         {
             foreach (IStrategyMocker strategy in this.Strategies.OfType<IStrategyMocker<TStrategy>>())
@@ -98,7 +98,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             return this;
         }
 
-        public SimulationMocker Input<TStrategy>(IInputData data, bool verified)
+        public SimulationMocker Input<TStrategy>(IStepInput data, bool verified)
             where TStrategy : IStrategy
         {
             foreach (IStrategyMocker strategy in this.Strategies.OfType<IStrategyMocker<TStrategy>>())
@@ -110,7 +110,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         }
 
         public SimulationMocker InputMany<T>(Func<int, T> generator, int count, int offset, bool verified)
-            where T : IInputData
+            where T : IStepInput
         {
             for (int i = 0; i < count; i++)
             {

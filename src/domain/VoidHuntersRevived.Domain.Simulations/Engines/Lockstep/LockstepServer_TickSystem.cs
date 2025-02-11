@@ -22,7 +22,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
         private readonly List<Tick> _history = [];
         private readonly ILockstepStrategy _strategy = strategy;
 
-        public void Process(VhId id, UserJoined data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId id, UserJoined data)
         {
             IUser? user = this._scope.Group.Peer!.Users.UpdateOrCreate(data.UserDto);
 
@@ -64,7 +65,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
             this._scope.CreateMessage(in tick)
                 .AddRecipients(this._scope.Group.Users.Peers);
 
-            if (tick.Events.Length == 0)
+            if (tick.Inputs.Length == 0)
             {
                 return;
             }

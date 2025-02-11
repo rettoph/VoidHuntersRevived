@@ -19,8 +19,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Common
         /// Publish input event
         /// </summary>
         /// <param name="sourceId"></param>
-        /// <param name="data"></param>
-        void Input(VhId sourceId, IInputData data);
+        /// <param name="input"></param>
+        void Input(VhId sourceId, IStepInput input);
 
         /// <summary>
         /// Iterate through the given <paramref name="strategies"/> and return the first

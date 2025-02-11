@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Events
 {
-    public class Tree_Clean : IEventData
+    public class Tree_Clean : IStepEvent<Tree_Clean>
     {
         public bool IsPredictable => true;
         public bool IsPrivate { get; init; } = false;

@@ -69,14 +69,12 @@ namespace VoidHuntersRevived.Game.Client.Systems
 
             this.ForEachCurrentUserEntity((shipLocalId, shipGlobalId) =>
             {
-                this._strategy.Simulation.Input(
-                    sourceId: sourceId,
-                    data: new Helm_SetDirection()
-                    {
-                        ShipGlobalId = shipGlobalId,
-                        Which = message.Which,
-                        Value = message.Value
-                    });
+                this._strategy.Simulation.Input(sourceId, new Helm_SetDirection()
+                {
+                    ShipGlobalId = shipGlobalId,
+                    Which = message.Which,
+                    Value = message.Value
+                });
             });
         }
 
@@ -96,22 +94,18 @@ namespace VoidHuntersRevived.Game.Client.Systems
 
                     EntityGlobalId targetNodeGlobalId = this._readEntityQueryService.GetGlobalId(targetNode.LocalId);
 
-                    this._strategy.Simulation.Input(
-                        sourceId: sourceId,
-                        data: new Tactical_SetTarget()
-                        {
-                            ShipGlobalId = tractorBeamEmitterGlobalId,
-                            Value = (FixVector2)this.CurrentTargetPosition,
-                            Snap = true
-                        });
+                    this._strategy.Simulation.Input(sourceId, new Tactical_SetTarget()
+                    {
+                        ShipGlobalId = tractorBeamEmitterGlobalId,
+                        Value = (FixVector2)this.CurrentTargetPosition,
+                        Snap = true
+                    });
 
-                    this._strategy.Simulation.Input(
-                        sourceId: sourceId,
-                        data: new Input_TractorBeamEmitter_Select()
-                        {
-                            TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
-                            TargetNodeGlobalId = targetNodeGlobalId
-                        });
+                    this._strategy.Simulation.Input(sourceId, new Input_TractorBeamEmitter_Select()
+                    {
+                        TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
+                        TargetNodeGlobalId = targetNodeGlobalId
+                    });
                 }
                 else
                 {
@@ -119,13 +113,11 @@ namespace VoidHuntersRevived.Game.Client.Systems
                     NodeSocketGlobalId? attachToSocketLocalId = this._readSocketService.TryGetClosestOpenNodeSocket(tractorBeamEmitterLocalId, tactical.Target, out NodeSocket nodeSocket)
                                 ? this._readSocketService.GetGlobalId(nodeSocket.LocalId) : null;
 
-                    this._strategy.Simulation.Input(
-                        sourceId: sourceId,
-                        data: new Input_TractorBeamEmitter_Deselect()
-                        {
-                            TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
-                            AttachToNodeSocketGlobalId = attachToSocketLocalId
-                        });
+                    this._strategy.Simulation.Input(sourceId, new Input_TractorBeamEmitter_Deselect()
+                    {
+                        TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
+                        AttachToNodeSocketGlobalId = attachToSocketLocalId
+                    });
                 }
             });
         }
@@ -141,14 +133,12 @@ namespace VoidHuntersRevived.Game.Client.Systems
                     return;
                 }
 
-                this._strategy.Simulation.Input(
-                    sourceId: tick.Hash,
-                    data: new Tactical_SetTarget()
-                    {
-                        ShipGlobalId = shipGlobalId,
-                        Value = (FixVector2)this.CurrentTargetPosition,
-                        Snap = false
-                    });
+                this._strategy.Simulation.Input(tick.Hash, new Tactical_SetTarget()
+                {
+                    ShipGlobalId = shipGlobalId,
+                    Value = (FixVector2)this.CurrentTargetPosition,
+                    Snap = false
+                });
             });
         }
 

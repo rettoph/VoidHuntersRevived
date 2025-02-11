@@ -6,7 +6,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Ships.Common.Events
 {
-    public class Tactical_SetTarget : IInputData
+    public class Tactical_SetTarget : IStepInput<Tactical_SetTarget>
     {
         public bool IsPredictable => true;
 

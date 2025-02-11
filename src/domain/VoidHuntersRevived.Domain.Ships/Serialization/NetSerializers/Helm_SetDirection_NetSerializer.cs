@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Ships.Common.Events;
 
 namespace VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers
 {
-    internal sealed class Helm_SetDirection_NetSerializer : NetSerializer<Helm_SetDirection>
+    public sealed class Helm_SetDirection_NetSerializer : NetSerializer<Helm_SetDirection>
     {
         public override Helm_SetDirection Deserialize(NetDataReader reader)
         {

@@ -8,5 +8,10 @@ namespace LiteNetLib.Utils
         {
             return new(reader.GetVhId());
         }
+
+        public static Id<T> GetId<T>(this NetDataReader reader)
+        {
+            return new Id<T>(reader.GetVhId());
+        }
     }
 }

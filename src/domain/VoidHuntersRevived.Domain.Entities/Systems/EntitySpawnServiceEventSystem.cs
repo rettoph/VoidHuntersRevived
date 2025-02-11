@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Logging.Common;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Logging.Common;
 using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -9,6 +10,7 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Events;
 using VoidHuntersRevived.Domain.Entities.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
@@ -23,10 +25,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         IEventSystem<SpawnEntity>,
         IEventSystem<SpawnEntity<EntityInitializerDelegate>>,
         IEventSystem<SoftSpawnEntity>,
-        IRevertEventEngine<SpawnEntity>,
-        IRevertEventEngine<SpawnEntity<EntityInitializerDelegate>>,
+        IRevertEventSystem<SpawnEntity>,
+        IRevertEventSystem<SpawnEntity<EntityInitializerDelegate>>,
         IEventSystem<DespawnEntity>,
-        IRevertEventEngine<DespawnEntity>,
+        IRevertEventSystem<DespawnEntity>,
         IEventSystem<HardDespawnEntity>
     {
         private readonly EntityQueryService _entityQueryService = entityQueryService;
@@ -35,7 +37,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         private readonly IEntityTemplateService _entityTemplateService = entityTemplateService;
         private readonly ILogger _logger = logger;
 
-        public void Process(VhId eventId, SpawnEntity data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, SpawnEntity data)
         {
             if (this._entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId existingLocalId) == true)
             {
@@ -47,14 +50,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // This is enqueued before HardSpawn is executed
             // Spawns any other entities. This ensture the first entitiy SoftSpawn
             // event is called first every time.
-            this._strategy.Enqueue(new EventDto()
+            this._strategy.Enqueue(eventId, new SoftSpawnEntity()
             {
-                SourceId = eventId,
-                Data = new SoftSpawnEntity()
-                {
-                    IsPrivate = true,
-                    GlobalId = data.GlobalId
-                }
+                IsPrivate = true,
+                GlobalId = data.GlobalId
             });
 
             ref EntityLocalId localId = ref this._entityQueryService.AddLocalId(data.GlobalId);
@@ -66,7 +65,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             this._logger.Verbose("{MethodName}, Hard spawned entity. GlobalId = {GlobalId}, LocalId = {LocalId}, Template = {Template}", nameof(SpawnEntity), data.GlobalId, localId, template.Key.Name);
         }
 
-        public void Process(VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
         {
             if (this._entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId existingLocalId) == true)
             {
@@ -78,14 +78,10 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // This is enqueued before HardSpawn is executed
             // Spawns any other entities. This ensture the first entitiy SoftSpawn
             // event is called first every time.
-            this._strategy.Enqueue(new EventDto()
+            this._strategy.Enqueue(eventId, new SoftSpawnEntity()
             {
-                SourceId = eventId,
-                Data = new SoftSpawnEntity()
-                {
-                    IsPrivate = true,
-                    GlobalId = data.GlobalId
-                }
+                IsPrivate = true,
+                GlobalId = data.GlobalId
             });
 
             ref EntityLocalId localId = ref this._entityQueryService.AddLocalId(data.GlobalId);
@@ -100,7 +96,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             this._logger.Verbose("{MethodName}, Hard spawned entity with initializer. GlobalId = {GlobalId}, LocalId = {LocalId}, Template = {Template}", nameof(SpawnEntity), data.GlobalId, localId, template.Key.Name);
         }
 
-        public void Process(VhId eventId, SoftSpawnEntity data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, SoftSpawnEntity data)
         {
             if (this._entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
             {
@@ -129,17 +126,49 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             status.Value = EntityStatusEnum.SoftSpawned;
         }
 
-        public void Revert(VhId eventId, SpawnEntity data)
+        [SequenceGroup<RevertEventSequenceGroupEnum>(RevertEventSequenceGroupEnum.Process)]
+        public void Revert(in VhId eventId, SpawnEntity data)
         {
-            this.InternalRevert(eventId, data);
+            this.InternalRevertSpawn(eventId, data.GlobalId);
         }
 
-        public void Revert(VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
+        [SequenceGroup<RevertEventSequenceGroupEnum>(RevertEventSequenceGroupEnum.Process)]
+        public void Revert(in VhId eventId, SpawnEntity<EntityInitializerDelegate> data)
         {
-            this.InternalRevert(eventId, data);
+            this.InternalRevertSpawn(eventId, data.GlobalId);
         }
 
-        public void InternalRevert(VhId eventId, SpawnEntity data)
+        public void InternalRevertSpawn(VhId eventId, EntityGlobalId globalId)
+        {
+            if (this._entityQueryService.TryGetLocalId(globalId, out EntityLocalId localId) == false)
+            {
+                this._logger.Warning("(Revert) {MethodName}, Unknown GlobalId. GlobalId = {GlobalId}", nameof(SpawnEntity), globalId);
+                return;
+            }
+
+            ref EntityStatus status = ref this._entityQueryService.QueryByEGID<EntityStatus>(localId.Value, out GroupIndex groupIndex, out bool exists);
+            if (exists == false)
+            {
+                this._logger.Warning("{MethodName}, Entity not found. GlobalId = {GlobalId}, LocalId = {LocalId}", nameof(SpawnEntity), globalId, localId);
+                return;
+            }
+
+            Key<IEntityTemplate> templateKey = this._entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(groupIndex).Key;
+            IEntityTemplate template = this._entityTemplateService.GetByKey(templateKey);
+            Entity entity = new(groupIndex.Index, localId, globalId);
+
+            this.SoftDespawn(eventId, ref status, ref entity, template);
+
+            this._strategy.Enqueue(eventId, new HardDespawnEntity()
+            {
+                IsPredictable = true,
+                IsPrivate = true,
+                GlobalId = globalId
+            });
+        }
+
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, DespawnEntity data)
         {
             if (this._entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
             {
@@ -160,52 +189,16 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             this.SoftDespawn(eventId, ref status, ref entity, template);
 
-            this._strategy.Enqueue(new EventDto()
+            this._strategy.Enqueue(eventId, new HardDespawnEntity()
             {
-                SourceId = eventId,
-                Data = new HardDespawnEntity()
-                {
-                    IsPrivate = true,
-                    IsPredictable = true,
-                    GlobalId = data.GlobalId
-                }
+                IsPredictable = data.IsPrivate,
+                IsPrivate = data.IsPrivate,
+                GlobalId = data.GlobalId
             });
         }
 
-        public void Process(VhId eventId, DespawnEntity data)
-        {
-            if (this._entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
-            {
-                this._logger.Warning("(Revert) {MethodName}, Unknown GlobalId. GlobalId = {GlobalId}", nameof(SpawnEntity), data.GlobalId);
-                return;
-            }
-
-            ref EntityStatus status = ref this._entityQueryService.QueryByEGID<EntityStatus>(localId.Value, out GroupIndex groupIndex, out bool exists);
-            if (exists == false)
-            {
-                this._logger.Warning("{MethodName}, Entity not found. GlobalId = {GlobalId}, LocalId = {LocalId}", nameof(SpawnEntity), data.GlobalId, localId);
-                return;
-            }
-
-            Key<IEntityTemplate> templateKey = this._entityQueryService.QueryByGroupIndex<Common.Components.EntityTemplate>(groupIndex).Key;
-            IEntityTemplate template = this._entityTemplateService.GetByKey(templateKey);
-            Entity entity = new(groupIndex.Index, localId, data.GlobalId);
-
-            this.SoftDespawn(eventId, ref status, ref entity, template);
-
-            this._strategy.Enqueue(new EventDto()
-            {
-                SourceId = eventId,
-                Data = new HardDespawnEntity()
-                {
-                    IsPrivate = data.IsPrivate,
-                    IsPredictable = data.IsPrivate,
-                    GlobalId = data.GlobalId
-                }
-            });
-        }
-
-        public void Process(VhId eventId, HardDespawnEntity data)
+        [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
+        public void Process(in VhId eventId, HardDespawnEntity data)
         {
             if (this._entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
             {
@@ -232,7 +225,8 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             status.Value = EntityStatusEnum.HardDespawned;
         }
 
-        public void Revert(VhId eventId, DespawnEntity data)
+        [SequenceGroup<RevertEventSequenceGroupEnum>(RevertEventSequenceGroupEnum.Process)]
+        public void Revert(in VhId eventId, DespawnEntity data)
         {
             if (this._entityQueryService.TryGetLocalId(data.GlobalId, out EntityLocalId localId) == false)
             {

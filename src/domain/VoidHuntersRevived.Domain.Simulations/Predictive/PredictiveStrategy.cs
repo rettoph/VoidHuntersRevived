@@ -5,6 +5,7 @@ using Guppy.Core.Logging.Common.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
@@ -24,8 +25,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private readonly Step _step = new();
         private double _lastStepTime;
         private IPredictiveSynchronizationSystem[] _synchronizations = [];
-        private readonly DictionaryQueue<VhId, PredictedEvent> _predictedEvents = new();
-        private readonly Queue<EventDto> _confirmedEvents = new();
+        private readonly DictionaryQueue<Id<IStepEvent>, PredictedEvent> _predictedEvents = new();
+        private readonly Queue<EnqueuedStepEvent> _confirmedEvents = new();
 
         protected override void Initialize()
         {
@@ -72,7 +73,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 if (prediction.Status == PredictedEventStatus.Unconfirmed)
                 {
-                    this.Revert(prediction.Event);
+                    this.Revert(prediction.Id, prediction.Event);
 
                     prediction.Status = PredictedEventStatus.Reverted;
                 }
@@ -84,46 +85,42 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             }
         }
 
-        public override void Input(VhId sourceId, IInputData data)
+        public override void Input(EnqueuedStepInput input)
         {
-            this.Publish(new EventDto()
-            {
-                SourceId = sourceId,
-                Data = data
-            });
+            this.Publish(input.Id, input.Data);
         }
 
-        public override void Publish(EventDto @event)
+        public override void Publish(Id<IStepEvent> id, IStepEvent data)
         {
-            if (@event.Data.IsPredictable == false && @event.Data.IsPrivate == false)
+            if (data.IsPredictable == false && data.IsPrivate == false)
             { // The event must be both non-predictable and public in order for us to skip it
                 // What would it even mean for a private event to be non predictable? 
                 // It wouldnt happen on the predictive strategy and never get synced by the lockstep
-                this.logger.Verbose("Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", @event.Data.GetType().Name, @event.Id.Value, @event.Data.IsPredictable);
+                this.logger.Verbose("Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", data.GetType().Name, id, data.IsPredictable);
                 return;
             }
 
-            ref PredictedEvent? predictiveEvent = ref this._predictedEvents.GetOrEnqueue(@event.Id, out bool exists);
+            ref PredictedEvent? predictiveEvent = ref this._predictedEvents.GetOrEnqueue(id, out bool exists);
             if (exists == true)
             {
-                this.logger.Error("Unable to predict {EventName}, {EventId}; duplicate event?", @event.Data.GetType().Name, @event.Id.Value);
+                this.logger.Error("Unable to predict {EventName}, {EventId}; duplicate event?", data.GetType().Name, id);
                 return;
             }
 
-            predictiveEvent = this.GetPredictionEvent(@event);
-            this.logger.Verbose("Predicting {EventName}, {EventId}", @event.Data.GetType().Name, @event.Id.Value);
+            predictiveEvent = this.GetPredictionEvent(id, data);
+            this.logger.Verbose("Predicting {EventName}, {EventId}", data.GetType().Name, id);
 
-            if (@event.Data.IsPrivate)
+            if (data.IsPrivate)
             { // Private events may as well be immidiately confirmed, right? They will never get verified
                 predictiveEvent.Status = PredictedEventStatus.Confirmed;
             }
 
-            base.Publish(@event);
+            base.Publish(id, data);
         }
 
         private void Confirm()
         {
-            while (this._confirmedEvents.TryDequeue(out EventDto? confirmedEvent))
+            while (this._confirmedEvents.TryDequeue(out EnqueuedStepEvent? confirmedEvent))
             {
                 if (confirmedEvent.Data is EndOfTick endOfTick)
                 {
@@ -133,35 +130,34 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
                 }
 
                 this.logger.Verbose("Confirming {EventName}, {EventId}", confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
-
                 if (this._predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published) == false)
                 {
-                    published = this.GetPredictionEvent(confirmedEvent);
+                    published = this.GetPredictionEvent(confirmedEvent.Id, confirmedEvent.Data);
                     this._predictedEvents.TryEnqueue(confirmedEvent.Id, published);
-                    base.Publish(confirmedEvent);
+                    base.Publish(confirmedEvent.Id, confirmedEvent.Data);
                 }
 
                 published.Status = PredictedEventStatus.Confirmed;
             }
         }
 
-        private void HandleLockstepEvent(EventDto @event)
+        private void HandleLockstepEvent(Id<IStepEvent> id, IStepEvent @event)
         {
-            if (@event.Data.IsPrivate == false)
+            if (@event.IsPrivate == false)
             {
-                this._confirmedEvents.Enqueue(@event);
+                this._confirmedEvents.Enqueue(new EnqueuedStepEvent(id, @event));
             }
         }
 
-        private PredictedEvent GetPredictionEvent(EventDto @event)
+        private PredictedEvent GetPredictionEvent(Id<IStepEvent> id, IStepEvent @event)
         {
             if (!_predictionPool.TryPull(out PredictedEvent? prediction))
             {
                 prediction = new PredictedEvent();
             }
 
-            prediction.Status = @event.Data.IsPrivate ? PredictedEventStatus.Confirmed : PredictedEventStatus.Unconfirmed;
-            prediction.SetEvent(@event, this.CurrentStep);
+            prediction.Status = @event.IsPrivate ? PredictedEventStatus.Confirmed : PredictedEventStatus.Unconfirmed;
+            prediction.SetEvent(id, @event, this.CurrentStep);
             return prediction;
         }
     }

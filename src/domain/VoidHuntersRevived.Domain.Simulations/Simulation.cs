@@ -73,11 +73,12 @@ namespace VoidHuntersRevived.Domain.Simulations
             return null;
         }
 
-        public void Input(VhId sourceId, IInputData data)
+        public void Input(VhId sourceId, IStepInput input)
         {
+            EnqueuedStepInput enqueuedStepInput = new(sourceId, input);
             foreach (IStrategy strategy in this._strategies)
             {
-                strategy.Input(sourceId, data);
+                strategy.Input(enqueuedStepInput);
             }
         }
     }

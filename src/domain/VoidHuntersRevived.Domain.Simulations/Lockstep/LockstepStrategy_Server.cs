@@ -17,15 +17,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         ISettingService settings,
         IGuppyScope scope,
         Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, scope, loggerService),
-            INetIncomingMessageSubscriber<EventDto>
+            INetIncomingMessageSubscriber<EnqueuedStepInput>
     {
-        private readonly List<EventDto> _inputs = [];
+        private readonly List<EnqueuedStepInput> _inputs = [];
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            this.Input(VhId.NewId(), new Simulation_Begin());
+            ((IStrategy)this).Input(NameSpace<LockstepStrategy_Server>.Instance, new Simulation_Begin());
         }
 
         protected override void DoStep(Step step)
@@ -55,13 +55,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             return true;
         }
 
-        public override void Input(VhId sourceId, IInputData data)
+        public override void Input(EnqueuedStepInput input)
         {
-            this._inputs.Add(new EventDto()
-            {
-                SourceId = sourceId,
-                Data = data
-            });
+            this._inputs.Add(input);
         }
 
         protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)
@@ -79,14 +75,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         }
 
         [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
-        public void Process(INetIncomingMessage<EventDto> message)
+        public void Process(INetIncomingMessage<EnqueuedStepInput> message)
         {
-            if (message.Body.Data is not IInputData input)
-            {
-                throw new InvalidOperationException();
-            }
-
-            this.Input(message.Body.SourceId, input);
+            this._inputs.Add(message.Body);
         }
     }
 }

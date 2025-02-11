@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common.Constants;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
@@ -31,7 +32,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public IEnumerable<Tick> History => this._history;
 
-        public event OnEventDelegate<EventDto>? OnEvent;
+        public event OnEventDelegate<Id<IStepEvent>, IStepEvent>? OnEvent;
 
         public LockstepStrategy(
             ISettingService settings,
@@ -116,31 +117,30 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         [SequenceGroup<TickSequenceGroupEnum>(TickSequenceGroupEnum.PublishEvents)]
         private void Tick_PublishEvents(Tick tick)
         {
-            if (tick.Events.Length == 0)
+            if (tick.Inputs.Length == 0)
             {
                 return;
             }
 
-            foreach (EventDto @event in tick.Events)
+            foreach (EnqueuedStepInput @event in tick.Inputs)
             {
-                this.Publish(@event);
+                this.Publish(@event.Id, @event.Data);
             }
 
-            this.OnEvent?.Invoke(new EventDto()
+            EndOfTick endOfTick = new()
             {
-                SourceId = NameSpace<LockstepStrategy>.Instance,
-                Data = new EndOfTick()
-                {
-                    TickId = tick.Id
-                }
-            });
+                TickId = tick.Id
+            };
+            Id<IStepEvent> endOfTickId = new(endOfTick.CalculateHash(NameSpace<LockstepStrategy>.Instance));
+
+            this.OnEvent?.Invoke(endOfTickId, endOfTick);
         }
 
-        public override void Publish(EventDto @event)
+        public override void Publish(Id<IStepEvent> id, IStepEvent data)
         {
-            this.OnEvent?.Invoke(@event);
+            this.OnEvent?.Invoke(id, data);
 
-            base.Publish(@event);
+            base.Publish(id, data);
         }
     }
 }

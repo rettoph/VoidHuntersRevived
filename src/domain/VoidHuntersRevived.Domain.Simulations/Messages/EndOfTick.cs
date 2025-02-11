@@ -4,7 +4,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations.Messages
 {
-    internal class EndOfTick : IEventData
+    public class EndOfTick : IStepEvent<EndOfTick>
     {
         public bool IsPredictable => false;
         public int TickId { get; init; }

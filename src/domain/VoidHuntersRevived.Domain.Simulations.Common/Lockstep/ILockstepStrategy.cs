@@ -1,4 +1,5 @@
 ﻿using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
 {
@@ -13,6 +14,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
 
         IEnumerable<Tick> History { get; }
 
-        event OnEventDelegate<EventDto>? OnEvent;
+        event OnEventDelegate<Id<IStepEvent>, IStepEvent>? OnEvent;
     }
 }

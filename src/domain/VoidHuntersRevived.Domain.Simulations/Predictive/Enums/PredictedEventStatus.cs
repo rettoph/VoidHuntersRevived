@@ -1,6 +1,6 @@
 ﻿namespace VoidHuntersRevived.Domain.Simulations.Predictive.Enums
 {
-    internal enum PredictedEventStatus
+    public enum PredictedEventStatus
     {
         Unconfirmed,
         Confirmed,
