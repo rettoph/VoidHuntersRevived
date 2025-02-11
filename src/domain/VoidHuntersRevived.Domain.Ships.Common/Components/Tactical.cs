@@ -12,13 +12,11 @@ namespace VoidHuntersRevived.Domain.Ships.Common.Components
         public void AddUse()
         {
             this.Uses++;
-            Console.WriteLine(this.Uses);
         }
 
         public void RemoveUse()
         {
             this.Uses = Math.Max(this.Uses - 1, 0);
-            Console.WriteLine(this.Uses);
         }
     }
 }

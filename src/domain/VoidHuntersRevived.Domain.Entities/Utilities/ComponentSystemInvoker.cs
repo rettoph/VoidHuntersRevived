@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
     public abstract class ComponentSystemInvoker
     {
         public delegate void ComponentSystemInvokerDelegate(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity);
-        public class ComponentEngineInvokerDelegateSequenceGroup<TSequenceGroup>(bool sequence) : DelegateSequenceGroup<TSequenceGroup, ComponentSystemInvokerDelegate>(typeof(ComponentSystemInvokerDelegate), sequence)
+        public class ComponentSystemInvokerDelegateSequenceGroup<TSequenceGroup>(bool sequence) : DelegateSequenceGroup<TSequenceGroup, ComponentSystemInvokerDelegate>(typeof(ComponentSystemInvokerDelegate), sequence)
             where TSequenceGroup : unmanaged, Enum
         {
             public void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity)
@@ -50,8 +50,8 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         public abstract void Invoke(VhId sourceEventId, IEntityTemplate entityTemplate, in Entity entity);
 
         public static IEnumerable<ComponentSystemInvoker> Create<TSequenceGroup>(
-            Type componentEngineInvokerType,
-            Type engineType,
+            Type componentSystemInvokerType,
+            Type systemType,
             IEnumerable<Type> componentTypes,
             IEnumerable<IScopedSystem> systems,
             EntitiesDB entitiesDB,
@@ -59,31 +59,31 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         )
             where TSequenceGroup : unmanaged, Enum
         {
-            Dictionary<ComponentSystemInvokerContext<TSequenceGroup>, List<IScopedSystem>> validEngines = [];
+            Dictionary<ComponentSystemInvokerContext<TSequenceGroup>, List<IScopedSystem>> validSystemsDictionary = [];
 
             foreach (IScopedSystem system in systems)
-            { // Iterate through all engines...
-                foreach (Type onComponentEngineType in system.GetType().GetConstructedGenericTypes(engineType))
-                { // Select engines that specificaly implement the given engine interface...
-                    if (componentTypes.Intersect(onComponentEngineType.GenericTypeArguments).Count() == onComponentEngineType.GenericTypeArguments.Length)
-                    { // Only look at engine types that utilize the given list of components...
-                        if (method(onComponentEngineType).TryGetSequenceGroup(system, true, out SequenceGroup<TSequenceGroup> sequenceGroup) == true)
-                        { // Only look at engines with a defined sequence group
-                            ComponentSystemInvokerContext<TSequenceGroup> context = new(onComponentEngineType.GenericTypeArguments, sequenceGroup);
-                            ref List<IScopedSystem>? validEngineList = ref CollectionsMarshal.GetValueRefOrAddDefault(validEngines, context, out _);
-                            validEngineList ??= [];
+            { // Iterate through all systems...
+                foreach (Type onComponentSystemType in system.GetType().GetConstructedGenericTypes(systemType))
+                { // Select systems that specificaly implement the given system interface...
+                    if (componentTypes.Intersect(onComponentSystemType.GenericTypeArguments).Count() == onComponentSystemType.GenericTypeArguments.Length)
+                    { // Only look at system types that utilize the given list of components...
+                        if (method(onComponentSystemType).TryGetSequenceGroup(system, true, out SequenceGroup<TSequenceGroup> sequenceGroup) == true)
+                        { // Only look at systems with a defined sequence group
+                            ComponentSystemInvokerContext<TSequenceGroup> context = new(onComponentSystemType.GenericTypeArguments, sequenceGroup);
+                            ref List<IScopedSystem>? validSystemList = ref CollectionsMarshal.GetValueRefOrAddDefault(validSystemsDictionary, context, out _);
+                            validSystemList ??= [];
 
-                            validEngineList.Add(system);
+                            validSystemList.Add(system);
                         }
                     }
                 }
             }
 
             List<ComponentSystemInvoker> invokers = [];
-            foreach (var (context, _) in validEngines)
+            foreach (var (context, validSystemList) in validSystemsDictionary)
             {
-                Type invokerType = componentEngineInvokerType.MakeGenericType(context.Types);
-                ComponentSystemInvoker invoker = (ComponentSystemInvoker)Activator.CreateInstance(invokerType, context.SequenceGroup, systems, entitiesDB)!;
+                Type invokerType = componentSystemInvokerType.MakeGenericType(context.Types);
+                ComponentSystemInvoker invoker = (ComponentSystemInvoker)Activator.CreateInstance(invokerType, context.SequenceGroup, validSystemList, entitiesDB)!;
                 invokers.Add(invoker);
             }
 
@@ -95,9 +95,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnSpawnSystem<TComponent>[] _engines = systems.OfType<IOnSpawnSystem<TComponent>>()
-            .Where(x => x.GetType().GetMethod(nameof(IOnSpawnSystem<TComponent>.OnSpawn))!.GetSequenceGroup<OnSpawnSequenceGroupEnum>(x) == sequenceGroup)
-            .ToArray();
+        private readonly IOnSpawnSystem<TComponent>[] _systems = systems.OfType<IOnSpawnSystem<TComponent>>().ToArray();
 
         SequenceGroup<OnSpawnSequenceGroupEnum> IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -106,9 +104,9 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             ref TComponent component = ref this._entitiesDB.QueryEntityByIndex<TComponent>(entity.Index, entity.Group);
             Entity<TComponent> entityC = new(in entity, ref component);
 
-            foreach (IOnSpawnSystem<TComponent> engine in this._engines)
+            foreach (IOnSpawnSystem<TComponent> system in this._systems)
             {
-                engine.OnSpawn(sourceEventId, entityTemplate, ref entityC);
+                system.OnSpawn(sourceEventId, entityTemplate, ref entityC);
             }
         }
     }
@@ -118,9 +116,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent2 : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnSpawnSystem<TComponent1, TComponent2>[] _engines = systems.OfType<IOnSpawnSystem<TComponent1, TComponent2>>()
-            .Where(x => x.GetType().GetMethod(nameof(IOnSpawnSystem<TComponent1, TComponent2>.OnSpawn))!.GetSequenceGroup<OnSpawnSequenceGroupEnum>(x) == sequenceGroup)
-            .ToArray();
+        private readonly IOnSpawnSystem<TComponent1, TComponent2>[] _systems = systems.OfType<IOnSpawnSystem<TComponent1, TComponent2>>().ToArray();
 
         SequenceGroup<OnSpawnSequenceGroupEnum> IRuntimeSequenceGroup<OnSpawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -129,9 +125,9 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             var (component1s, component2s, _) = this._entitiesDB.QueryEntities<TComponent1, TComponent2>(entity.Group);
             Entity<TComponent1, TComponent2> entityC = new(in entity, ref component1s[entity.Index], ref component2s[entity.Index]);
 
-            foreach (IOnSpawnSystem<TComponent1, TComponent2> engine in this._engines)
+            foreach (IOnSpawnSystem<TComponent1, TComponent2> system in this._systems)
             {
-                engine.OnSpawn(sourceEventId, entityTemplate, ref entityC);
+                system.OnSpawn(sourceEventId, entityTemplate, ref entityC);
             }
         }
     }
@@ -140,9 +136,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnDespawnSystem<TComponent>[] _engines = systems.OfType<IOnDespawnSystem<TComponent>>()
-            .Where(x => x.GetType().GetMethod(nameof(IOnDespawnSystem<TComponent>.OnDespawn))!.GetSequenceGroup<OnDespawnSequenceGroupEnum>(x) == sequenceGroup)
-            .ToArray();
+        private readonly IOnDespawnSystem<TComponent>[] _systems = systems.OfType<IOnDespawnSystem<TComponent>>().ToArray();
 
         SequenceGroup<OnDespawnSequenceGroupEnum> IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -151,9 +145,9 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             ref TComponent component = ref this._entitiesDB.QueryEntityByIndex<TComponent>(entity.Index, entity.Group);
             Entity<TComponent> entityC = new(in entity, ref component);
 
-            foreach (IOnDespawnSystem<TComponent> engine in this._engines)
+            foreach (IOnDespawnSystem<TComponent> system in this._systems)
             {
-                engine.OnDespawn(sourceEventId, entityTemplate, ref entityC);
+                system.OnDespawn(sourceEventId, entityTemplate, ref entityC);
             }
         }
     }
@@ -163,9 +157,7 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
         where TComponent2 : unmanaged, IEntityComponent
     {
         private readonly EntitiesDB _entitiesDB = entitiesDB;
-        private readonly IOnDespawnSystem<TComponent1, TComponent2>[] _engines = systems.OfType<IOnDespawnSystem<TComponent1, TComponent2>>()
-            .Where(x => x.GetType().GetMethod(nameof(IOnDespawnSystem<TComponent1, TComponent2>.OnDespawn))!.GetSequenceGroup<OnDespawnSequenceGroupEnum>(x) == sequenceGroup)
-            .ToArray();
+        private readonly IOnDespawnSystem<TComponent1, TComponent2>[] _systems = systems.OfType<IOnDespawnSystem<TComponent1, TComponent2>>().ToArray();
 
         SequenceGroup<OnDespawnSequenceGroupEnum> IRuntimeSequenceGroup<OnDespawnSequenceGroupEnum>.Value { get; } = sequenceGroup;
 
@@ -174,9 +166,9 @@ namespace VoidHuntersRevived.Domain.Entities.Utilities
             var (component1s, component2s, _) = this._entitiesDB.QueryEntities<TComponent1, TComponent2>(entity.Group);
             Entity<TComponent1, TComponent2> entityC = new(in entity, ref component1s[entity.Index], ref component2s[entity.Index]);
 
-            foreach (IOnDespawnSystem<TComponent1, TComponent2> engine in this._engines)
+            foreach (IOnDespawnSystem<TComponent1, TComponent2> system in this._systems)
             {
-                engine.OnDespawn(sourceEventId, entityTemplate, ref entityC);
+                system.OnDespawn(sourceEventId, entityTemplate, ref entityC);
             }
         }
     }

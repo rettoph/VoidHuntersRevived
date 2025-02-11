@@ -25,8 +25,8 @@ namespace VoidHuntersRevived.Domain.Entities
         private readonly IEntityFactory _factory;
         private readonly IEntityFunctions _functions;
         private readonly ILogger _logger;
-        private readonly ComponentSystemInvoker.ComponentEngineInvokerDelegateSequenceGroup<OnDespawnSequenceGroupEnum> _onDespawnEngineInvokers;
-        private readonly ComponentSystemInvoker.ComponentEngineInvokerDelegateSequenceGroup<OnSpawnSequenceGroupEnum> _onSpawnEngineInvokers;
+        private readonly ComponentSystemInvoker.ComponentSystemInvokerDelegateSequenceGroup<OnDespawnSequenceGroupEnum> _onDespawnSystemInvokers;
+        private readonly ComponentSystemInvoker.ComponentSystemInvokerDelegateSequenceGroup<OnSpawnSequenceGroupEnum> _onSpawnSystemInvokers;
         private EntitiesDB _entitiesDB;
         private FasterList<IComponentSerializer> _serializers;
 
@@ -52,8 +52,8 @@ namespace VoidHuntersRevived.Domain.Entities
             this._entitiesDB = null!;
             this._logger = logger;
 
-            this._onDespawnEngineInvokers = new(false);
-            this._onSpawnEngineInvokers = new(false);
+            this._onDespawnSystemInvokers = new(false);
+            this._onSpawnSystemInvokers = new(false);
             this._serializers = null!;
 
             this._descriptor = BuildDescriptor(key, entityTemplateService, out var components, out this._group);
@@ -73,18 +73,18 @@ namespace VoidHuntersRevived.Domain.Entities
             this._serializers = componentSerializerService.GetComponentSerializersByDescriptor(this._descriptor);
 
             // Generate despawn engine invokers
-            // Responsible for calling IOnSpawnEngine & IOnDespawnEngine engines
-            List<ComponentSystemInvoker> onDespawnEngineInvokers = [];
-            List<ComponentSystemInvoker> onSpawnEngineInvokers = [];
+            // Responsible for calling IOnSpawnSystem & IOnDespawnSystem engines
+            List<ComponentSystemInvoker> onDespawnSystemInvokers = [];
+            List<ComponentSystemInvoker> onSpawnSystemInvokers = [];
 
-            onDespawnEngineInvokers.AddRange(ComponentSystemInvoker.Create<OnDespawnSequenceGroupEnum>(typeof(OnDespawnSystemInvoker<>), typeof(IOnDespawnSystem<>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnDespawn") ?? throw new NotImplementedException()).ToList());
-            onDespawnEngineInvokers.AddRange(ComponentSystemInvoker.Create<OnDespawnSequenceGroupEnum>(typeof(OnDespawnSystemInvoker<,>), typeof(IOnDespawnSystem<,>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnDespawn") ?? throw new NotImplementedException()).ToList());
+            onDespawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnDespawnSequenceGroupEnum>(typeof(OnDespawnSystemInvoker<>), typeof(IOnDespawnSystem<>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnDespawn") ?? throw new NotImplementedException()).ToList());
+            onDespawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnDespawnSequenceGroupEnum>(typeof(OnDespawnSystemInvoker<,>), typeof(IOnDespawnSystem<,>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnDespawn") ?? throw new NotImplementedException()).ToList());
 
-            onSpawnEngineInvokers.AddRange(ComponentSystemInvoker.Create<OnSpawnSequenceGroupEnum>(typeof(OnSpawnSystemInvoker<>), typeof(IOnSpawnSystem<>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnSpawn") ?? throw new NotImplementedException()).ToList());
-            onSpawnEngineInvokers.AddRange(ComponentSystemInvoker.Create<OnSpawnSequenceGroupEnum>(typeof(OnSpawnSystemInvoker<,>), typeof(IOnSpawnSystem<,>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnSpawn") ?? throw new NotImplementedException()).ToList());
+            onSpawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnSpawnSequenceGroupEnum>(typeof(OnSpawnSystemInvoker<>), typeof(IOnSpawnSystem<>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnSpawn") ?? throw new NotImplementedException()).ToList());
+            onSpawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnSpawnSequenceGroupEnum>(typeof(OnSpawnSystemInvoker<,>), typeof(IOnSpawnSystem<,>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnSpawn") ?? throw new NotImplementedException()).ToList());
 
-            this._onDespawnEngineInvokers.Add(onDespawnEngineInvokers);
-            this._onSpawnEngineInvokers.Add(onSpawnEngineInvokers);
+            this._onDespawnSystemInvokers.Add(onDespawnSystemInvokers);
+            this._onSpawnSystemInvokers.Add(onSpawnSystemInvokers);
         }
 
         #region Instance Entity Methods
@@ -108,13 +108,13 @@ namespace VoidHuntersRevived.Domain.Entities
         public void SoftSpawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
             this._logger.Verbose("SoftSpawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
-            this._onSpawnEngineInvokers.Invoke(sourceEventId, this, entity);
+            this._onSpawnSystemInvokers.Invoke(sourceEventId, this, entity);
         }
 
         public void SoftDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
             this._logger.Verbose("SoftDespawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
-            this._onDespawnEngineInvokers.Invoke(sourceEventId, this, entity);
+            this._onDespawnSystemInvokers.Invoke(sourceEventId, this, entity);
         }
 
         public void HardDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
