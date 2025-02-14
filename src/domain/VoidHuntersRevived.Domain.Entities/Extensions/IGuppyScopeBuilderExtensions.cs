@@ -32,6 +32,14 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
                 builder.RegisterResourceType<EntityTemplateFragmentResourceType>();
 
+                // Automoq will attempt to resolve a mocked instance unless a default registration
+                // is defined. Since there is no public constrctor on this type the end result
+                // is an unexpected exception. Just adding a registration manually here - even if its one we
+                // never intent to call - fixes that issue.
+                builder.Register<EntitiesDB>(ctx => throw new NotImplementedException());
+
+                builder.RegisterType<EntityTemplateFragmentService>().As<IEntityTemplateFragmentService>().SingleInstance();
+
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
                     builder.RegisterSceneSystem<EntitySubmissionSystem>();
@@ -39,12 +47,11 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
 
                     builder.RegisterType<ComponentSerializerService>().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
 
-                    builder.RegisterType<EntityTemplateFragmentService>().As<IEntityTemplateFragmentService>().SingleInstance();
                     builder.RegisterType<EntityTemplateService>().AsSelf().As<IEntityTemplateService>().InstancePerLifetimeScope();
 
                     builder.RegisterType<EntitiesSubmissionScheduler>().AsSelf().InstancePerLifetimeScope();
                     builder.RegisterType<EnginesRoot>().InstancePerLifetimeScope();
-                    builder.Register<EntitiesDB>(ctx => ctx.Resolve<EnginesRoot>().GetEntitiesDB());
+                    builder.Register<EntitiesDB>(ctx => ctx.Resolve<EnginesRoot>().GetEntitiesDB()).InstancePerLifetimeScope();
 
                     builder.RegisterType<EntityService>().As<IEntityService>().InstancePerLifetimeScope();
                     builder.RegisterType<EntityQueryService>().AsSelf().As<IEntityQueryService>().InstancePerLifetimeScope();

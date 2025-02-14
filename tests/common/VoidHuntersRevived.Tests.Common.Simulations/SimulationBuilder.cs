@@ -4,6 +4,7 @@ using Guppy.Core.Logging.Common;
 using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Game.Extensions;
 using Guppy.Tests.Common;
 using Guppy.Tests.Common.Extensions;
 using Moq;
@@ -22,7 +23,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
 {
     public class SimulationBuilder : GuppyScopeMocker<SimulationBuilder, SimulationMocker>
     {
-        private readonly List<Func<IGuppyScope, IStrategyMocker>> _strategies = [];
+        private readonly List<Func<IGuppyScope, ISimulation, IStrategyMocker>> _strategies = [];
 
         public VhId Id;
 
@@ -37,6 +38,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             this.Register(builder =>
             {
                 builder
+                    .RegisterCommonGameServices()
                     .RegisterDomainCoreServices()
                     .RegisterDomainEntityServices()
                     .RegisterDomainSimulationServices();
@@ -70,18 +72,31 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         public SimulationBuilder AddStrategy<TStrategy>()
             where TStrategy : class, IStrategy
         {
-            this._strategies.Add(scope => new StrategyMocker<TStrategy>(scope));
+            this._strategies.Add((scope, simulation) => new StrategyMocker<TStrategy>(scope, simulation));
 
             return this;
         }
 
         public override SimulationMocker Build()
         {
-            IStrategyMocker[] strategies = this._strategies.Select(factory => factory(this.scope)).ToArray();
+            List<IStrategyMocker> strategies = [];
+
+            Simulation instance = new(this.Id, simulation =>
+            {
+                foreach (var strategyMockerFactory in this._strategies)
+                {
+                    IStrategyMocker strategyMocker = strategyMockerFactory(this.scope, simulation);
+                    strategies.Add(strategyMocker);
+                }
+
+                return strategies.Select(x => x.Instance);
+            });
+
+            instance.Initialize();
 
             SimulationMocker simulation = new(
-                instance: new Simulation(this.Id, strategies.Select(x => x.Instance).ToArray()),
-                strategies: strategies);
+                instance: instance,
+                strategies: strategies.ToArray());
 
             return simulation;
         }

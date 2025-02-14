@@ -82,6 +82,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         {
             while (this._enqueued.TryDequeue(out EnqueuedStepEvent? enqueued))
             {
+                this.logger.Verbose("Publishing enqueued {EventName}, {EventId}", enqueued.Data.GetType().Name, enqueued.Id);
                 enqueued.Data.Publish(enqueued.Id.Value, this._messageBus);
             }
         }

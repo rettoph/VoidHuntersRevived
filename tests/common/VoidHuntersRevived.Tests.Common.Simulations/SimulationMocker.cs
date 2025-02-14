@@ -1,14 +1,14 @@
-﻿using Autofac;
-using Svelto.ECS;
+﻿using Svelto.ECS;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Tests.Common.Providers;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations
 {
-    public class SimulationMocker(ISimulation instance, IStrategyMocker[] strategies) : IDisposable
+    public class SimulationMocker(Simulation instance, IStrategyMocker[] strategies) : IDisposable
     {
-        public readonly ISimulation Instance = instance;
+        public readonly Simulation Instance = instance;
         public readonly IStrategyMocker[] Strategies = strategies;
         private bool _disposed = false;
 
@@ -51,7 +51,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             where TStrategy : IStrategy
             where T : class
         {
-            return this.Get<TStrategy>().Scope.Resolve<T>();
+            return this.Get<TStrategy>().Instance.Resolve<T>();
         }
 
         public SimulationMocker Update(TimeSpan interval, int count)

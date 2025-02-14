@@ -1,4 +1,3 @@
-using Autofac;
 using Guppy.Core.Resources.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -73,9 +72,9 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
             IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
             {
-                ITeamService teamService = strategy.Scope.Resolve<ITeamService>();
-                ITreeService treeService = strategy.Scope.Resolve<ITreeService>();
-                INodeSocketService socketService = strategy.Scope.Resolve<INodeSocketService>();
+                ITeamService teamService = strategy.Instance.Resolve<ITeamService>();
+                ITreeService treeService = strategy.Instance.Resolve<ITreeService>();
+                INodeSocketService socketService = strategy.Instance.Resolve<INodeSocketService>();
 
                 // Spawn a test ship
                 Team team = teamService.GetOpenTeam();
@@ -182,9 +181,9 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
             IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
             {
-                ITeamService teamService = strategy.Scope.Resolve<ITeamService>();
-                ITreeService treeService = strategy.Scope.Resolve<ITreeService>();
-                INodeSocketService socketService = strategy.Scope.Resolve<INodeSocketService>();
+                ITeamService teamService = strategy.Instance.Resolve<ITeamService>();
+                ITreeService treeService = strategy.Instance.Resolve<ITreeService>();
+                INodeSocketService socketService = strategy.Instance.Resolve<INodeSocketService>();
 
                 // Spawn a test ship
                 Team team = teamService.GetOpenTeam();
@@ -306,9 +305,9 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
             IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
             {
-                ITeamService teamService = strategy.Scope.Resolve<ITeamService>();
-                ITreeService treeService = strategy.Scope.Resolve<ITreeService>();
-                INodeSocketService socketService = strategy.Scope.Resolve<INodeSocketService>();
+                ITeamService teamService = strategy.Instance.Resolve<ITeamService>();
+                ITreeService treeService = strategy.Instance.Resolve<ITreeService>();
+                INodeSocketService socketService = strategy.Instance.Resolve<INodeSocketService>();
 
                 // Spawn a test ship
                 Team team = teamService.GetOpenTeam();

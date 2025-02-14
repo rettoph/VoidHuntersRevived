@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common;
+using Guppy.Game.Common.Services;
 using Microsoft.Xna.Framework;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -15,7 +16,6 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
     public interface IStrategyMocker : IDisposable
     {
         IStrategy Instance { get; }
-        IGuppyScope Scope { get; }
 
         void Update(TimeSpan interval, int count);
         void Input(IStepInput data, bool verified);
@@ -37,17 +37,18 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         private readonly GameTime _gameTime = new();
         private int _sourceIdGeneratorIndex = 0;
         private bool _disposed;
-        private readonly List<IStepEvent> _inputs = [];
+        private readonly List<EnqueuedStepInput> _inputs = [];
 
         public TStrategy Instance { get; }
-        public IGuppyScope Scope { get; }
 
         IStrategy IStrategyMocker.Instance => this.Instance;
 
-        public StrategyMocker(IGuppyScope parentScope)
+        public StrategyMocker(IGuppyScope parentScope, ISimulation simulation)
         {
-            this.Scope = parentScope.CreateChildScope(null);
-            this.Instance = this.Scope.Resolve<TStrategy>();
+            this.Instance = parentScope.Resolve<ISceneService>().Create<TStrategy>(builder =>
+            {
+                builder.RegisterInstance(simulation).As<ISimulation>();
+            });
         }
 
         public void Input(VhId sourceId, IStepInput data, bool verified)
@@ -63,11 +64,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                 return;
             }
 
-            this._inputs.Add(new IStepEvent()
-            {
-                SourceId = sourceId,
-                Data = data
-            });
+            this._inputs.Add(new EnqueuedStepInput(sourceId, data));
         }
 
         public void Input(IStepInput data, bool verified)
@@ -85,7 +82,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
                 {
                     if (lockstep.StepsSinceTick == lockstep.StepsPerTick)
                     {
-                        TickBuffer ticks = this.Scope.Resolve<TickBuffer>();
+                        TickBuffer ticks = this.Instance.Resolve<TickBuffer>();
 
                         ticks.TryEnqueue(Tick.Create(lockstep.CurrentTick.Id + 1, [.. this._inputs]));
                         this._inputs.Clear();
@@ -98,7 +95,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         public int CalculateTotalEntities<T>()
             where T : unmanaged, IEntityComponent
         {
-            return this.Scope.Resolve<IEntityQueryService>().CalculateTotal<T>();
+            return this.Instance.Resolve<IEntityQueryService>().CalculateTotal<T>();
         }
 
         protected virtual void Dispose(bool disposing)
@@ -107,7 +104,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             {
                 if (disposing == true)
                 {
-                    this.Scope.Dispose();
+                    this.Instance.Dispose();
                 }
 
                 this._disposed = true;

@@ -22,8 +22,6 @@ namespace VoidHuntersRevived.Domain.Simulations
 
             this.Id = id;
             this.Strategies = new ReadOnlyCollection<IStrategy>(this._strategies);
-
-
         }
 
         public void Initialize()

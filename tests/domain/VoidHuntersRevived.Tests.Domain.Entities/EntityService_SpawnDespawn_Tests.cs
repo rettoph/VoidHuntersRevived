@@ -7,6 +7,7 @@ using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Tests.Common.Simulations;
@@ -47,8 +48,12 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                 .AddStrategy<LockstepStrategy_Client>()
                 .Register(builder =>
                 {
-                    builder.RegisterSceneSystem<TestInputSystem>();
                     builder.RegisterInstance(Enumerable.Empty<IComponentSerializer>());
+
+                    builder.RegisterSceneFilter<IStrategy>(builder =>
+                    {
+                        builder.RegisterSceneSystem<TestInputSystem>();
+                    });
                 })
                 .Build();
 
