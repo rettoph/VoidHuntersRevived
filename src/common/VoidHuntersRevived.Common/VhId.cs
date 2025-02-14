@@ -16,7 +16,7 @@ namespace VoidHuntersRevived.Common
         {
             this.Value = guid;
         }
-        public static VhId NewId()
+        public static VhId NewVhId()
         {
             return new(Guid.NewGuid());
         }

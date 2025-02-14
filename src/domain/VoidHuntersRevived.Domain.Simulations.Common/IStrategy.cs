@@ -9,6 +9,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Common
         StrategyTypeEnum Type { get; }
         ISimulation Simulation { get; }
 
-        IEventService Events { get; }
+        IStepEventService Events { get; }
     }
 }

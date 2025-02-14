@@ -16,12 +16,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 {
     public sealed class PredictiveStrategy(
         IGuppyScope scope,
-        PredictiveEventService eventService,
+        PredictiveStepEventService eventService,
         Lazy<ILoggerService> loggerService
     ) : Strategy(StrategyTypeEnum.Predictive, scope, eventService, loggerService),
         IPredictiveStrategy
     {
-        private readonly PredictiveEventService _eventService = eventService;
+        private readonly PredictiveStepEventService _eventService = eventService;
         private ILockstepStrategy _lockstep = null!;
         private readonly Step _step = new();
         private double _lastStepTime;

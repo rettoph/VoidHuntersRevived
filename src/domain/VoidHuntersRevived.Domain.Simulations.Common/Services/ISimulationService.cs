@@ -10,6 +10,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Services
         ReadOnlyCollection<ISimulation> Instances { get; }
 
         ISimulation Create(VhId id, params StrategyTypeEnum[] strategies);
+        ISimulation Create(VhId id, params Type[] strategies);
 
         void Draw(GameTime gameTime);
         void Update(GameTime gameTime);

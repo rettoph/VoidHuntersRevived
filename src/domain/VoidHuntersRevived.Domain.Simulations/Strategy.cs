@@ -25,7 +25,7 @@ namespace VoidHuntersRevived.Domain.Simulations
 
         public readonly StrategyTypeEnum Type;
         public ISimulation Simulation { get; private set; } = null!;
-        public IEventService Events { get; }
+        public IStepEventService Events { get; }
 
         public Step CurrentStep { get; private set; }
 
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected Strategy(
             StrategyTypeEnum type,
             IGuppyScope scope,
-            IEventService eventService,
+            IStepEventService eventService,
             Lazy<ILoggerService> loggerService) : base(scope)
         {
             this._loggerService = loggerService;

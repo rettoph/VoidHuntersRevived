@@ -39,8 +39,45 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        public ISimulation Create(VhId id, params StrategyTypeEnum[] strategies)
+        public ISimulation Create(VhId id, params StrategyTypeEnum[] strategyTypes)
         {
+            List<(Type type, bool graphical)> strategies = [];
+            if (this._netScope.Group.Peer.Type == PeerTypeEnum.Client && strategyTypes.Contains(StrategyTypeEnum.Predictive))
+            {
+                strategies.Add((typeof(PredictiveStrategy), true));
+            }
+            if (this._netScope.Group.Peer.Type == PeerTypeEnum.Client && strategyTypes.Contains(StrategyTypeEnum.Lockstep))
+            {
+                strategies.Add((typeof(LockstepStrategy_Client), false));
+            }
+            if (this._netScope.Group.Peer.Type == PeerTypeEnum.Server && strategyTypes.Contains(StrategyTypeEnum.Lockstep))
+            {
+                strategies.Add((typeof(LockstepStrategy_Server), false));
+            }
+
+            Simulation simulation = new(id, this.StrategiesBuilder(strategies));
+            this._simulations.Add(simulation);
+            simulation.Initialize();
+
+            return simulation;
+        }
+
+        public ISimulation Create(VhId id, params Type[] strategyTypes)
+        {
+            List<(Type type, bool graphical)> strategies = [];
+            if (strategyTypes.Contains(typeof(PredictiveStrategy)))
+            {
+                strategies.Add((typeof(PredictiveStrategy), true));
+            }
+            if (strategyTypes.Contains(typeof(LockstepStrategy_Client)))
+            {
+                strategies.Add((typeof(LockstepStrategy_Client), false));
+            }
+            if (strategyTypes.Contains(typeof(LockstepStrategy_Server)))
+            {
+                strategies.Add((typeof(LockstepStrategy_Server), false));
+            }
+
             Simulation simulation = new(id, this.StrategiesBuilder(strategies));
             this._simulations.Add(simulation);
             simulation.Initialize();
@@ -64,25 +101,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             }
         }
 
-        private Func<ISimulation, IEnumerable<IStrategy>> StrategiesBuilder(StrategyTypeEnum[] strategies)
+        private Func<ISimulation, IEnumerable<IStrategy>> StrategiesBuilder(List<(Type type, bool graphical)> strategies)
         {
             IEnumerable<IStrategy> BuilderMethod(ISimulation simulation)
             {
-                List<(Type type, bool graphical)> strategyTypes = [];
-                if (this._netScope.Group.Peer.Type == PeerTypeEnum.Client && strategies.Contains(StrategyTypeEnum.Predictive))
-                {
-                    strategyTypes.Add((typeof(PredictiveStrategy), true));
-                }
-                if (this._netScope.Group.Peer.Type == PeerTypeEnum.Client && strategies.Contains(StrategyTypeEnum.Lockstep))
-                {
-                    strategyTypes.Add((typeof(LockstepStrategy_Client), false));
-                }
-                if (this._netScope.Group.Peer.Type == PeerTypeEnum.Server && strategies.Contains(StrategyTypeEnum.Lockstep))
-                {
-                    strategyTypes.Add((typeof(LockstepStrategy_Server), false));
-                }
-
-                foreach ((Type type, bool graphical) in strategyTypes)
+                foreach ((Type type, bool graphical) in strategies)
                 {
                     IStrategy strategy = (IStrategy)this._scenes.Create(type, builder =>
                     {

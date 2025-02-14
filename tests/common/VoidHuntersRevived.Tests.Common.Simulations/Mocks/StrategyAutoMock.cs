@@ -6,14 +6,15 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Tests.Common.Extensions;
 
-namespace VoidHuntersRevived.Tests.Common.Simulations
+namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
 {
-    public interface IStrategyMocker : IDisposable
+    public interface IStrategyAutoMock : IDisposable
     {
         IStrategy Instance { get; }
 
@@ -25,13 +26,13 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             where T : unmanaged, IEntityComponent;
     }
 
-    public interface IStrategyMocker<out TStrategy> : IStrategyMocker
+    public interface IStrategyMocker<out TStrategy> : IStrategyAutoMock
         where TStrategy : IStrategy
     {
         new TStrategy Instance { get; }
     }
 
-    public class StrategyMocker<TStrategy> : IStrategyMocker<TStrategy>, IDisposable
+    public class StrategyAutoMock<TStrategy> : IStrategyMocker<TStrategy>, IDisposable
         where TStrategy : class, IStrategy
     {
         private readonly GameTime _gameTime = new();
@@ -41,9 +42,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
 
         public TStrategy Instance { get; }
 
-        IStrategy IStrategyMocker.Instance => this.Instance;
+        IStrategy IStrategyAutoMock.Instance => this.Instance;
 
-        public StrategyMocker(IGuppyScope parentScope, ISimulation simulation)
+        public StrategyAutoMock(IGuppyScope parentScope, ISimulation simulation)
         {
             this.Instance = parentScope.Resolve<ISceneService>().Create<TStrategy>(builder =>
             {
@@ -69,7 +70,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
 
         public void Input(IStepInput data, bool verified)
         {
-            this.Input(HashBuilder<IStrategyMocker, int>.Instance.Calculate(this._sourceIdGeneratorIndex++), data, verified);
+            this.Input(HashBuilder<IStrategyAutoMock, int>.Instance.Calculate(this._sourceIdGeneratorIndex++), data, verified);
         }
 
         public void Update(TimeSpan interval, int count)

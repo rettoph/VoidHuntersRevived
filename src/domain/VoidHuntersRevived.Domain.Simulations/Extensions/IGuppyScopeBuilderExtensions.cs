@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 
                 builder.RegisterSceneFilter<IVoidHuntersGameScene>(builder =>
                 {
-                    builder.RegisterType<SimulationService>().As<ISimulationService>().InstancePerLifetimeScope();
+                    builder.RegisterType<SimulationService>().AsSelf().As<ISimulationService>().InstancePerLifetimeScope();
                 });
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>
@@ -45,13 +45,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 
                     builder.RegisterSceneFilter<IPredictiveStrategy>(builder =>
                     {
-                        builder.RegisterType<PredictiveEventService>().AsSelf().As<IEventService>().InstancePerLifetimeScope();
+                        builder.RegisterType<PredictiveStepEventService>().AsSelf().As<IStepEventService>().InstancePerLifetimeScope();
                     });
 
                     builder.RegisterSceneFilter<ILockstepStrategy>(builder =>
                     {
                         builder.RegisterType<QueueTickService>().As<ITickService>().InstancePerLifetimeScope();
-                        builder.RegisterType<LockstepEventService>().AsSelf().As<IEventService>().InstancePerLifetimeScope();
+                        builder.RegisterType<LockstepStepEventService>().AsSelf().As<IStepEventService>().InstancePerLifetimeScope();
 
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Client, builder =>
                         {

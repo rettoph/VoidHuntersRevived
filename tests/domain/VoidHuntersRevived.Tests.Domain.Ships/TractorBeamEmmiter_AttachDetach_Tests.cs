@@ -27,6 +27,7 @@ using VoidHuntersRevived.Tests.Common.Physics.Extensions;
 using VoidHuntersRevived.Tests.Common.Providers;
 using VoidHuntersRevived.Tests.Common.Simulations;
 using VoidHuntersRevived.Tests.Common.Simulations.Extensions;
+using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 using VoidHuntersRevived.Tests.Domain.Ships;
 
 namespace VoidHuntersRevived.Tests.Domain.Pieces
@@ -38,9 +39,9 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
         public static readonly Key<IEntityTemplate> TestSquareEntityTemplateKey = Key<IEntityTemplate>.GetByName(nameof(TestSquareEntityTemplateKey));
 
-        private static SimulationMocker CreateSimulationMocker()
+        private static SimulationAutoMock CreateSimulationMocker()
         {
-            return new SimulationBuilder(
+            return new SimulationMockBuilder(
                     id: VhId.Empty,
                     stepInterval: StepInterval,
                     stepsPerTick: StepsPerTick,
@@ -68,9 +69,9 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             var readEntityQueryService = simulation.Resolve<PredictiveStrategy, IEntityQueryService>();
             var readTreeService = simulation.Resolve<PredictiveStrategy, ITreeService>();
 
-            EntityGlobalId shipGlobalId = VhId.NewId().ToGlobalEntityId();
+            EntityGlobalId shipGlobalId = VhId.NewVhId().ToGlobalEntityId();
 
-            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
+            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyAutoMock strategy)
             {
                 ITeamService teamService = strategy.Instance.Resolve<ITeamService>();
                 ITreeService treeService = strategy.Instance.Resolve<ITreeService>();
@@ -177,9 +178,9 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             var readEntityQueryService = simulation.Resolve<PredictiveStrategy, IEntityQueryService>();
             var readTreeService = simulation.Resolve<PredictiveStrategy, ITreeService>();
 
-            EntityGlobalId shipGlobalId = VhId.NewId().ToGlobalEntityId();
+            EntityGlobalId shipGlobalId = VhId.NewVhId().ToGlobalEntityId();
 
-            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
+            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyAutoMock strategy)
             {
                 ITeamService teamService = strategy.Instance.Resolve<ITeamService>();
                 ITreeService treeService = strategy.Instance.Resolve<ITreeService>();
@@ -299,11 +300,11 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             var readEntityQueryService = simulation.Resolve<PredictiveStrategy, IEntityQueryService>();
             var readTreeService = simulation.Resolve<PredictiveStrategy, ITreeService>();
 
-            EntityGlobalId shipGlobalId = VhId.NewId().ToGlobalEntityId();
-            EntityGlobalId square1GlobalId = new(VhId.NewId());
-            EntityGlobalId square2GlobalId = new(VhId.NewId());
+            EntityGlobalId shipGlobalId = VhId.NewVhId().ToGlobalEntityId();
+            EntityGlobalId square1GlobalId = new(VhId.NewVhId());
+            EntityGlobalId square2GlobalId = new(VhId.NewVhId());
 
-            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
+            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyAutoMock strategy)
             {
                 ITeamService teamService = strategy.Instance.Resolve<ITeamService>();
                 ITreeService treeService = strategy.Instance.Resolve<ITreeService>();

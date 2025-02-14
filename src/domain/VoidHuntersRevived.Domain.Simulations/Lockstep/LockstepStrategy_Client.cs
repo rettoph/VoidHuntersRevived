@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         TickBuffer ticks,
         ISettingService settings,
         IGuppyScope scope,
-        LockstepEventService eventService,
+        LockstepStepEventService eventService,
         Lazy<ILoggerService> loggerService
     ) : LockstepStrategy(settings, scope, eventService, loggerService),
         ISubscriber<SubscriberSequenceGroupEnum, EnqueuedStepInput>

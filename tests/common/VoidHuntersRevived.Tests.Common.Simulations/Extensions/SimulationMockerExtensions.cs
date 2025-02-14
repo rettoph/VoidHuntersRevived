@@ -1,13 +1,14 @@
 ﻿using Svelto.ECS;
+using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Extensions
 {
     public static class SimulationMockerExtensions
     {
-        public static SimulationMocker AssertEntityCount<T>(this SimulationMocker simulation, int count)
+        public static SimulationAutoMock AssertEntityCount<T>(this SimulationAutoMock simulation, int count)
             where T : unmanaged, IEntityComponent
         {
-            foreach (IStrategyMocker strategy in simulation.Strategies)
+            foreach (IStrategyAutoMock strategy in simulation.Strategies)
             {
                 strategy.AssertEntityCount<T>(count);
             }

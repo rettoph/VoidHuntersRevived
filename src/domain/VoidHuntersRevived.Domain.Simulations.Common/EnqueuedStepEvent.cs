@@ -1,5 +1,6 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common
 {
@@ -10,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common
 
         public EnqueuedStepEvent(VhId sourceId, IStepEvent data)
         {
-            this.Id = new(data.CalculateHash(sourceId));
+            this.Id = data.CalculateId(sourceId);
             this.Data = data;
         }
 

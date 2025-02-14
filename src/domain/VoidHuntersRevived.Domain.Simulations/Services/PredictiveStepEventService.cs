@@ -11,7 +11,7 @@ using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    public class PredictiveEventService(IMessageBus messageBus, ILogger logger) : BaseEventService(messageBus, logger)
+    public class PredictiveStepEventService(IMessageBus messageBus, ILogger logger) : BaseStepEventService(messageBus, logger)
     {
         private static readonly Pool<PredictedEvent> _predictionPool = new(ushort.MaxValue);
         private readonly DictionaryQueue<Id<IStepEvent>, PredictedEvent> _predictedEvents = new();

@@ -1,10 +1,8 @@
-﻿using Autofac.Extras.Moq;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common.Enums;
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
-using Guppy.Game.Extensions;
 using Guppy.Tests.Common;
 using Guppy.Tests.Common.Extensions;
 using Moq;
@@ -14,31 +12,23 @@ using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Extensions;
-using VoidHuntersRevived.Domain.Simulations;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Services;
 using VoidHuntersRevived.Tests.Common.Entities.Services;
 
-namespace VoidHuntersRevived.Tests.Common.Simulations
+namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
 {
-    public class SimulationBuilder : GuppyScopeMocker<SimulationBuilder, SimulationMocker>
+    public class SimulationServiceAutoMock : GuppyScopeMocker<SimulationServiceAutoMock, SimulationService>
     {
-        private readonly List<Func<IGuppyScope, ISimulation, IStrategyMocker>> _strategies = [];
-
-        public VhId Id;
-
-        public SimulationBuilder(
-            VhId id,
+        public SimulationServiceAutoMock(
             SettingValue<Fix64> stepInterval,
             SettingValue<int> stepsPerTick,
-            IEnumerable<EntityTemplateFragment> entityTemplateFragments)
+            IEnumerable<EntityTemplateFragment> entityTemplateFragments) : base(GuppyScopeTypeEnum.Root)
         {
-            this.Id = id;
-
             this.Register(builder =>
             {
                 builder
-                    .RegisterCommonGameServices()
                     .RegisterDomainCoreServices()
                     .RegisterDomainEntityServices()
                     .RegisterDomainSimulationServices();
@@ -69,36 +59,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             });
         }
 
-        public SimulationBuilder AddStrategy<TStrategy>()
-            where TStrategy : class, IStrategy
+        public void MockSimulation(VhId id, StrategyTypeEnum[] strategies)
         {
-            this._strategies.Add((scope, simulation) => new StrategyMocker<TStrategy>(scope, simulation));
-
-            return this;
-        }
-
-        public override SimulationMocker Build()
-        {
-            List<IStrategyMocker> strategies = [];
-
-            Simulation instance = new(this.Id, simulation =>
-            {
-                foreach (var strategyMockerFactory in this._strategies)
-                {
-                    IStrategyMocker strategyMocker = strategyMockerFactory(this.scope, simulation);
-                    strategies.Add(strategyMocker);
-                }
-
-                return strategies.Select(x => x.Instance);
-            });
-
-            instance.Initialize();
-
-            SimulationMocker simulation = new(
-                instance: instance,
-                strategies: strategies.ToArray());
-
-            return simulation;
+            this.Build().Create(id, strategies);
         }
     }
 }

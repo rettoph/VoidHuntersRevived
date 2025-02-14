@@ -9,6 +9,7 @@ using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
+using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
@@ -30,7 +31,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
 
         private void HandleUserJoined(INetScopeUserService sender, IUser args)
         {
-            this._strategy.Events.Input(VhId.NewId(), new UserJoined()
+            this._strategy.Events.Input(VhId.NewVhId(), new UserJoined()
             {
                 UserDto = args.ToDto(ClaimAccessibilityEnum.Public)
             });

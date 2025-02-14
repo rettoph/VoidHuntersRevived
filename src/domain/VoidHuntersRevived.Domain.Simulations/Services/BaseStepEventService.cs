@@ -6,7 +6,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    public abstract class BaseEventService(IMessageBus messageBus, ILogger logger) : IEventService
+    public abstract class BaseStepEventService(IMessageBus messageBus, ILogger logger) : IStepEventService
     {
         private readonly Queue<EnqueuedStepEvent> _enqueued = [];
         protected readonly ILogger logger = logger;
@@ -28,6 +28,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             {
                 this.logger.Verbose("Publishing Enqueued {EventName}, {EventId}", enqueued.Data.GetType().Name, enqueued.Id);
                 enqueued.Data.Publish(enqueued.Id.Value, this.messageBus);
+                // this.Publish(enqueued.Id, enqueued.Data);
             }
         }
 

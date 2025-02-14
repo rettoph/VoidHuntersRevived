@@ -11,6 +11,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Tests.Common.Simulations;
+using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 using VoidHuntersRevived.Tests.Domain.Entities.Components;
 using VoidHuntersRevived.Tests.Domain.Entities.Events;
 using VoidHuntersRevived.Tests.Domain.Entities.Systems;
@@ -24,13 +25,13 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
 
         public static readonly Key<IEntityTemplate> TestEntityTemplateKey = Key<IEntityTemplate>.GetByName("TestEntityTemplate");
 
-        private readonly SimulationMocker _simulation;
+        private readonly SimulationAutoMock _simulation;
         private readonly IStrategyMocker<LockstepStrategy_Client> _lockstep;
         private readonly IStrategyMocker<PredictiveStrategy> _predictive;
 
         public EntityService_SpawnDespawn_Tests() : base()
         {
-            this._simulation = new SimulationBuilder(
+            this._simulation = new SimulationMockBuilder(
                     id: VhId.Empty,
                     stepInterval: this.StepInterval,
                     stepsPerTick: this.StepsPerTick,
@@ -69,7 +70,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         {
             TimeSpan simulatedRealtimeInterval = TimeSpan.FromMilliseconds(simulatedRealtimeIntervalInMilliseconds);
 
-            Dictionary<IStrategyMocker, int> totals = this._simulation.CalculateTotalEntities<TestComponent>();
+            Dictionary<IStrategyAutoMock, int> totals = this._simulation.CalculateTotalEntities<TestComponent>();
             Assert.Equal(0, totals[this._predictive]);
             Assert.Equal(0, totals[this._lockstep]);
 

@@ -36,7 +36,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public LockstepStrategy(
             ISettingService settings,
             IGuppyScope scope,
-            LockstepEventService eventService,
+            LockstepStepEventService eventService,
             Lazy<ILoggerService> loggerService) : base(StrategyTypeEnum.Lockstep, scope, eventService, loggerService)
         {
             this._tickActions = new ActionSequenceGroup<TickSequenceGroupEnum, Tick>(false);

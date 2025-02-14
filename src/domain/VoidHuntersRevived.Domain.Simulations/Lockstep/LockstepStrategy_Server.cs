@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
+using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
@@ -18,7 +19,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
     public sealed class LockstepStrategy_Server(
         ISettingService settings,
         IGuppyScope scope,
-        LockstepEventService eventService,
+        LockstepStepEventService eventService,
         Lazy<ILoggerService> loggerService
     ) : LockstepStrategy(settings, scope, eventService, loggerService),
         INetIncomingMessageSubscriber<EnqueuedStepInput>,

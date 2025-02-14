@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    public class LockstepEventService(IMessageBus messageBus, ILogger logger) : BaseEventService(messageBus, logger)
+    public class LockstepStepEventService(IMessageBus messageBus, ILogger logger) : BaseStepEventService(messageBus, logger)
     {
         private readonly IMessageBus _messageBus = messageBus;
 

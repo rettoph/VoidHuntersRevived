@@ -1,12 +1,12 @@
-﻿using VoidHuntersRevived.Tests.Common.Simulations;
+﻿using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 
 namespace VoidHuntersRevived.Tests.Common.Physics.Extensions
 {
     public static class SimulationMockerExtensions
     {
-        public static SimulationMocker AssertBodyCount(this SimulationMocker simulation, int count)
+        public static SimulationAutoMock AssertBodyCount(this SimulationAutoMock simulation, int count)
         {
-            foreach (IStrategyMocker strategy in simulation.Strategies)
+            foreach (IStrategyAutoMock strategy in simulation.Strategies)
             {
                 strategy.AssertBodyCount(count);
             }
