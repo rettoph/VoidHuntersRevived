@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
         [SequenceGroup<OnDespawnSequenceGroupEnum>(OnDespawnSequenceGroupEnum.Group03)]
         public void OnDespawn(VhId sourceEventId, IEntityTemplate template, ref Entity<Node, Fixture> entity)
         {
-            this._logger.Verbose("OnSpawn - NodeGlobalId = {NodeGlobalId}", entity.GlobalId);
+            this._logger.Verbose("OnDespawn - NodeGlobalId = {NodeGlobalId}", entity.GlobalId);
 
             ref VhId dirtyEventId = ref this._dirtyTrees.GetOrEnqueue(entity.First.TreeLocalId, out bool alreadyDirty);
             dirtyEventId = alreadyDirty

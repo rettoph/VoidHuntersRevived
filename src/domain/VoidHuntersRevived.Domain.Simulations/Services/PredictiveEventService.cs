@@ -11,11 +11,10 @@ using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    public class PredictiveEventService(IMessageBus messageBus, Lazy<ILogger> logger) : BaseEventService(messageBus)
+    public class PredictiveEventService(IMessageBus messageBus, ILogger logger) : BaseEventService(messageBus, logger)
     {
         private static readonly Pool<PredictedEvent> _predictionPool = new(ushort.MaxValue);
         private readonly DictionaryQueue<Id<IStepEvent>, PredictedEvent> _predictedEvents = new();
-        private readonly Lazy<ILogger> _logger = logger;
         private Fix64 _cleanedAt = Fix64.Zero;
         private readonly Queue<EnqueuedStepEvent> _confirmedEvents = new();
 
@@ -30,19 +29,19 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             { // The event must be both non-predictable and public in order for us to skip it
                 // What would it even mean for a private event to be non predictable? 
                 // It wouldnt happen on the predictive strategy and never get synced by the lockstep
-                this._logger.Value.Verbose("Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", @event.GetType().Name, id, @event.IsPredictable);
+                this.logger.Verbose("Unable to predict {EventName}, {EventId}; IsPredictable = {IsPredictable}.", @event.GetType().Name, id, @event.IsPredictable);
                 return;
             }
 
             ref PredictedEvent? predictiveEvent = ref this._predictedEvents.GetOrEnqueue(id, out bool exists);
             if (exists == true)
             {
-                this._logger.Value.Error("Unable to predict {EventName}, {EventId}; duplicate event?", @event.GetType().Name, id);
+                this.logger.Error("Unable to predict {EventName}, {EventId}; duplicate event?", @event.GetType().Name, id);
                 return;
             }
 
             predictiveEvent = this.GetPredictionEvent(id, @event);
-            this._logger.Value.Verbose("Predicting {EventName}, {EventId}", @event.GetType().Name, id);
+            this.logger.Verbose("Predicting {EventName}, {EventId}", @event.GetType().Name, id);
 
             if (@event.IsPrivate)
             { // Private events may as well be immidiately confirmed, right? They will never get verified
@@ -83,12 +82,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             {
                 if (confirmedEvent.Data is EndOfTick endOfTick)
                 {
-                    this._logger.Value.Verbose("End of Tick {TickId}", endOfTick.TickId);
+                    this.logger.Verbose("End of Tick {TickId}", endOfTick.TickId);
 
                     break;
                 }
 
-                this._logger.Value.Verbose("Confirming {EventName}, {EventId}", confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
+                this.logger.Verbose("Confirming {EventName}, {EventId}", confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
                 if (this._predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published) == false)
                 {
                     published = this.GetPredictionEvent(confirmedEvent.Id, confirmedEvent.Data);

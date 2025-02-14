@@ -6,6 +6,7 @@ using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Enums;
 using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Files.Common.Services;
+using Guppy.Core.Game.Common.Extensions;
 using Guppy.Core.Logging.Common.Enums;
 using Guppy.Core.Logging.Common.Extensions;
 using Guppy.Core.Network.Common.Constants;
@@ -53,8 +54,9 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
 
             builder.Configure<LoggerOutputTemplateConfiguration>((scope, config) =>
             {
-                IOptional<IStrategy> strategy = scope.Resolve<IOptional<IStrategy>>();
-                config.Value = strategy.HasValue == true
+                Type? sceneType = scope.Variables.GetSceneType();
+
+                config.Value = sceneType is not null
                     ? $"[{{{nameof(PeerTypeEnum)}}}][{{{nameof(StrategyTypeEnum)}}}][{{Timestamp:HH:mm:ss}} {{Level:u3}}] {{SourceContext}} - {{Message:lj}}{{NewLine}}{{Exception}}"
                     : "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} - {Message:lj}{NewLine}{Exception}";
             });
