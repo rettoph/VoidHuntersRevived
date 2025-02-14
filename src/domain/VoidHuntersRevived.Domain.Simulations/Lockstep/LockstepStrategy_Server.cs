@@ -2,6 +2,7 @@
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Logging.Common.Services;
+using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Resources.Common.Services;
@@ -10,14 +11,18 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
     public sealed class LockstepStrategy_Server(
         ISettingService settings,
         IGuppyScope scope,
-        Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, scope, loggerService),
-            INetIncomingMessageSubscriber<EnqueuedStepInput>
+        LockstepEventService eventService,
+        Lazy<ILoggerService> loggerService
+    ) : LockstepStrategy(settings, scope, eventService, loggerService),
+        INetIncomingMessageSubscriber<EnqueuedStepInput>,
+        ISubscriber<SubscriberSequenceGroupEnum, EnqueuedStepInput>
     {
         private readonly List<EnqueuedStepInput> _inputs = [];
 
@@ -25,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         {
             base.Initialize();
 
-            ((IStrategy)this).Input(NameSpace<LockstepStrategy_Server>.Instance, new Simulation_Begin());
+            this.Events.Input(NameSpace<LockstepStrategy_Server>.Instance, new Simulation_Begin());
         }
 
         protected override void DoStep(Step step)
@@ -55,11 +60,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             return true;
         }
 
-        public override void Input(EnqueuedStepInput input)
-        {
-            this._inputs.Add(input);
-        }
-
         protected override bool TryGetNextTick(Tick current, [MaybeNullWhen(false)] out Tick next)
         {
             if (this.StepsSinceTick != this.StepsPerTick)
@@ -78,6 +78,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         public void Process(INetIncomingMessage<EnqueuedStepInput> message)
         {
             this._inputs.Add(message.Body);
+        }
+
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(EnqueuedStepInput message)
+        {
+            this._inputs.Add(message);
         }
     }
 }

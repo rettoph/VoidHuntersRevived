@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             throw new NotImplementedException();
         }
 
-        public bool TryDequeue([MaybeNullWhen(false)] out Tick tick)
+        public bool TryDequeue(int stepsSinceTick, [MaybeNullWhen(false)] out Tick tick)
         {
             if (this._queue.TryDequeue(out tick) == true)
             {

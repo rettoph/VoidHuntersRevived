@@ -50,7 +50,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // This is enqueued before HardSpawn is executed
             // Spawns any other entities. This ensture the first entitiy SoftSpawn
             // event is called first every time.
-            this._strategy.Enqueue(eventId, new SoftSpawnEntity()
+            this._strategy.Events.Enqueue(eventId, new SoftSpawnEntity()
             {
                 IsPrivate = true,
                 GlobalId = data.GlobalId
@@ -78,7 +78,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             // This is enqueued before HardSpawn is executed
             // Spawns any other entities. This ensture the first entitiy SoftSpawn
             // event is called first every time.
-            this._strategy.Enqueue(eventId, new SoftSpawnEntity()
+            this._strategy.Events.Enqueue(eventId, new SoftSpawnEntity()
             {
                 IsPrivate = true,
                 GlobalId = data.GlobalId
@@ -159,7 +159,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             this.SoftDespawn(eventId, ref status, ref entity, template);
 
-            this._strategy.Enqueue(eventId, new HardDespawnEntity()
+            this._strategy.Events.Enqueue(eventId, new HardDespawnEntity()
             {
                 IsPredictable = true,
                 IsPrivate = true,
@@ -189,7 +189,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
 
             this.SoftDespawn(eventId, ref status, ref entity, template);
 
-            this._strategy.Enqueue(eventId, new HardDespawnEntity()
+            this._strategy.Events.Enqueue(eventId, new HardDespawnEntity()
             {
                 IsPredictable = data.IsPrivate,
                 IsPrivate = data.IsPrivate,

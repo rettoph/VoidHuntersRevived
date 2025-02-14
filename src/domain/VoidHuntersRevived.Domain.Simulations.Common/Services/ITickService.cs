@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Services
         /// <param name="id"></param>
         /// <param name="tick"></param>
         /// <returns></returns>
-        public bool TryDequeue([MaybeNullWhen(false)] out Tick tick);
+        public bool TryDequeue(int stepsSinceTick, [MaybeNullWhen(false)] out Tick tick);
 
         /// <summary>
         /// Attempt to enqueue a new <see cref="Tick"/>

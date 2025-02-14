@@ -1,12 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
 using Guppy.Core.Logging.Common.Services;
+using Guppy.Core.Messaging.Common;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -15,7 +19,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         TickBuffer ticks,
         ISettingService settings,
         IGuppyScope scope,
-        Lazy<ILoggerService> loggerService) : LockstepStrategy(settings, scope, loggerService)
+        LockstepEventService eventService,
+        Lazy<ILoggerService> loggerService
+    ) : LockstepStrategy(settings, scope, eventService, loggerService),
+        ISubscriber<SubscriberSequenceGroupEnum, EnqueuedStepInput>
     {
         private readonly INetScope<IStrategy> _netScope = netScope;
 
@@ -69,9 +76,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             return this.TickBuffer.TryPop(current.Id + 1, out next);
         }
 
-        public override void Input(EnqueuedStepInput input)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(EnqueuedStepInput message)
         {
-            this._netScope.CreateMessage(input);
+            this._netScope.CreateMessage(message);
         }
     }
 }

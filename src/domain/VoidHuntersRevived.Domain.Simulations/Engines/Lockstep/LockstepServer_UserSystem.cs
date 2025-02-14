@@ -30,7 +30,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
 
         private void HandleUserJoined(INetScopeUserService sender, IUser args)
         {
-            this._strategy.Input(VhId.NewId(), new UserJoined()
+            this._strategy.Events.Input(VhId.NewId(), new UserJoined()
             {
                 UserDto = args.ToDto(ClaimAccessibilityEnum.Public)
             });

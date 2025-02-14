@@ -10,6 +10,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations
 {
@@ -18,14 +19,13 @@ namespace VoidHuntersRevived.Domain.Simulations
         private ILogger? _logger;
         private readonly IMessageBus _messageBus;
         private readonly Lazy<ILoggerService> _loggerService;
-        private readonly Queue<EnqueuedStepEvent> _enqueued;
         private readonly ActionSequenceGroup<StepSequenceGroupEnum, Step> _stepActions;
-        private readonly bool _disposed = false;
 
         protected ILogger logger => this._logger ??= this._loggerService.Value.GetLogger(this.GetType());
 
         public readonly StrategyTypeEnum Type;
         public ISimulation Simulation { get; private set; } = null!;
+        public IEventService Events { get; }
 
         public Step CurrentStep { get; private set; }
 
@@ -34,14 +34,15 @@ namespace VoidHuntersRevived.Domain.Simulations
         protected Strategy(
             StrategyTypeEnum type,
             IGuppyScope scope,
+            IEventService eventService,
             Lazy<ILoggerService> loggerService) : base(scope)
         {
             this._loggerService = loggerService;
             this._messageBus = scope.Resolve<IMessageBus>();
-            this._enqueued = new Queue<EnqueuedStepEvent>();
             this._stepActions = new ActionSequenceGroup<StepSequenceGroupEnum, Step>(false);
 
             this.Type = type;
+            this.Events = eventService;
 
             this.CurrentStep = new Step();
 
@@ -80,31 +81,13 @@ namespace VoidHuntersRevived.Domain.Simulations
         [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.PublishEvents)]
         private void Step_PublishEvents(Step step)
         {
-            while (this._enqueued.TryDequeue(out EnqueuedStepEvent? enqueued))
-            {
-                this.logger.Verbose("Publishing enqueued {EventName}, {EventId}", enqueued.Data.GetType().Name, enqueued.Id);
-                enqueued.Data.Publish(enqueued.Id.Value, this._messageBus);
-            }
+            this.Events.Flush();
         }
 
         protected virtual void Revert(Id<IStepEvent> id, IStepEvent data)
         {
             this.logger.Verbose("Reverting {EventName}, {EventId}", data.GetType().Name, id);
             data.Revert(id.Value, this._messageBus);
-        }
-
-        public virtual void Publish(Id<IStepEvent> id, IStepEvent data)
-        {
-            this.logger.Verbose("Publishing {EventName}, {EventId}", data.GetType().Name, id);
-            data.Publish(id.Value, this._messageBus);
-        }
-
-        public abstract void Input(EnqueuedStepInput input);
-
-        public void Enqueue(EnqueuedStepEvent @event)
-        {
-            this.logger.Verbose("Enqueing {EventName}, {EventId}", @event.GetType().Name, @event.Id.Value);
-            this._enqueued.Enqueue(@event);
         }
     }
 }

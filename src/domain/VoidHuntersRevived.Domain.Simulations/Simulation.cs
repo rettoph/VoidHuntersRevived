@@ -76,7 +76,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             EnqueuedStepInput enqueuedStepInput = new(sourceId, input);
             foreach (IStrategy strategy in this._strategies)
             {
-                strategy.Input(enqueuedStepInput);
+                strategy.Events.Input(enqueuedStepInput);
             }
         }
     }

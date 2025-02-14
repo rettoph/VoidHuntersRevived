@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Resources.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
@@ -11,7 +12,10 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
     /// sorting incoming ticks. It is assumed that ticks may be out of order
     /// like in the instance of incoming messages
     /// </summary>
-    public class LinkedListTickService : ITickService
+    public class LinkedListTickService(
+        ISettingService settingService
+    ) : BaseTickService(settingService),
+        ITickService
     {
         /// <summary>
         /// A singular node contains current <see cref="Tick"/> data
@@ -167,15 +171,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         /// </summary>
         private Node? _head;
 
-        /// <summary>
-        /// The current tail (end) of the linked list
-        /// </summary>
-        private Node? _tail;
-
-        public int NextTickId { get; private set; }
-
         /// <inheritdoc />
-        public EnqueueTickResponseEnum TryEnqueue(Tick tick)
+        public override EnqueueTickResponseEnum TryEnqueue(Tick tick)
         {
             Node node = new(tick);
 
@@ -185,7 +182,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             if (this._head is null)
             {
                 this._head = node;
-                this.UpdateTail(this._head);
                 return EnqueueTickResponseEnum.Enqueued;
             }
 
@@ -198,25 +194,18 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 var old = this._head;
                 this._head = node;
                 // Attempt to add the old head to the new node
-                if ((response = this._head.Add(old, out tail)) == EnqueueTickResponseEnum.Enqueued)
-                {
-                    this.UpdateTail(tail);
-                }
-
+                response = this._head.Add(old, out tail);
                 return response;
             }
 
             // If we've made it this far we know the new node comes after the current head
             // Attempt to add it to the current head
-            if ((response = this._head.Add(node, out tail)) == EnqueueTickResponseEnum.Enqueued)
-            {
-                this.UpdateTail(tail);
-            }
-
+            response = this._head.Add(node, out tail);
             return response;
         }
 
-        public bool TryDequeue([MaybeNullWhen(false)] out Tick tick)
+        /// <inheritdoc />
+        protected override bool TryDequeue([MaybeNullWhen(false)] out Tick tick)
         {
             if (this._head is null)
             {
@@ -230,12 +219,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
                 this._head = this._head.Child;
 
-                if (this._head is null)
-                {
-                    this._tail = null;
-                }
-
-                this.NextTickId++;
                 return true;
             }
 
@@ -254,35 +237,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             return false;
         }
 
-        /// <summary>
-        /// Update the current stored linked list tail
-        /// </summary>
-        private void UpdateTail(Node? tail)
+        public override void Reset()
         {
-            // If there is no tail then the head should be the tail
-            if (this._tail is null)
-            {
-                this._tail = tail;
-                return;
-            }
+            base.Reset();
 
-            // If the head has surpassed the tail then
-            // we should recalculate the tail from the head
-            if (this._tail.Id < tail?.Id)
-            {
-                this._tail = tail.GetTail();
-                return;
-            }
-
-            // Recalculate the tail
-            this._tail = tail?.GetTail();
-        }
-
-        public void Reset()
-        {
             this._head = null;
-            this._tail = null;
-            this.NextTickId = 0;
         }
     }
 }

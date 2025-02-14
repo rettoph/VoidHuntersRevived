@@ -15,11 +15,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         public PredictedEventStatus Status { get; set; }
         public Fix64 PublishedAt { get; private set; }
 
-        public void SetEvent(Id<IStepEvent> id, IStepEvent @event, Step currentStep)
+        public void SetEvent(Id<IStepEvent> id, IStepEvent @event, Fix64 publishedAt)
         {
             this.Id = id;
             this.Event = @event;
-            this.PublishedAt = currentStep.TotalTime;
+            this.PublishedAt = publishedAt;
         }
 
         public bool IsExpired(Step currentStep)

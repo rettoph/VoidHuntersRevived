@@ -72,7 +72,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Systems
                 {
                     EntityGlobalId dirtyTreGlobalId = this._entityQueryService.GetGlobalId(dirtyTreeLocalId);
 
-                    this._strategy.Publish(dirtyTreeEventId, new Tree_Clean()
+                    this._strategy.Events.Publish(dirtyTreeEventId, new Tree_Clean()
                     {
                         IsPrivate = true,
                         TreeGlobalId = dirtyTreGlobalId

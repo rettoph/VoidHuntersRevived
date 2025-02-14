@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common;
+﻿using Autofac;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
@@ -8,6 +9,7 @@ using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
@@ -41,9 +43,15 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                 {
                     builder.RegisterType<TickBuffer>().InstancePerLifetimeScope();
 
+                    builder.RegisterSceneFilter<IPredictiveStrategy>(builder =>
+                    {
+                        builder.RegisterType<PredictiveEventService>().AsSelf().As<IEventService>().InstancePerLifetimeScope();
+                    });
+
                     builder.RegisterSceneFilter<ILockstepStrategy>(builder =>
                     {
                         builder.RegisterType<QueueTickService>().As<ITickService>().InstancePerLifetimeScope();
+                        builder.RegisterType<LockstepEventService>().AsSelf().As<IEventService>().InstancePerLifetimeScope();
 
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Client, builder =>
                         {

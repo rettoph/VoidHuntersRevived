@@ -12,6 +12,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
+using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 {
@@ -32,12 +33,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
         public IEnumerable<Tick> History => this._history;
 
-        public event OnEventDelegate<Id<IStepEvent>, IStepEvent>? OnEvent;
-
         public LockstepStrategy(
             ISettingService settings,
             IGuppyScope scope,
-            Lazy<ILoggerService> loggerService) : base(StrategyTypeEnum.Lockstep, scope, loggerService)
+            LockstepEventService eventService,
+            Lazy<ILoggerService> loggerService) : base(StrategyTypeEnum.Lockstep, scope, eventService, loggerService)
         {
             this._tickActions = new ActionSequenceGroup<TickSequenceGroupEnum, Tick>(false);
             this._history = [];
@@ -124,7 +124,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
 
             foreach (EnqueuedStepInput @event in tick.Inputs)
             {
-                this.Publish(@event.Id, @event.Data);
+                this.Events.Publish(@event.Id, @event.Data);
             }
 
             EndOfTick endOfTick = new()
@@ -132,15 +132,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
                 TickId = tick.Id
             };
             Id<IStepEvent> endOfTickId = new(endOfTick.CalculateHash(NameSpace<LockstepStrategy>.Instance));
-
-            this.OnEvent?.Invoke(endOfTickId, endOfTick);
-        }
-
-        public override void Publish(Id<IStepEvent> id, IStepEvent data)
-        {
-            this.OnEvent?.Invoke(id, data);
-
-            base.Publish(id, data);
         }
     }
 }

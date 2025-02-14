@@ -55,7 +55,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         {
             if (this.Instance is PredictiveStrategy)
             {
-                this.Instance.Input(sourceId, data);
+                this.Instance.Events.Input(sourceId, data);
                 return;
             }
 
