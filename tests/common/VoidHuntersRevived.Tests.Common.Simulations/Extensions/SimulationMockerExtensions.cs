@@ -5,7 +5,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Extensions
 {
     public static class SimulationMockerExtensions
     {
-        public static SimulationAutoMock AssertEntityCount<T>(this SimulationAutoMock simulation, int count)
+        public static SimulationMock AssertEntityCount<T>(this SimulationMock simulation, int count)
             where T : unmanaged, IEntityComponent
         {
             foreach (IStrategyAutoMock strategy in simulation.Strategies)

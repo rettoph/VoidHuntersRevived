@@ -1,7 +1,7 @@
 ﻿using Moq;
 using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 using VoidHuntersRevived.Tests.Common.Simulations.Stubs;
-using VoidHuntersRevived.Tests.Domain.Simulations.Mocks;
 
 namespace VoidHuntersRevived.Tests.Domain.Simulations
 {
@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations
         [Fact]
         public void EnqueuePrivateNotPredictableStepEventThenFlush_IsNotPublished()
         {
-            PredictiveStepEventServiceMock.Create().EnqueueFlushAndVerifyPublish<TestPrivateNotPredictableStepEvent>(
+            PredictiveStepEventServiceMocker.Create().EnqueueFlushAndVerifyPublish<TestPrivateNotPredictableStepEvent>(
                 sourceId: VhId.NewVhId(),
                 publishTimes: Times.Never);
         }
@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations
         [Fact]
         public void EnqueuePrivatePredictableStepEventThenFlush_IsPublished()
         {
-            PredictiveStepEventServiceMock.Create().EnqueueFlushAndVerifyPublish<TestPrivatePredictableStepEvent>(
+            PredictiveStepEventServiceMocker.Create().EnqueueFlushAndVerifyPublish<TestPrivatePredictableStepEvent>(
                 sourceId: VhId.NewVhId(),
                 publishTimes: Times.Once);
         }

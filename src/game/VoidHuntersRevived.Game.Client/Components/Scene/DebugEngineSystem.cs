@@ -25,13 +25,13 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize()
         {
-            this._debugActions.Add(this._strategy.Systems);
+            this._debugActions.Add(this._strategy.Systems.GetAll());
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.PreInitialize)]
         public void Deinitialize()
         {
-            this._debugActions.Remove(this._strategy.Systems);
+            this._debugActions.Remove(this._strategy.Systems.GetAll());
         }
 
         [SequenceGroup<DebugSequenceGroupEnum>(DebugSequenceGroupEnum.Debug)]

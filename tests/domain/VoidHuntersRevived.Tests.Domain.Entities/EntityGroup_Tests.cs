@@ -1,5 +1,5 @@
 ﻿using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Tests.Domain.Entities.Components;
+using VoidHuntersRevived.Tests.Common.Entities.Stubs;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {
@@ -16,9 +16,9 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             Assert.Empty(EntityGroupList.GetAll());
 
 
-            EntityGroupList groups = EntityGroupList.GetOrCreate([typeof(TestComponent)]);
+            EntityGroupList groups = EntityGroupList.GetOrCreate([typeof(TestEntityComponent)]);
             Assert.Equal(0, groups.Values.count);
-            _ = EntityGroup.Create("test", [typeof(TestComponent)]);
+            _ = EntityGroup.Create("test", [typeof(TestEntityComponent)]);
             Assert.Equal(1, groups.Values.count);
         }
     }

@@ -6,7 +6,7 @@ using VoidHuntersRevived.Tests.Common.Providers;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
 {
-    public class SimulationAutoMock(Simulation instance, IStrategyAutoMock[] strategies) : IDisposable
+    public class SimulationMock(Simulation instance, IStrategyAutoMock[] strategies) : IDisposable
     {
         public readonly Simulation Instance = instance;
         public readonly IStrategyAutoMock[] Strategies = strategies;
@@ -54,7 +54,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             return this.Get<TStrategy>().Instance.Resolve<T>();
         }
 
-        public SimulationAutoMock Update(TimeSpan interval, int count)
+        public SimulationMock Update(TimeSpan interval, int count)
         {
             for (int i = 0; i < count; i++)
             {
@@ -67,7 +67,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             return this;
         }
 
-        public SimulationAutoMock Input(VhId sourceId, IStepInput data, bool verified)
+        public SimulationMock Input(VhId sourceId, IStepInput data, bool verified)
         {
             foreach (IStrategyAutoMock strategy in this.Strategies)
             {
@@ -77,7 +77,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             return this;
         }
 
-        public SimulationAutoMock Input(IStepInput data, bool verified)
+        public SimulationMock Input(IStepInput data, bool verified)
         {
             foreach (IStrategyAutoMock strategy in this.Strategies)
             {
@@ -87,7 +87,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             return this;
         }
 
-        public SimulationAutoMock Input<TStrategy>(VhId sourceId, IStepInput data, bool verified)
+        public SimulationMock Input<TStrategy>(VhId sourceId, IStepInput data, bool verified)
             where TStrategy : IStrategy
         {
             foreach (IStrategyAutoMock strategy in this.Strategies.OfType<IStrategyMocker<TStrategy>>())
@@ -98,7 +98,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             return this;
         }
 
-        public SimulationAutoMock Input<TStrategy>(IStepInput data, bool verified)
+        public SimulationMock Input<TStrategy>(IStepInput data, bool verified)
             where TStrategy : IStrategy
         {
             foreach (IStrategyAutoMock strategy in this.Strategies.OfType<IStrategyMocker<TStrategy>>())
@@ -109,7 +109,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             return this;
         }
 
-        public SimulationAutoMock InputMany<T>(Func<int, T> generator, int count, int offset, bool verified)
+        public SimulationMock InputMany<T>(Func<int, T> generator, int count, int offset, bool verified)
             where T : IStepInput
         {
             for (int i = 0; i < count; i++)
@@ -126,7 +126,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             return this.Strategies.ToDictionary(x => x, x => x.CalculateTotalEntities<T>());
         }
 
-        public SimulationAutoMock RunCoroutine(TimeSpan interval, VhId coroutineId, Func<VhIdProvider, IStrategyAutoMock, IEnumerator<int>> coroutine)
+        public SimulationMock RunCoroutine(TimeSpan interval, VhId coroutineId, Func<VhIdProvider, IStrategyAutoMock, IEnumerator<int>> coroutine)
         {
             var coroutines = this.Strategies.Select(x => (strategy: x, coroutines: coroutine(new VhIdProvider(coroutineId), x))).ToArray();
 
@@ -155,7 +155,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             return this;
         }
 
-        public SimulationAutoMock RunCoroutine(VhId coroutineId, Action<VhIdProvider, IStrategyAutoMock> coroutine)
+        public SimulationMock RunCoroutine(VhId coroutineId, Action<VhIdProvider, IStrategyAutoMock> coroutine)
         {
             foreach (IStrategyAutoMock strategy in this.Strategies)
             {

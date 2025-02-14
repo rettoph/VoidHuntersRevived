@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
-using Guppy.Core.Logging.Common.Services;
+using Guppy.Core.Logging.Common;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
@@ -20,8 +20,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
         ISettingService settings,
         IGuppyScope scope,
         LockstepStepEventService eventService,
-        Lazy<ILoggerService> loggerService
-    ) : LockstepStrategy(settings, scope, eventService, loggerService),
+        ILogger logger
+    ) : LockstepStrategy(settings, scope, eventService, logger),
         ISubscriber<SubscriberSequenceGroupEnum, EnqueuedStepInput>
     {
         private readonly INetScope<IStrategy> _netScope = netScope;

@@ -15,7 +15,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
         public void Initialize()
         {
-            foreach (IEngine engine in this._strategy.Systems.OfType<IEngine>())
+            foreach (IEngine engine in this._strategy.Systems.GetAll<IEngine>())
             {
                 this._enginesRoot.AddEngine(engine);
             }

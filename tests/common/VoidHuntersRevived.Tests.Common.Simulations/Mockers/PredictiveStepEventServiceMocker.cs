@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Logging.Common;
 using Guppy.Core.Messaging.Common;
+using Guppy.Tests.Common;
 using Moq;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -7,21 +8,21 @@ using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
-namespace VoidHuntersRevived.Tests.Domain.Simulations.Mocks
+namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
 {
-    public class PredictiveStepEventServiceMock
+    public class PredictiveStepEventServiceMocker
     {
-        public readonly Mock<IMessageBus> MessageBus;
-        public readonly Mock<ILogger> Logger;
+        public Mocker<IMessageBus> MessageBusMocker { get; set; }
+        public Mocker<ILogger> LoggerMocker { get; set; }
         public readonly PredictiveStepEventService PredictiveEventService;
 
-        public PredictiveStepEventServiceMock()
+        public PredictiveStepEventServiceMocker()
         {
-            this.MessageBus = new Mock<IMessageBus>();
-            this.Logger = new Mock<ILogger>();
+            this.MessageBusMocker = new Mocker<IMessageBus>();
+            this.LoggerMocker = new Mocker<ILogger>();
             this.PredictiveEventService = new PredictiveStepEventService(
-                this.MessageBus.Object,
-                this.Logger.Object);
+                this.MessageBusMocker.GetInstance(),
+                this.LoggerMocker.GetInstance());
         }
 
         public void EnqueueFlushAndVerifyPublish<TEvent>(VhId sourceId, Func<Times> publishTimes)
@@ -34,14 +35,14 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Mocks
             this.PredictiveEventService.Flush();
 
             // Verify publish
-            this.MessageBus.Verify(
+            this.MessageBusMocker.Verify(
                 x => x.Publish<EventSequenceGroupEnum, VhId, TEvent>(It.Ref<VhId>.IsAny, It.Ref<TEvent>.IsAny),
                 publishTimes);
         }
 
-        public static PredictiveStepEventServiceMock Create()
+        public static PredictiveStepEventServiceMocker Create()
         {
-            return new PredictiveStepEventServiceMock();
+            return new PredictiveStepEventServiceMocker();
         }
     }
 }

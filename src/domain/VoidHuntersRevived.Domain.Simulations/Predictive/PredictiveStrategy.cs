@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
-using Guppy.Core.Logging.Common.Services;
+using Guppy.Core.Logging.Common;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -17,8 +17,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
     public sealed class PredictiveStrategy(
         IGuppyScope scope,
         PredictiveStepEventService eventService,
-        Lazy<ILoggerService> loggerService
-    ) : Strategy(StrategyTypeEnum.Predictive, scope, eventService, loggerService),
+        ILogger logger
+    ) : Strategy(StrategyTypeEnum.Predictive, scope, eventService, logger),
         IPredictiveStrategy
     {
         private readonly PredictiveStepEventService _eventService = eventService;
@@ -34,7 +34,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
 
             this._lockstep = this.Simulation.First(StrategyTypeEnum.Lockstep) as ILockstepStrategy ?? throw new NotImplementedException();
             this._lockstep.Events.OnEvent += this.HandleLockstepEvent;
-            this._synchronizations = this.Systems.OfType<IPredictiveSynchronizationSystem>().ToArray();
+            this._synchronizations = this.Systems.GetAll<IPredictiveSynchronizationSystem>().ToArray();
 
             foreach (IPredictiveSynchronizationSystem synchronization in this._synchronizations)
             {

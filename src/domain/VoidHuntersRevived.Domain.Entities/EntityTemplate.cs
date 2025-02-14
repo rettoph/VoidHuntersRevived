@@ -77,11 +77,11 @@ namespace VoidHuntersRevived.Domain.Entities
             List<ComponentSystemInvoker> onDespawnSystemInvokers = [];
             List<ComponentSystemInvoker> onSpawnSystemInvokers = [];
 
-            onDespawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnDespawnSequenceGroupEnum>(typeof(OnDespawnSystemInvoker<>), typeof(IOnDespawnSystem<>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnDespawn") ?? throw new NotImplementedException()).ToList());
-            onDespawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnDespawnSequenceGroupEnum>(typeof(OnDespawnSystemInvoker<,>), typeof(IOnDespawnSystem<,>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnDespawn") ?? throw new NotImplementedException()).ToList());
+            onDespawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnDespawnSequenceGroupEnum>(typeof(OnDespawnSystemInvoker<>), typeof(IOnDespawnSystem<>), this.Components.Keys, systemService.GetAll(), this._entitiesDB, x => x.GetMethod("OnDespawn") ?? throw new NotImplementedException()).ToList());
+            onDespawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnDespawnSequenceGroupEnum>(typeof(OnDespawnSystemInvoker<,>), typeof(IOnDespawnSystem<,>), this.Components.Keys, systemService.GetAll(), this._entitiesDB, x => x.GetMethod("OnDespawn") ?? throw new NotImplementedException()).ToList());
 
-            onSpawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnSpawnSequenceGroupEnum>(typeof(OnSpawnSystemInvoker<>), typeof(IOnSpawnSystem<>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnSpawn") ?? throw new NotImplementedException()).ToList());
-            onSpawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnSpawnSequenceGroupEnum>(typeof(OnSpawnSystemInvoker<,>), typeof(IOnSpawnSystem<,>), this.Components.Keys, systemService, this._entitiesDB, x => x.GetMethod("OnSpawn") ?? throw new NotImplementedException()).ToList());
+            onSpawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnSpawnSequenceGroupEnum>(typeof(OnSpawnSystemInvoker<>), typeof(IOnSpawnSystem<>), this.Components.Keys, systemService.GetAll(), this._entitiesDB, x => x.GetMethod("OnSpawn") ?? throw new NotImplementedException()).ToList());
+            onSpawnSystemInvokers.AddRange(ComponentSystemInvoker.Create<OnSpawnSequenceGroupEnum>(typeof(OnSpawnSystemInvoker<,>), typeof(IOnSpawnSystem<,>), this.Components.Keys, systemService.GetAll(), this._entitiesDB, x => x.GetMethod("OnSpawn") ?? throw new NotImplementedException()).ToList());
 
             this._onDespawnSystemInvokers.Add(onDespawnSystemInvokers);
             this._onSpawnSystemInvokers.Add(onSpawnSystemInvokers);

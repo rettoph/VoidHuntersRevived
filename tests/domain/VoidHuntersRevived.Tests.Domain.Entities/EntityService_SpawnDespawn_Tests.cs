@@ -2,18 +2,14 @@ using Guppy.Core.Resources.Common;
 using Guppy.Game.Common.Extensions;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
-using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Common.Constants;
-using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Domain.Entities.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Predictive;
+using VoidHuntersRevived.Tests.Common.Entities.Stubs;
 using VoidHuntersRevived.Tests.Common.Simulations;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
-using VoidHuntersRevived.Tests.Domain.Entities.Components;
-using VoidHuntersRevived.Tests.Domain.Entities.Events;
 using VoidHuntersRevived.Tests.Domain.Entities.Systems;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
@@ -23,9 +19,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         public virtual SettingValue<int> StepsPerTick => new(Settings.StepsPerTick, 3);
         public virtual SettingValue<Fix64> StepInterval => new(Settings.StepInterval, (Fix64)20 / (Fix64)1000);
 
-        public static readonly Key<IEntityTemplate> TestEntityTemplateKey = Key<IEntityTemplate>.GetByName("TestEntityTemplate");
-
-        private readonly SimulationAutoMock _simulation;
+        private readonly SimulationMock _simulation;
         private readonly IStrategyMocker<LockstepStrategy_Client> _lockstep;
         private readonly IStrategyMocker<PredictiveStrategy> _predictive;
 
@@ -35,15 +29,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                     id: VhId.Empty,
                     stepInterval: this.StepInterval,
                     stepsPerTick: this.StepsPerTick,
-                    entityTemplateFragments: [
-                        new EntityTemplateFragment()
-                        {
-                            Key = TestEntityTemplateKey,
-                            Components = [
-                                new TestComponent()
-                            ]
-                        }
-                    ]
+                    entityTemplateFragments: [TestEntityComponent.TestEntityTemplateFragment]
                 )
                 .AddStrategy<PredictiveStrategy>()
                 .AddStrategy<LockstepStrategy_Client>()
@@ -70,16 +56,16 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         {
             TimeSpan simulatedRealtimeInterval = TimeSpan.FromMilliseconds(simulatedRealtimeIntervalInMilliseconds);
 
-            Dictionary<IStrategyAutoMock, int> totals = this._simulation.CalculateTotalEntities<TestComponent>();
+            Dictionary<IStrategyAutoMock, int> totals = this._simulation.CalculateTotalEntities<TestEntityComponent>();
             Assert.Equal(0, totals[this._predictive]);
             Assert.Equal(0, totals[this._lockstep]);
 
             // "Predict" 10 initial entities to be discarded
-            this._simulation.InputMany(this.GenerateTestSpawnInput, segment, 0, false)
+            this._simulation.InputMany(TestSpawnEntityStepInput.Factory, segment, 0, false)
                 .Update(simulatedRealtimeInterval, 4);
 
             // Ensure the prediction was made in the predictive strategy but not on the lockstep strategy
-            totals = this._simulation.CalculateTotalEntities<TestComponent>();
+            totals = this._simulation.CalculateTotalEntities<TestEntityComponent>();
             Assert.Equal(segment, totals[this._predictive]);
             Assert.Equal(0, totals[this._lockstep]);
 
@@ -90,8 +76,8 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                     bool verified = y == (segment / 2);
 
                     this._simulation.Update(simulatedRealtimeInterval, 1)
-                        .Input(GenerateTestDepawnInput(y), verified)
-                        .Input(this.GenerateTestSpawnInput(y + range), verified);
+                        .Input(TestDepawnEntityStepInput.Factory(y), verified)
+                        .Input(TestSpawnEntityStepInput.Factory(y + range), verified);
                 }
 
                 this._simulation.Update(simulatedRealtimeInterval, 10);
@@ -110,19 +96,9 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
             // This is all done in an effort to simulate spam clicking the tracktor beam to rapidly spawn/despawn pieces in game
             // Ideally the total number of entities within both simulations should be the same. A mismatch indicates some sort of desyncronization between 
             // the predictive and lockstep strategies
-            totals = this._simulation.CalculateTotalEntities<TestComponent>();
+            totals = this._simulation.CalculateTotalEntities<TestEntityComponent>();
             Assert.Equal(1, totals[this._predictive]);
             Assert.Equal(1, totals[this._lockstep]);
-        }
-
-        private TestSpawnInput GenerateTestSpawnInput(int id)
-        {
-            return new() { EntityGlobalId = HashBuilder<TestSpawnInput, int>.Instance.Calculate(id).ToGlobalEntityId(), EntityTemplateKey = TestEntityTemplateKey };
-        }
-
-        private static TestDepawnInput GenerateTestDepawnInput(int id)
-        {
-            return new() { EntityGlobalId = HashBuilder<TestDepawnInput, int>.Instance.Calculate(id).ToGlobalEntityId() };
         }
     }
 }

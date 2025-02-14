@@ -32,7 +32,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
         new TStrategy Instance { get; }
     }
 
-    public class StrategyAutoMock<TStrategy> : IStrategyMocker<TStrategy>, IDisposable
+    public class StrategyMock<TStrategy> : IStrategyMocker<TStrategy>, IDisposable
         where TStrategy : class, IStrategy
     {
         private readonly GameTime _gameTime = new();
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
 
         IStrategy IStrategyAutoMock.Instance => this.Instance;
 
-        public StrategyAutoMock(IGuppyScope parentScope, ISimulation simulation)
+        public StrategyMock(IGuppyScope parentScope, ISimulation simulation)
         {
             this.Instance = parentScope.Resolve<ISceneService>().Create<TStrategy>(builder =>
             {

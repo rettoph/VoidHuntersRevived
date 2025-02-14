@@ -2,7 +2,6 @@
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Logging.Common;
-using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Messaging.Common;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
@@ -16,12 +15,10 @@ namespace VoidHuntersRevived.Domain.Simulations
 {
     public abstract partial class Strategy : Scene, IStrategy
     {
-        private ILogger? _logger;
         private readonly IMessageBus _messageBus;
-        private readonly Lazy<ILoggerService> _loggerService;
         private readonly ActionSequenceGroup<StepSequenceGroupEnum, Step> _stepActions;
 
-        protected ILogger logger => this._logger ??= this._loggerService.Value.GetLogger(this.GetType());
+        protected readonly ILogger logger;
 
         public readonly StrategyTypeEnum Type;
         public ISimulation Simulation { get; private set; } = null!;
@@ -35,11 +32,12 @@ namespace VoidHuntersRevived.Domain.Simulations
             StrategyTypeEnum type,
             IGuppyScope scope,
             IStepEventService eventService,
-            Lazy<ILoggerService> loggerService) : base(scope)
+            ILogger logger) : base(scope)
         {
-            this._loggerService = loggerService;
             this._messageBus = scope.Resolve<IMessageBus>();
             this._stepActions = new ActionSequenceGroup<StepSequenceGroupEnum, Step>(false);
+
+            this.logger = logger;
 
             this.Type = type;
             this.Events = eventService;
@@ -57,7 +55,7 @@ namespace VoidHuntersRevived.Domain.Simulations
             base.Initialize();
 
             this._stepActions.Add([this.Step_PublishEvents]); // Special case - add the internal queue submission method
-            this._stepActions.Add(this.Systems);
+            this._stepActions.Add(this.Systems.GetAll());
         }
 
         public override void Update(GameTime gameTime)

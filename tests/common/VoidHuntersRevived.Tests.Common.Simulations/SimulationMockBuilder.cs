@@ -23,7 +23,7 @@ using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations
 {
-    public class SimulationMockBuilder : GuppyScopeMocker<SimulationMockBuilder, SimulationAutoMock>
+    public class SimulationMockBuilder : GuppyScopeMocker<SimulationMockBuilder, SimulationMock>
     {
         private readonly List<Func<IGuppyScope, ISimulation, IStrategyAutoMock>> _strategies = [];
 
@@ -73,12 +73,12 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
         public SimulationMockBuilder AddStrategy<TStrategy>()
             where TStrategy : class, IStrategy
         {
-            this._strategies.Add((scope, simulation) => new StrategyAutoMock<TStrategy>(scope, simulation));
+            this._strategies.Add((scope, simulation) => new StrategyMock<TStrategy>(scope, simulation));
 
             return this;
         }
 
-        public override SimulationAutoMock Build()
+        public override SimulationMock Build()
         {
             List<IStrategyAutoMock> strategies = [];
 
@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
 
             instance.Initialize();
 
-            SimulationAutoMock simulation = new(
+            SimulationMock simulation = new(
                 instance: instance,
                 strategies: strategies.ToArray());
 

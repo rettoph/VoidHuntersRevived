@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
-using Guppy.Core.Logging.Common.Services;
+using Guppy.Core.Logging.Common;
 using Guppy.Core.Resources.Common.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             ISettingService settings,
             IGuppyScope scope,
             LockstepStepEventService eventService,
-            Lazy<ILoggerService> loggerService) : base(StrategyTypeEnum.Lockstep, scope, eventService, loggerService)
+            ILogger logger) : base(StrategyTypeEnum.Lockstep, scope, eventService, logger)
         {
             this._tickActions = new ActionSequenceGroup<TickSequenceGroupEnum, Tick>(false);
             this._history = [];
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Lockstep
             base.Initialize();
 
             this._tickActions.Add([this.Tick_PublishEvents]);
-            this._tickActions.Add(this.Systems);
+            this._tickActions.Add(this.Systems.GetAll());
         }
 
         public override void Update(GameTime realTime)

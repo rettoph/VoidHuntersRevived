@@ -11,4 +11,8 @@
     <ProjectReference Include="..\VoidHuntersRevived.Tests.Common\VoidHuntersRevived.Tests.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Systems\" />
+  </ItemGroup>
+
 </Project>

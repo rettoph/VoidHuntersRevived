@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
         public static readonly Key<IEntityTemplate> TestSquareEntityTemplateKey = Key<IEntityTemplate>.GetByName(nameof(TestSquareEntityTemplateKey));
 
-        private static SimulationAutoMock CreateSimulationMocker()
+        private static SimulationMock CreateSimulationMocker()
         {
             return new SimulationMockBuilder(
                     id: VhId.Empty,
