@@ -15,6 +15,7 @@ using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Services;
+using VoidHuntersRevived.Domain.Simulations.Systems;
 using VoidHuntersRevived.Domain.Simulations.Systems.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Extensions
@@ -42,10 +43,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
                     builder.RegisterType<TickBuffer>().InstancePerLifetimeScope();
+                    builder.RegisterSceneSystem<StepServiceUpdateSystem>();
 
                     builder.RegisterSceneFilter<IPredictiveStrategy>(builder =>
                     {
                         builder.RegisterType<PredictiveStepEventService>().AsSelf().As<IStepEventService>().InstancePerLifetimeScope();
+                        builder.RegisterType<PredictiveStepService>().AsSelf().As<IStepService>().InstancePerLifetimeScope();
                     });
 
                     builder.RegisterSceneFilter<ILockstepStrategy>(builder =>

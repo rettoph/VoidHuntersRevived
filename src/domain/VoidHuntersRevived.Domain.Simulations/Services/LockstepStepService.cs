@@ -27,8 +27,23 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
         public TimeSpan TimeSinceStep { get; private set; }
         public int StepsSinceTick { get; private set; }
+        public int StepsPerTick { get; } = settingService.GetValue(Settings.StepsPerTick);
+        public TimeSpan StepTimeSpan { get; } = TimeSpan.FromSeconds((double)settingService.GetValue(Settings.StepInterval).Value);
 
-        protected abstract bool ShouldStep();
+        public bool ShouldStep()
+        {
+            if (this.StepsSinceTick > this.StepsPerTick)
+            {
+                throw new Exception();
+            }
+
+            if (this.StepsSinceTick == this.StepsPerTick)
+            {
+                return false;
+            }
+
+            return this._tickService.ShouldStep(this.TimeSinceStep < this.StepTimeSpan);
+        }
 
         public void Update(GameTime gameTime)
         {

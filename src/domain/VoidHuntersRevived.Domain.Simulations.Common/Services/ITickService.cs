@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Services
         /// <summary>
         /// The id of the next tick expected to be queued/dequeued
         /// </summary>
-        public int NextTickId { get; }
+        int NextTickId { get; }
 
         /// <summary>
         /// Attempt to dequeue the next <see cref="Tick"/> instance
@@ -17,18 +17,31 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Services
         /// <param name="id"></param>
         /// <param name="tick"></param>
         /// <returns></returns>
-        public bool TryDequeue(int stepsSinceTick, [MaybeNullWhen(false)] out Tick tick);
+        bool TryDequeue(int stepsSinceTick, [MaybeNullWhen(false)] out Tick tick);
 
         /// <summary>
         /// Attempt to enqueue a new <see cref="Tick"/>
         /// </summary>
         /// <param name="tick"></param>
         /// <returns></returns>
-        public EnqueueTickResponseEnum TryEnqueue(Tick tick);
+        EnqueueTickResponseEnum TryEnqueue(Tick tick);
+
+
+        /// <summary>
+        /// The <see cref="ITickService"/> has a say in whether or not 
+        /// a step should be taken. This is because the tick service knows
+        /// if there is a tick ready to be published or not - and is responsible
+        /// for determining if we should slowly publish all available ticks or
+        /// quickly publish them (like a client that just connected mid game and
+        /// needs to syncronize)
+        /// </summary>
+        /// <param name="timeSinceLastStepLessThanStepInterval"></param>
+        /// <returns></returns>
+        bool ShouldStep(bool timeSinceLastStepLessThanStepInterval);
 
         /// <summary>
         /// Clear internal queues and reset the next tick id back to 0
         /// </summary>
-        public void Reset();
+        void Reset();
     }
 }

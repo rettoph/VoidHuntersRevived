@@ -171,6 +171,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         /// </summary>
         private Node? _head;
 
+        /// <summary>
+        /// Indicates how many nodes are currently in the list
+        /// </summary>
+        private int _count;
+
         /// <inheritdoc />
         public override EnqueueTickResponseEnum TryEnqueue(Tick tick)
         {
@@ -182,6 +187,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             if (this._head is null)
             {
                 this._head = node;
+                this._count = 1;
+
                 return EnqueueTickResponseEnum.Enqueued;
             }
 
@@ -195,12 +202,22 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 this._head = node;
                 // Attempt to add the old head to the new node
                 response = this._head.Add(old, out tail);
+                if (response == EnqueueTickResponseEnum.Enqueued)
+                {
+                    this._count++;
+                }
+
                 return response;
             }
 
             // If we've made it this far we know the new node comes after the current head
             // Attempt to add it to the current head
             response = this._head.Add(node, out tail);
+            if (response == EnqueueTickResponseEnum.Enqueued)
+            {
+                this._count++;
+            }
+
             return response;
         }
 
@@ -218,6 +235,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 tick = this._head.Data;
 
                 this._head = this._head.Child;
+                this._count--;
 
                 return true;
             }
@@ -242,6 +260,12 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             base.Reset();
 
             this._head = null;
+            this._count = 0;
+        }
+
+        public override bool ShouldStep(bool timeSinceLastStepLessThanStepInterval)
+        {
+            return this._count > 0;
         }
     }
 }

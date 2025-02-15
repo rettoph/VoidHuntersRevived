@@ -47,5 +47,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         protected abstract bool TryDequeue([MaybeNullWhen(false)] out Tick tick);
 
         public abstract EnqueueTickResponseEnum TryEnqueue(Tick tick);
+
+        public abstract bool ShouldStep(bool timeSinceLastStepLessThanStepInterval);
     }
 }
