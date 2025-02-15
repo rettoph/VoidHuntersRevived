@@ -2,6 +2,7 @@
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Predictive;
 using VoidHuntersRevived.Tests.Common.Simulations.Interfaces;
 using VoidHuntersRevived.Tests.Common.Simulations.Mockers;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
@@ -25,14 +26,66 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
             return this;
         }
 
-        public SimulationMocker Input(VhId sourceId, IStepInput data)
+        public SimulationMocker Input(VhId sourceId, IStepInput input, bool onlyPrediction = false)
         {
+            if (onlyPrediction == true)
+            {
+                foreach (IBaseStrategyMocker strategy in this.SimulationMockers.OfType<IBaseStrategyMocker<PredictiveStrategy>>())
+                {
+                    strategy.Strategy.Events.Input(sourceId, input);
+                }
+
+                return this;
+            }
+
             foreach (IBaseStrategyMocker strategy in this.SimulationMockers)
             {
-                strategy.Strategy.Events.Input(sourceId, data);
+                strategy.Strategy.Events.Input(sourceId, input);
             }
 
             return this;
+        }
+
+        public void Input(IStepInput input, bool onlyPrediction = false)
+        {
+            this.Input(VhId.NewVhId(), input, onlyPrediction);
+        }
+
+        public void Input<TInput>(bool onlyPrediction = false)
+            where TInput : IStepInput, new()
+        {
+            this.Input(VhId.NewVhId(), new TInput(), onlyPrediction);
+        }
+
+        public SimulationMocker Publish(VhId sourceId, IStepEvent @event, bool onlyPrediction = false)
+        {
+            if (onlyPrediction == true)
+            {
+                foreach (IBaseStrategyMocker strategy in this.SimulationMockers.OfType<IBaseStrategyMocker<PredictiveStrategy>>())
+                {
+                    strategy.Strategy.Events.Publish(sourceId, @event);
+                }
+
+                return this;
+            }
+
+            foreach (IBaseStrategyMocker strategy in this.SimulationMockers)
+            {
+                strategy.Strategy.Events.Publish(sourceId, @event);
+            }
+
+            return this;
+        }
+
+        public void Input(IStepEvent @event, bool onlyPrediction = false)
+        {
+            this.Publish(VhId.NewVhId(), @event, onlyPrediction);
+        }
+
+        public void Publish<TEvent>(bool onlyPrediction = false)
+            where TEvent : IStepEvent, new()
+        {
+            this.Publish(VhId.NewVhId(), new TEvent(), onlyPrediction);
         }
     }
 }

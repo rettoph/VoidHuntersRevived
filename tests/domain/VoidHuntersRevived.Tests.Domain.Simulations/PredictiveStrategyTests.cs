@@ -1,5 +1,8 @@
+using Moq;
 using VoidHuntersRevived.Tests.Common.Simulations.Mockers;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
+using VoidHuntersRevived.Tests.Common.Simulations.Stubs;
+using VoidHuntersRevived.Tests.Domain.Simulations.Extensions;
 
 namespace VoidHuntersRevived.Tests.Domain.Simulations
 {
@@ -15,7 +18,19 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations
         [Fact]
         public void FalsePrediction_IsReverted()
         {
-            TimeSpan simulatedRealtimeInterval = TimeSpan.FromMilliseconds(16);
+            this.SimulationMocker.PublishThenUpdateThenVerifyPrediction<TestPublicPredictableStepEvent>(
+                onlyPrediction: true,
+                publishTimes: Times.Once,
+                revertTimes: Times.Once);
+        }
+
+        [Fact]
+        public void TruePrediction_IsNotReverted()
+        {
+            this.SimulationMocker.PublishThenUpdateThenVerifyPrediction<TestPublicPredictableStepEvent>(
+                onlyPrediction: false,
+                publishTimes: Times.Once,
+                revertTimes: Times.Never);
         }
     }
 }

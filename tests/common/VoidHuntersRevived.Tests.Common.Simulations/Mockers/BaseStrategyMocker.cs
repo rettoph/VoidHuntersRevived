@@ -4,8 +4,10 @@ using Guppy.Core.Common.Systems;
 using Guppy.Core.Logging.Common;
 using Guppy.Tests.Common;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
 using VoidHuntersRevived.Tests.Common.Extensions;
 using VoidHuntersRevived.Tests.Common.Simulations.Interfaces;
 
@@ -55,6 +57,22 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
 
                 this.Strategy.Update(this.GameTime);
             }
+        }
+
+        public void Input(VhId sourceId, IStepInput input)
+        {
+            this.Strategy.Events.Input(sourceId, input);
+        }
+
+        public void Input(IStepInput input)
+        {
+            this.Input(VhId.NewVhId(), input);
+        }
+
+        public void Input<TInput>()
+            where TInput : IStepInput, new()
+        {
+            this.Input(VhId.NewVhId(), new TInput());
         }
     }
 }

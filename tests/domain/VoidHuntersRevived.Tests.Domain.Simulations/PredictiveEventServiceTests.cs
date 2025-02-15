@@ -2,6 +2,7 @@
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 using VoidHuntersRevived.Tests.Common.Simulations.Stubs;
+using VoidHuntersRevived.Tests.Domain.Simulations.Extensions;
 
 namespace VoidHuntersRevived.Tests.Domain.Simulations
 {
