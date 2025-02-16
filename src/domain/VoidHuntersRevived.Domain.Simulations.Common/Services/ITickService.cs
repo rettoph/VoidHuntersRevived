@@ -7,6 +7,11 @@ namespace VoidHuntersRevived.Domain.Simulations.Common.Services
     public interface ITickService
     {
         /// <summary>
+        ///  The last tick id to be given. AKA "current" tick
+        /// </summary>
+        int LastTickId { get; }
+
+        /// <summary>
         /// The id of the next tick expected to be queued/dequeued
         /// </summary>
         int NextTickId { get; }

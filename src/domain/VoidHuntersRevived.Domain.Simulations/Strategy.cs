@@ -1,12 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Messaging.Common;
 using Guppy.Game.Common;
-using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
@@ -24,8 +21,6 @@ namespace VoidHuntersRevived.Domain.Simulations
         public ISimulation Simulation { get; private set; } = null!;
         public IStepEventService Events { get; }
 
-        public Step CurrentStep { get; private set; }
-
         StrategyTypeEnum IStrategy.Type => this.Type;
 
         protected Strategy(
@@ -42,8 +37,6 @@ namespace VoidHuntersRevived.Domain.Simulations
             this.Type = type;
             this.Events = eventService;
 
-            this.CurrentStep = new Step();
-
             this.Enabled = false;
             this.Visible = false;
         }
@@ -58,34 +51,10 @@ namespace VoidHuntersRevived.Domain.Simulations
             this._stepActions.Add(this.Systems.GetAll());
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            while (this.TryGetNextStep(gameTime, out Step? step))
-            {
-                this.DoStep(step);
-            }
-        }
-
-        protected abstract bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step);
-        protected virtual void DoStep(Step step)
-        {
-            this.CurrentStep = step;
-
-            this._stepActions.Invoke(step);
-        }
-
         [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.PublishEvents)]
-        private void Step_PublishEvents(Step step)
+        public void Step_PublishEvents(Step step)
         {
             this.Events.Flush();
-        }
-
-        protected virtual void Revert(Id<IStepEvent> id, IStepEvent data)
-        {
-            this.logger.Verbose("Reverting {EventName}, {EventId}", data.GetType().Name, id);
-            data.Revert(id.Value, this._messageBus);
         }
     }
 }

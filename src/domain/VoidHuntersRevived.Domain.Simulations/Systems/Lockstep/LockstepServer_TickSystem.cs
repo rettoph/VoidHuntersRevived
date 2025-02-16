@@ -6,6 +6,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Events;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 
@@ -13,6 +14,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
 {
     public class LockstepServer_TickSystem(
         ILockstepStrategy strategy,
+        ITickService tickService,
         INetScope<IStrategy> scope
     ) : ISceneSystem,
         ITickSystem,
@@ -21,6 +23,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
         private readonly INetScope<IStrategy> _scope = scope;
         private readonly List<Tick> _history = [];
         private readonly ILockstepStrategy _strategy = strategy;
+        private readonly ITickService _tickService = tickService;
 
         [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
         public void Process(in VhId id, UserJoined data)
@@ -32,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
                 return;
             }
 
-            int currentTickId = this._strategy.CurrentTick.Id;
+            int currentTickId = this._tickService.LastTickId;
 
             this._scope.CreateMessage(new TickHistoryStart()
             {

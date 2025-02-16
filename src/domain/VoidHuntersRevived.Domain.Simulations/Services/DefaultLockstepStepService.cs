@@ -11,7 +11,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    public abstract class LockstepStepService(
+    public class DefaultLockstepStepService(
         ISettingService settingService,
         ITickService tickService,
         IMessageBus messageBus
@@ -63,6 +63,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         protected virtual void DoStep()
         {
             this.StepsSinceTick++;
+            this.TimeSinceStep -= this.StepTimeSpan;
             this._step.TotalTime += this._step.ElapsedTime;
             this._messageBus.Publish<StepSequenceGroupEnum, Step>(this._step);
 

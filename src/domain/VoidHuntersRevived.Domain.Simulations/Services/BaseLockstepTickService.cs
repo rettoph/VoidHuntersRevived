@@ -7,15 +7,17 @@ using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    public abstract class BaseTickService(
+    public abstract class BaseLockstepTickService(
         ISettingService settingService
     ) : ITickService
     {
         public int StepsPerTick { get; } = settingService.GetValue(Settings.StepsPerTick);
+        public int LastTickId { get; private set; }
         public int NextTickId { get; private set; }
 
         public virtual void Reset()
         {
+            this.LastTickId = -1;
             this.NextTickId = 0;
         }
 
@@ -37,7 +39,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
             if (this.TryDequeue(out tick) == true)
             {
-                this.NextTickId++;
+                this.LastTickId = this.NextTickId++;
                 return true;
             }
 

@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Extensions
 {
     public static class PredictiveStepEventServiceMockerExtensions
     {
-        public static void EnqueueFlushAndVerifyPublish<TEvent>(
+        public static PredictiveStepEventServiceMocker EnqueueFlushAndVerifyPublish<TEvent>(
             this PredictiveStepEventServiceMocker predictiveStepEventServiceMocker,
             VhId sourceId,
             Func<Times> publishTimes
@@ -26,6 +26,8 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Extensions
             predictiveStepEventServiceMocker.MessageBusMocker.Verify(
                 x => x.Publish<EventSequenceGroupEnum, VhId, TEvent>(It.Ref<VhId>.IsAny, It.Ref<TEvent>.IsAny),
                 publishTimes);
+
+            return predictiveStepEventServiceMocker;
         }
     }
 }

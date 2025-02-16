@@ -16,7 +16,7 @@ using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Game.Core.Systems
 {
-    public sealed class UserSystem(
+    public class UserSystem(
         ITreeService treeService,
         ITeamService teamService,
         IBlueprintService blueprintService

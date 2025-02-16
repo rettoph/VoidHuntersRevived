@@ -11,11 +11,9 @@ using Guppy.Game.Input.Common.Enums;
 using Guppy.Game.MonoGame.Common.Extensions;
 using Microsoft.Xna.Framework.Input;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Game.Client.Components.Scene;
 using VoidHuntersRevived.Game.Client.Constants;
 using VoidHuntersRevived.Game.Client.Messages;
@@ -58,26 +56,6 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                         builder.RegisterSceneSystem<EntitiesDebugSystem>();
                         builder.RegisterSceneSystem<DrawVertexVisibleSystem>();
                         builder.RegisterSceneSystem<ShaderAntiAliasingSystem>();
-                    });
-
-                    builder.RegisterSceneFilter<Strategy>(builder =>
-                    {
-                        builder.RegisterSceneSystem<StrategyDebugSystem>();
-                    });
-
-                    builder.RegisterSceneFilter<LockstepStrategy_Client>(builder =>
-                    {
-                        builder.RegisterSceneSystem<LockstepStrategy_ClientDebugSystem>();
-                    });
-
-                    builder.RegisterSceneFilter<LockstepStrategy_Server>(builder =>
-                    {
-                        builder.RegisterSceneSystem<LockstepStrategy_ServerDebugSystem>();
-                    });
-
-                    builder.RegisterSceneFilter<ILockstepStrategy>(builder =>
-                    {
-                        builder.RegisterSceneSystem<LockstepStrategyDebugSystem>();
                     });
 
                     builder.Filter(

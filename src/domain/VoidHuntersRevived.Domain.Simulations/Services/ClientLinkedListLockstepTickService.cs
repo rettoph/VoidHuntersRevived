@@ -12,9 +12,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
     /// sorting incoming ticks. It is assumed that ticks may be out of order
     /// like in the instance of incoming messages
     /// </summary>
-    public class LinkedListTickService(
+    public class ClientLinkedListLockstepTickService(
         ISettingService settingService
-    ) : BaseTickService(settingService),
+    ) : BaseLockstepTickService(settingService),
         ITickService
     {
         /// <summary>
@@ -181,6 +181,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         {
             Node node = new(tick);
 
+            if (tick.Id < this.NextTickId)
+            {
+                // TODO: Investigate why this is here and why this is needed.
+                // Sometimes we double send a message, this should fix that.
+                return EnqueueTickResponseEnum.NotEnqueued;
+            }
+
             // If the current head is null then no need to add
             // to the linked list. We just store the current node as
             // the head and tail
@@ -221,7 +228,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             return response;
         }
 
-        /// <inheritdoc />
         protected override bool TryDequeue([MaybeNullWhen(false)] out Tick tick)
         {
             if (this._head is null)
@@ -253,6 +259,44 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
 
             tick = null;
             return false;
+        }
+
+        /// <summary>
+        /// Return the last known tick before the given <paramref name="id"/>.
+        /// 
+        /// If the buffer has 1, 2, 3, 4 stored and we pass in 5 we should get tick 4 back.
+        /// 
+        /// If the buffer has 1, 2, 3, 5, 6, 7 stored and we paass in 4 we should get tick 3 back
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Tick? Previous(int id)
+        {
+            if (this._head is null || id < this._head.Id)
+            {
+                return null;
+            }
+
+            Node? previous = null;
+            Node? node = this._head;
+
+            while (node is not null)
+            {
+                if (node.Id > id)
+                {
+                    return previous?.Data;
+                }
+
+                if (node.Id == id)
+                {
+                    return previous?.Data;
+                }
+
+                previous = node;
+                node = node.Child;
+            }
+
+            return previous?.Data;
         }
 
         public override void Reset()

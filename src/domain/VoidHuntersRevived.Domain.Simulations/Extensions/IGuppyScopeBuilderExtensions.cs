@@ -11,7 +11,6 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Services;
@@ -42,24 +41,27 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
-                    builder.RegisterType<TickBuffer>().InstancePerLifetimeScope();
                     builder.RegisterSceneSystem<StepServiceUpdateSystem>();
 
                     builder.RegisterSceneFilter<IPredictiveStrategy>(builder =>
                     {
+                        builder.RegisterSceneSystem<PredictiveStepEventCleanSystem>();
+
                         builder.RegisterType<PredictiveStepEventService>().AsSelf().As<IStepEventService>().InstancePerLifetimeScope();
                         builder.RegisterType<PredictiveStepService>().AsSelf().As<IStepService>().InstancePerLifetimeScope();
                     });
 
                     builder.RegisterSceneFilter<ILockstepStrategy>(builder =>
                     {
-                        builder.RegisterType<QueueTickService>().As<ITickService>().InstancePerLifetimeScope();
-                        builder.RegisterType<LockstepStepEventService>().AsSelf().As<IStepEventService>().InstancePerLifetimeScope();
+                        builder.RegisterType<DefaultLockstepTickService>().As<ITickService>().InstancePerLifetimeScope();
+                        builder.RegisterType<DefaultLockstepStepEventService>().AsSelf().As<IStepEventService>().InstancePerLifetimeScope();
+                        builder.RegisterType<DefaultLockstepStepService>().AsSelf().As<IStepService>().InstancePerLifetimeScope();
 
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Client, builder =>
                         {
                             builder.RegisterSceneSystem<LockstepClient_TickSystem>();
-                            builder.RegisterType<LinkedListTickService>().As<ITickService>().InstancePerLifetimeScope();
+                            builder.RegisterType<ClientLinkedListLockstepTickService>().AsSelf().As<ITickService>().InstancePerLifetimeScope();
+                            builder.RegisterType<ClientLockstepStepEventService>().AsSelf().As<IStepEventService>().InstancePerLifetimeScope();
                         });
 
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Server, builder =>

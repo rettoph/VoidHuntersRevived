@@ -1,9 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Logging.Common;
-using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -24,7 +21,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
         private readonly PredictiveStepEventService _eventService = eventService;
         private ILockstepStrategy _lockstep = null!;
         private readonly Step _step = new();
-        private double _lastStepTime;
+        private readonly double _lastStepTime;
         private IPredictiveSynchronizationSystem[] _synchronizations = [];
 
 
@@ -40,36 +37,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Predictive
             {
                 synchronization.Initialize(this._lockstep);
             }
-        }
-
-        protected override bool TryGetNextStep(GameTime realTime, [MaybeNullWhen(false)] out Step step)
-        {
-            if (this._lastStepTime == realTime.TotalGameTime.TotalSeconds)
-            {
-                step = default!;
-                return false;
-            }
-
-            this._step.ElapsedTime = (Fix64)realTime.ElapsedGameTime.TotalSeconds;
-            this._step.TotalTime += this._step.ElapsedTime;
-            this._lastStepTime = realTime.TotalGameTime.TotalSeconds;
-
-            step = this._step;
-            return true;
-        }
-
-        protected override void DoStep(Step step)
-        {
-            this._eventService.CleanConfirmedPredictions();
-
-            base.DoStep(step);
-
-            foreach (IPredictiveSynchronizationSystem synchronization in this._synchronizations)
-            {
-                synchronization.Synchronize(step);
-            }
-
-            this._eventService.CleanFailedPredictions(step);
         }
 
         private void HandleLockstepEvent(Id<IStepEvent> id, IStepEvent @event)
