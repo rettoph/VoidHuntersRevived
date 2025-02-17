@@ -2,8 +2,8 @@
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Events;
-using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {

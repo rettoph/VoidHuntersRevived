@@ -7,7 +7,6 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Systems;

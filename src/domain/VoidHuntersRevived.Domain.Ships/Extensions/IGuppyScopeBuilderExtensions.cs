@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Ships.Serialization.Components;
 using VoidHuntersRevived.Domain.Ships.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Ships.Services;
 using VoidHuntersRevived.Domain.Ships.Systems;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Ships.Extensions
 {

@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Extensions;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Game.Client;
 using VoidHuntersRevived.Game.Client.Extensions;
 using VoidHuntersRevived.Game.Core.Extensions;

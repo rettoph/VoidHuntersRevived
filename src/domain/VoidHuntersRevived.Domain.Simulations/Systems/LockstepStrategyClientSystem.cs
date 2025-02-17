@@ -3,14 +3,20 @@ using Guppy.Core.Logging.Common;
 using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Game.Common.Systems;
+using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
-    public class LockstepClient_TickSystem(
+    /// <summary>
+    /// Handle incoming <see cref="Tick"/> related network messages.
+    /// These all get sent within the <see cref="LockstepStrategyServerSystem"/>
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="tickService"></param>
+    public class LockstepStrategyClientSystem(
         ILogger logger,
         ClientLinkedListLockstepTickService tickService
     ) : ISceneSystem,

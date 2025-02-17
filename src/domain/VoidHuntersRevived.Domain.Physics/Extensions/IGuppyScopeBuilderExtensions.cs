@@ -13,8 +13,7 @@ using VoidHuntersRevived.Domain.Physics.Serialization.Components;
 using VoidHuntersRevived.Domain.Physics.Serialization.Json;
 using VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters;
 using VoidHuntersRevived.Domain.Physics.Systems;
-using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Physics.Extensions
 {

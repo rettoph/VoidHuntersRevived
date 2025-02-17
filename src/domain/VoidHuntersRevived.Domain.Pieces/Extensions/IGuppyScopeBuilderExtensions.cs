@@ -14,7 +14,7 @@ using VoidHuntersRevived.Domain.Pieces.Serialization.Components;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Pieces.Services;
 using VoidHuntersRevived.Domain.Pieces.Systems;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Pieces.Extensions
 {

@@ -4,8 +4,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Services;
 

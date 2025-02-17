@@ -4,7 +4,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Common.Entities.Stubs;
 using VoidHuntersRevived.Tests.Common.Simulations;

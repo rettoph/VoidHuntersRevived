@@ -22,7 +22,7 @@ using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Game.Client.Messages;
 using VoidHuntersRevived.Game.Core.Events;

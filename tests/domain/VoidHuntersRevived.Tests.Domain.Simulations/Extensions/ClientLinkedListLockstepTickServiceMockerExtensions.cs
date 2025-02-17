@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+﻿using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Tests.Common.Simulations.Mockers;
 
 namespace VoidHuntersRevived.Tests.Domain.Simulations.Extensions

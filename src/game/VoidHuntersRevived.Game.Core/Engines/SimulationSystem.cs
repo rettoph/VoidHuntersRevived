@@ -13,7 +13,7 @@ namespace VoidHuntersRevived.Game.Core.Systems
     //IEntityTemplateFragmentService entityTemplateService,
     //IBlueprintService blueprintService
     ) : ISceneSystem,
-        IEventSystem<Simulation_Begin>
+        IEventSystem<SimulationBegin>
     {
         //private readonly ITreeService _treeService = treeService;
         //private readonly ITeamService _teamService = teamService;
@@ -21,7 +21,7 @@ namespace VoidHuntersRevived.Game.Core.Systems
         //private readonly IBlueprintService _blueprintService = blueprintService;
 
         [SequenceGroup<EventSequenceGroupEnum>(EventSequenceGroupEnum.Process)]
-        public void Process(in VhId eventId, Simulation_Begin data)
+        public void Process(in VhId eventId, SimulationBegin data)
         {
             //_trees.Spawn(eventId.Create(1), Teams.TeamZero, EntityTemplates.Chain, _pieces.All<ThrusterDescriptor>().First().EntityTemplate, null);
             //_trees.Spawn(eventId.Create(int.MaxValue), Teams.TeamZero, EntityTemplates.Chain, _blueprints.GetAll().First(), null);

@@ -2,6 +2,7 @@
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {

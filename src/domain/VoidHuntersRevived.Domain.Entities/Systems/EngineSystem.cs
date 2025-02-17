@@ -3,7 +3,7 @@ using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Systems;
 using Guppy.Game.Common.Systems;
 using Svelto.ECS;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Entities.Systems
 {

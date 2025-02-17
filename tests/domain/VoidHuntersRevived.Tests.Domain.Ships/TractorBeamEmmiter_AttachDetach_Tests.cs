@@ -17,7 +17,7 @@ using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Extensions;
-using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Services;

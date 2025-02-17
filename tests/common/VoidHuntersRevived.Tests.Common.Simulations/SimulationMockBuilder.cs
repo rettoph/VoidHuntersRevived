@@ -17,6 +17,7 @@ using VoidHuntersRevived.Domain.Entities.Extensions;
 using VoidHuntersRevived.Domain.Extensions;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Extensions;
 using VoidHuntersRevived.Tests.Common.Entities.Services;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;

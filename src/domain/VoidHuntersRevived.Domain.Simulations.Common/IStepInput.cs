@@ -1,4 +1,5 @@
 ﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common
 {

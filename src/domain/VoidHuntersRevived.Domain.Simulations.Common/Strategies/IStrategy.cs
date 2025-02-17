@@ -2,7 +2,7 @@
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
-namespace VoidHuntersRevived.Domain.Simulations.Common
+namespace VoidHuntersRevived.Domain.Simulations.Common.Strategies
 {
     public interface IStrategy : IScene, IDisposable
     {

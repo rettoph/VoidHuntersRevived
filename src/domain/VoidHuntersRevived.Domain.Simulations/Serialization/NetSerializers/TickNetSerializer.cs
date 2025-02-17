@@ -4,7 +4,6 @@ using Guppy.Core.Network.Common.Services;
 using LiteNetLib.Utils;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Serialization.NetSerializers
 {

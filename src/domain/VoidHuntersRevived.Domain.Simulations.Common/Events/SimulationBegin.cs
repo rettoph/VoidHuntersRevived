@@ -3,13 +3,13 @@ using VoidHuntersRevived.Common.Utilities;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Events
 {
-    public class Simulation_Begin : IStepInput<Simulation_Begin>
+    public class SimulationBegin : IStepInput<SimulationBegin>
     {
         public bool IsPredictable => false;
 
         public VhId CalculateHash(in VhId source)
         {
-            return HashBuilder<Simulation_Begin, VhId>.Instance.Calculate(in source);
+            return HashBuilder<SimulationBegin, VhId>.Instance.Calculate(in source);
         }
     }
 }

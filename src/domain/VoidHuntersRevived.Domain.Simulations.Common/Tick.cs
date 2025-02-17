@@ -1,7 +1,7 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.Utilities;
 
-namespace VoidHuntersRevived.Domain.Simulations.Common.Lockstep
+namespace VoidHuntersRevived.Domain.Simulations.Common
 {
     public sealed class Tick
     {

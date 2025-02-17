@@ -8,14 +8,12 @@ using LiteNetLib;
 using VoidHuntersRevived.Domain.Common;
 using VoidHuntersRevived.Domain.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers;
 using VoidHuntersRevived.Domain.Simulations.Services;
 using VoidHuntersRevived.Domain.Simulations.Systems;
-using VoidHuntersRevived.Domain.Simulations.Systems.Lockstep;
 
 namespace VoidHuntersRevived.Domain.Simulations.Extensions
 {
@@ -61,15 +59,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
 
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Client, builder =>
                         {
-                            builder.RegisterSceneSystem<LockstepClient_TickSystem>();
                             builder.RegisterType<ClientLinkedListLockstepTickService>().AsSelf().As<ITickService>().InstancePerLifetimeScope();
                             builder.RegisterType<ClientLockstepStepEventService>().AsSelf().As<IStepEventService>().InstancePerLifetimeScope();
+
+                            builder.RegisterSceneSystem<LockstepStrategyClientSystem>();
                         });
 
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Server, builder =>
                         {
-                            builder.RegisterSceneSystem<LockstepServer_TickSystem>();
-                            builder.RegisterSceneSystem<LockstepServer_UserSystem>();
                             builder.RegisterSceneSystem<LockstepStrategyServerSystem>();
                         });
                     });

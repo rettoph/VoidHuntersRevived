@@ -9,7 +9,7 @@ using Guppy.Game.Console.Extensions;
 using Guppy.Game.Helpers;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Extensions;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Game.Core.Extensions;
 using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Game.Server.Extensions;

@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
 using VoidHuntersRevived.Domain.Common;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Game.Client.Systems.Debugging
 {

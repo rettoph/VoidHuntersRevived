@@ -16,7 +16,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Constants;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Ships.Common.Components;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Game.Core.Components.Scene;
 using VoidHuntersRevived.Game.Core.Graphics.Effects;

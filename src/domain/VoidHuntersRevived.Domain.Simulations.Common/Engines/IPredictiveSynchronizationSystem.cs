@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common.Systems;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Simulations.Common.Systems
 {

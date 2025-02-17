@@ -2,8 +2,8 @@
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Resources.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
-using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Simulations.Strategies
 {

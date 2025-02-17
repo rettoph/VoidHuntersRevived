@@ -16,7 +16,7 @@ using VoidHuntersRevived.Domain.Entities.ResourceTypes;
 using VoidHuntersRevived.Domain.Entities.Serialization.Json;
 using VoidHuntersRevived.Domain.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Systems;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Entities.Extensions
 {

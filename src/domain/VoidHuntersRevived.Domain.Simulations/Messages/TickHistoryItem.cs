@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+﻿using VoidHuntersRevived.Domain.Simulations.Common;
 
 namespace VoidHuntersRevived.Domain.Simulations.Messages
 {

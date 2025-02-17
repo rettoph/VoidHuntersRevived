@@ -7,7 +7,7 @@ using VoidHuntersRevived.Common.Utilities;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
-using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Tests.Common.Extensions;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks

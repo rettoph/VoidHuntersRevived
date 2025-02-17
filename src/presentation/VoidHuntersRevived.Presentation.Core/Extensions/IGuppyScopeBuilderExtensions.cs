@@ -16,8 +16,8 @@ using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Pieces.Common;
-using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Presentation.Core.Configurations;
 

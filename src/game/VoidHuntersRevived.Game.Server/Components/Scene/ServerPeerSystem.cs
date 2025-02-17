@@ -8,7 +8,7 @@ using Guppy.Core.Network.Common.Services;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Systems;
 using Microsoft.Xna.Framework;
-using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Game.Server.Components.Scene
 {

@@ -4,14 +4,14 @@ using VoidHuntersRevived.Domain.Simulations.Common.Events;
 
 namespace VoidHuntersRevived.Domain.Simulations.Serialization.NetSerializers
 {
-    public class Simulation_Begin_NetSerializer : NetSerializer<Simulation_Begin>
+    public class Simulation_Begin_NetSerializer : NetSerializer<SimulationBegin>
     {
-        public override Simulation_Begin Deserialize(NetDataReader reader)
+        public override SimulationBegin Deserialize(NetDataReader reader)
         {
             return new();
         }
 
-        public override void Serialize(NetDataWriter writer, in Simulation_Begin instance)
+        public override void Serialize(NetDataWriter writer, in SimulationBegin instance)
         {
         }
     }
