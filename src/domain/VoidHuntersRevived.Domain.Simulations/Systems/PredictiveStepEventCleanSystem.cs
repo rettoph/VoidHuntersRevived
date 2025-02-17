@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     public class PredictiveStepEventCleanSystem(PredictiveStepEventService eventService) : ISceneSystem
     {
-        public readonly PredictiveStepEventService _eventService = eventService;
+        private readonly PredictiveStepEventService _eventService = eventService;
 
         [SequenceGroup<StepSequenceGroupEnum>(StepSequenceGroupEnum.Begin)]
         public void BeginStep(Step step)

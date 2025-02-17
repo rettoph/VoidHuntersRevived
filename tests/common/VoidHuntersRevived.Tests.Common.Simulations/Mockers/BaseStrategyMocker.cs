@@ -25,8 +25,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
         public Mocker<IScopedSystemService> ScopedSystemServiceMocker { get; set; }
         public Mocker<ILogger> LoggerMocker { get; set; }
         public List<Func<TStrategy, IScopedSystem>> SystemFactories { get; set; }
+        public IScopedSystem[] Systems => this._systems ??= this.SystemFactories.Select(x => x(this.Strategy)).ToArray();
 
-        public TStrategy Strategy => this._strategy ??= this.Build();
+        public TStrategy Strategy => this._strategy ??= this.GetInstance();
 
         TStrategy IBaseStrategyMocker<TStrategy>.Strategy => this.Strategy;
         Strategy IBaseStrategyMocker.Strategy => this.Strategy;
@@ -40,14 +41,28 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             this.SimulationMocker = new Mocker<ISimulation>();
             this.LoggerMocker = new Mocker<ILogger>();
 
-            this.GuppyScopeMocker.Setup(x => x.Systems, this.ScopedSystemServiceMocker.GetInstance());
+            this.GuppyScopeMocker.Setup(x => x.Systems, () => this.ScopedSystemServiceMocker.GetInstance());
+            this.GuppyScopeMocker.Setup(x => x.Resolve<ISimulation>(), () => this.SimulationMocker.GetInstance());
 
             this.ScopedSystemServiceMocker.Setup(
                 expression: x => x.GetAll(),
-                result: () => this._systems ??= this.SystemFactories.Select(x => x(this.Strategy)).ToArray());
+                result: () => this.Systems);
         }
 
+        private TStrategy GetInstance()
+        {
+            TStrategy instance = this.Build();
+            this._strategy = instance;
+
+            this.PostBuild();
+
+            return instance;
+        }
         protected abstract TStrategy Build();
+        protected virtual void PostBuild()
+        {
+
+        }
 
         public void Update(TimeSpan interval, int count)
         {

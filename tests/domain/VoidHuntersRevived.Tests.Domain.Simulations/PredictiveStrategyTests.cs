@@ -8,11 +8,11 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations
 {
     public class PredictiveStrategyTests
     {
-        public readonly SimulationMocker<LockstepStrategyMocker, PredictiveStrategyMocker> SimulationMocker;
+        public readonly SimulationMocker<DefaultLockstepStrategyMocker, PredictiveStrategyMocker> SimulationMocker;
 
         public PredictiveStrategyTests()
         {
-            this.SimulationMocker = new SimulationMocker<LockstepStrategyMocker, PredictiveStrategyMocker>();
+            this.SimulationMocker = new SimulationMocker<DefaultLockstepStrategyMocker, PredictiveStrategyMocker>();
         }
 
         [Fact]

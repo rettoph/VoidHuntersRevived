@@ -91,7 +91,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
 }
 
 public class SimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker> : SimulationMocker
-    where TLockstepStrategyMocker : LockstepStrategyMocker, new()
+    where TLockstepStrategyMocker : DefaultLockstepStrategyMocker, new()
     where TPredictiveStrategyMocker : PredictiveStrategyMocker, new()
 {
     public readonly TLockstepStrategyMocker LockstepStrategyMocker;
@@ -111,6 +111,7 @@ public class SimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker
         ];
 
         this.Simulation = new Simulation(id, this.StrategyFactory);
+        this.Simulation.Initialize();
     }
 
     private IEnumerable<IStrategy> StrategyFactory(ISimulation simulation)
