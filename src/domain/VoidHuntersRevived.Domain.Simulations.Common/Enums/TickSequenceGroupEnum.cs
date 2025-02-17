@@ -2,8 +2,10 @@
 {
     public enum TickSequenceGroupEnum
     {
-        InputEvents,
+        PrePublishInputs,
 
-        PublishEvents
+        PublishInputs,
+
+        PostPublichInputs
     }
 }

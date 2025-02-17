@@ -5,9 +5,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Messages;
-using VoidHuntersRevived.Domain.Simulations.Predictive;
-using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
+using VoidHuntersRevived.Domain.Simulations.Enums;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
@@ -80,13 +78,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         {
             while (this._confirmedEvents.TryDequeue(out EnqueuedStepEvent? confirmedEvent))
             {
-                if (confirmedEvent.Data is EndOfTick endOfTick)
-                {
-                    this.logger.Verbose("End of Tick {TickId}", endOfTick.TickId);
-
-                    break;
-                }
-
                 this.logger.Verbose("Confirming {EventName}, {EventId}", confirmedEvent.Data.GetType().Name, confirmedEvent.Id.Value);
                 if (this._predictedEvents.TryGet(confirmedEvent.Id, out PredictedEvent? published) == false)
                 {

@@ -18,8 +18,7 @@ using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Ships.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 using VoidHuntersRevived.Domain.Teams.Extensions;
@@ -48,7 +47,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
                     entityTemplateFragments: GetEntityTemplateFragments()
                 )
                 .AddStrategy<PredictiveStrategy>()
-                .AddStrategy<LockstepStrategy_Client>()
+                .AddStrategy<LockstepStrategy>()
                 .Register(builder =>
                 {
                     builder.RegisterDomainTeamsServices();

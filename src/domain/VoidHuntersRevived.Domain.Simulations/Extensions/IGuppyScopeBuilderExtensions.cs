@@ -57,6 +57,8 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                         builder.RegisterType<DefaultLockstepStepEventService>().AsSelf().As<IStepEventService>().InstancePerLifetimeScope();
                         builder.RegisterType<DefaultLockstepStepService>().AsSelf().As<IStepService>().InstancePerLifetimeScope();
 
+                        builder.RegisterSceneSystem<LockstepStrategyTickPublishInputsSystem>();
+
                         builder.RegisterPeerTypeFilter(PeerTypeEnum.Client, builder =>
                         {
                             builder.RegisterSceneSystem<LockstepClient_TickSystem>();
@@ -68,6 +70,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                         {
                             builder.RegisterSceneSystem<LockstepServer_TickSystem>();
                             builder.RegisterSceneSystem<LockstepServer_UserSystem>();
+                            builder.RegisterSceneSystem<LockstepStrategyServerSystem>();
                         });
                     });
                 });

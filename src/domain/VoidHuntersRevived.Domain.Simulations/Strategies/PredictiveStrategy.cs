@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Predictive;
 using VoidHuntersRevived.Domain.Simulations.Common.Systems;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
-namespace VoidHuntersRevived.Domain.Simulations.Predictive
+namespace VoidHuntersRevived.Domain.Simulations.Strategies
 {
     public sealed class PredictiveStrategy(
         IGuppyScope scope,

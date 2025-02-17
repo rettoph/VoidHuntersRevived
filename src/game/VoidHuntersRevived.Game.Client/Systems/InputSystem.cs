@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Game.Client.Systems
             });
         }
 
-        [SequenceGroup<TickSequenceGroupEnum>(TickSequenceGroupEnum.InputEvents)]
+        [SequenceGroup<TickSequenceGroupEnum>(TickSequenceGroupEnum.PrePublishInputs)]
         public void Tick(Tick tick)
         {
             this.ForEachCurrentUserEntity((shipLocalId, shipGlobalId) =>

@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
             }).AddRecipient(user.NetPeer);
         }
 
-        [SequenceGroup<TickSequenceGroupEnum>(TickSequenceGroupEnum.PublishEvents)]
+        [SequenceGroup<TickSequenceGroupEnum>(TickSequenceGroupEnum.PublishInputs)]
         public void Tick(Tick tick)
         {
             // Broadcast the current tick to all connected peers

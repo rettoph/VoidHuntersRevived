@@ -5,8 +5,7 @@ using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Common.Entities.Stubs;
 using VoidHuntersRevived.Tests.Common.Simulations;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
@@ -20,7 +19,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
         public virtual SettingValue<Fix64> StepInterval => new(Settings.StepInterval, (Fix64)20 / (Fix64)1000);
 
         private readonly SimulationMock _simulation;
-        private readonly IStrategyMocker<LockstepStrategy_Client> _lockstep;
+        private readonly IStrategyMocker<LockstepStrategy> _lockstep;
         private readonly IStrategyMocker<PredictiveStrategy> _predictive;
 
         public EntityService_SpawnDespawn_Tests() : base()
@@ -32,7 +31,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                     entityTemplateFragments: [TestEntityComponent.TestEntityTemplateFragment]
                 )
                 .AddStrategy<PredictiveStrategy>()
-                .AddStrategy<LockstepStrategy_Client>()
+                .AddStrategy<LockstepStrategy>()
                 .Register(builder =>
                 {
                     builder.RegisterInstance(Enumerable.Empty<IComponentSerializer>());
@@ -45,7 +44,7 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                 .Build();
 
             this._predictive = this._simulation.Get<PredictiveStrategy>();
-            this._lockstep = this._simulation.Get<LockstepStrategy_Client>();
+            this._lockstep = this._simulation.Get<LockstepStrategy>();
         }
 
         [Theory]

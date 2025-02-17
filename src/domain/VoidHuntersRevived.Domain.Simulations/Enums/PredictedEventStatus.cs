@@ -1,4 +1,4 @@
-﻿namespace VoidHuntersRevived.Domain.Simulations.Predictive.Enums
+﻿namespace VoidHuntersRevived.Domain.Simulations.Enums
 {
     public enum PredictedEventStatus
     {

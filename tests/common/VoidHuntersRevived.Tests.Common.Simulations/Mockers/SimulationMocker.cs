@@ -2,7 +2,7 @@
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
-using VoidHuntersRevived.Domain.Simulations.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Common.Simulations.Interfaces;
 using VoidHuntersRevived.Tests.Common.Simulations.Mockers;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;

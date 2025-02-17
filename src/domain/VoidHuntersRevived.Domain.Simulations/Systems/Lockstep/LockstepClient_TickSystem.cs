@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Messages;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
-namespace VoidHuntersRevived.Domain.Simulations.Systems.Lockstep
+namespace VoidHuntersRevived.Domain.Simulations.Systems
 {
     public class LockstepClient_TickSystem(
         ILogger logger,

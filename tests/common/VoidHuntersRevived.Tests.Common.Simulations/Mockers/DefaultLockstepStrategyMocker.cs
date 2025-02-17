@@ -8,14 +8,14 @@ using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
 using VoidHuntersRevived.Domain.Simulations.Services;
+using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Systems;
 using VoidHuntersRevived.Tests.Common.Simulations.Mockers;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
 {
-    public class DefaultLockstepStrategyMocker : BaseStrategyMocker<LockstepStrategy_Client>
+    public class DefaultLockstepStrategyMocker : BaseStrategyMocker<LockstepStrategy>
     {
         public static readonly int DefaultStepsPerTick = 3;
         public static readonly Fix64 DefaultStepInterval = (Fix64)20 / (Fix64)1000;
@@ -62,9 +62,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             ]);
         }
 
-        protected override LockstepStrategy_Client Build()
+        protected override LockstepStrategy Build()
         {
-            return new LockstepStrategy_Client(
+            return new LockstepStrategy(
                 settings: this.SettingServiceMocker.GetInstance(),
                 scope: this.GuppyScopeMocker.GetInstance(),
                 eventService: this.DefaultLockstepStepEventServiceMocker.DefaultLockstepStepEventService,

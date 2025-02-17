@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using Guppy.Core.Network.Common;
-using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Game.Common.Services;
 using Guppy.Game.Graphics.Common.Extensions;
@@ -9,8 +8,7 @@ using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Lockstep;
-using VoidHuntersRevived.Domain.Simulations.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Strategies;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
@@ -42,17 +40,13 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         public ISimulation Create(VhId id, params StrategyTypeEnum[] strategyTypes)
         {
             List<(Type type, bool graphical)> strategies = [];
-            if (this._netScope.Group.Peer.Type == PeerTypeEnum.Client && strategyTypes.Contains(StrategyTypeEnum.Predictive))
+            if (strategyTypes.Contains(StrategyTypeEnum.Predictive))
             {
                 strategies.Add((typeof(PredictiveStrategy), true));
             }
-            if (this._netScope.Group.Peer.Type == PeerTypeEnum.Client && strategyTypes.Contains(StrategyTypeEnum.Lockstep))
+            if (strategyTypes.Contains(StrategyTypeEnum.Lockstep))
             {
-                strategies.Add((typeof(LockstepStrategy_Client), false));
-            }
-            if (this._netScope.Group.Peer.Type == PeerTypeEnum.Server && strategyTypes.Contains(StrategyTypeEnum.Lockstep))
-            {
-                strategies.Add((typeof(LockstepStrategy_Server), false));
+                strategies.Add((typeof(LockstepStrategy), false));
             }
 
             Simulation simulation = new(id, this.StrategiesBuilder(strategies));
@@ -69,13 +63,9 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             {
                 strategies.Add((typeof(PredictiveStrategy), true));
             }
-            if (strategyTypes.Contains(typeof(LockstepStrategy_Client)))
+            if (strategyTypes.Contains(typeof(LockstepStrategy)))
             {
-                strategies.Add((typeof(LockstepStrategy_Client), false));
-            }
-            if (strategyTypes.Contains(typeof(LockstepStrategy_Server)))
-            {
-                strategies.Add((typeof(LockstepStrategy_Server), false));
+                strategies.Add((typeof(LockstepStrategy), false));
             }
 
             Simulation simulation = new(id, this.StrategiesBuilder(strategies));

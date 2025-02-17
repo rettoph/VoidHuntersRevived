@@ -1,4 +1,4 @@
-﻿using VoidHuntersRevived.Domain.Simulations;
+﻿using VoidHuntersRevived.Domain.Simulations.Strategies;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Interfaces
 {

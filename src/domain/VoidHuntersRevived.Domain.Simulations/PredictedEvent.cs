@@ -2,9 +2,9 @@
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Predictive.Enums;
+using VoidHuntersRevived.Domain.Simulations.Enums;
 
-namespace VoidHuntersRevived.Domain.Simulations.Predictive
+namespace VoidHuntersRevived.Domain.Simulations
 {
     public class PredictedEvent
     {

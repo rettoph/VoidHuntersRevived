@@ -8,7 +8,7 @@ using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
 using VoidHuntersRevived.Domain.Simulations.Common.Services;
 
-namespace VoidHuntersRevived.Domain.Simulations
+namespace VoidHuntersRevived.Domain.Simulations.Strategies
 {
     public abstract partial class Strategy : Scene, IStrategy
     {

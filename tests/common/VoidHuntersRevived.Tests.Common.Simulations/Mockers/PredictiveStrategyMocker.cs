@@ -1,7 +1,7 @@
 ﻿using Guppy.Tests.Common.Mockers;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
-using VoidHuntersRevived.Domain.Simulations.Predictive;
+using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Systems;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 

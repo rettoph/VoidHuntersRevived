@@ -5,9 +5,9 @@ using Guppy.Core.Logging.Common;
 using Guppy.Tests.Common;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
+using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Common.Extensions;
 using VoidHuntersRevived.Tests.Common.Simulations.Interfaces;
 
