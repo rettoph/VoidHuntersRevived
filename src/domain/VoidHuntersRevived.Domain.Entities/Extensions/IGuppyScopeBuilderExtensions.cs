@@ -45,8 +45,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                     builder.RegisterSceneSystem<EntitySubmissionSystem>();
                     builder.RegisterSceneSystem<InitializeEntityServicesSystem>();
 
-                    builder.RegisterType<ComponentSerializerService>().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
-
+                    builder.RegisterType<ComponentSerializerService>().AsSelf().As<IComponentSerializerService>().AsSelf().InstancePerLifetimeScope();
                     builder.RegisterType<EntityTemplateService>().AsSelf().As<IEntityTemplateService>().InstancePerLifetimeScope();
 
                     builder.RegisterType<EntitiesSubmissionScheduler>().AsSelf().InstancePerLifetimeScope();

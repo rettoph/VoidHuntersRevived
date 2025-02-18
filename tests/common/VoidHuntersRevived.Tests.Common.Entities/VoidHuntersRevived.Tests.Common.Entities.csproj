@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
-    <ProjectReference Include="..\VoidHuntersRevived.Tests.Common\VoidHuntersRevived.Tests.Common.csproj" />
+    <Compile Remove="Systems\**" />
+    <EmbeddedResource Remove="Systems\**" />
+    <None Remove="Systems\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Systems\" />
+    <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Entities\VoidHuntersRevived.Domain.Entities.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Tests.Common.Simulations\VoidHuntersRevived.Tests.Common.Simulations.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Tests.Common\VoidHuntersRevived.Tests.Common.csproj" />
   </ItemGroup>
 
 </Project>

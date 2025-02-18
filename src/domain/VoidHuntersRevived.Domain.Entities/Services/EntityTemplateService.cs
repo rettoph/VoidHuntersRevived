@@ -14,7 +14,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly IStrategy _strategy;
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityTemplateFragmentService _entityTemplateFragmentService;
-        private readonly Lazy<IComponentSerializerService> _componentSerializerService;
+        private readonly IComponentSerializerService _componentSerializerService;
         private readonly EntitiesDB _entitiesDb;
 
         private readonly Dictionary<Key<IEntityTemplate>, EntityTemplate> _templates;
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityTemplateFragmentService entityTemplateFragmentService,
             ILoggerService loggerService,
-            Lazy<IComponentSerializerService> componentSerializerService,
+            IComponentSerializerService componentSerializerService,
             EnginesRoot enginesRoot,
             EntitiesDB entitiesDb)
         {
@@ -61,7 +61,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
                 entityTemplate.Initialize(
                     entitiesDB: this._entitiesDb,
                     systemService: this._strategy.Systems,
-                    componentSerializerService: this._componentSerializerService.Value);
+                    componentSerializerService: this._componentSerializerService);
             }
         }
 

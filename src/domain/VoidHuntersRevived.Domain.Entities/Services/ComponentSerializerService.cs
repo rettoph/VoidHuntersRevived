@@ -5,23 +5,32 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class ComponentSerializerService(IFiltered<IComponentSerializer> serializers) : IComponentSerializerService
+    public class ComponentSerializerService(Lazy<IFiltered<IComponentSerializer>> serializers) : IComponentSerializerService
     {
-        private readonly Dictionary<Type, IComponentSerializer> _serializers = serializers.ToDictionary(x => x.Type, x => x);
+        private readonly Lazy<IFiltered<IComponentSerializer>> _serializers = serializers;
+        private readonly Dictionary<Type, IComponentSerializer> _serializersTable = [];
+
+        public void Initialize()
+        {
+            foreach (IComponentSerializer serializer in this._serializers.Value)
+            {
+                this._serializersTable.Add(serializer.Type, serializer);
+            }
+        }
 
         public IComponentSerializer GetComponentSerializerByType(Type componentType)
         {
             ThrowIf.Type.IsNotAssignableFrom<IEntityComponent>(componentType);
             ThrowIf.Type.IsNotUnmanagedStruct(componentType);
 
-            return this._serializers[componentType];
+            return this._serializersTable[componentType];
         }
 
         public IEnumerable<IComponentSerializer> GetComponentSerializersByTypes(IEnumerable<Type> componentTypes)
         {
             foreach (Type componentType in componentTypes)
             {
-                if (this._serializers.TryGetValue(componentType, out IComponentSerializer? componentSerializer))
+                if (this._serializersTable.TryGetValue(componentType, out IComponentSerializer? componentSerializer))
                 {
                     yield return componentSerializer;
                 }

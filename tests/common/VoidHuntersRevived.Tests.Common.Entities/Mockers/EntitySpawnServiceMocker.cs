@@ -1,0 +1,21 @@
+﻿using Guppy.Tests.Common;
+using Guppy.Tests.Common.Mocks;
+using VoidHuntersRevived.Domain.Entities.Services;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
+
+namespace VoidHuntersRevived.Tests.Common.Entities.Mockers
+{
+    public class EntitySpawnServiceMocker : BaseMockerBuilder<EntitySpawnService>
+    {
+        public Mocker<IStepEventService> StepEventServiceMocker { get; set; } = new Mocker<IStepEventService>();
+        public EntityQueryServiceMocker EntityQueryServiceMocker { get; set; } = new EntityQueryServiceMocker();
+        public EntitySpawnService EntitySpawnService => this.GetInstance();
+
+        protected override EntitySpawnService Build()
+        {
+            return new EntitySpawnService(
+                eventService: this.StepEventServiceMocker.GetInstance(),
+                this.EntityQueryServiceMocker.EntityQueryService);
+        }
+    }
+}
