@@ -1,6 +1,5 @@
 ﻿using Autofac.Extras.Moq;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Enums;
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Resources.Common;
@@ -24,7 +23,7 @@ using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations
 {
-    public class SimulationMockBuilder : GuppyScopeMocker<SimulationMockBuilder, SimulationMock>
+    public class SimulationMockBuilder : GuppyRootMocker<SimulationMockBuilder, SimulationMock>
     {
         private readonly List<Func<IGuppyScope, ISimulation, IStrategyAutoMock>> _strategies = [];
 
@@ -34,7 +33,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             VhId id,
             SettingValue<Fix64> stepInterval,
             SettingValue<int> stepsPerTick,
-            IEnumerable<EntityTemplateFragment> entityTemplateFragments) : base(GuppyScopeTypeEnum.Root, [])
+            IEnumerable<EntityTemplateFragment> entityTemplateFragments) : base([])
         {
             this.Id = id;
 
@@ -87,7 +86,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             {
                 foreach (var strategyMockerFactory in this._strategies)
                 {
-                    IStrategyAutoMock strategyMocker = strategyMockerFactory(this.scope, simulation);
+                    IStrategyAutoMock strategyMocker = strategyMockerFactory(this.root, simulation);
                     strategies.Add(strategyMocker);
                 }
 

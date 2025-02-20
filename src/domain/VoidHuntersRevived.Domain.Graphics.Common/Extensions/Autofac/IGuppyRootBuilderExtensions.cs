@@ -1,12 +1,12 @@
-﻿using Guppy.Core.Common;
+﻿using Guppy.Core.Common.Builders;
 using Guppy.Core.Serialization.Common.Extensions;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace VoidHuntersRevived.Domain.Graphics.Common.Extensions.Autofac
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterPrimitiveType<TVertexInstance, TVertexStatic, TEffect>(this IGuppyScopeBuilder builder, string name)
+        public static IGuppyRootBuilder RegisterPrimitiveType<TVertexInstance, TVertexStatic, TEffect>(this IGuppyRootBuilder builder, string name)
             where TVertexInstance : unmanaged, IVertexType
             where TVertexStatic : unmanaged, IVertexType
             where TEffect : Effect

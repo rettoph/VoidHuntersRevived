@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Game.Common.Extensions;
@@ -13,9 +13,9 @@ using VoidHuntersRevived.Domain.Teams.Systems;
 
 namespace VoidHuntersRevived.Domain.Teams.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterDomainTeamsServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterDomainTeamsServices(this IGuppyRootBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainTeamsServices), builder =>
             {

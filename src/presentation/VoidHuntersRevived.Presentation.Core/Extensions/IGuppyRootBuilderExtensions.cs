@@ -1,17 +1,17 @@
 ﻿using Autofac;
-using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Enums;
 using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Files.Common.Services;
-using Guppy.Core.Game.Common.Extensions;
 using Guppy.Core.Logging.Common.Enums;
 using Guppy.Core.Logging.Common.Extensions;
 using Guppy.Core.Network.Common.Constants;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Game.Common.Constants;
+using Guppy.Game.Common.Extensions;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
@@ -23,19 +23,19 @@ using VoidHuntersRevived.Presentation.Core.Configurations;
 
 namespace VoidHuntersRevived.Presentation.Core.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterPresentationCoreServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterPresentationCoreServices(this IGuppyRootBuilder builder)
         {
             builder.ConfigureLogger((scope, config) =>
             {
-                Type? sceneType = scope.GetVariable<GuppyGameVariables.Scope.SceneType>()?.Value;
+                Type? sceneType = scope.Variables.Get<GuppyGameVariables.Scope.SceneType>()?.Value;
                 if (sceneType is not null && sceneType.IsAssignableTo<IStrategy>())
                 {
                     config.EnrichWith(nameof(StrategyTypeEnum), sceneType.GetFormattedName());
                 }
 
-                PeerTypeEnum? peerTypeEnum = scope.GetVariable<GuppyNetworkVariables.Scope.PeerType>()?.Value;
+                PeerTypeEnum? peerTypeEnum = scope.Variables.Get<GuppyNetworkVariables.Scope.PeerType>()?.Value;
                 if (peerTypeEnum is not null)
                 {
                     config.EnrichWith(nameof(PeerTypeEnum), peerTypeEnum);

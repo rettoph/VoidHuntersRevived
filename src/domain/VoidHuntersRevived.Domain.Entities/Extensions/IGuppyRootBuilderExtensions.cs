@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Providers;
 using Guppy.Core.Common.Services;
@@ -7,6 +7,7 @@ using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Converters;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Game.Common.Extensions;
+using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -20,9 +21,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Entities.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterDomainEntityServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterDomainEntityServices(this IGuppyRootBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainEntityServices), builder =>
             {
@@ -62,19 +63,14 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                     builder.RegisterType<BelongsToSystemProvider>().As<IScopedSystemProvider>().InstancePerLifetimeScope();
 
 
-                    // This should only really happen when unit testing
-                    // Otherwise there should always be a parent scope (boot, global, ect)
-                    if (builder.ParentScope is not null)
+                    // Auto register an engine to dispose of instances as needed
+                    foreach (Type disposableComponent in builder.Root.Resolve<IAssemblyService>().GetTypes<IEntityComponent>())
                     {
-                        // Auto register an engine to dispose of instances as needed
-                        foreach (Type disposableComponent in builder.ParentScope.Resolve<IAssemblyService>().GetTypes<IEntityComponent>())
+                        if (disposableComponent.IsAssignableTo<IDisposable>())
                         {
-                            if (disposableComponent.IsAssignableTo<IDisposable>())
-                            {
-                                builder.RegisterType(typeof(DisposableSystem<>).MakeGenericType(disposableComponent))
-                                    .As<IEngine>()
-                                    .InstancePerLifetimeScope();
-                            }
+                            builder.RegisterType(typeof(DisposableSystem<>).MakeGenericType(disposableComponent))
+                                .As<ISceneSystem>()
+                                .InstancePerLifetimeScope();
                         }
                     }
                 });

@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Common;
+﻿using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
@@ -17,19 +17,26 @@ using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Physics.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterDomainPhysicsServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterDomainPhysicsServices(this IGuppyRootBuilder builder)
         {
-            builder.RegisterResourceType<BodyTemplateResourceType>();
-
-            builder.RegisterJsonConverter<PolygonConverter>();
-            builder.RegisterJsonConverter<BodyTemplateConverter>();
-            builder.RegisterJsonConverter<RigidJsonConverter>();
-
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainPhysicsServices), builder =>
             {
+                builder.RegisterResourceType<BodyTemplateResourceType>();
+
+                builder.RegisterJsonConverter<PolygonConverter>();
+                builder.RegisterJsonConverter<BodyTemplateConverter>();
+                builder.RegisterJsonConverter<RigidJsonConverter>();
+
                 builder.RegisterPolymorphicJsonType<Rigid, IEntityComponent>(nameof(Rigid));
+
+                builder.RegisterComponentSerializer<AwakeComponentSerializer>();
+                builder.RegisterComponentSerializer<CollisionComponentSerializer>();
+                builder.RegisterComponentSerializer<EnabledComponentSerializer>();
+                builder.RegisterComponentSerializer<PhysicsBubbleComponentSerializer>();
+                builder.RegisterComponentSerializer<BodyComponentSerializer>();
+                builder.RegisterComponentSerializer<FixtureComponentSerializer>();
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
@@ -42,13 +49,6 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
                     builder.RegisterSceneSystem<BodyPhysicsBubbleSystem>();
                     builder.RegisterSceneSystem<SpaceSystem>();
                     builder.RegisterSceneSystem<RigidFixtureSystem>();
-
-                    builder.RegisterComponentSerializer<AwakeComponentSerializer>();
-                    builder.RegisterComponentSerializer<CollisionComponentSerializer>();
-                    builder.RegisterComponentSerializer<EnabledComponentSerializer>();
-                    builder.RegisterComponentSerializer<PhysicsBubbleComponentSerializer>();
-                    builder.RegisterComponentSerializer<BodyComponentSerializer>();
-                    builder.RegisterComponentSerializer<FixtureComponentSerializer>();
 
                     builder.RegisterSceneFilter<IPredictiveStrategy>(builder =>
                     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Game.Common.Services;
@@ -100,7 +101,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
                 {
                     IStrategy strategy = (IStrategy)this._scenes.Create(type, builder =>
                     {
-                        builder.AddGraphicsEnabled(graphical);
+                        builder.Variables.AddGraphicsEnabled(graphical);
                         builder.RegisterNetScope<IStrategy>(this._netScope.Group.Peer.Type, this._netScope.Group.Id);
                         builder.RegisterInstance(simulation).As<ISimulation>();
                     });

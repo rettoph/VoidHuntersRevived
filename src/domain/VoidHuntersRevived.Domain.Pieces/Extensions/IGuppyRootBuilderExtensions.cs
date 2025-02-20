@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Common;
+﻿using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
@@ -18,9 +18,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Pieces.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterDomainPiecesServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterDomainPiecesServices(this IGuppyRootBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainPiecesServices), builder =>
             {

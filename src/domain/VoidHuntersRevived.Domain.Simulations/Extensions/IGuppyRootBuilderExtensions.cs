@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
@@ -17,9 +17,9 @@ using VoidHuntersRevived.Domain.Simulations.Systems;
 
 namespace VoidHuntersRevived.Domain.Simulations.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterDomainSimulationServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterDomainSimulationServices(this IGuppyRootBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainSimulationServices), builder =>
             {

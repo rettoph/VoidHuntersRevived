@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Game.Common.Extensions;
@@ -13,17 +13,23 @@ using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Ships.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterDomainShipsServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterDomainShipsServices(this IGuppyRootBuilder builder)
         {
-            builder.RegisterNetSerializer<Helm_SetDirection_NetSerializer>();
-            builder.RegisterNetSerializer<Input_TractorBeamEmitter_Deselect_NetSerializer>();
-            builder.RegisterNetSerializer<Input_TractorBeamEmitter_Select_NetSerializer>();
-            builder.RegisterNetSerializer<Tactical_SetTarget_NetSerialization>();
-
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainShipsServices), builder =>
             {
+                builder.RegisterNetSerializer<Helm_SetDirection_NetSerializer>();
+                builder.RegisterNetSerializer<Input_TractorBeamEmitter_Deselect_NetSerializer>();
+                builder.RegisterNetSerializer<Input_TractorBeamEmitter_Select_NetSerializer>();
+                builder.RegisterNetSerializer<Tactical_SetTarget_NetSerialization>();
+
+                builder.RegisterComponentSerializer<HelmComponentSerializer>();
+                builder.RegisterComponentSerializer<TacticalComponentSerializer>();
+                builder.RegisterComponentSerializer<TractorableComponentSerializer>();
+                builder.RegisterComponentSerializer<TractorBeamEmitterComponentSerializer>();
+                builder.RegisterComponentSerializer<UserIdComponentSerializer>();
+
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
                     builder.RegisterType<TractorBeamEmitterService>().As<ITractorBeamEmitterService>().InstancePerLifetimeScope();
@@ -35,12 +41,6 @@ namespace VoidHuntersRevived.Domain.Ships.Extensions
                     builder.RegisterSceneSystem<TractorBeamEmitterServiceEventSystem>();
                     builder.RegisterSceneSystem<TractorBeamEmitterInputSystem>();
                     builder.RegisterSceneSystem<TractorBeamEmitterUpdateSystem>();
-
-                    builder.RegisterComponentSerializer<HelmComponentSerializer>();
-                    builder.RegisterComponentSerializer<TacticalComponentSerializer>();
-                    builder.RegisterComponentSerializer<TractorableComponentSerializer>();
-                    builder.RegisterComponentSerializer<TractorBeamEmitterComponentSerializer>();
-                    builder.RegisterComponentSerializer<UserIdComponentSerializer>();
                 });
             });
         }

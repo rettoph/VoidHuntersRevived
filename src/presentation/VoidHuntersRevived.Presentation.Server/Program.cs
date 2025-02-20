@@ -1,4 +1,6 @@
-﻿using Guppy.Core.Commands.Common.Services;
+﻿using System.Reflection;
+using Guppy.Core.Commands.Common.Services;
+using Guppy.Core.Common.Constants;
 using Guppy.Core.Logging.Common.Extensions;
 using Guppy.Core.Logging.Serilog.Extensions;
 using Guppy.Core.Network.Common.Enums;
@@ -10,14 +12,18 @@ using Guppy.Game.Helpers;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
+using VoidHuntersRevived.Game.Core;
 using VoidHuntersRevived.Game.Core.Extensions;
 using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Game.Server.Extensions;
-using VoidHuntersRevived.Presentation.Core;
 using VoidHuntersRevived.Presentation.Core.Extensions;
 
 var engine = new GameEngine(
-    environment: VoidHuntersEnvironmentBuilder.ServerEnvironment,
+    environment: [
+        GuppyCoreVariables.Environment.Project.Create($"{VoidHuntersRevivedGame.Project}.Server"),
+        GuppyCoreVariables.Environment.Company.Create(VoidHuntersRevivedGame.Company),
+        GuppyCoreVariables.Environment.EntryAssembly.Create(Assembly.GetEntryAssembly()!)
+    ],
     builder: builder =>
     {
         builder.RegisterConsoleGameServices().RegisterCoreNetworkServices()

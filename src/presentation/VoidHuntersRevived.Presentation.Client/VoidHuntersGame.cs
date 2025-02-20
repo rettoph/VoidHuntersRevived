@@ -1,4 +1,6 @@
-﻿using Guppy.Core.Logging.Serilog.Extensions;
+﻿using System.Reflection;
+using Guppy.Core.Common.Constants;
+using Guppy.Core.Logging.Serilog.Extensions;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
 using Guppy.Core.Network.Extensions;
@@ -12,10 +14,10 @@ using VoidHuntersRevived.Domain.Extensions;
 using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Game.Client;
 using VoidHuntersRevived.Game.Client.Extensions;
+using VoidHuntersRevived.Game.Core;
 using VoidHuntersRevived.Game.Core.Extensions;
 using VoidHuntersRevived.Game.Server;
 using VoidHuntersRevived.Game.Server.Extensions;
-using VoidHuntersRevived.Presentation.Core;
 using VoidHuntersRevived.Presentation.Core.Extensions;
 
 namespace VoidHuntersRevived.Presentation.Client
@@ -68,7 +70,11 @@ namespace VoidHuntersRevived.Presentation.Client
             Task.Run(() =>
             {
                 var engine = new GameEngine(
-                    environment: VoidHuntersEnvironmentBuilder.ClientEnvironment,
+                    environment: [
+                        GuppyCoreVariables.Environment.Project.Create(VoidHuntersRevivedGame.Project),
+                        GuppyCoreVariables.Environment.Company.Create(VoidHuntersRevivedGame.Company),
+                        GuppyCoreVariables.Environment.EntryAssembly.Create(Assembly.GetEntryAssembly()!)
+                    ],
                     builder: builder =>
                     {
                         builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window)

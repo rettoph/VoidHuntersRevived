@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
@@ -24,9 +24,9 @@ using VoidHuntersRevived.Game.Core.Systems;
 
 namespace VoidHuntersRevived.Game.Core.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterGameCoreServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterGameCoreServices(this IGuppyRootBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameCoreServices), builder =>
             {
@@ -59,7 +59,7 @@ namespace VoidHuntersRevived.Game.Core.Extensions
             });
         }
 
-        private static IGuppyScopeBuilder RegisterTeamEntityTemplates(this IGuppyScopeBuilder builder)
+        private static IGuppyRootBuilder RegisterTeamEntityTemplates(this IGuppyRootBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Team.TeamEntityTemplate.Name, new EntityTemplateFragment()
             {
@@ -95,7 +95,7 @@ namespace VoidHuntersRevived.Game.Core.Extensions
             return builder;
         }
 
-        private static IGuppyScopeBuilder RegisterPhysicsEntityTemplates(this IGuppyScopeBuilder builder)
+        private static IGuppyRootBuilder RegisterPhysicsEntityTemplates(this IGuppyRootBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Physics.BodyEntityTemplate.Name, new EntityTemplateFragment()
             {
@@ -125,7 +125,7 @@ namespace VoidHuntersRevived.Game.Core.Extensions
             return builder;
         }
 
-        private static IGuppyScopeBuilder RegisterPiecesEntityTemplates(this IGuppyScopeBuilder builder)
+        private static IGuppyRootBuilder RegisterPiecesEntityTemplates(this IGuppyRootBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Piece.TreeEntityTemplate.Name, new EntityTemplateFragment()
             {
@@ -178,7 +178,7 @@ namespace VoidHuntersRevived.Game.Core.Extensions
             return builder;
         }
 
-        private static IGuppyScopeBuilder RegisterShipsEntityTemplates(this IGuppyScopeBuilder builder)
+        private static IGuppyRootBuilder RegisterShipsEntityTemplates(this IGuppyRootBuilder builder)
         {
             builder.RegisterResource(Resources.EntityTemplates.Ship.ChainEntityTemplate.Name, new EntityTemplateFragment()
             {

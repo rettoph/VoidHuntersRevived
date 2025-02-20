@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Commands.Common;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
@@ -8,6 +7,7 @@ using Guppy.Game.Common.Extensions;
 using Guppy.Game.Graphics.Common.Extensions;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Enums;
+using Guppy.Game.Input.Common.Extensions;
 using Guppy.Game.MonoGame.Common.Extensions;
 using Microsoft.Xna.Framework.Input;
 using VoidHuntersRevived.Domain.Pieces.Common.Enums;
@@ -21,9 +21,9 @@ using VoidHuntersRevived.Game.Core.Events;
 
 namespace VoidHuntersRevived.Game.Client.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterGameClientServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterGameClientServices(this IGuppyRootBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameClientServices), builder =>
             {
@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Game.Client.Extensions
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
-                    builder.AddSceneHasDebugWindow(true).AddSceneHasTerminalWindow(true);
+                    builder.Variables.AddSceneHasDebugWindow(true).AddSceneHasTerminalWindow(true);
 
                     builder.RegisterSceneSystem<DebugEngineSystem>();
 
@@ -71,18 +71,18 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                         });
                 });
 
-                IGuppyScopeBuilderExtensions.RegisterInputs(builder);
+                IGuppyRootBuilderExtensions.RegisterInputs(builder);
             });
         }
 
-        private static void RegisterInputs(IGuppyScopeBuilder builder)
+        private static void RegisterInputs(IGuppyRootBuilder builder)
         {
-            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionForward, Keys.W, DirectionEnum.Forward);
-            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnRight, Keys.D, DirectionEnum.TurnRight);
-            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionBackward, Keys.S, DirectionEnum.Backward);
-            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnLeft, Keys.A, DirectionEnum.TurnLeft);
-            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionRight, Keys.E, DirectionEnum.Right);
-            IGuppyScopeBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionLeft, Keys.Q, DirectionEnum.Left);
+            IGuppyRootBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionForward, Keys.W, DirectionEnum.Forward);
+            IGuppyRootBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnRight, Keys.D, DirectionEnum.TurnRight);
+            IGuppyRootBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionBackward, Keys.S, DirectionEnum.Backward);
+            IGuppyRootBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionTurnLeft, Keys.A, DirectionEnum.TurnLeft);
+            IGuppyRootBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionRight, Keys.E, DirectionEnum.Right);
+            IGuppyRootBuilderExtensions.AddSetDirectionInput(builder, Inputs.SetDirectionLeft, Keys.Q, DirectionEnum.Left);
 
             builder.RegisterInput(Inputs.SetTractorBeamEmitterActive, CursorButtonsEnum.Right, new (ButtonState, IInputMessage)[]
             {
@@ -108,7 +108,7 @@ namespace VoidHuntersRevived.Game.Client.Extensions
             });
         }
 
-        private static void AddSetDirectionInput(IGuppyScopeBuilder services, string key, Keys defaultSource, DirectionEnum direction)
+        private static void AddSetDirectionInput(IGuppyRootBuilder services, string key, Keys defaultSource, DirectionEnum direction)
         {
             services.RegisterInput(key, defaultSource,
             [

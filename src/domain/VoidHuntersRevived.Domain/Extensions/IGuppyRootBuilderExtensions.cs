@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Common;
+﻿using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
 using VoidHuntersRevived.Common.FixedPoint;
@@ -15,9 +15,9 @@ using VoidHuntersRevived.Domain.Teams.Extensions;
 
 namespace VoidHuntersRevived.Domain.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterDomainServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterDomainServices(this IGuppyRootBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainServices), builder =>
             {
@@ -33,7 +33,7 @@ namespace VoidHuntersRevived.Domain.Extensions
             });
         }
 
-        public static IGuppyScopeBuilder RegisterDomainCoreServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterDomainCoreServices(this IGuppyRootBuilder builder)
         {
             builder.RegisterType<UniqueNumberProvider>().As<IUniqueNumberProvider>().InstancePerLifetimeScope();
 

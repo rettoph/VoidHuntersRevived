@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Providers;
 using Guppy.Core.Resources.Common.Extensions;
@@ -18,9 +18,9 @@ using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Graphics.Extensions
 {
-    public static class IGuppyScopeBuilderExtensions
+    public static class IGuppyRootBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterDomainGraphicsServices(this IGuppyScopeBuilder builder)
+        public static IGuppyRootBuilder RegisterDomainGraphicsServices(this IGuppyRootBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainGraphicsServices), builder =>
             {
