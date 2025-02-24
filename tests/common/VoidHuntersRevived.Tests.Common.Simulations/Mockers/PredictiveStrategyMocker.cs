@@ -1,38 +1,44 @@
-﻿using Guppy.Tests.Common.Mockers;
-using VoidHuntersRevived.Common;
-using VoidHuntersRevived.Domain.Simulations.Common;
+﻿using Guppy.Core.Messaging.Common.Services;
+using Guppy.Core.Messaging.Systems.Scoped;
+using Guppy.Tests.Common;
+using Guppy.Tests.Common.Builders;
 using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Systems;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
 {
-    public class PredictiveStrategyMocker : BaseStrategyMocker<PredictiveStrategy>
+    public class PredictiveStrategyMocker : StrategyMocker<PredictiveStrategy>
     {
-        public ChannelMessageBusProxyMocker ChannelMessageBusProxyMocker { get; set; }
-        public PredictiveStepServiceMocker PredictiveStepServiceMocker { get; set; }
-        public PredictiveStepEventServiceMocker PredictiveStepEventServiceMocker { get; set; }
+        public ChannelMessageBusBuilder ChannelMessageBusBuilder { get; }
+        public PredictiveStepServiceBuilder PredictiveStepServiceBuilder { get; }
+        public PredictiveStepEventServiceBuilder PredictiveStepEventServiceBuilder { get; }
 
         public PredictiveStrategyMocker()
         {
-            this.ChannelMessageBusProxyMocker = new ChannelMessageBusProxyMocker();
+            this.ChannelMessageBusBuilder = new ChannelMessageBusBuilder()
+            {
+                MessageBusServiceMocker = new Mocker<IMessageBusService>()
+            };
 
-            this.PredictiveStepEventServiceMocker = new PredictiveStepEventServiceMocker
+            this.PredictiveStepEventServiceBuilder = new PredictiveStepEventServiceBuilder
             {
                 LoggerMocker = this.LoggerMocker,
-                MessageBusMocker = this.ChannelMessageBusProxyMocker.MessageBusMocker
+                ChannelMessageBusBuilder = this.ChannelMessageBusBuilder
             };
 
-            this.PredictiveStepServiceMocker = new PredictiveStepServiceMocker()
+            this.PredictiveStepServiceBuilder = new PredictiveStepServiceBuilder()
             {
-                MessageBusMocker = this.ChannelMessageBusProxyMocker.MessageBusMocker
+                ChannelMessageBusBuilder = this.ChannelMessageBusBuilder
             };
-
-            this.ChannelMessageBusProxyMocker.ProxyPublish<StepSequenceGroupEnum, Step>();
 
             this.SystemFactories.AddRange([
-                x => new StepServiceUpdateSystem(this.PredictiveStepServiceMocker.PredictiveStepService),
-                x => new PredictiveStepEventCleanSystem(this.PredictiveStepEventServiceMocker.PredictiveEventService)
+                x => new StepServiceUpdateSystem(this.PredictiveStepServiceBuilder.Object),
+                x => new StepEventServiceFlushSystem(this.PredictiveStepEventServiceBuilder.Object),
+                x => new PredictiveStepEventCleanSystem(this.PredictiveStepEventServiceBuilder.Object),
+                x => new AutoSubscribeScopedSystemsToBrokerServiceSystem(
+                    messageBus: this.ChannelMessageBusBuilder.Object,
+                    scopedSystemService: this.ScopedSystemServiceMocker.Object)
             ]);
         }
 
@@ -40,19 +46,10 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
         {
             PredictiveStrategy strategy = new(
                 this.GuppyScopeMocker.Object,
-                this.PredictiveStepEventServiceMocker.PredictiveEventService,
+                this.PredictiveStepEventServiceBuilder.Object,
                 this.LoggerMocker.Object);
 
             return strategy;
-        }
-
-        protected override void PostBuild()
-        {
-            base.PostBuild();
-
-            // Manually configure message bus
-            this.ChannelMessageBusProxyMocker.MessageBusMocker.Object.SubscribeAll(this.Systems);
-            this.ChannelMessageBusProxyMocker.MessageBusMocker.Object.Subscribe(this.Strategy);
         }
     }
 }

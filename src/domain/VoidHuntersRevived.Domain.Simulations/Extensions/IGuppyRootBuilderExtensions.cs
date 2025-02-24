@@ -40,6 +40,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Extensions
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {
                     builder.RegisterSceneSystem<StepServiceUpdateSystem>();
+                    builder.RegisterSceneSystem<StepEventServiceFlushSystem>();
 
                     builder.RegisterSceneFilter<IPredictiveStrategy>(builder =>
                     {

@@ -39,7 +39,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
         public static readonly Key<IEntityTemplate> TestSquareEntityTemplateKey = Key<IEntityTemplate>.GetByName(nameof(TestSquareEntityTemplateKey));
 
-        private static SimulationMock CreateSimulationMocker()
+        private static SimulationMockerOld CreateSimulationMocker()
         {
             return new SimulationMockBuilder(
                     id: VhId.Empty,
@@ -71,7 +71,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
             EntityGlobalId shipGlobalId = VhId.NewVhId().ToGlobalEntityId();
 
-            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyAutoMock strategy)
+            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
             {
                 ITeamService teamService = strategy.Instance.Resolve<ITeamService>();
                 ITreeService treeService = strategy.Instance.Resolve<ITreeService>();
@@ -180,7 +180,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
 
             EntityGlobalId shipGlobalId = VhId.NewVhId().ToGlobalEntityId();
 
-            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyAutoMock strategy)
+            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
             {
                 ITeamService teamService = strategy.Instance.Resolve<ITeamService>();
                 ITreeService treeService = strategy.Instance.Resolve<ITreeService>();
@@ -304,7 +304,7 @@ namespace VoidHuntersRevived.Tests.Domain.Pieces
             EntityGlobalId square1GlobalId = new(VhId.NewVhId());
             EntityGlobalId square2GlobalId = new(VhId.NewVhId());
 
-            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyAutoMock strategy)
+            IEnumerator<int> SetupStrategy(VhIdProvider vhids, IStrategyMocker strategy)
             {
                 ITeamService teamService = strategy.Instance.Resolve<ITeamService>();
                 ITreeService treeService = strategy.Instance.Resolve<ITreeService>();

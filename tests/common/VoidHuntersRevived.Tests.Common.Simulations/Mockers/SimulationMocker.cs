@@ -1,4 +1,6 @@
 ﻿using VoidHuntersRevived.Common;
+using VoidHuntersRevived.Common.Utilities;
+using VoidHuntersRevived.Domain.Providers;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
@@ -6,101 +8,112 @@ using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Tests.Common.Simulations.Interfaces;
 using VoidHuntersRevived.Tests.Common.Simulations.Mockers;
-using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
 {
-    public abstract class SimulationMocker
+    public abstract class SimulationMocker : ISimulationMocker
     {
-        public abstract IBaseStrategyMocker[] SimulationMockers { get; }
+        private readonly UniqueNumberProvider _uniqueNumbers = new();
 
-        public SimulationMocker Update(TimeSpan interval, int count)
+        public abstract Simulation Simulation { get; }
+
+        public abstract IStrategyMocker<Strategy>[] SimulationMockers { get; }
+
+        public void Update(TimeSpan interval, int count = 1)
         {
             for (int i = 0; i < count; i++)
             {
-                foreach (IBaseStrategyMocker strategy in this.SimulationMockers)
+                foreach (IStrategyMocker strategy in this.SimulationMockers)
                 {
                     strategy.Update(interval, 1);
                 }
             }
-
-            return this;
         }
 
-        public SimulationMocker Input(VhId sourceId, IStepInput input, bool onlyPrediction = false)
+        public void Input(VhId sourceId, IStepInput input, bool verified = true)
         {
-            if (onlyPrediction == true)
+            if (verified == false)
             {
-                foreach (IBaseStrategyMocker strategy in this.SimulationMockers.OfType<IBaseStrategyMocker<PredictiveStrategy>>())
+                foreach (IStrategyMocker<PredictiveStrategy> strategy in this.SimulationMockers.OfType<IStrategyMocker<PredictiveStrategy>>())
                 {
-                    strategy.Strategy.Events.Input(sourceId, input);
+                    strategy.Object.Events.Input(sourceId, input);
                 }
 
-                return this;
+                return;
             }
 
-            foreach (IBaseStrategyMocker strategy in this.SimulationMockers)
+            foreach (IStrategyMocker<Strategy> strategy in this.SimulationMockers)
             {
-                strategy.Strategy.Events.Input(sourceId, input);
+                strategy.Object.Events.Input(sourceId, input);
             }
-
-            return this;
         }
 
-        public void Input(IStepInput input, bool onlyPrediction = false)
-        {
-            this.Input(VhId.NewVhId(), input, onlyPrediction);
-        }
-
-        public void Input<TInput>(bool onlyPrediction = false)
+        public void Input<TInput>(VhId sourceId, bool verified = true)
             where TInput : IStepInput, new()
         {
-            this.Input(VhId.NewVhId(), new TInput(), onlyPrediction);
+            this.Input(sourceId, new TInput(), verified);
         }
 
-        public SimulationMocker Publish(VhId sourceId, IStepEvent @event, bool onlyPrediction = false)
+        public void Input<TInput>(Func<int, TInput> factory, bool verified = true)
+            where TInput : IStepInput
         {
-            if (onlyPrediction == true)
+            int id = this._uniqueNumbers.GetInt32();
+            VhId sourceId = HashBuilder<UniqueNumberProvider, int>.Instance.Calculate(id);
+            this.Input(sourceId, factory(id), verified);
+        }
+
+        public void InputMany<TInput>(Func<int, TInput> factory, int count, bool verified = true)
+            where TInput : IStepInput
+        {
+            for (int i = 0; i < count; i++)
             {
-                foreach (IBaseStrategyMocker strategy in this.SimulationMockers.OfType<IBaseStrategyMocker<PredictiveStrategy>>())
+                int id = this._uniqueNumbers.GetInt32();
+                VhId sourceId = HashBuilder<UniqueNumberProvider, int>.Instance.Calculate(id);
+                this.Input(sourceId, factory(id), verified);
+            }
+        }
+
+        public void Publish(VhId sourceId, IStepEvent @event, bool verified = false)
+        {
+            if (verified == false)
+            {
+                foreach (IStrategyMocker<PredictiveStrategy> strategy in this.SimulationMockers.OfType<IStrategyMocker<PredictiveStrategy>>())
                 {
-                    strategy.Strategy.Events.Publish(sourceId, @event);
+                    strategy.Object.Events.Publish(sourceId, @event);
                 }
 
-                return this;
+                return;
             }
 
-            foreach (IBaseStrategyMocker strategy in this.SimulationMockers)
+            foreach (IStrategyMocker<Strategy> strategy in this.SimulationMockers)
             {
-                strategy.Strategy.Events.Publish(sourceId, @event);
+                strategy.Object.Events.Publish(sourceId, @event);
             }
-
-            return this;
         }
 
-        public void Input(IStepEvent @event, bool onlyPrediction = false)
+        public void Input(IStepEvent @event, bool verified = true)
         {
-            this.Publish(VhId.NewVhId(), @event, onlyPrediction);
+            this.Publish(VhId.NewVhId(), @event, verified);
         }
 
-        public void Publish<TEvent>(bool onlyPrediction = false)
+        public void Publish<TEvent>(bool verified = true)
             where TEvent : IStepEvent, new()
         {
-            this.Publish(VhId.NewVhId(), new TEvent(), onlyPrediction);
+            this.Publish(VhId.NewVhId(), new TEvent(), verified);
         }
     }
 }
 
-public class SimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker> : SimulationMocker
+public class SimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker> : SimulationMocker, ISimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker>
     where TLockstepStrategyMocker : DefaultLockstepStrategyMocker, new()
     where TPredictiveStrategyMocker : PredictiveStrategyMocker, new()
 {
-    public readonly TLockstepStrategyMocker LockstepStrategyMocker;
-    public readonly TPredictiveStrategyMocker PredictiveStrategyMocker;
+    public TLockstepStrategyMocker LockstepStrategyMocker { get; }
+    public TPredictiveStrategyMocker PredictiveStrategyMocker { get; }
 
-    public readonly Simulation Simulation;
+    public override Simulation Simulation { get; }
 
-    public override IBaseStrategyMocker[] SimulationMockers { get; }
+    public override IStrategyMocker<Strategy>[] SimulationMockers { get; }
 
     public SimulationMocker(VhId id = default)
     {
@@ -117,8 +130,8 @@ public class SimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker
 
     private IEnumerable<IStrategy> StrategyFactory(ISimulation simulation)
     {
-        this.LockstepStrategyMocker.SimulationMocker.Object = simulation;
-        this.PredictiveStrategyMocker.SimulationMocker.Object = simulation;
+        this.LockstepStrategyMocker.Simulation = simulation;
+        this.PredictiveStrategyMocker.Simulation = simulation;
 
         return [
             this.LockstepStrategyMocker.Strategy,

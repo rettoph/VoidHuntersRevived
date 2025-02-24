@@ -1,37 +1,37 @@
-﻿using Guppy.Core.Logging.Common.Services;
+﻿using Guppy.Core.Common.Services;
+using Guppy.Core.Logging.Common.Services;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Common.Providers;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Enums;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
-using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
     public class EntityTemplateService : IEntityTemplateService
     {
-        private readonly IStrategy _strategy;
         private readonly IUniqueNumberProvider _uniqueNumberProvider;
         private readonly IEntityTemplateFragmentService _entityTemplateFragmentService;
         private readonly IComponentSerializerService _componentSerializerService;
+        private readonly IScopedSystemService _scopedSystemService;
         private readonly EntitiesDB _entitiesDb;
 
         private readonly Dictionary<Key<IEntityTemplate>, EntityTemplate> _templates;
 
         public EntityTemplateService(
-            IStrategy strategy,
             IUniqueNumberProvider uniqueNumberProvider,
             IEntityTemplateFragmentService entityTemplateFragmentService,
             ILoggerService loggerService,
             IComponentSerializerService componentSerializerService,
+            IScopedSystemService scopedSystemService,
             EnginesRoot enginesRoot,
             EntitiesDB entitiesDb)
         {
-            this._strategy = strategy;
             this._uniqueNumberProvider = uniqueNumberProvider;
             this._entityTemplateFragmentService = entityTemplateFragmentService;
             this._componentSerializerService = componentSerializerService;
+            this._scopedSystemService = scopedSystemService;
             this._entitiesDb = entitiesDb;
 
             // Create EntityTemplateProviders for all registered EntityTemplate instances
@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 entityTemplate.Initialize(
                     entitiesDB: this._entitiesDb,
-                    systemService: this._strategy.Systems,
+                    systemService: this._scopedSystemService,
                     componentSerializerService: this._componentSerializerService);
             }
         }

@@ -1,5 +1,5 @@
 ﻿using VoidHuntersRevived.Domain.Entities.Common;
-using VoidHuntersRevived.Tests.Common.Entities.Stubs;
+using VoidHuntersRevived.Tests.Entities.Stubs;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {

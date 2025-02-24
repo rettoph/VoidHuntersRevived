@@ -4,9 +4,9 @@ namespace VoidHuntersRevived.Tests.Common.Physics.Extensions
 {
     public static class SimulationMockerExtensions
     {
-        public static SimulationMock AssertBodyCount(this SimulationMock simulation, int count)
+        public static SimulationMockerOld AssertBodyCount(this SimulationMockerOld simulation, int count)
         {
-            foreach (IStrategyAutoMock strategy in simulation.Strategies)
+            foreach (IStrategyMocker strategy in simulation.Strategies)
             {
                 strategy.AssertBodyCount(count);
             }

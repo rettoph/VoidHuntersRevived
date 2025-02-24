@@ -6,7 +6,7 @@ namespace VoidHuntersRevived.Tests.Common.Physics.Extensions
 {
     public static class StrategyMockerExtensions
     {
-        public static IStrategyAutoMock AssertBodyCount(this IStrategyAutoMock strategy, int count)
+        public static IStrategyMocker AssertBodyCount(this IStrategyMocker strategy, int count)
         {
             Assert.Equal(count, strategy.Instance.Resolve<ISpace>().BodyCount);
 

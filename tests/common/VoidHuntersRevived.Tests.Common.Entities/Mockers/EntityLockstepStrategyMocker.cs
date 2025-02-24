@@ -14,7 +14,7 @@ using VoidHuntersRevived.Tests.Common.Simulations.Mockers;
 
 namespace VoidHuntersRevived.Tests.Common.Entities.Mockers
 {
-    public class EntityPredictiveStrategyMocker : PredictiveStrategyMocker
+    public class EntityLockstepStrategyMocker : DefaultLockstepStrategyMocker
     {
         public EntitiesSubmissionScheduler EntitiesSubmissionScheduler { get; }
         public EnginesRoot EnginesRoot { get; }
@@ -27,7 +27,7 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Mockers
         public EntityServiceBuilder EntityServiceBuilder { get; }
         public Mocker<ILoggerService> LoggerServiceMocker { get; }
 
-        public EntityPredictiveStrategyMocker()
+        public EntityLockstepStrategyMocker()
         {
             this.EntitiesSubmissionScheduler = new EntitiesSubmissionScheduler();
             this.EnginesRoot = new EnginesRoot(this.EntitiesSubmissionScheduler);
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Mockers
             this.EntitySpawnServiceBuilder = new EntitySpawnServiceBuilder()
             {
                 EntityQueryServiceBuilder = this.EntityQueryServiceBuilder,
-                StepEventServiceBuilder = this.PredictiveStepEventServiceBuilder
+                StepEventServiceBuilder = this.DefaultLockstepStepEventServiceMocker
             };
             this.ComponentSerializerServiceBuilder = new ComponentSerializerServiceBuilder()
             {

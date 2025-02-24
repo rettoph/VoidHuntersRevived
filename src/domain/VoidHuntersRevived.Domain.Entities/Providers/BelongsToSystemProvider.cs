@@ -8,17 +8,17 @@ using VoidHuntersRevived.Domain.Entities.Systems;
 namespace VoidHuntersRevived.Domain.Entities.Providers
 {
     public class BelongsToSystemProvider(
-        IEntityTemplateFragmentService entityTemplateService,
+        IEntityTemplateFragmentService entityTemplateFragmentService,
         IEntityQueryService entityQueryService,
         ILogger logger) : IScopedSystemProvider
     {
-        private readonly IEntityTemplateFragmentService _entityTemplateService = entityTemplateService;
+        private readonly IEntityTemplateFragmentService _entityTemplateFragmentService = entityTemplateFragmentService;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly ILogger _logger = logger;
 
         public IEnumerable<IScopedSystem> GetSystems()
         {
-            foreach (Type componentType in this._entityTemplateService.GetAllDistinctComponentTypes())
+            foreach (Type componentType in this._entityTemplateFragmentService.GetAllDistinctComponentTypes())
             {
                 foreach (Type interfaceType in componentType.GetInterfaces())
                 {
@@ -29,18 +29,18 @@ namespace VoidHuntersRevived.Domain.Entities.Providers
 
                     if (interfaceType.GetGenericTypeDefinition() == typeof(IBelongsTo<,>))
                     {
-                        Type belongsToEngineType = typeof(BelongsToSystem<,>).MakeGenericType(interfaceType.GenericTypeArguments);
-                        IScopedSystem belongsToEngine = (IScopedSystem?)Activator.CreateInstance(belongsToEngineType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
+                        Type belongsToSystemType = typeof(BelongsToSystem<,>).MakeGenericType(interfaceType.GenericTypeArguments);
+                        IScopedSystem belongsToSystem = (IScopedSystem?)Activator.CreateInstance(belongsToSystemType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
 
-                        yield return belongsToEngine;
+                        yield return belongsToSystem;
                     }
 
                     if (interfaceType.GetGenericTypeDefinition() == typeof(ICompositeBelongsTo<,,>))
                     {
-                        Type belongsToEngineType = typeof(CompositeBelongsToEngine<,,>).MakeGenericType(interfaceType.GenericTypeArguments);
-                        IScopedSystem belongsToEngine = (IScopedSystem?)Activator.CreateInstance(belongsToEngineType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
+                        Type belongsToSystemType = typeof(CompositeBelongsToEngine<,,>).MakeGenericType(interfaceType.GenericTypeArguments);
+                        IScopedSystem belongsToSystem = (IScopedSystem?)Activator.CreateInstance(belongsToSystemType, [this._entityQueryService, this._logger]) ?? throw new NotImplementedException();
 
-                        yield return belongsToEngine;
+                        yield return belongsToSystem;
                     }
                 }
             }

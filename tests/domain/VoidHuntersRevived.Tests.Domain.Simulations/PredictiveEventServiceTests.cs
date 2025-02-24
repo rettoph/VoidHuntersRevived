@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations
         [Fact]
         public void EnqueuePrivateNotPredictableStepEventThenFlush_IsNotPublished()
         {
-            PredictiveStepEventServiceMocker.Create().EnqueueFlushAndVerifyPublish<TestPrivateNotPredictableStepEvent>(
+            PredictiveStepEventServiceBuilder.Create().EnqueueFlushAndVerifyPublish<TestPrivateNotPredictableStepEvent>(
                 sourceId: VhId.NewVhId(),
                 publishTimes: Times.Never);
         }
@@ -19,7 +19,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations
         [Fact]
         public void EnqueuePrivatePredictableStepEventThenFlush_IsPublished()
         {
-            PredictiveStepEventServiceMocker.Create().EnqueueFlushAndVerifyPublish<TestPrivatePredictableStepEvent>(
+            PredictiveStepEventServiceBuilder.Create().EnqueueFlushAndVerifyPublish<TestPrivatePredictableStepEvent>(
                 sourceId: VhId.NewVhId(),
                 publishTimes: Times.Once);
         }

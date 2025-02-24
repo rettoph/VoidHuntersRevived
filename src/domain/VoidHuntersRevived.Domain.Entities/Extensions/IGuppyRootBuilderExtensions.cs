@@ -2,12 +2,10 @@
 using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Providers;
-using Guppy.Core.Common.Services;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Converters;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Game.Common.Extensions;
-using Guppy.Game.Common.Systems;
 using Svelto.ECS;
 using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -61,18 +59,7 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
                     builder.RegisterSceneSystem<EngineSystem>();
                     builder.RegisterSceneSystem<EntitySpawnServiceEventSystem>();
                     builder.RegisterType<BelongsToSystemProvider>().As<IScopedSystemProvider>().InstancePerLifetimeScope();
-
-
-                    // Auto register an engine to dispose of instances as needed
-                    foreach (Type disposableComponent in builder.Root.Resolve<IAssemblyService>().GetTypes<IEntityComponent>())
-                    {
-                        if (disposableComponent.IsAssignableTo<IDisposable>())
-                        {
-                            builder.RegisterType(typeof(DisposableSystem<>).MakeGenericType(disposableComponent))
-                                .As<ISceneSystem>()
-                                .InstancePerLifetimeScope();
-                        }
-                    }
+                    builder.RegisterType<DisposableSystemProvider>().As<IScopedSystemProvider>().InstancePerLifetimeScope();
                 });
             });
         }
