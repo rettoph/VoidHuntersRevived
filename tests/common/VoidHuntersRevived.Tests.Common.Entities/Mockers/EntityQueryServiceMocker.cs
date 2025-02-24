@@ -8,11 +8,11 @@ using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Entities.Mockers
 {
-    public class EntityQueryServiceMocker : BaseMockerBuilder<EntityQueryService>
+    public class EntityQueryServiceMocker : MockBuilder<EntityQueryService>
     {
         public EnginesRoot EnginesRoot { get; set; } = new EnginesRoot(new EntitiesSubmissionScheduler());
         public EntitiesDB EntitiesDB => this.EnginesRoot.GetEntitiesDB();
-        public Mocker<ILogger> LoggerMocker { get; set; } = new Mocker<ILogger>();
+        public Mocker<ILogger> LoggerMocker { get; } = new Mocker<ILogger>();
 
         public EntityQueryService EntityQueryService => this.GetInstance();
 
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Mockers
         {
             return new EntityQueryService(
                 entitiesDb: this.EntitiesDB,
-                logger: this.LoggerMocker.GetInstance());
+                logger: this.LoggerMocker.Object);
         }
     }
 }

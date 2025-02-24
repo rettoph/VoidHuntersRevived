@@ -53,21 +53,21 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             this.ChannelMessageBusProxyMocker.ProxyPublish<StepSequenceGroupEnum, Step>();
             this.ChannelMessageBusProxyMocker.ProxyPublish<TickSequenceGroupEnum, Tick>();
 
-            this.SettingServiceMocker.Setup(Settings.StepsPerTick, stepsPerTick);
-            this.SettingServiceMocker.Setup(Settings.StepInterval, stepInterval);
+            this.SettingServiceMocker.SetupReturn(Settings.StepsPerTick, stepsPerTick);
+            this.SettingServiceMocker.SetupReturn(Settings.StepInterval, stepInterval);
 
             this.SystemFactories.AddRange([
-                x => new StepServiceUpdateSystem(this.DefaultLockstepStepServiceMocker.GetInstance())
+                x => new StepServiceUpdateSystem(this.DefaultLockstepStepServiceMocker.DefaultLockstepStepService)
             ]);
         }
 
         protected override LockstepStrategy Build()
         {
             return new LockstepStrategy(
-                settings: this.SettingServiceMocker.GetInstance(),
-                scope: this.GuppyScopeMocker.GetInstance(),
+                settings: this.SettingServiceMocker.Object,
+                scope: this.GuppyScopeMocker.Object,
                 eventService: this.DefaultLockstepStepEventServiceMocker.DefaultLockstepStepEventService,
-                logger: this.LoggerMocker.GetInstance());
+                logger: this.LoggerMocker.Object);
         }
     }
 }

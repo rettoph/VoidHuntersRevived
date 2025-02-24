@@ -4,24 +4,28 @@ using VoidHuntersRevived.Tests.Common.Entities.Stubs;
 namespace VoidHuntersRevived.Tests.Domain.Entities
 {
     [Collection("EntityGroups")]
-    public class EntityGroupList_Tests
+    public class EntityGroupListTests
     {
-
         [Fact]
-        public void EntityGroupList_AutoAddExistingGroup()
+        public void CreatedEntityGroup_IsAddedToEntityGroupList()
         {
+            // Reset
             EntityGroup.Clear();
-            Assert.Empty(EntityGroup.GetAll());
-
             EntityGroupList.Clear();
+            Assert.Empty(EntityGroup.GetAll());
             Assert.Empty(EntityGroupList.GetAll());
-            _ = EntityGroup.Create("test", [typeof(TestEntityComponent)]);
+
+            // Create group list and ensure list is empty
             EntityGroupList groups = EntityGroupList.GetOrCreate([typeof(TestEntityComponent)]);
+            Assert.Equal(0, groups.Values.count);
+
+            // Create group and ensure list has been updated
+            _ = EntityGroup.Create("test", [typeof(TestEntityComponent)]);
             Assert.Equal(1, groups.Values.count);
         }
 
         [Fact]
-        public void EntityGroupList_EnsureMatchingComponentsReused()
+        public void CreatedGroupListsWithUnorderedMatchingComponents_AreEqual()
         {
             EntityGroup.Clear();
             Assert.Empty(EntityGroup.GetAll());

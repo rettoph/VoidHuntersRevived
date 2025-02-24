@@ -8,7 +8,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations
         [Fact]
         public void SingleMissingTickInLinkedListPassedIntoPrevious_ParentIsReturned()
         {
-            ClientLinkedListLockstepTickServiceMocker.Create(3).PopulateEmptyTicksAndVerifyPrevious(
+            ClientLinkedListLockstepTickServiceMocker.Create(stepsPerTick: 3).PopulateEmptyTicksAndVerifyPrevious(
                 tickIds: [0, 1, 3, 4],
                 previousId: 2,
                 expectedResult: 1);
@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations
         [Fact]
         public void ManyMissingTicksInLinkedListLastMissingPassedIntoPrevious_LastContainedIsReturned()
         {
-            ClientLinkedListLockstepTickServiceMocker.Create(3).PopulateEmptyTicksAndVerifyPrevious(
+            ClientLinkedListLockstepTickServiceMocker.Create(stepsPerTick: 3).PopulateEmptyTicksAndVerifyPrevious(
                 tickIds: [0, 1, 7, 8],
                 previousId: 6,
                 expectedResult: 1);
@@ -26,7 +26,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations
         [Fact]
         public void NoMissingTicksInLinkedListContainedPassedIntoPrevious_ParentIsReturned()
         {
-            ClientLinkedListLockstepTickServiceMocker.Create(3).PopulateEmptyTicksAndVerifyPrevious(
+            ClientLinkedListLockstepTickServiceMocker.Create(stepsPerTick: 3).PopulateEmptyTicksAndVerifyPrevious(
                 tickIds: [0, 1, 2, 3, 4, 5, 6],
                 previousId: 3,
                 expectedResult: 2);

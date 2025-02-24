@@ -6,18 +6,20 @@ using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
 {
-    public class DefaultLockstepStepServiceMocker : BaseMockerBuilder<DefaultLockstepStepService>
+    public class DefaultLockstepStepServiceMocker : MockBuilder<DefaultLockstepStepService>
     {
-        public Mocker<ISettingService> SettingServiceMocker { get; set; } = new Mocker<ISettingService>();
-        public DefaultLockstepTickServiceMocker DefaultLockstepTickServiceMocker { get; set; } = new DefaultLockstepTickServiceMocker();
-        public Mocker<IMessageBus> MessageBusMocker { get; set; } = new Mocker<IMessageBus>();
+        public Mocker<ISettingService> SettingServiceMocker { get; init; } = new Mocker<ISettingService>();
+        public DefaultLockstepTickServiceMocker DefaultLockstepTickServiceMocker { get; init; } = new DefaultLockstepTickServiceMocker();
+        public Mocker<IMessageBus> MessageBusMocker { get; init; } = new Mocker<IMessageBus>();
+
+        public DefaultLockstepStepService DefaultLockstepStepService => this.GetInstance();
 
         protected override DefaultLockstepStepService Build()
         {
             return new DefaultLockstepStepService(
-                settingService: this.SettingServiceMocker.GetInstance(),
+                settingService: this.SettingServiceMocker.Object,
                 tickService: this.DefaultLockstepTickServiceMocker.DefaultLockstepTickService,
-                messageBus: this.MessageBusMocker.GetInstance());
+                messageBus: this.MessageBusMocker.Object);
         }
     }
 }

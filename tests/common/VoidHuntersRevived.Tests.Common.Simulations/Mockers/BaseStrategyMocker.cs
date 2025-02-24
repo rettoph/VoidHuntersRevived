@@ -41,10 +41,10 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             this.SimulationMocker = new Mocker<ISimulation>();
             this.LoggerMocker = new Mocker<ILogger>();
 
-            this.GuppyScopeMocker.Setup(x => x.Systems, () => this.ScopedSystemServiceMocker.GetInstance());
-            this.GuppyScopeMocker.Setup(x => x.Resolve<ISimulation>(), () => this.SimulationMocker.GetInstance());
+            this.GuppyScopeMocker.SetupReturn(x => x.Systems, () => this.ScopedSystemServiceMocker.Object);
+            this.GuppyScopeMocker.SetupReturn(x => x.Resolve<ISimulation>(), () => this.SimulationMocker.Object);
 
-            this.ScopedSystemServiceMocker.Setup(
+            this.ScopedSystemServiceMocker.SetupReturn(
                 expression: x => x.GetAll(),
                 result: () => this.Systems);
         }

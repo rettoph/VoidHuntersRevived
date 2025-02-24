@@ -6,10 +6,10 @@ using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
 {
-    public class PredictiveStepEventServiceMocker : BaseMockerBuilder<PredictiveStepEventService>
+    public class PredictiveStepEventServiceMocker : MockBuilder<PredictiveStepEventService>
     {
-        public Mocker<IMessageBus> MessageBusMocker { get; set; }
-        public Mocker<ILogger> LoggerMocker { get; set; }
+        public Mocker<IMessageBus> MessageBusMocker { get; init; }
+        public Mocker<ILogger> LoggerMocker { get; init; }
         public PredictiveStepEventService PredictiveEventService => this.GetInstance();
 
         public PredictiveStepEventServiceMocker()
@@ -26,8 +26,8 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
         protected override PredictiveStepEventService Build()
         {
             return new PredictiveStepEventService(
-                this.MessageBusMocker.GetInstance(),
-                this.LoggerMocker.GetInstance());
+                this.MessageBusMocker.Object,
+                this.LoggerMocker.Object);
         }
     }
 }

@@ -3,7 +3,7 @@ using VoidHuntersRevived.Domain.Entities.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Entities.Mockers
 {
-    public class EntitySerializationServiceMocker : BaseMockerBuilder<EntitySerializationService>
+    public class EntitySerializationServiceMocker : MockBuilder<EntitySerializationService>
     {
         protected override EntitySerializationService Build()
         {

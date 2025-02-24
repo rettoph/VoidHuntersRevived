@@ -7,11 +7,11 @@ using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 
 namespace VoidHuntersRevived.Domain.Simulations.Services
 {
-    public class DefaultLockstepTickServiceMocker : BaseMockerBuilder<DefaultLockstepTickService>
+    public class DefaultLockstepTickServiceMocker : MockBuilder<DefaultLockstepTickService>
     {
-        public Mocker<ISettingService> SettingServiceMocker { get; set; }
+        public Mocker<ISettingService> SettingServiceMocker { get; init; }
 
-        public DefaultLockstepStepEventServiceMocker DefaultLockstepStepEventServiceMocker { get; set; }
+        public DefaultLockstepStepEventServiceMocker DefaultLockstepStepEventServiceMocker { get; init; }
 
         public DefaultLockstepTickService DefaultLockstepTickService => this.GetInstance();
 
@@ -25,14 +25,14 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
         {
             return new DefaultLockstepTickService(
                 eventService: this.DefaultLockstepStepEventServiceMocker.DefaultLockstepStepEventService,
-                settingService: this.SettingServiceMocker.GetInstance());
+                settingService: this.SettingServiceMocker.Object);
         }
 
         public static DefaultLockstepTickServiceMocker Create(int stepsPerTick)
         {
             DefaultLockstepTickServiceMocker mocker = new();
 
-            mocker.SettingServiceMocker.Setup(Settings.StepsPerTick, stepsPerTick);
+            mocker.SettingServiceMocker.SetupReturn(Settings.StepsPerTick, stepsPerTick);
 
             return mocker;
         }

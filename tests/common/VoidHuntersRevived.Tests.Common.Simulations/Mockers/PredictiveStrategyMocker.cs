@@ -39,9 +39,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
         protected override PredictiveStrategy Build()
         {
             PredictiveStrategy strategy = new(
-                this.GuppyScopeMocker.GetInstance(),
+                this.GuppyScopeMocker.Object,
                 this.PredictiveStepEventServiceMocker.PredictiveEventService,
-                this.LoggerMocker.GetInstance());
+                this.LoggerMocker.Object);
 
             return strategy;
         }
@@ -51,8 +51,8 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
             base.PostBuild();
 
             // Manually configure message bus
-            this.ChannelMessageBusProxyMocker.MessageBusMocker.GetInstance().SubscribeAll(this.Systems);
-            this.ChannelMessageBusProxyMocker.MessageBusMocker.GetInstance().Subscribe(this.Strategy);
+            this.ChannelMessageBusProxyMocker.MessageBusMocker.Object.SubscribeAll(this.Systems);
+            this.ChannelMessageBusProxyMocker.MessageBusMocker.Object.Subscribe(this.Strategy);
         }
     }
 }

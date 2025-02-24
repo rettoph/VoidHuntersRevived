@@ -5,15 +5,15 @@ using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
 {
-    public class PredictiveStepServiceMocker : BaseMockerBuilder<PredictiveStepService>
+    public class PredictiveStepServiceMocker : MockBuilder<PredictiveStepService>
     {
-        public Mocker<IMessageBus> MessageBusMocker { get; set; } = new Mocker<IMessageBus>();
+        public Mocker<IMessageBus> MessageBusMocker { get; init; } = new Mocker<IMessageBus>();
         public PredictiveStepService PredictiveStepService => this.GetInstance();
 
         protected override PredictiveStepService Build()
         {
             return new PredictiveStepService(
-                this.MessageBusMocker.GetInstance());
+                this.MessageBusMocker.Object);
         }
     }
 }

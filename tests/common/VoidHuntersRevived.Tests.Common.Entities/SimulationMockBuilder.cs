@@ -57,12 +57,12 @@ namespace VoidHuntersRevived.Tests.Common.Simulations
             this.Mock(mocker =>
             {
                 mocker.Mocker<ISettingService>()
-                    .Setup(settings => settings.GetValue(Settings.StepInterval), () => stepInterval)
-                    .Setup(settings => settings.GetValue(Settings.StepsPerTick), () => stepsPerTick);
+                    .SetupReturn(settings => settings.GetValue(Settings.StepInterval), () => stepInterval)
+                    .SetupReturn(settings => settings.GetValue(Settings.StepsPerTick), () => stepsPerTick);
 
                 mocker.Mocker<ILoggerService>()
-                    .Setup(loggers => loggers.GetLogger(It.IsAny<Type>()), () => new Mocker<ILogger>().GetInstance())
-                    .Setup(loggers => loggers.GetLogger<It.IsAnyType>(), new InvocationFunc(invocation =>
+                    .SetupReturn(loggers => loggers.GetLogger(It.IsAny<Type>()), () => new Mocker<ILogger>().Object)
+                    .SetupReturn(loggers => loggers.GetLogger<It.IsAnyType>(), new InvocationFunc(invocation =>
                     {
                         Type loggerContext = invocation.Method.ReturnType.GenericTypeArguments[0];
                         return Mocker.GetGenericInstance(typeof(ILogger<>), loggerContext);

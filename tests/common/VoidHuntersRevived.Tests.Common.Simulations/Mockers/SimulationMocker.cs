@@ -117,8 +117,8 @@ public class SimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker
 
     private IEnumerable<IStrategy> StrategyFactory(ISimulation simulation)
     {
-        this.LockstepStrategyMocker.SimulationMocker.SetInstance(simulation);
-        this.PredictiveStrategyMocker.SimulationMocker.SetInstance(simulation);
+        this.LockstepStrategyMocker.SimulationMocker.Object = simulation;
+        this.PredictiveStrategyMocker.SimulationMocker.Object = simulation;
 
         return [
             this.LockstepStrategyMocker.Strategy,
