@@ -44,7 +44,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
             this.LoggerMocker = new Mocker<ILogger>();
         }
 
-        public void Update(TimeSpan interval, int count)
+        public void Update(TimeSpan interval, int count = 1)
         {
             for (int i = 0; i < count; i++)
             {
@@ -52,6 +52,11 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
 
                 this.Strategy.Update(this.GameTime);
             }
+        }
+
+        public void Publish(VhId sourceId, IStepEvent input)
+        {
+            this.Strategy.Events.Publish(sourceId, input);
         }
 
         public void Input(VhId sourceId, IStepInput input)

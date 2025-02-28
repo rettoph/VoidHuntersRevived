@@ -7,7 +7,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Interfaces
 {
     public interface IStrategyMocker : IBuilder
     {
-        void Update(TimeSpan interval, int count);
+        void Update(TimeSpan interval, int count = 1);
 
         void Input(VhId sourceId, IStepInput input);
 

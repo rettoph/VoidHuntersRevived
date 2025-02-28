@@ -8,7 +8,8 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Interfaces
         EntityLockstepStrategyMocker EntityLockstepStrategyMocker { get; }
         EntityPredictiveStrategyMocker EntityPredictiveStrategyMocker { get; }
     }
-    public interface IEntitySimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker> : ISimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker>, IEntitySimulationMocker
+    public interface IEntitySimulationMocker<out TSelf, TLockstepStrategyMocker, TPredictiveStrategyMocker> : ISimulationMocker<TSelf, TLockstepStrategyMocker, TPredictiveStrategyMocker>, IEntitySimulationMocker
+        where TSelf : IEntitySimulationMocker<TSelf, TLockstepStrategyMocker, TPredictiveStrategyMocker>
         where TLockstepStrategyMocker : EntityLockstepStrategyMocker, new()
         where TPredictiveStrategyMocker : EntityPredictiveStrategyMocker, new()
     {
