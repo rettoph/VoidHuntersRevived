@@ -8,10 +8,11 @@ using VoidHuntersRevived.Tests.Common.Simulations.Interfaces;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
 {
-    public abstract class SimulationMocker<TSelf, TLockstepStrategyMocker, TPredictiveStrategyMocker> : ISimulationMocker<TSelf, TLockstepStrategyMocker, TPredictiveStrategyMocker>
-        where TSelf : SimulationMocker<TSelf, TLockstepStrategyMocker, TPredictiveStrategyMocker>
-        where TLockstepStrategyMocker : DefaultLockstepStrategyMocker, new()
-        where TPredictiveStrategyMocker : PredictiveStrategyMocker, new()
+    public abstract class SimulationMocker<TSelf, TStrategyMocker, TLockstepStrategyMocker, TPredictiveStrategyMocker> : ISimulationMocker<TSelf, TStrategyMocker, TLockstepStrategyMocker, TPredictiveStrategyMocker>
+        where TSelf : SimulationMocker<TSelf, TStrategyMocker, TLockstepStrategyMocker, TPredictiveStrategyMocker>
+        where TStrategyMocker : IStrategyMocker
+        where TLockstepStrategyMocker : DefaultLockstepStrategyMocker, TStrategyMocker, new()
+        where TPredictiveStrategyMocker : PredictiveStrategyMocker, TStrategyMocker, new()
     {
         private readonly UniqueNumberProvider _uniqueNumbers = new();
 
@@ -118,9 +119,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
         }
     }
 
-    public sealed class SimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker> : SimulationMocker<SimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker>, TLockstepStrategyMocker, TPredictiveStrategyMocker>
-        where TLockstepStrategyMocker : DefaultLockstepStrategyMocker, new()
-        where TPredictiveStrategyMocker : PredictiveStrategyMocker, new()
+    public sealed class SimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker> : SimulationMocker<SimulationMocker<TLockstepStrategyMocker, TPredictiveStrategyMocker>, IStrategyMocker, TLockstepStrategyMocker, TPredictiveStrategyMocker>
+        where TLockstepStrategyMocker : DefaultLockstepStrategyMocker, IStrategyMocker, new()
+        where TPredictiveStrategyMocker : PredictiveStrategyMocker, IStrategyMocker, new()
     {
     }
 }

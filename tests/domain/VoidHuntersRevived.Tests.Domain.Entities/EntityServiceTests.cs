@@ -1,6 +1,6 @@
 ﻿using VoidHuntersRevived.Tests.Common.Entities.Extensions;
 using VoidHuntersRevived.Tests.Common.Entities.Mockers;
-using VoidHuntersRevived.Tests.Domain.Entities.Builders;
+using VoidHuntersRevived.Tests.Domain.Entities.Mockers;
 using VoidHuntersRevived.Tests.Entities.Stubs;
 
 namespace VoidHuntersRevived.Tests.Domain.Entities

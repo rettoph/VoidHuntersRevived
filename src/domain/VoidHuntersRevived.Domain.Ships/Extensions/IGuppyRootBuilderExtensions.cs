@@ -34,8 +34,8 @@ namespace VoidHuntersRevived.Domain.Ships.Extensions
                 {
                     builder.RegisterType<TractorBeamEmitterService>().As<ITractorBeamEmitterService>().InstancePerLifetimeScope();
                     builder.RegisterType<TacticalService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                    builder.RegisterType<UserIdSystem>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
+                    builder.RegisterSceneSystem<UserIdSystem>();
                     builder.RegisterSceneSystem<HelmSystem>();
                     builder.RegisterSceneSystem<TacticalSystem>();
                     builder.RegisterSceneSystem<TractorBeamEmitterServiceEventSystem>();

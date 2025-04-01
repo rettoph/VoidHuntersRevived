@@ -1,20 +1,20 @@
 ﻿using Guppy.Core.Logging.Common;
 using Guppy.Core.Messaging.Common.Services;
 using Guppy.Tests.Common;
-using Guppy.Tests.Common.Builders;
+using Guppy.Tests.Common.Mockers;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
 {
     public class PredictiveStepEventServiceBuilder : Builder<PredictiveStepEventService>
     {
-        public required ChannelMessageBusBuilder ChannelMessageBusBuilder { get; init; }
+        public required ChannelMessageBusProxyMocker ChannelMessageBusProxyMocker { get; init; }
         public required Mocker<ILogger> LoggerMocker { get; init; }
 
         protected override PredictiveStepEventService Build()
         {
             return new PredictiveStepEventService(
-                this.ChannelMessageBusBuilder.Object,
+                this.ChannelMessageBusProxyMocker.Object,
                 this.LoggerMocker.Object);
         }
 
@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mocks
             return new PredictiveStepEventServiceBuilder()
             {
                 LoggerMocker = new Mocker<ILogger>(),
-                ChannelMessageBusBuilder = new ChannelMessageBusBuilder()
+                ChannelMessageBusProxyMocker = new ChannelMessageBusProxyMocker()
                 {
                     MessageBusServiceMocker = new Mocker<IMessageBusService>()
                 }

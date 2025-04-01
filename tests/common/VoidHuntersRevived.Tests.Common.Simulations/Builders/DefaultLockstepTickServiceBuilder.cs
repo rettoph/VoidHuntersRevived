@@ -2,8 +2,8 @@
 using Guppy.Core.Messaging.Common.Services;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Tests.Common;
-using Guppy.Tests.Common.Builders;
 using Guppy.Tests.Common.Extensions;
+using Guppy.Tests.Common.Mockers;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
 
@@ -28,7 +28,7 @@ namespace VoidHuntersRevived.Domain.Simulations.Services
             {
                 DefaultLockstepStepEventServiceMocker = new DefaultLockstepStepEventServiceBuilder()
                 {
-                    ChannelMessageBusBuilder = new ChannelMessageBusBuilder()
+                    ChannelMessageBusProxyMocker = new ChannelMessageBusProxyMocker()
                     {
                         MessageBusServiceMocker = new Mocker<IMessageBusService>()
                     },

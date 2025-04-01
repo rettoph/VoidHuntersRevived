@@ -2,8 +2,8 @@
 using Guppy.Core.Messaging.Systems.Scoped;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Tests.Common;
-using Guppy.Tests.Common.Builders;
 using Guppy.Tests.Common.Extensions;
+using Guppy.Tests.Common.Mockers;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common.Constants;
 using VoidHuntersRevived.Domain.Simulations.Services;
@@ -19,10 +19,10 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
         public static readonly Fix64 DefaultStepInterval = (Fix64)20 / (Fix64)1000;
 
         public Mocker<ISettingService> SettingServiceMocker { get; set; }
-        public ChannelMessageBusBuilder ChannelMessageBusBuilder { get; }
-        public DefaultLockstepStepEventServiceBuilder DefaultLockstepStepEventServiceMocker { get; }
-        public DefaultLockstepTickServiceBuilder DefaultLockstepTickServiceMocker { get; }
-        public DefaultLockstepStepServiceBuilder DefaultLockstepStepServiceMocker { get; }
+        public ChannelMessageBusProxyMocker ChannelMessageBusProxyMocker { get; }
+        public DefaultLockstepStepEventServiceBuilder DefaultLockstepStepEventServiceBuilder { get; }
+        public DefaultLockstepTickServiceBuilder DefaultLockstepTickServiceBuilder { get; }
+        public DefaultLockstepStepServiceBuilder DefaultLockstepStepServiceBuilder { get; }
 
         public DefaultLockstepStrategyMocker() : this(DefaultStepsPerTick, DefaultStepInterval)
         {
@@ -31,35 +31,35 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
         public DefaultLockstepStrategyMocker(int stepsPerTick, Fix64 stepInterval) : base()
         {
             this.SettingServiceMocker = new Mocker<ISettingService>();
-            this.ChannelMessageBusBuilder = new ChannelMessageBusBuilder()
+            this.ChannelMessageBusProxyMocker = new ChannelMessageBusProxyMocker()
             {
                 MessageBusServiceMocker = new Mocker<IMessageBusService>()
             };
-            this.DefaultLockstepStepEventServiceMocker = new DefaultLockstepStepEventServiceBuilder()
+            this.DefaultLockstepStepEventServiceBuilder = new DefaultLockstepStepEventServiceBuilder()
             {
                 LoggerMocker = this.LoggerMocker,
-                ChannelMessageBusBuilder = this.ChannelMessageBusBuilder
+                ChannelMessageBusProxyMocker = this.ChannelMessageBusProxyMocker
             };
-            this.DefaultLockstepTickServiceMocker = new DefaultLockstepTickServiceBuilder()
+            this.DefaultLockstepTickServiceBuilder = new DefaultLockstepTickServiceBuilder()
             {
                 SettingServiceMocker = this.SettingServiceMocker,
-                DefaultLockstepStepEventServiceMocker = this.DefaultLockstepStepEventServiceMocker
+                DefaultLockstepStepEventServiceMocker = this.DefaultLockstepStepEventServiceBuilder
             };
-            this.DefaultLockstepStepServiceMocker = new DefaultLockstepStepServiceBuilder()
+            this.DefaultLockstepStepServiceBuilder = new DefaultLockstepStepServiceBuilder()
             {
                 SettingServiceMocker = this.SettingServiceMocker,
-                DefaultLockstepTickServiceBuilder = this.DefaultLockstepTickServiceMocker,
-                ChannelMessageBusBuilder = this.ChannelMessageBusBuilder
+                DefaultLockstepTickServiceBuilder = this.DefaultLockstepTickServiceBuilder,
+                ChannelMessageBusProxyMocker = this.ChannelMessageBusProxyMocker
             };
 
             this.SettingServiceMocker.SetupReturn(Settings.StepsPerTick, stepsPerTick);
             this.SettingServiceMocker.SetupReturn(Settings.StepInterval, stepInterval);
 
             this.SystemFactories.AddRange([
-                x => new StepServiceUpdateSystem(this.DefaultLockstepStepServiceMocker.Object),
-                x => new StepEventServiceFlushSystem(this.DefaultLockstepStepEventServiceMocker.Object),
+                x => new StepServiceUpdateSystem(this.DefaultLockstepStepServiceBuilder.Object),
+                x => new StepEventServiceFlushSystem(this.DefaultLockstepStepEventServiceBuilder.Object),
                 x => new AutoSubscribeScopedSystemsToBrokerServiceSystem(
-                    messageBus: this.ChannelMessageBusBuilder.Object,
+                    messageBus: this.ChannelMessageBusProxyMocker.Object,
                     scopedSystemService: this.ScopedSystemServiceMocker.Object)
             ]);
         }
@@ -69,7 +69,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
             return new LockstepStrategy(
                 settings: this.SettingServiceMocker.Object,
                 scope: this.GuppyScopeMocker.Object,
-                eventService: this.DefaultLockstepStepEventServiceMocker.Object,
+                eventService: this.DefaultLockstepStepEventServiceBuilder.Object,
                 logger: this.LoggerMocker.Object);
         }
     }

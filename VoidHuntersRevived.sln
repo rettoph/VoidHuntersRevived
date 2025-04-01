@@ -207,8 +207,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Tests.Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Tests.Domain.Ships", "tests\domain\VoidHuntersRevived.Tests.Domain.Ships\VoidHuntersRevived.Tests.Domain.Ships.csproj", "{E3DEC56E-8639-4640-B780-A698665E41A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoidHuntersRevived.Tests.Common.Pieces", "tests\common\VoidHuntersRevived.Tests.Common.Pieces\VoidHuntersRevived.Tests.Common.Pieces.csproj", "{08236C90-792E-44D2-951E-6FB9B923B764}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Tests.Common.Physics", "tests\common\VoidHuntersRevived.Tests.Common.Physics\VoidHuntersRevived.Tests.Common.Physics.csproj", "{F28DF526-82FA-40CA-830C-12E652141926}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoidHuntersRevived.Tests.Common.Teams", "tests\common\VoidHuntersRevived.Tests.Common.Teams\VoidHuntersRevived.Tests.Common.Teams.csproj", "{3B8FE3B9-77F7-4FEC-AE77-33E7D3A44B3E}"
@@ -1933,30 +1931,6 @@ Global
 		{E3DEC56E-8639-4640-B780-A698665E41A3}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
 		{E3DEC56E-8639-4640-B780-A698665E41A3}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
 		{E3DEC56E-8639-4640-B780-A698665E41A3}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Debug|x64.Build.0 = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Debug|x86.Build.0 = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Release|x64.ActiveCfg = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Release|x64.Build.0 = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Release|x86.ActiveCfg = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.Release|x86.Build.0 = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionDebug|Any CPU.Build.0 = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionDebug|x64.ActiveCfg = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionDebug|x64.Build.0 = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionDebug|x86.ActiveCfg = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionDebug|x86.Build.0 = Debug|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionRelease|Any CPU.ActiveCfg = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionRelease|Any CPU.Build.0 = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionRelease|x64.ActiveCfg = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionRelease|x64.Build.0 = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionRelease|x86.ActiveCfg = Release|Any CPU
-		{08236C90-792E-44D2-951E-6FB9B923B764}.SlowSubmissionRelease|x86.Build.0 = Release|Any CPU
 		{F28DF526-82FA-40CA-830C-12E652141926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F28DF526-82FA-40CA-830C-12E652141926}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F28DF526-82FA-40CA-830C-12E652141926}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -2243,7 +2217,6 @@ Global
 		{A8CD5133-4F90-479D-B9ED-7AA544794FD3} = {A11E99FB-C799-4DE8-BFB8-60E94A128018}
 		{795FC7F3-845B-4F03-ABA9-ECAC2B1CFF5E} = {47EC166D-CC1C-4D64-844D-B3D14E10C2B3}
 		{E3DEC56E-8639-4640-B780-A698665E41A3} = {47EC166D-CC1C-4D64-844D-B3D14E10C2B3}
-		{08236C90-792E-44D2-951E-6FB9B923B764} = {A11E99FB-C799-4DE8-BFB8-60E94A128018}
 		{F28DF526-82FA-40CA-830C-12E652141926} = {A11E99FB-C799-4DE8-BFB8-60E94A128018}
 		{3B8FE3B9-77F7-4FEC-AE77-33E7D3A44B3E} = {A11E99FB-C799-4DE8-BFB8-60E94A128018}
 		{3068CD47-B98A-46CC-B84C-CB7CBBABC446} = {A11E99FB-C799-4DE8-BFB8-60E94A128018}

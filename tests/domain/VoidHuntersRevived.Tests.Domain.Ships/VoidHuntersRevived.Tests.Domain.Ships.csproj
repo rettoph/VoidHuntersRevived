@@ -10,6 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TractorBeamEmmiter_AttachDetach_Tests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="TractorBeamEmmiter_AttachDetach_Tests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -30,6 +38,7 @@
     <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Teams\VoidHuntersRevived.Domain.Teams.csproj" />
     <ProjectReference Include="..\..\common\VoidHuntersRevived.Tests.Common.Entities\VoidHuntersRevived.Tests.Common.Entities.csproj" />
     <ProjectReference Include="..\..\common\VoidHuntersRevived.Tests.Common.Physics\VoidHuntersRevived.Tests.Common.Physics.csproj" />
+    <ProjectReference Include="..\..\common\VoidHuntersRevived.Tests.Common.Ships\VoidHuntersRevived.Tests.Common.Ships.csproj" />
     <ProjectReference Include="..\..\common\VoidHuntersRevived.Tests.Common.Simulations\VoidHuntersRevived.Tests.Common.Simulations.csproj" />
   </ItemGroup>
 

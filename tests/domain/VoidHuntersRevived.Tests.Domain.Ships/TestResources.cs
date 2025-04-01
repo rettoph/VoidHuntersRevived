@@ -1,6 +1,8 @@
 ﻿using Guppy.Core.Resources.Common;
 using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
+using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Physics;
 using VoidHuntersRevived.Domain.Physics.Common;
 
@@ -8,6 +10,8 @@ namespace VoidHuntersRevived.Tests.Domain.Ships
 {
     public static class TestResources
     {
+        public static readonly Key<IEntityTemplate> TestSquareEntityTemplateKey = Key<IEntityTemplate>.GetByName(nameof(TestSquareEntityTemplateKey));
+
         public static class Colors
         {
             public static readonly Resource<Color> TestColor = new(ResourceKey<Color>.Get(nameof(TestColor)), Color.White);

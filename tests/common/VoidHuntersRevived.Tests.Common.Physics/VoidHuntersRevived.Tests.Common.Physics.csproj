@@ -10,7 +10,26 @@
     <ProjectReference Include="..\..\..\libraries\Aether.Physics2D\Physics2D\Aether.Physics2D.NETSTANDARD2_0.csproj" />
     <ProjectReference Include="..\..\..\src\domain\VoidHuntersRevived.Domain.Physics\VoidHuntersRevived.Domain.Physics.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Tests.Common.Simulations\VoidHuntersRevived.Tests.Common.Simulations.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Tests.Common.Teams\VoidHuntersRevived.Tests.Common.Teams.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Tests.Common\VoidHuntersRevived.Tests.Common.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Using Include="tainicom.Aether.Physics2D.Collision.AABB">
+      <Alias>AetherAABB</Alias>
+    </Using>
+    <Using Include="tainicom.Aether.Physics2D.Dynamics.Body">
+      <Alias>AetherBody</Alias>
+    </Using>
+    <Using Include="tainicom.Aether.Physics2D.Dynamics.Fixture">
+      <Alias>AetherFixture</Alias>
+    </Using>
+    <Using Include="tainicom.Aether.Physics2D.Dynamics.World">
+      <Alias>AetherWorld</Alias>
+    </Using>
+	<Using Include="tainicom.Aether.Physics2D.Common.Transform">
+		<Alias>AetherTransform</Alias>
+	</Using>
   </ItemGroup>
 
 </Project>

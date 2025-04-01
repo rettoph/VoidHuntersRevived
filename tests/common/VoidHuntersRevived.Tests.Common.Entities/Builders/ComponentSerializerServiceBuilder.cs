@@ -7,11 +7,11 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Builders
 {
     public class ComponentSerializerServiceBuilder : Builder<ComponentSerializerService>
     {
-        public required List<IComponentSerializer> ComponentSerializers { get; init; }
+        public required List<Func<IComponentSerializer>> ComponentSerializers { get; init; }
 
         protected override ComponentSerializerService Build()
         {
-            return new ComponentSerializerService(this.ComponentSerializers.ToFiltered().ToLazy());
+            return new ComponentSerializerService(this.ComponentSerializers.Select(x => x()).ToFiltered().ToLazy());
         }
     }
 }

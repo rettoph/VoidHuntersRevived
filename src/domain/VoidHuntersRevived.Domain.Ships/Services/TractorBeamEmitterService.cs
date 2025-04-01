@@ -15,13 +15,13 @@ using VoidHuntersRevived.Domain.Ships.Common.Components;
 using VoidHuntersRevived.Domain.Ships.Common.Events;
 using VoidHuntersRevived.Domain.Ships.Common.Services;
 using VoidHuntersRevived.Domain.Simulations.Common.Extensions;
-using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
+using VoidHuntersRevived.Domain.Simulations.Common.Services;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Ships.Services
 {
     public partial class TractorBeamEmitterService(
-        IStrategy strategy,
+        IStepEventService stepEventService,
         ISpace space,
         IEntityQueryService entityQueryService,
         IEntitySpawnService entitySpawnService,
@@ -35,7 +35,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
     {
         private static readonly Fix64 _queryRadius = (Fix64)3;
 
-        private readonly IStrategy _strategy = strategy;
+        private readonly IStepEventService _stepEventService = stepEventService;
         private readonly ISpace _space = space;
         private readonly IEntityQueryService _entityQueryService = entityQueryService;
         private readonly IEntitySpawnService _entitySpawnService = entitySpawnService;
@@ -73,7 +73,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             }
 
             this._logger.Verbose("Selecting {NodeGlobalId} with TractorBeamEmitter {TractorBeamEmitterGlobalId}", nodeGlobalId, tractorBeamEmitterGlobalId);
-            this._strategy.Events.Publish(NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId), new TractorBeamEmitter_Select()
+            this._stepEventService.Publish(NameSpace<TractorBeamEmitterService>.Instance.Create(sourceId), new TractorBeamEmitter_Select()
             {
                 TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
                 TargetData = this._entitySerializationService.Serialize(nodeGroupIndex.GroupID, nodeGroupIndex.Index, SerializationOptions.Default),
@@ -128,7 +128,7 @@ namespace VoidHuntersRevived.Domain.Ships.Services
             while (this._deselecteds.TryDequeue(out (EntityLocalId localId, EntityLocalId headLocalId, Body body) deselected))
             {
                 this._logger.Verbose("Attempting to deselect {TreeId} with emitter {TractorBeamEmitterLocalId}", deselected.localId, tractorBeamEmitterGlobalId);
-                this._strategy.Events.Publish(nextSourceId, new TractorBeamEmitter_Deselect()
+                this._stepEventService.Publish(nextSourceId, new TractorBeamEmitter_Deselect()
                 {
                     TractorBeamEmitterGlobalId = tractorBeamEmitterGlobalId,
                     TargetData = this._entitySerializationService.Serialize(deselected.headLocalId, SerializationOptions.Default),

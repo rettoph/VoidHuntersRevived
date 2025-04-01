@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Extensions
             predictiveStepEventServiceBuilder.Object.Flush();
 
             // Verify publish
-            predictiveStepEventServiceBuilder.MessageBusMocker.Verify(
+            predictiveStepEventServiceBuilder.ChannelMessageBusProxyMocker.Verify(
                 x => x.Publish<EventSequenceGroupEnum, VhId, TEvent>(It.Ref<VhId>.IsAny, It.Ref<TEvent>.IsAny),
                 publishTimes);
 

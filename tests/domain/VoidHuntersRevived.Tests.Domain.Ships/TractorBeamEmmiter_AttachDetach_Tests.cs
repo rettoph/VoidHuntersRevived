@@ -23,11 +23,8 @@ using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 using VoidHuntersRevived.Domain.Teams.Common.Services;
 using VoidHuntersRevived.Domain.Teams.Extensions;
-using VoidHuntersRevived.Tests.Common.Physics.Extensions;
 using VoidHuntersRevived.Tests.Common.Providers;
-using VoidHuntersRevived.Tests.Common.Simulations;
-using VoidHuntersRevived.Tests.Common.Simulations.Extensions;
-using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
+using VoidHuntersRevived.Tests.Common.Simulations.Interfaces;
 using VoidHuntersRevived.Tests.Domain.Ships;
 
 namespace VoidHuntersRevived.Tests.Domain.Pieces

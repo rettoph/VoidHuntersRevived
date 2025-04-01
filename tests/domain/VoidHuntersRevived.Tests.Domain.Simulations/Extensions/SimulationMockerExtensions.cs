@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Extensions
     public static class SimulationMockerExtensions
     {
         public static void PublishThenUpdateThenVerifyPrediction<TEvent>(
-            this SimulationMocker simulationMocker,
+            this SimulationMocker<DefaultLockstepStrategyMocker, PredictiveStrategyMocker> simulationMocker,
             bool verified,
             Func<Times> publishTimes,
             Func<Times> revertTimes
@@ -17,13 +17,11 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Extensions
             where TEvent : IStepEvent, new()
         {
             TimeSpan simulatedRealtimeInterval = TimeSpan.FromMilliseconds(16);
-            PredictiveStrategyMocker predictiveStrategyMocker = simulationMocker.SimulationMockers.OfType<PredictiveStrategyMocker>().Single();
-
             // Publish
             simulationMocker.Publish<TEvent>(verified);
 
             // Verify publish
-            predictiveStrategyMocker.PredictiveStepEventServiceBuilder.MessageBusMocker.Verify(
+            simulationMocker.PredictiveStrategyMocker.PredictiveStepEventServiceBuilder.ChannelMessageBusProxyMocker.Verify(
                 x => x.Publish<EventSequenceGroupEnum, VhId, TEvent>(It.Ref<VhId>.IsAny, It.Ref<TEvent>.IsAny),
                 publishTimes);
 
@@ -31,7 +29,7 @@ namespace VoidHuntersRevived.Tests.Domain.Simulations.Extensions
             simulationMocker.Update(simulatedRealtimeInterval, 1000);
 
             // Verify revert
-            predictiveStrategyMocker.PredictiveStepEventServiceBuilder.MessageBusMocker.Verify(
+            simulationMocker.PredictiveStrategyMocker.PredictiveStepEventServiceBuilder.ChannelMessageBusProxyMocker.Verify(
                 x => x.Publish<RevertEventSequenceGroupEnum, VhId, TEvent>(It.Ref<VhId>.IsAny, It.Ref<TEvent>.IsAny),
                 revertTimes);
         }

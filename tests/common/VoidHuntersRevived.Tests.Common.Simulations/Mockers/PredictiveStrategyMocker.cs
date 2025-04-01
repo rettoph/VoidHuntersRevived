@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Messaging.Common.Services;
 using Guppy.Core.Messaging.Systems.Scoped;
 using Guppy.Tests.Common;
-using Guppy.Tests.Common.Builders;
+using Guppy.Tests.Common.Mockers;
 using VoidHuntersRevived.Domain.Simulations.Strategies;
 using VoidHuntersRevived.Domain.Simulations.Systems;
 using VoidHuntersRevived.Tests.Common.Simulations.Mocks;
@@ -10,13 +10,13 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
 {
     public class PredictiveStrategyMocker : StrategyMocker<PredictiveStrategy>
     {
-        public ChannelMessageBusBuilder ChannelMessageBusBuilder { get; }
+        public ChannelMessageBusProxyMocker ChannelMessageBusProxyMocker { get; }
         public PredictiveStepServiceBuilder PredictiveStepServiceBuilder { get; }
         public PredictiveStepEventServiceBuilder PredictiveStepEventServiceBuilder { get; }
 
         public PredictiveStrategyMocker()
         {
-            this.ChannelMessageBusBuilder = new ChannelMessageBusBuilder()
+            this.ChannelMessageBusProxyMocker = new ChannelMessageBusProxyMocker()
             {
                 MessageBusServiceMocker = new Mocker<IMessageBusService>()
             };
@@ -24,12 +24,12 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
             this.PredictiveStepEventServiceBuilder = new PredictiveStepEventServiceBuilder
             {
                 LoggerMocker = this.LoggerMocker,
-                ChannelMessageBusBuilder = this.ChannelMessageBusBuilder
+                ChannelMessageBusProxyMocker = this.ChannelMessageBusProxyMocker
             };
 
             this.PredictiveStepServiceBuilder = new PredictiveStepServiceBuilder()
             {
-                ChannelMessageBusBuilder = this.ChannelMessageBusBuilder
+                ChannelMessageBusProxyMocker = this.ChannelMessageBusProxyMocker
             };
 
             this.SystemFactories.AddRange([
@@ -37,7 +37,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
                 x => new StepEventServiceFlushSystem(this.PredictiveStepEventServiceBuilder.Object),
                 x => new PredictiveStepEventCleanSystem(this.PredictiveStepEventServiceBuilder.Object),
                 x => new AutoSubscribeScopedSystemsToBrokerServiceSystem(
-                    messageBus: this.ChannelMessageBusBuilder.Object,
+                    messageBus: this.ChannelMessageBusProxyMocker.Object,
                     scopedSystemService: this.ScopedSystemServiceMocker.Object)
             ]);
         }

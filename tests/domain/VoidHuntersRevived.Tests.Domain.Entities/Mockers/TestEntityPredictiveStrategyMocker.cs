@@ -2,11 +2,11 @@
 using VoidHuntersRevived.Tests.Domain.Entities.Systems;
 using VoidHuntersRevived.Tests.Entities.Stubs;
 
-namespace VoidHuntersRevived.Tests.Domain.Entities.Builders
+namespace VoidHuntersRevived.Tests.Domain.Entities.Mockers
 {
-    public class TestEntityLockstepStrategyBuilder : EntityLockstepStrategyMocker
+    public class TestEntityPredictiveStrategyBuilder : EntityPredictiveStrategyMocker
     {
-        public TestEntityLockstepStrategyBuilder()
+        public TestEntityPredictiveStrategyBuilder()
         {
             this.SystemFactories.AddRange([
                 x => new TestInputSystem(

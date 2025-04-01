@@ -12,14 +12,10 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Interfaces
         PredictiveStrategyMocker PredictiveStrategyMocker { get; }
     }
 
-    public interface ISimulationMocker<out TSelf, TLockstepStrategyMocker, TPredictiveStrategyMocker> : ISimulationMocker
-        where TSelf : ISimulationMocker<TSelf, TLockstepStrategyMocker, TPredictiveStrategyMocker>
-        where TLockstepStrategyMocker : DefaultLockstepStrategyMocker, new()
-        where TPredictiveStrategyMocker : PredictiveStrategyMocker, new()
+    public interface ISimulationMocker<out TSelf, TStrategyMocker> : ISimulationMocker
+        where TSelf : ISimulationMocker
+        where TStrategyMocker : IStrategyMocker
     {
-        TLockstepStrategyMocker LockstepStrategyMocker { get; }
-        new TPredictiveStrategyMocker PredictiveStrategyMocker { get; }
-
         TSelf Update(TimeSpan interval, int count = 1);
 
         TSelf Input(VhId sourceId, IStepInput input, bool verified = true);
@@ -39,5 +35,15 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Interfaces
 
         TSelf Publish<TEvent>(bool verified = true)
             where TEvent : IStepEvent, new();
+    }
+
+    public interface ISimulationMocker<out TSelf, TStrategyMocker, TLockstepStrategyMocker, TPredictiveStrategyMocker> : ISimulationMocker<TSelf, TStrategyMocker>
+        where TSelf : ISimulationMocker<TSelf, TStrategyMocker, TLockstepStrategyMocker, TPredictiveStrategyMocker>
+        where TStrategyMocker : IStrategyMocker
+        where TLockstepStrategyMocker : DefaultLockstepStrategyMocker, TStrategyMocker, new()
+        where TPredictiveStrategyMocker : PredictiveStrategyMocker, TStrategyMocker, new()
+    {
+        TLockstepStrategyMocker LockstepStrategyMocker { get; }
+        new TPredictiveStrategyMocker PredictiveStrategyMocker { get; }
     }
 }

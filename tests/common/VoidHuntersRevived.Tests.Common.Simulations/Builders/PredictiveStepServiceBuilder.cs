@@ -1,17 +1,17 @@
 ﻿using Guppy.Tests.Common;
-using Guppy.Tests.Common.Builders;
+using Guppy.Tests.Common.Mockers;
 using VoidHuntersRevived.Domain.Simulations.Services;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
 {
     public class PredictiveStepServiceBuilder : Builder<PredictiveStepService>
     {
-        public required ChannelMessageBusBuilder ChannelMessageBusBuilder { get; init; }
+        public required ChannelMessageBusProxyMocker ChannelMessageBusProxyMocker { get; init; }
 
         protected override PredictiveStepService Build()
         {
             return new PredictiveStepService(
-                this.ChannelMessageBusBuilder.Object);
+                this.ChannelMessageBusProxyMocker.Object);
         }
     }
 }

@@ -9,12 +9,13 @@ using VoidHuntersRevived.Domain.Entities.Providers;
 using VoidHuntersRevived.Domain.Entities.Systems;
 using VoidHuntersRevived.Tests.Common.Builders;
 using VoidHuntersRevived.Tests.Common.Entities.Builders;
+using VoidHuntersRevived.Tests.Common.Entities.Interfaces;
 using VoidHuntersRevived.Tests.Common.Simulations.Extensions;
 using VoidHuntersRevived.Tests.Common.Simulations.Mockers;
 
 namespace VoidHuntersRevived.Tests.Common.Entities.Mockers
 {
-    public class EntityPredictiveStrategyMocker : PredictiveStrategyMocker
+    public class EntityPredictiveStrategyMocker : PredictiveStrategyMocker, IEntityStrategyMocker
     {
         public EntitiesSubmissionScheduler EntitiesSubmissionScheduler { get; }
         public EnginesRoot EnginesRoot { get; }
