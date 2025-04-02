@@ -1,6 +1,6 @@
 [submodule "libraries/Guppy"]
 	path = libraries/Guppy
-	url = https://github.com/rettoph/Guppy
+	url = https://git.retto.ph/tony/Guppy
 [submodule "libraries/Aether.Physics2D"]
 	path = libraries/Aether.Physics2D
 	url = https://github.com/rettoph/Aether.Physics2D-FixedMath
