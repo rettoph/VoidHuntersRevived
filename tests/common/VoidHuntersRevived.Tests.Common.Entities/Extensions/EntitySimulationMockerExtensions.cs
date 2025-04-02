@@ -18,7 +18,7 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Extensions
             };
         }
 
-        public static void AssertTotalEntities<TComponent>(
+        public static IEntitySimulationMocker AssertTotalEntities<TComponent>(
             this IEntitySimulationMocker simulation,
             int expected)
                 where TComponent : unmanaged, IEntityComponent
@@ -27,9 +27,11 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Extensions
 
             Assert.Equal(expected, totals[StrategyTypeEnum.Lockstep]);
             Assert.Equal(expected, totals[StrategyTypeEnum.Predictive]);
+
+            return simulation;
         }
 
-        public static void AssertTotalEntities<TComponent>(
+        public static IEntitySimulationMocker AssertTotalEntities<TComponent>(
             this IEntitySimulationMocker simulation,
             int lockstepExpected,
             int predictiveExpceted)
@@ -39,6 +41,8 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Extensions
 
             Assert.Equal(lockstepExpected, totals[StrategyTypeEnum.Lockstep]);
             Assert.Equal(predictiveExpceted, totals[StrategyTypeEnum.Predictive]);
+
+            return simulation;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Guppy.Tests.Common;
+using Guppy.Tests.Common.Extensions;
 using VoidHuntersRevived.Domain.Entities.Common.Serialization;
 using VoidHuntersRevived.Domain.Entities.Services;
-using VoidHuntersRevived.Tests.Common.Extensions;
 
 namespace VoidHuntersRevived.Tests.Common.Entities.Builders
 {
@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Tests.Common.Entities.Builders
 
         protected override ComponentSerializerService Build()
         {
-            return new ComponentSerializerService(this.ComponentSerializers.Select(x => x()).ToFiltered().ToLazy());
+            return new ComponentSerializerService(this.ComponentSerializers.ToLazy(x => x()));
         }
     }
 }

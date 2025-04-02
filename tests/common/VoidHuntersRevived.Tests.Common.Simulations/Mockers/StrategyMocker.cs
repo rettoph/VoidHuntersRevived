@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Services;
+﻿using Guppy.Core.Common.Services;
 using Guppy.Core.Common.Systems;
 using Guppy.Core.Logging.Common;
 using Guppy.Tests.Common;
+using Guppy.Tests.Common.Mockers;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
 
         public GameTime GameTime { get; set; }
         public ISimulation? Simulation { get; set; }
-        public Mocker<IGuppyScope> GuppyScopeMocker { get; set; }
+        public GuppyScopeMocker GuppyScopeMocker { get; set; }
         public Mocker<IScopedSystemService> ScopedSystemServiceMocker { get; set; }
         public Mocker<ILogger> LoggerMocker { get; set; }
         public List<Func<TStrategy, IScopedSystem>> SystemFactories { get; set; }
@@ -37,9 +37,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
             this.ScopedSystemServiceMocker = new Mocker<IScopedSystemService>()
                 .SetupReturn(x => x.GetAll(), () => this.Systems);
 
-            this.GuppyScopeMocker = new Mocker<IGuppyScope>()
+            this.GuppyScopeMocker = new GuppyScopeMocker()
                 .SetupReturn(x => x.Systems, () => this.ScopedSystemServiceMocker.Object)
-                .SetupReturn(x => x.Resolve<ISimulation>(), () => this.Simulation ?? throw new NotImplementedException());
+                .SetupResolve<ISimulation>(() => this.Simulation ?? throw new NotImplementedException());
 
             this.LoggerMocker = new Mocker<ILogger>();
         }

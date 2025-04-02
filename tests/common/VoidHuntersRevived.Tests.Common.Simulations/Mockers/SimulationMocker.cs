@@ -4,6 +4,7 @@ using VoidHuntersRevived.Domain.Providers;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
+using VoidHuntersRevived.Tests.Common.Providers;
 using VoidHuntersRevived.Tests.Common.Simulations.Interfaces;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
@@ -116,6 +117,21 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
             where TEvent : IStepEvent, new()
         {
             return this.Publish(VhId.NewVhId(), new TEvent(), verified);
+        }
+
+        public TSelf Invoke<TData>(Action<TData, VhIdProvider, TStrategyMocker> action, out MockData<TData> data)
+            where TData : new()
+        {
+            data = new MockData<TData>();
+            return this.Invoke(data, action);
+        }
+
+        public TSelf Invoke<TData>(MockData<TData> data, Action<TData, VhIdProvider, TStrategyMocker> action) where TData : new()
+        {
+            action(data.GetDataByContext(this.LockstepStrategyMocker), data.GetVhIdsByContext(this.LockstepStrategyMocker), this.LockstepStrategyMocker);
+            action(data.GetDataByContext(this.PredictiveStrategyMocker), data.GetVhIdsByContext(this.PredictiveStrategyMocker), this.PredictiveStrategyMocker);
+
+            return (TSelf)this;
         }
     }
 

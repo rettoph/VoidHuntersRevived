@@ -5,9 +5,9 @@ using VoidHuntersRevived.Domain.Entities.Common.Services;
 
 namespace VoidHuntersRevived.Domain.Entities.Services
 {
-    public class ComponentSerializerService(Lazy<IFiltered<IComponentSerializer>> serializers) : IComponentSerializerService
+    public class ComponentSerializerService(Lazy<IEnumerable<IComponentSerializer>> serializers) : IComponentSerializerService
     {
-        private readonly Lazy<IFiltered<IComponentSerializer>> _serializers = serializers;
+        private readonly Lazy<IEnumerable<IComponentSerializer>> _serializers = serializers;
         private readonly Dictionary<Type, IComponentSerializer> _serializersTable = [];
 
         public void Initialize()

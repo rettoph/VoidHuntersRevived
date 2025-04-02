@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Systems;
 using Guppy.Game.Common.Systems;
 using Svelto.ECS;

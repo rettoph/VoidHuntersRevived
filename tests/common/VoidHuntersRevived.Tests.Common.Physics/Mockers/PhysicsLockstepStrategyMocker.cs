@@ -1,4 +1,5 @@
-﻿using VoidHuntersRevived.Domain.Physics.Serialization.Components;
+﻿using VoidHuntersRevived.Domain.Physics.Common;
+using VoidHuntersRevived.Domain.Physics.Serialization.Components;
 using VoidHuntersRevived.Domain.Physics.Systems;
 using VoidHuntersRevived.Tests.Common.Physics.Builders;
 using VoidHuntersRevived.Tests.Common.Physics.Interfaces;
@@ -19,6 +20,8 @@ namespace VoidHuntersRevived.Tests.Common.Physics.Mockers
                 AetherWorldBuilder = this.AetherWorldBuilder,
                 LoggerMocker = this.LoggerMocker
             };
+
+            this.GuppyScopeMocker.SetupResolve<ISpace>(() => this.SpaceBuilder.Object);
 
             this.ComponentSerializerServiceBuilder.ComponentSerializers.AddRange([
                 () => new AwakeComponentSerializer(),

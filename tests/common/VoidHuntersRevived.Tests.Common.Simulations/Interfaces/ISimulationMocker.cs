@@ -1,6 +1,7 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Tests.Common.Providers;
 using VoidHuntersRevived.Tests.Common.Simulations.Mockers;
 
 namespace VoidHuntersRevived.Tests.Common.Simulations.Interfaces
@@ -35,6 +36,11 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Interfaces
 
         TSelf Publish<TEvent>(bool verified = true)
             where TEvent : IStepEvent, new();
+
+        TSelf Invoke<TData>(Action<TData, VhIdProvider, TStrategyMocker> action, out MockData<TData> data)
+            where TData : new();
+        TSelf Invoke<TData>(MockData<TData> data, Action<TData, VhIdProvider, TStrategyMocker> action)
+            where TData : new();
     }
 
     public interface ISimulationMocker<out TSelf, TStrategyMocker, TLockstepStrategyMocker, TPredictiveStrategyMocker> : ISimulationMocker<TSelf, TStrategyMocker>
