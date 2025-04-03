@@ -69,6 +69,22 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
             return (TSelf)this;
         }
 
+        public TSelf Input<TStrategy>(VhId sourceId, IStepInput input, bool verified = true)
+            where TStrategy : IStrategy
+        {
+            if (verified == true && this.LockstepStrategyMocker.Strategy is TStrategy)
+            {
+                this.LockstepStrategyMocker.Input(sourceId, input);
+            }
+
+            if (this.PredictiveStrategyMocker.Strategy is TStrategy)
+            {
+                this.PredictiveStrategyMocker.Input(sourceId, input);
+            }
+
+            return (TSelf)this;
+        }
+
         public TSelf Input<TInput>(VhId sourceId, bool verified = true)
             where TInput : IStepInput, new()
         {

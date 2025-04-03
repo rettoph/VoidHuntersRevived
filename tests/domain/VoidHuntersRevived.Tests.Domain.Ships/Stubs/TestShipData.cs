@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Tests.Domain.Ships.Stubs
 {
-    public class SelectDeselectReselectAttachData
+    public class TestShipData
     {
         public EntityLocalId ShipLocalId { get; set; }
     }

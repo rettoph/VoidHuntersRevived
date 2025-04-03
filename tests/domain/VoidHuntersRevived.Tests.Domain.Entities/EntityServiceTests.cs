@@ -25,13 +25,11 @@ namespace VoidHuntersRevived.Tests.Domain.Entities
                 .Input(factory: TestSpawnEntityStepInput.Factory, verified: true)
                 .Update(interval: simulatedRealtimeInterval);
 
-            this.SimulationMocker.AssertTotalEntities<TestEntityComponent>(
-                lockstepExpected: 0,
-                predictiveExpceted: 1);
+            this.SimulationMocker.AssertTotalEntities<TestEntityComponent>(expected: 1);
 
             this.SimulationMocker.Update(interval: simulatedRealtimeInterval, count: 1000);
 
-            this.SimulationMocker.AssertTotalEntities<TestEntityComponent>(expected: 0);
+            this.SimulationMocker.AssertTotalEntities<TestEntityComponent>(expected: 1);
         }
 
         [Fact]

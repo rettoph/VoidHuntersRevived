@@ -60,7 +60,9 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Mockers
                 x => new StepEventServiceFlushSystem(this.DefaultLockstepStepEventServiceBuilder.Object),
                 x => new AutoSubscribeScopedSystemsToBrokerServiceSystem(
                     messageBus: this.ChannelMessageBusProxyMocker.Object,
-                    scopedSystemService: this.ScopedSystemServiceMocker.Object)
+                    scopedSystemService: this.ScopedSystemServiceMocker.Object),
+                x => new LockstepStrategyTickPublishInputsSystem(
+                    eventService: this.DefaultLockstepStepEventServiceBuilder.Object)
             ]);
         }
 

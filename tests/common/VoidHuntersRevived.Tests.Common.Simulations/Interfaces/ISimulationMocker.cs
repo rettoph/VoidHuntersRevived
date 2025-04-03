@@ -1,6 +1,7 @@
 ﻿using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Simulations;
 using VoidHuntersRevived.Domain.Simulations.Common;
+using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 using VoidHuntersRevived.Tests.Common.Providers;
 using VoidHuntersRevived.Tests.Common.Simulations.Mockers;
 
@@ -20,6 +21,8 @@ namespace VoidHuntersRevived.Tests.Common.Simulations.Interfaces
         TSelf Update(TimeSpan interval, int count = 1);
 
         TSelf Input(VhId sourceId, IStepInput input, bool verified = true);
+        TSelf Input<TStrategy>(VhId sourceId, IStepInput input, bool verified = true)
+            where TStrategy : IStrategy;
 
         TSelf Input<TInput>(VhId sourceId, bool verified = true)
             where TInput : IStepInput, new();

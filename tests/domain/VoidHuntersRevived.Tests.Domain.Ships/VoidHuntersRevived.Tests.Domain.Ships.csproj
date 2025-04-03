@@ -10,14 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="TractorBeamEmmiter_AttachDetach_Tests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="TractorBeamEmmiter_AttachDetach_Tests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
