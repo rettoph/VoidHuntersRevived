@@ -1,4 +1,6 @@
 ﻿
+using VoidHuntersRevived.Common.FloatingPoint;
+
 namespace VoidHuntersRevived.Common.FixedPoint
 {
     public struct FixComplex(Fix64 real, Fix64 imaginary)
@@ -36,6 +38,14 @@ namespace VoidHuntersRevived.Common.FixedPoint
                 this.Imaginary = Fix64.Sin(value);
             }
         }
+
+        public Complex ToComplex()
+        {
+            return new Complex(
+                real: (float)this.Real,
+                imaginary: (float)this.Imaginary);
+        }
+
 
         public override readonly string ToString()
         {

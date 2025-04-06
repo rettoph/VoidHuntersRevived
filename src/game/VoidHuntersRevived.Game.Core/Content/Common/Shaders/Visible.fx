@@ -13,7 +13,7 @@ VertexShaderOutput MainVS(in VertexShaderStaticInput staticInput, uint instanceI
 {
     VertexShaderOutput output = (VertexShaderOutput) 0;
 
-    output.Position = TransformStaticPosition(staticInput.Position, instanceInput.Z, instanceInput.LocalTranformation);
+    output.Position = TransformStaticPosition(staticInput.Position, DecodeTransform(instanceInput.LocalTranformation_Packed));
     output.Color = GetColor(staticInput.Flags.IsTrace, instanceInput.PrimaryColor, instanceInput.SecondaryColor);
     
     return output;

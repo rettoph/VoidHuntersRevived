@@ -56,7 +56,7 @@ namespace VoidHuntersRevived.Domain.Entities
             this._onSpawnSystemInvokers = new(false);
             this._serializers = null!;
 
-            this._descriptor = BuildDescriptor(key, entityTemplateService, out var components, out this._group);
+            this._descriptor = EntityTemplate.BuildDescriptor(key, entityTemplateService, out var components, out this._group);
 
             this.Key = key;
             this.Components = components;
@@ -87,8 +87,7 @@ namespace VoidHuntersRevived.Domain.Entities
             this._onSpawnSystemInvokers.Add(onSpawnSystemInvokers);
         }
 
-        #region Instance Entity Methods
-        public EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, out EntityLocalId localId)
+        public EntityInitializer HardSpawnEntity(in VhId sourceEventId, in EntityGlobalId globalId, out EntityLocalId localId)
         {
             // Create a new EGID for the entity
             EGID egid = new(this._uniqueNumberProvider.GetUInt32(), this._group.Value);
@@ -105,25 +104,25 @@ namespace VoidHuntersRevived.Domain.Entities
             return initializer;
         }
 
-        public void SoftSpawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
+        public void SoftSpawnEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
             this._logger.Verbose("SoftSpawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
             this._onSpawnSystemInvokers.Invoke(sourceEventId, this, entity);
         }
 
-        public void SoftDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
+        public void SoftDespawnEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
             this._logger.Verbose("SoftDespawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
             this._onDespawnSystemInvokers.Invoke(sourceEventId, this, entity);
         }
 
-        public void HardDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
+        public void HardDespawnEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status)
         {
             this._logger.Verbose("HardDespawnInstanceEntity - GlobalId = {GlobalId}, LocalId = {localId}, Template = {Tempalte}", entity.GlobalId, entity.LocalId, this.Key.Name);
             this._functions.RemoveEntity<VoidHuntersEntityDescriptor>(entity.LocalId.Value);
         }
 
-        public void SerializeInstanceEntity(ref EntityWriter writer, in Entity entity, in SerializationOptions options)
+        public void SerializeEntity(ref EntityWriter writer, in Entity entity, in SerializationOptions options)
         {
             foreach (IComponentSerializer serializer in this._serializers)
             {
@@ -131,14 +130,13 @@ namespace VoidHuntersRevived.Domain.Entities
             }
         }
 
-        public void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
+        public void DeserializeEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity)
         {
             foreach (IComponentSerializer serializer in this._serializers)
             {
                 serializer.Deserialize(in sourceId, in options, ref reader, in entity);
             }
         }
-        #endregion
 
         public IEnumerable<Type> GetAllDistinctComponentTypes()
         {
@@ -156,6 +154,7 @@ namespace VoidHuntersRevived.Domain.Entities
             HashSet<Type> requiredComponents = [];
             Queue<Key<IEntityTemplate>> enqueuedFragments = [];
             HashSet<Key<IEntityTemplate>> populatedTemplateKeys = [];
+            EntityTemplateFlagsEnum entityTemplateFlags = EntityTemplateFlagsEnum.None;
 
             // Register default components...
             components.Set(new EntityLocalId());
@@ -166,13 +165,14 @@ namespace VoidHuntersRevived.Domain.Entities
             enqueuedFragments.Enqueue(key);
             while (enqueuedFragments.TryDequeue(out var enqueuedTemplate) == true)
             {
-                PopulateComponentCollections(
+                EntityTemplate.PopulateComponentCollections(
                     enqueuedTemplate,
                     entityTemplateService,
                     ref components,
                     ref requiredComponents,
                     ref enqueuedFragments,
-                    ref populatedTemplateKeys);
+                    ref populatedTemplateKeys,
+                    ref entityTemplateFlags);
             }
 
             // Verify all required components exists...
@@ -194,7 +194,8 @@ namespace VoidHuntersRevived.Domain.Entities
             ref ComponentBuilderDictionary components,
             ref HashSet<Type> requiredComponents,
             ref Queue<Key<IEntityTemplate>> enqueuedTemplates,
-            ref HashSet<Key<IEntityTemplate>> populatedTemplates)
+            ref HashSet<Key<IEntityTemplate>> populatedTemplates,
+            ref EntityTemplateFlagsEnum entityTemplateFlags)
         {
             if (populatedTemplates.Add(key) == false)
             {
@@ -203,6 +204,8 @@ namespace VoidHuntersRevived.Domain.Entities
 
             foreach (EntityTemplateFragment fragment in entityTemplateFragmentService.GetByKey(key))
             {
+                entityTemplateFlags |= fragment.Flags;
+
                 foreach (IEntityComponent component in fragment.Components)
                 {
                     if (components.Has(component.GetType()) == false)

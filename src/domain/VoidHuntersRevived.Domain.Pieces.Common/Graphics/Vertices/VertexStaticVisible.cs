@@ -8,6 +8,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
     [StructLayout(LayoutKind.Explicit)]
     public struct VertexStaticVisibleFlags
     {
+        [JsonInclude]
         [FieldOffset(0)]
         public bool IsTrace;
 
@@ -31,6 +32,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
             new VertexElement(4, VertexElementFormat.Vector2, VertexElementUsage.Position, 0)
         );
 
+        [JsonInclude]
         [FieldOffset(0)]
         public VertexStaticVisibleFlags Flags;
 
@@ -46,16 +48,5 @@ namespace VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices
         [JsonInclude]
         [FieldOffset(8)]
         public float Y;
-
-        public VertexStaticVisible(Vector2 position)
-        {
-            this.Position = position;
-        }
-
-        public VertexStaticVisible(Vector2 position, bool isTrace)
-        {
-            this.Position = position;
-            this.Flags.IsTrace = isTrace;
-        }
     }
 }

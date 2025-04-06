@@ -14,15 +14,45 @@
     "VertexBuffer": [
       {
         "X": 0,
-        "Y": 0
+        "Y": 0,
+        "Flags": {
+          "IsTrace": false
+        }
       },
       {
         "X": 1,
-        "Y": 0
+        "Y": 0,
+        "Flags": {
+          "IsTrace": false
+        }
       },
       {
         "X": 0.5,
-        "Y": 0.8660254038
+        "Y": 0.8660254038,
+        "Flags": {
+          "IsTrace": false
+        }
+      },
+      {
+        "X": 0,
+        "Y": 0,
+        "Flags": {
+          "IsTrace": true
+        }
+      },
+      {
+        "X": 1,
+        "Y": 0,
+        "Flags": {
+          "IsTrace": true
+        }
+      },
+      {
+        "X": 0.5,
+        "Y": 0.8660254038,
+        "Flags": {
+          "IsTrace": true
+        }
       }
     ],
     "IndexBuffers": [
@@ -37,11 +67,11 @@
       {
         "Type": "LineList",
         "Values": [
-          0,
-          1,
-          1,
-          2,
-          2,
+          3,
+          4,
+          4,
+          5,
+          5,
           3
         ]
       }

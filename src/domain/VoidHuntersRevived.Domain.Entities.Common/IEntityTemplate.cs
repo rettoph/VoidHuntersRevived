@@ -15,13 +15,13 @@ namespace VoidHuntersRevived.Domain.Entities.Common
         Key<IEntityTemplate> Key { get; }
         ComponentBuilderDictionary Components { get; }
 
-        EntityInitializer HardSpawnInstanceEntity(in VhId sourceEventId, in EntityGlobalId globalId, out EntityLocalId localId);
-        void SoftSpawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
+        EntityInitializer HardSpawnEntity(in VhId sourceEventId, in EntityGlobalId globalId, out EntityLocalId localId);
+        void SoftSpawnEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
 
-        void SoftDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
-        void HardDespawnInstanceEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
+        void SoftDespawnEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
+        void HardDespawnEntity(in VhId sourceEventId, in Entity entity, ref EntityStatus status);
 
-        void SerializeInstanceEntity(ref EntityWriter writer, in Entity entity, in SerializationOptions options);
-        void DeserializeInstanceEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity);
+        void SerializeEntity(ref EntityWriter writer, in Entity entity, in SerializationOptions options);
+        void DeserializeEntity(in VhId sourceId, in DeserializationOptions options, ref EntityReader reader, in InitializingEntity entity);
     }
 }

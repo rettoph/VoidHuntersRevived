@@ -7,9 +7,13 @@ using IVertexType = Microsoft.Xna.Framework.Graphics.IVertexType;
 
 namespace VoidHuntersRevived.Domain.Graphics.Services
 {
-    public class PrimitiveService(IResourceService resourceService) : IPrimitiveService
+    public class PrimitiveService(IResourceService resourceService, IEnumerable<IPrimitive> primitives) : IPrimitiveService
     {
-        private readonly IPrimitive[] _primitives = resourceService.GetAll<IPrimitiveType>().SelectMany(x => x.Value.Primitives).ToArray();
+        private readonly IPrimitive[] _primitives = resourceService.GetAll<IPrimitiveType>()
+            .Where(x => x.Value is not null)
+            .SelectMany(x => x.Value!.Primitives)
+            .Concat(primitives)
+            .ToArray();
 
         public IEnumerable<IPrimitive> GetAll()
         {

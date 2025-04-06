@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Logging.Common;
-using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Simulations.Common;
 using VoidHuntersRevived.Domain.Simulations.Common.Enums;
@@ -20,8 +19,6 @@ namespace VoidHuntersRevived.Domain.Simulations.Strategies
     {
         private readonly PredictiveStepEventService _eventService = eventService;
         private ILockstepStrategy _lockstep = null!;
-        private readonly Step _step = new();
-        private readonly double _lastStepTime;
         private IPredictiveSynchronizationSystem[] _synchronizations = [];
 
 

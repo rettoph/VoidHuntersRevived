@@ -6,6 +6,10 @@
 /// cache for th changes to be picked up and applied
 /// ------------------------------------------------------------
 
+#pragma once
+
+#include "_Shaders.Common.fx"
+
 static const uint RMask = 0x000000ff;
 static const uint GMask = 0x0000ff00;
 static const uint BMask = 0x00ff0000;
@@ -30,42 +34,30 @@ struct VertexShaderStaticInput
 
 struct VertexShaderInstanceInput
 {
-    uint PrimaryColor : COLOR0;
-    uint SecondaryColor : COLOR1;
-    float Z : COLOR2;
-    matrix LocalTranformation : BLENDWEIGHT0;
+    float4 LocalTranformation_Packed : POSITION1;
+    float4 PrimaryColor : COLOR0;
+    float4 SecondaryColor : COLOR1;
 };
 
-float ByteToFloat(uint byte)
+float4 TransformStaticPosition(float2 localPosition, Transform2D transformation)
 {
-    return ((float) byte) / ((float) 255);
-}
-
-float4 UnpackColor(uint packed)
-{
-    return float4(
-        ByteToFloat((packed & RMask) >> 0),
-        ByteToFloat((packed & GMask) >> 8),
-        ByteToFloat((packed & BMask) >> 16),
-        ByteToFloat((packed & AMask) >> 24));
-}
-
-float4 TransformStaticPosition(float2 position, float z, float4x4 transformation)
-{
-    float4 result = mul(float4(position, z, 1.f), transformation);
+    float4 result = float4(transform(localPosition, transformation), 0.f, 1.f);
     result = mul(result, WorldViewProjection);
-    
+
+    result.z = 0.f;
+    result.w = 1.f;
+
     return result;
 }
 
-float4 GetColor(bool isTrace, uint primaryColor, uint secondaryColor)
+float4 GetColor(bool isTrace, float4 primaryColor, float4 secondaryColor)
 {
     if (isTrace == true)
     {
-        return UnpackColor(secondaryColor);
+        return secondaryColor;
     }
     else
     {
-        return UnpackColor(primaryColor);
+        return primaryColor;
     }
 }

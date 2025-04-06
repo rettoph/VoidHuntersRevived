@@ -60,7 +60,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             ref EntityLocalId localId = ref this._entityQueryService.AddLocalId(data.GlobalId);
             IEntityTemplate template = this._entityTemplateService.GetByKey(data.TemplateKey);
 
-            EntityInitializer initializer = template.HardSpawnInstanceEntity(eventId, data.GlobalId, out localId);
+            EntityInitializer initializer = template.HardSpawnEntity(eventId, data.GlobalId, out localId);
             this._entityQueryService.AddGlobalId(localId, data.GlobalId);
 
             this._logger.Verbose("{MethodName}, Hard spawned entity. GlobalId = {GlobalId}, LocalId = {LocalId}, Template = {Template}", nameof(SpawnEntity), data.GlobalId, localId, template.Key.Name);
@@ -88,7 +88,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             ref EntityLocalId localId = ref this._entityQueryService.AddLocalId(data.GlobalId);
             IEntityTemplate template = this._entityTemplateService.GetByKey(data.TemplateKey);
 
-            EntityInitializer initializer = template.HardSpawnInstanceEntity(eventId, data.GlobalId, out localId);
+            EntityInitializer initializer = template.HardSpawnEntity(eventId, data.GlobalId, out localId);
             this._entityQueryService.AddGlobalId(localId, data.GlobalId);
 
             InitializingEntity entity = new(in localId, data.GlobalId, ref initializer, in template);
@@ -123,7 +123,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             Entity entity = new(groupIndex.Index, localId, data.GlobalId);
 
             this._logger.Verbose("{MethodName}, GlobalId = {GlobalId}, LocalId = {LocalId}, Template = {Template}", nameof(SoftSpawnEntity), data.GlobalId, localId, templateKey.Name);
-            this._entityTemplateService.GetByKey(templateKey).SoftSpawnInstanceEntity(in eventId, in entity, ref status);
+            this._entityTemplateService.GetByKey(templateKey).SoftSpawnEntity(in eventId, in entity, ref status);
             status.Value = EntityStatusEnum.SoftSpawned;
         }
 
@@ -221,7 +221,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             this.SoftDespawn(eventId, ref status, ref entity, template);
 
             this._logger.Verbose("{MethodName}, GlobalId = {GlobalId}, LocalId = {LocalId}, Template = {Template}", nameof(HardDespawnEntity), data.GlobalId, localId, templateKey.Name);
-            template.HardDespawnInstanceEntity(in eventId, in entity, ref status);
+            template.HardDespawnEntity(in eventId, in entity, ref status);
             this._entityQueryService.Remove(data.GlobalId);
             status.Value = EntityStatusEnum.HardDespawned;
         }
@@ -253,7 +253,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             Entity entity = new(groupIndex.Index, localId, data.GlobalId);
 
             this._logger.Verbose("(Revert) {MethodName}, Soft spawn. GlobalId = {GlobalId}, LocalId = {LocalId}", nameof(DespawnEntity), data.GlobalId, localId, status.Value);
-            template.SoftSpawnInstanceEntity(in eventId, in entity, ref status);
+            template.SoftSpawnEntity(in eventId, in entity, ref status);
             status.Value = EntityStatusEnum.SoftSpawned;
         }
 
@@ -272,7 +272,7 @@ namespace VoidHuntersRevived.Domain.Entities.Systems
             }
 
             this._logger.Verbose("{MethodName}, GlobalId = {GlobalId}, LocalId = {LocalId}, Template = {Template}", nameof(SoftDespawn), entity.GlobalId, entity.LocalId, template.Key.Name);
-            template.SoftDespawnInstanceEntity(in sourceEventId, in entity, ref status);
+            template.SoftDespawnEntity(in sourceEventId, in entity, ref status);
             status.Value = EntityStatusEnum.SoftDespawned;
         }
     }

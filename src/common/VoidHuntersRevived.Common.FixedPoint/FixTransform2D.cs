@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using VoidHuntersRevived.Common.FloatingPoint;
 
 namespace VoidHuntersRevived.Common.FixedPoint
 {
@@ -106,6 +107,13 @@ namespace VoidHuntersRevived.Common.FixedPoint
             result.M42 = (float)this.Position.Y;
 
             return result;
+        }
+
+        public readonly Transform2D ToTransform2D()
+        {
+            return new Transform2D(
+                rotation: this.Rotation.ToComplex(),
+                position: this.Position.ToXna());
         }
 
         public override readonly string ToString()

@@ -53,7 +53,7 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                         builder.RegisterSceneSystem<AetherDebugSystem>();
                         builder.RegisterSceneSystem<EntitiesDebugSystem>();
                         builder.RegisterSceneSystem<DrawVertexVisibleSystem>();
-                        builder.RegisterSceneSystem<ShaderAntiAliasingSystem>();
+                        //builder.RegisterSceneSystem<ShaderAntiAliasingSystem>();
                     });
 
                     builder.Filter(

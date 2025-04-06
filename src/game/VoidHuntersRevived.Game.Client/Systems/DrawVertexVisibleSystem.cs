@@ -40,9 +40,9 @@ namespace VoidHuntersRevived.Game.Client.Systems
             ref ColorScheme colorScheme = ref colorSchemes[vertexVisible.Index];
             ref Fixture fixture = ref fixtures[vertexVisible.Index];
 
-            vertex.LocalTransformation = fixture.WorldTransform.ToMatrix();
-            vertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
-            vertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
+            vertex.Transform2D = fixture.WorldTransform.ToTransform2D();
+            vertex.PrimaryColor = colorScheme.Primary;
+            vertex.SecondaryColor = colorScheme.Secondary;
         }
 
         /// <summary>
@@ -60,9 +60,9 @@ namespace VoidHuntersRevived.Game.Client.Systems
                     ref ColorScheme colorScheme = ref colorSchemes[i];
                     ref Fixture fixture = ref fixtures[i];
 
-                    vertex.LocalTransformation = fixture.WorldTransform.ToMatrix();
-                    vertex.PrimaryColor = colorScheme.Primary.Value.PackedValue;
-                    vertex.SecondaryColor = colorScheme.Secondary.Value.PackedValue;
+                    vertex.Transform2D = fixture.WorldTransform.ToTransform2D();
+                    vertex.PrimaryColor = colorScheme.Primary;
+                    vertex.SecondaryColor = colorScheme.Secondary;
                 }
             }
         }

@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\..\libraries\Guppy\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\engine\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Network.Common\Guppy.Core.Network.Common.csproj" />
+    <ProjectReference Include="..\VoidHuntersRevived.Common.FloatingPoint\VoidHuntersRevived.Common.FloatingPoint.csproj" />
   </ItemGroup>
 
 </Project>

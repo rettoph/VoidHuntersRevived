@@ -4,6 +4,7 @@ $InformationPreference = 'Continue'
 
 $inputDirectory = Get-Directory $args[0]
 $outputDirectory = Get-Directory $args[1] $true
+$force = $args[2] -eq "true"
 
 $argsHash = Get-StringHash ($inputDirectory + $outputDirectory)
 $cacheFile = Get-File "$PSScriptRoot\cache\.compile-fx.cache.$argsHash.json" $true
@@ -79,7 +80,7 @@ foreach ($file in $files)
     $hash = Get-EffectHash $file.FullName | Write-Output
     $dirty = Get-IsEffectDirty $file.Name $hash
 
-    if($dirty -eq $true)
+    if($force -eq $true || $dirty -eq $true)
     {
         Write-Information "Updating: $($file.Name)"
 

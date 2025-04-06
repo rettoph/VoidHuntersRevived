@@ -122,7 +122,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
 
             this._logger.Verbose("Preparing to serialize. GlobalId = {GlobalId}, LocalId = {LocaLId}, Template = {EntityTemplate}", entity.GlobalId, entity.LocalId, templateKey);
 
-            this._entityTemplateService.GetByKey(templateKey).SerializeInstanceEntity(ref writer, in entity, in options);
+            this._entityTemplateService.GetByKey(templateKey).SerializeEntity(ref writer, in entity, in options);
         }
 
         public static readonly unsafe int EntityHeaderSize = sizeof(VhId) + sizeof(Id<EntityTemplateFragment>);
@@ -145,7 +145,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
             {
                 EntityReader reader = data.GetReader(options.Seed, index, EntityHeaderSize);
 
-                entity.Template.DeserializeInstanceEntity(in sourceId, in options, ref reader, in entity);
+                entity.Template.DeserializeEntity(in sourceId, in options, ref reader, in entity);
 
                 initializerDelegate(entities, in entity);
             });

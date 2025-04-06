@@ -9,7 +9,7 @@ Console.ResetColor();
 
 try
 {
-    bool internalServer = bool.Parse(args.ElementAtOrDefault(0) ?? "false");
+    bool internalServer = bool.Parse(args.ElementAtOrDefault(0) ?? "false") || true;
 
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
     //GC.TryStartNoGCRegion(256 * 1024 * 1024);

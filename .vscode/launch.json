@@ -10,8 +10,22 @@
             "request": "launch",
             "script": "${workspaceFolder}\\scripts\\compile-fx.ps1",
             "args": [ 
-                "'${workspaceFolder}\\src\\game\\VoidHuntersRevived.Game.Client\\Content\\Client\\Shaders'", 
-                "'${workspaceFolder}\\src\\game\\VoidHuntersRevived.Game.Client\\Content\\Client\\Shaders\\Compiled'" ]
+                "'${workspaceFolder}\\src\\game\\VoidHuntersRevived.Game.Core\\Content\\Common\\Shaders'", 
+                "'${workspaceFolder}\\src\\game\\VoidHuntersRevived.Game.Core\\Content\\Common\\Shaders\\Compiled'",
+                "true"
+            ]
+        },
+        {
+            "name": "CompileFX to Bin",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\scripts\\compile-fx.ps1",
+            "args": [ 
+                "'${workspaceFolder}\\src\\game\\VoidHuntersRevived.Game.Core\\Content\\Common\\Shaders'", 
+                "'${workspaceFolder}\\src\\presentation\\VoidHuntersRevived.Presentation.Client\\bin\\Debug\\net8.0\\Content\\Common\\Shaders\\Compiled'",
+                "true",
+                ""
+            ]
         },
         {
             "name": "First Time Setup",

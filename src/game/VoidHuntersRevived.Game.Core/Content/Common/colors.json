@@ -8,7 +8,7 @@
       "Color.ThrusterPrimaryColor": [ 62, 179, 0, 204 ],
       "Color.ThrusterSecondaryColor": [ 77, 218, 1, 255 ],
       "Color.TeamOnePrimaryColor": [ 0, 200, 255, 204 ],
-      "Color.TeamOneSecondaryColor": [ 0, 255, 247, 255 ],
+      "Color.TeamOneSecondaryColor": [ 0, 230, 255, 255 ],
       "Color.TractorBeamHighlight": [ 211, 211, 211, 100 ],
       "Color.ActiveThrustableHighlight": [ 255, 255, 255, 150 ]
     }
