@@ -59,8 +59,8 @@ namespace VoidHuntersRevived.Common.FixedPoint
         /// <summary>
         /// Creates a new <see cref="AetherVector2"/> that contains linear interpolation of the specified vectors.
         /// </summary>
-        /// <param name="value1">The first vector.</param>
-        /// <param name="value2">The second vector.</param>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
         /// <param name="amount">Weighting value(between 0.0 and 1.0).</param>
         /// <returns>The result of linear interpolation of the specified vectors.</returns>
         public static FixVector2 Lerp(FixVector2 v1, FixVector2 v2, Fix64 amount)
@@ -68,6 +68,20 @@ namespace VoidHuntersRevived.Common.FixedPoint
             return new(
                 x: Fix64.Lerp(v1.X, v2.X, amount),
                 y: Fix64.Lerp(v1.Y, v2.Y, amount));
+        }
+
+        /// <summary>
+        /// Interpolates between two values using a cubic equation.
+        /// </summary>
+        /// <param name="value1">Source value.</param>
+        /// <param name="value2">Source value.</param>
+        /// <param name="amount">Weighting value.</param>
+        /// <returns>Interpolated value.</returns>
+        public static FixVector2 SmoothStep(FixVector2 value1, FixVector2 value2, Fix64 amount)
+        {
+            return new(
+                x: Fix64.SmoothStep(value1.X, value2.X, amount),
+                y: Fix64.SmoothStep(value1.Y, value2.Y, amount));
         }
 
         /// <summary>

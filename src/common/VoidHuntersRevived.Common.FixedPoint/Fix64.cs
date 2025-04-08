@@ -13,6 +13,8 @@ namespace VoidHuntersRevived.Common.FixedPoint
         public static readonly Fix64 MinValue = FixedMath64.MinValue;
         public static readonly Fix64 One = FixedMath64.One;
         public static readonly Fix64 Zero = FixedMath64.Zero;
+        public static readonly Fix64 Two = FixedMath64.One + FixedMath64.One;
+        public static readonly Fix64 Three = FixedMath64.One + FixedMath64.One + FixedMath64.One;
         /// <summary>
         /// The value of Pi
         /// </summary>
@@ -426,6 +428,79 @@ namespace VoidHuntersRevived.Common.FixedPoint
             }
 
             return angle;
+        }
+
+        /// <summary>
+        /// Interpolates between two values using a cubic equation.
+        /// </summary>
+        /// <param name="value1">Source value.</param>
+        /// <param name="value2">Source value.</param>
+        /// <param name="amount">Weighting value.</param>
+        /// <returns>Interpolated value.</returns>
+        public static Fix64 SmoothStep(Fix64 value1, Fix64 value2, Fix64 amount)
+        {
+            // It is expected that 0 < amount < 1
+            // If amount < 0, return value1
+            // If amount > 1, return value2
+            Fix64 result = Fix64.Clamp(amount, Fix64.Zero, Fix64.One);
+            result = Fix64.Hermite(value1, Fix64.Zero, value2, Fix64.Zero, result);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Restricts a value to be within a specified range.
+        /// </summary>
+        /// <param name="value">The value to clamp.</param>
+        /// <param name="min">The minimum value. If <c>value</c> is less than <c>min</c>, <c>min</c> will be returned.</param>
+        /// <param name="max">The maximum value. If <c>value</c> is greater than <c>max</c>, <c>max</c> will be returned.</param>
+        /// <returns>The clamped value.</returns>
+        public static Fix64 Clamp(Fix64 value, Fix64 min, Fix64 max)
+        {
+            // First we check to see if we're greater than the max
+            value = (value > max) ? max : value;
+
+            // Then we check to see if we're less than the min.
+            value = (value < min) ? min : value;
+
+            // There's no check to see if min > max.
+            return value;
+        }
+
+        /// <summary>
+        /// Performs a Hermite spline interpolation.
+        /// </summary>
+        /// <param name="value1">Source position.</param>
+        /// <param name="tangent1">Source tangent.</param>
+        /// <param name="value2">Source position.</param>
+        /// <param name="tangent2">Source tangent.</param>
+        /// <param name="amount">Weighting factor.</param>
+        /// <returns>The result of the Hermite spline interpolation.</returns>
+        public static Fix64 Hermite(Fix64 value1, Fix64 tangent1, Fix64 value2, Fix64 tangent2, Fix64 amount)
+        {
+            // All transformed to double not to lose precision
+            // Otherwise, for high numbers of param:amount the result is NaN instead of Infinity
+            Fix64 v1 = value1, v2 = value2, t1 = tangent1, t2 = tangent2, s = amount, result;
+            Fix64 sCubed = s * s * s;
+            Fix64 sSquared = s * s;
+
+            if (amount == Fix64.Zero)
+            {
+                result = value1;
+            }
+            else if (amount == Fix64.One)
+            {
+                result = value2;
+            }
+            else
+            {
+                result = (((Fix64.Two * v1) - (Fix64.Two * v2) + t2 + t1) * sCubed) +
+                    (((Fix64.Three * v2) - (Fix64.Three * v1) - (Fix64.Two * t1) - t2) * sSquared) +
+                    (t1 * s) +
+                    v1;
+            }
+
+            return result;
         }
     }
 }

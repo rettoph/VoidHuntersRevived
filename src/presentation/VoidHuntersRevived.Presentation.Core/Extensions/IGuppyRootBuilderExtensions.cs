@@ -2,15 +2,13 @@
 using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Extensions.System;
-using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Enums;
 using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Logging.Common.Enums;
 using Guppy.Core.Logging.Common.Extensions;
-using Guppy.Core.Network.Common.Constants;
 using Guppy.Core.Network.Common.Enums;
-using Guppy.Game.Common.Constants;
+using Guppy.Core.Network.Common.Extensions;
 using Guppy.Game.Common.Extensions;
 using Svelto.ECS;
 using VoidHuntersRevived.Common;
@@ -29,14 +27,14 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
         {
             builder.ConfigureLogger((scope, config) =>
             {
-                Type? sceneType = scope.Variables.Get<GuppyGameVariables.Scope.SceneType>()?.Value;
+                Type? sceneType = scope.Variables.GetSceneType();
                 if (sceneType is not null && sceneType.IsAssignableTo<IStrategy>())
                 {
                     config.EnrichWith(nameof(StrategyTypeEnum), sceneType.GetFormattedName());
                 }
 
-                PeerTypeEnum? peerTypeEnum = scope.Variables.Get<GuppyNetworkVariables.Scope.PeerType>()?.Value;
-                if (peerTypeEnum is not null)
+                PeerTypeEnum peerTypeEnum = scope.Variables.GetPeerType();
+                if (peerTypeEnum != PeerTypeEnum.None)
                 {
                     config.EnrichWith(nameof(PeerTypeEnum), peerTypeEnum);
                 }
@@ -63,12 +61,12 @@ namespace VoidHuntersRevived.Presentation.Core.Extensions
 
             return builder.ConfigureFileLogMessageSink((scope, config) =>
             {
-                IPathService fileTypePaths = scope.Resolve<IPathService>();
-                FileLocation source = fileTypePaths.GetSourceLocation(DirectoryTypeEnum.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
-                DirectoryHelper.EnsureDirectoryExists(source);
+                IPathService pathService = scope.Resolve<IPathService>();
+                string outputPath = pathService.GetFileSystemPath(DirectoryTypeEnum.AppData, "logs", $"log_{DateTime.Now:yyyy-dd-M}.txt");
+                DirectoryHelper.EnsureDirectoryExists(outputPath);
 
                 config.Enabled = true;
-                config.Path = source;
+                config.OutputPath = outputPath;
                 config.OutputTemplate = scope.GetLoggerOutputTemplate();
             });
         }

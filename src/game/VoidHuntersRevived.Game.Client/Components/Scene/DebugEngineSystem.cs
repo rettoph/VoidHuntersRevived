@@ -39,6 +39,11 @@ namespace VoidHuntersRevived.Game.Client.Components.Scene
         {
             foreach ((var group, var groupedDebugActions) in this._debugActions.Grouped)
             {
+                if (group == SequenceGroup<DebugSequenceGroupEnum>.GetByValue(DebugSequenceGroupEnum.Debug))
+                {
+                    continue;
+                }
+
                 if (this._imgui.CollapsingHeader(group.Name))
                 {
                     this._imgui.Indent();

@@ -12,10 +12,10 @@ namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
 
         public override string Name => "Blueprint";
 
-        protected override bool TryResolve(ResourceKey<Blueprint> resource, DirectoryLocation root, string input, out Blueprint value)
+        protected override bool TryResolve(ResourceKey<Blueprint> resource, DirectoryPath root, string input, out Blueprint value)
         {
             IFile<Blueprint> blueprint = this._files.Get<Blueprint>(
-                new FileLocation(root, input),
+                new FilePath(root, input),
                 true);
 
             value = blueprint.Value;

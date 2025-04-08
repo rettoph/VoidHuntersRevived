@@ -48,7 +48,7 @@ namespace VoidHuntersRevived.Game.Core.Extensions
 
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
                 {
-                    EntryDirectory = DirectoryLocation.CurrentDirectory(VoidHuntersPack.Directory)
+                    EntryDirectory = DirectoryPath.CurrentDirectory(VoidHuntersPack.Directory)
                 });
 
                 // Register core game resources

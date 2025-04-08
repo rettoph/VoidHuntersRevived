@@ -47,11 +47,11 @@ namespace VoidHuntersRevived.Game.Client.Extensions
                     builder.Variables.AddSceneHasDebugWindow(true).AddSceneHasTerminalWindow(true);
 
                     builder.RegisterSceneSystem<DebugEngineSystem>();
+                    builder.RegisterSceneSystem<AetherDebugSystem>();
+                    builder.RegisterSceneSystem<EntitiesDebugSystem>();
 
                     builder.RegisterGraphicsEnabledFilter(true, builder =>
                     {
-                        builder.RegisterSceneSystem<AetherDebugSystem>();
-                        builder.RegisterSceneSystem<EntitiesDebugSystem>();
                         builder.RegisterSceneSystem<DrawVertexVisibleSystem>();
                         //builder.RegisterSceneSystem<ShaderAntiAliasingSystem>();
                     });

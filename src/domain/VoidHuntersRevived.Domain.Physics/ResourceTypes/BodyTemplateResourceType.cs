@@ -12,10 +12,10 @@ namespace VoidHuntersRevived.Domain.Physics.ResourceTypes
 
         public override string Name => nameof(BodyTemplate);
 
-        protected override bool TryResolve(ResourceKey<IBodyTemplate> resource, DirectoryLocation root, string input, out IBodyTemplate value)
+        protected override bool TryResolve(ResourceKey<IBodyTemplate> resource, DirectoryPath root, string input, out IBodyTemplate value)
         {
             IFile<IBodyTemplate> template = this._files.Get<IBodyTemplate>(
-                new FileLocation(root, input),
+                new FilePath(root, input),
                 true);
 
             value = template.Value;
