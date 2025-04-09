@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
-using Guppy.Core.Resources.Common.Extensions;
+using Guppy.Core.Assets.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Game.Common.Extensions;
 using Svelto.ECS;
@@ -8,7 +8,7 @@ using tainicom.Aether.Physics2D.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Exceptions;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
-using VoidHuntersRevived.Domain.Physics.ResourceTypes;
+using VoidHuntersRevived.Domain.Physics.AssetTypes;
 using VoidHuntersRevived.Domain.Physics.Serialization.Components;
 using VoidHuntersRevived.Domain.Physics.Serialization.Json;
 using VoidHuntersRevived.Domain.Physics.Serialization.Json.Converters;
@@ -23,7 +23,7 @@ namespace VoidHuntersRevived.Domain.Physics.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainPhysicsServices), builder =>
             {
-                builder.RegisterResourceType<BodyTemplateResourceType>();
+                builder.RegisterAssetType<BodyTemplateAssetType>();
 
                 builder.RegisterJsonConverter<PolygonConverter>();
                 builder.RegisterJsonConverter<BodyTemplateConverter>();

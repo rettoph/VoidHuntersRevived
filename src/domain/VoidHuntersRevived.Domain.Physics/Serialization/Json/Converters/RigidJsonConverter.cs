@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Guppy.Core.Resources.Common;
+using Guppy.Core.Assets.Common;
 using VoidHuntersRevived.Domain.Physics.Common;
 using VoidHuntersRevived.Domain.Physics.Common.Components;
 
@@ -10,7 +10,7 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json
     {
         public override Rigid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Resource<IBodyTemplate> template = default;
+            Asset<IBodyTemplate> template = default;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Physics.Serialization.Json
                 switch (propertyName)
                 {
                     case nameof(Rigid.Template):
-                        template = JsonSerializer.Deserialize<Resource<IBodyTemplate>>(ref reader, options);
+                        template = JsonSerializer.Deserialize<Asset<IBodyTemplate>>(ref reader, options);
                         reader.Read();
                         break;
                 }

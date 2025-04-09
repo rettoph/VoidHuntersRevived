@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Guppy.Core.Common.Collections;
-using Guppy.Core.Resources.Common;
+using Guppy.Core.Assets.Common;
 
 namespace VoidHuntersRevived.Common
 {
@@ -77,15 +77,15 @@ namespace VoidHuntersRevived.Common
             return HashCode.Combine(this.Id);
         }
 
-        public static implicit operator Key<T>(ResourceKey<T> resource)
+        public static implicit operator Key<T>(AssetKey<T> resource)
 
         {
             return Key<T>.GetByName(resource.Name);
         }
 
-        public static implicit operator ResourceKey<T>(Key<T> key)
+        public static implicit operator AssetKey<T>(Key<T> key)
         {
-            return ResourceKey<T>.Get(key.Name);
+            return AssetKey<T>.Get(key.Name);
         }
     }
 }

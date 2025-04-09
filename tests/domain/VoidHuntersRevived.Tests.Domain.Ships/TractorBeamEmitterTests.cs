@@ -41,8 +41,8 @@ namespace VoidHuntersRevived.Tests.Domain.Ships
                     sourceId: vhids.Next(),
                     globalId: shipGlobalId,
                     team: openTeam,
-                    treeTemplateKey: Resources.EntityTemplates.Ship.UserShipEntityTemplate,
-                    headNodeTemplateKey: TestResources.TestSquareEntityTemplateKey);
+                    treeTemplateKey: Assets.EntityTemplates.Ship.UserShipEntityTemplate,
+                    headNodeTemplateKey: TestAssets.TestSquareEntityTemplateKey);
             }, out MockData<TestShipData> data);
 
             this.SimulationMocker.Update(TimeSpan.FromMilliseconds(16), 100);
@@ -58,7 +58,7 @@ namespace VoidHuntersRevived.Tests.Domain.Ships
                     sourceId: vhids.Next(),
                     targetNodeSocket: nodeSocket,
                     globalId: vhids.Next().ToGlobalEntityId(),
-                    nodeTemplateKey: TestResources.TestSquareEntityTemplateKey);
+                    nodeTemplateKey: TestAssets.TestSquareEntityTemplateKey);
             });
 
             this.SimulationMocker.Update(TimeSpan.FromMilliseconds(16), 100);
@@ -142,8 +142,8 @@ namespace VoidHuntersRevived.Tests.Domain.Ships
                     sourceId: vhids.Next(),
                     globalId: shipGlobalId,
                     team: openTeam,
-                    treeTemplateKey: Resources.EntityTemplates.Ship.UserShipEntityTemplate,
-                    headNodeTemplateKey: TestResources.TestSquareEntityTemplateKey);
+                    treeTemplateKey: Assets.EntityTemplates.Ship.UserShipEntityTemplate,
+                    headNodeTemplateKey: TestAssets.TestSquareEntityTemplateKey);
             }, out MockData<TestShipData> data);
 
             this.SimulationMocker.Update(TimeSpan.FromMilliseconds(16), 100);
@@ -159,7 +159,7 @@ namespace VoidHuntersRevived.Tests.Domain.Ships
                     sourceId: vhids.Next(),
                     targetNodeSocket: nodeSocket,
                     globalId: vhids.Next().ToGlobalEntityId(),
-                    nodeTemplateKey: TestResources.TestSquareEntityTemplateKey);
+                    nodeTemplateKey: TestAssets.TestSquareEntityTemplateKey);
             });
 
             this.SimulationMocker.Update(TimeSpan.FromMilliseconds(16), 100);
@@ -255,8 +255,8 @@ namespace VoidHuntersRevived.Tests.Domain.Ships
                     sourceId: vhids.Next(),
                     globalId: shipGlobalId,
                     team: openTeam,
-                    treeTemplateKey: Resources.EntityTemplates.Ship.UserShipEntityTemplate,
-                    headNodeTemplateKey: TestResources.TestSquareEntityTemplateKey);
+                    treeTemplateKey: Assets.EntityTemplates.Ship.UserShipEntityTemplate,
+                    headNodeTemplateKey: TestAssets.TestSquareEntityTemplateKey);
             }, out MockData<TestShipData> data);
 
             this.SimulationMocker.Update(TimeSpan.FromMilliseconds(16), 100);
@@ -273,7 +273,7 @@ namespace VoidHuntersRevived.Tests.Domain.Ships
                     sourceId: vhids.Next(),
                     targetNodeSocket: nodeSocket,
                     globalId: square1GlobalId,
-                    nodeTemplateKey: TestResources.TestSquareEntityTemplateKey);
+                    nodeTemplateKey: TestAssets.TestSquareEntityTemplateKey);
             });
 
             this.SimulationMocker.Update(TimeSpan.FromMilliseconds(16), 100);
@@ -289,7 +289,7 @@ namespace VoidHuntersRevived.Tests.Domain.Ships
                     sourceId: vhids.Next(),
                     targetNodeSocket: nodeSocket,
                     globalId: square2GlobalId,
-                    nodeTemplateKey: TestResources.TestSquareEntityTemplateKey);
+                    nodeTemplateKey: TestAssets.TestSquareEntityTemplateKey);
             });
 
             this.SimulationMocker.Update(TimeSpan.FromMilliseconds(16), 100);

@@ -2,7 +2,7 @@
 using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Providers;
-using Guppy.Core.Resources.Common.Extensions;
+using Guppy.Core.Assets.Common.Extensions;
 using Guppy.Core.Serialization.Common.Converters;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Game.Common.Extensions;
@@ -11,7 +11,7 @@ using Svelto.ECS.Schedulers;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Extensions.Svelto;
 using VoidHuntersRevived.Domain.Entities.Providers;
-using VoidHuntersRevived.Domain.Entities.ResourceTypes;
+using VoidHuntersRevived.Domain.Entities.AssetTypes;
 using VoidHuntersRevived.Domain.Entities.Serialization.Json;
 using VoidHuntersRevived.Domain.Entities.Services;
 using VoidHuntersRevived.Domain.Entities.Systems;
@@ -26,10 +26,10 @@ namespace VoidHuntersRevived.Domain.Entities.Extensions
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainEntityServices), builder =>
             {
                 builder.RegisterJsonConverter<EntityTemplateConverter>();
-                builder.RegisterJsonConverter<ResourceComponentConverter>();
+                builder.RegisterJsonConverter<AssetComponentConverter>();
                 builder.RegisterJsonConverter<DictionaryPolymorphicConverter<IEntityComponent>>();
 
-                builder.RegisterResourceType<EntityTemplateFragmentResourceType>();
+                builder.RegisterAssetType<EntityTemplateFragmentAssetType>();
 
                 // Automoq will attempt to resolve a mocked instance unless a default registration
                 // is defined. Since there is no public constrctor on this type the end result

@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Compile Remove="Initializers\**" />
-    <EmbeddedResource Remove="Initializers\**" />
+    <EmbeddedAsset Remove="Initializers\**" />
     <None Remove="Initializers\**" />
   </ItemGroup>
 

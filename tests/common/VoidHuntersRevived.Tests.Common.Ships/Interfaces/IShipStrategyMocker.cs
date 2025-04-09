@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Common.Services;
+﻿using Guppy.Core.Assets.Common.Services;
 using Guppy.Tests.Common;
 using VoidHuntersRevived.Tests.Common.Physics.Interfaces;
 using VoidHuntersRevived.Tests.Common.Ships.Builders;
@@ -13,6 +13,6 @@ namespace VoidHuntersRevived.Tests.Common.Ships.Interfaces
         NodeSocketServiceBuilder NodeSocketServiceBuilder { get; }
         TractorBeamEmitterServiceBuilder TractorBeamEmitterServiceBuilder { get; }
         TacticalServiceBuilder TacticalServiceBuilder { get; }
-        Mocker<IResourceService> ResourceServiceMocker { get; }
+        Mocker<IAssetService> AssetServiceMocker { get; }
     }
 }

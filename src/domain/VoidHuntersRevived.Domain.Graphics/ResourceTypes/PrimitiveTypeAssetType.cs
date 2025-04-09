@@ -1,19 +1,19 @@
 ﻿using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.ResourceTypes;
+using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.AssetTypes;
 using VoidHuntersRevived.Domain.Graphics;
 using VoidHuntersRevived.Domain.Graphics.Common;
 
-namespace VoidHuntersRevived.Domain.Pieces.ResourceTypes
+namespace VoidHuntersRevived.Domain.Pieces.AssetTypes
 {
-    public class PrimitiveTypeResourceType(IFileService files) : SimpleResourceType<IPrimitiveType>
+    public class PrimitiveTypeAssetType(IFileService files) : SimpleAssetType<IPrimitiveType>
     {
         private readonly IFileService _files = files;
 
         public override string Name => nameof(PrimitiveType);
 
-        protected override bool TryResolve(ResourceKey<IPrimitiveType> resource, DirectoryPath root, string input, out IPrimitiveType value)
+        protected override bool TryResolve(AssetKey<IPrimitiveType> resource, DirectoryPath root, string input, out IPrimitiveType value)
         {
             IFile<IPrimitiveType> primitive = this._files.Get<IPrimitiveType>(
                 new FilePath(root, input),

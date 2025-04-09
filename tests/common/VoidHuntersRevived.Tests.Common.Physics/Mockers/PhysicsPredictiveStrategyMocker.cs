@@ -53,7 +53,8 @@ namespace VoidHuntersRevived.Tests.Common.Physics.Mockers
                     entityQueryService: this.EntityQueryServiceBuilder.Object,
                     logger: this.LoggerMocker.Object),
                 x => new BodyLocationPredictiveSynchronizationSystem(
-                    space: this.SpaceBuilder.Object)
+                    space: this.SpaceBuilder.Object,
+                    logger: this.LoggerServiceMocker.Object.GetLogger<BodyLocationPredictiveSynchronizationSystem>())
             ]);
         }
     }

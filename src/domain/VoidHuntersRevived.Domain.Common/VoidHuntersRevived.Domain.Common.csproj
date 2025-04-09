@@ -12,7 +12,7 @@
     <ProjectReference Include="..\..\..\libraries\Guppy\src\engine\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game.Common\Guppy.Game.Common.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Network.Common\Guppy.Core.Network.Common.csproj" />
-    <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
+    <ProjectReference Include="..\..\..\libraries\Guppy\src\core\Guppy.Core.Assets.Common\Guppy.Core.Assets.Common.csproj" />
     <ProjectReference Include="..\..\..\libraries\Guppy\src\game\Guppy.Game.Graphics.Common\Guppy.Game.Graphics.Common.csproj" />
     <ProjectReference Include="..\..\common\VoidHuntersRevived.Common\VoidHuntersRevived.Common.csproj" />
     <ProjectReference Include="..\VoidHuntersRevived.Domain.Entities.Common\VoidHuntersRevived.Domain.Entities.Common.csproj" />

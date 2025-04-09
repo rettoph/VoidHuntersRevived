@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Common.Services;
+﻿using Guppy.Core.Assets.Common.Services;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Entities.Common;
 using VoidHuntersRevived.Domain.Entities.Common.Services;
@@ -11,7 +11,7 @@ namespace VoidHuntersRevived.Domain.Entities.Services
         private readonly Dictionary<Key<IEntityTemplate>, EntityTemplateFragment[]> _fragmentsByKey;
         private readonly Type[] _distinctComponentTypes;
 
-        public EntityTemplateFragmentService(IResourceService resources)
+        public EntityTemplateFragmentService(IAssetService resources)
         {
             this._fragments = resources.GetAll<EntityTemplateFragment>()
                 .Where(x => x.HasValue)

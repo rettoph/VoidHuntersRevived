@@ -44,7 +44,7 @@
     //
     //    public void RenderDebugInfo(GameTime gameTime)
     //    {
-    //        var buttonStyle = _entityViewerEnabled ? Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Common.Resources.ImGuiStyles.ButtonGreen;
+    //        var buttonStyle = _entityViewerEnabled ? Guppy.Game.MonoGame.Common.Assets.ImGuiStyles.ButtonRed : Guppy.Game.MonoGame.Common.Assets.ImGuiStyles.ButtonGreen;
     //
     //        using (_imgui.Apply(buttonStyle))
     //        {

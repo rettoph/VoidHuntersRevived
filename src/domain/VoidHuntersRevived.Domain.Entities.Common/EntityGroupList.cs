@@ -2,7 +2,7 @@
 using System.Text;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.System;
-using Guppy.Core.Resources.Common.Extensions.System;
+using Guppy.Core.Assets.Common.Extensions.System;
 using Svelto.DataStructures;
 using Svelto.ECS;
 

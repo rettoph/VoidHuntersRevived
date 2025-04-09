@@ -2,7 +2,7 @@
 using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Providers;
-using Guppy.Core.Resources.Common.Extensions;
+using Guppy.Core.Assets.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Json.Converters;
 using Guppy.Game.Common.Extensions;
@@ -13,7 +13,7 @@ using VoidHuntersRevived.Domain.Graphics.Providers;
 using VoidHuntersRevived.Domain.Graphics.Serialization.Json;
 using VoidHuntersRevived.Domain.Graphics.Services;
 using VoidHuntersRevived.Domain.Graphics.Systems;
-using VoidHuntersRevived.Domain.Pieces.ResourceTypes;
+using VoidHuntersRevived.Domain.Pieces.AssetTypes;
 using VoidHuntersRevived.Domain.Simulations.Common.Strategies;
 
 namespace VoidHuntersRevived.Domain.Graphics.Extensions
@@ -29,7 +29,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Extensions
                 builder.RegisterJsonConverter<PrimitiveTypeConverter>();
                 builder.RegisterJsonConverter<PolymorphicConverter<IPrimitiveType>>();
 
-                builder.RegisterResourceType<PrimitiveTypeResourceType>();
+                builder.RegisterAssetType<PrimitiveTypeAssetType>();
 
                 builder.RegisterSceneFilter<IStrategy>(builder =>
                 {

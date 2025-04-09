@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Guppy.Core.Resources.Common;
+using Guppy.Core.Assets.Common;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
@@ -9,7 +9,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
     {
         public override Team Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            ResourceKey<string> name = default!;
+            AssetKey<string> name = default!;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -20,7 +20,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 {
                     case nameof(Team.Name):
                         string nameKey = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
-                        name = ResourceKey<string>.Get(nameKey);
+                        name = AssetKey<string>.Get(nameKey);
                         reader.Read();
                         break;
                 }

@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Common.Services;
+﻿using Guppy.Core.Assets.Common.Services;
 using Guppy.Tests.Common;
 using Guppy.Tests.Common.Mockers;
 using VoidHuntersRevived.Domain.Simulations.Services;

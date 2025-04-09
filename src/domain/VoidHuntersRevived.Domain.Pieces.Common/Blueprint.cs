@@ -5,7 +5,7 @@ using VoidHuntersRevived.Domain.Pieces.Common.Extensions;
 
 namespace VoidHuntersRevived.Domain.Pieces.Common
 {
-    public sealed class Blueprint(string name, IBlueprintPiece head) : IEntityResource<Blueprint>
+    public sealed class Blueprint(string name, IBlueprintPiece head) : IEntityAsset<Blueprint>
     {
         private Id<Blueprint>? _id;
 

@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Compile Remove="Extensions\**" />
-    <EmbeddedResource Remove="Extensions\**" />
+    <EmbeddedAsset Remove="Extensions\**" />
     <None Remove="Extensions\**" />
   </ItemGroup>
 

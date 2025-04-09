@@ -2,8 +2,8 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common.Services
 {
-    public interface IEntityResourceService<T>
-        where T : IEntityResource<T>
+    public interface IEntityAssetService<T>
+        where T : IEntityAsset<T>
     {
         T GetById(Id<T> id);
 

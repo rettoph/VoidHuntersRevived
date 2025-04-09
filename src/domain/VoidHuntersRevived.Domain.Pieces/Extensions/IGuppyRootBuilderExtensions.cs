@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
-using Guppy.Core.Resources.Common.Extensions;
+using Guppy.Core.Assets.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Game.Common.Extensions;
 using Svelto.ECS;
@@ -9,7 +9,7 @@ using VoidHuntersRevived.Domain.Graphics.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Components;
 using VoidHuntersRevived.Domain.Pieces.Common.Graphics.Vertices;
 using VoidHuntersRevived.Domain.Pieces.Common.Services;
-using VoidHuntersRevived.Domain.Pieces.ResourceTypes;
+using VoidHuntersRevived.Domain.Pieces.AssetTypes;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Components;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Json;
 using VoidHuntersRevived.Domain.Pieces.Services;
@@ -24,7 +24,7 @@ namespace VoidHuntersRevived.Domain.Pieces.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterDomainPiecesServices), builder =>
             {
-                builder.RegisterResourceType<BlueprintResourceType>();
+                builder.RegisterAssetType<BlueprintAssetType>();
 
                 builder.RegisterJsonConverter<BlueprintConverter>();
                 builder.RegisterJsonConverter<BlueprintPieceConverter>();

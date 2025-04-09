@@ -1,20 +1,20 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Domain.Teams.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
 {
-    internal class ColorSchemeJsonConverter(IResourceService resources) : JsonConverter<ColorScheme>
+    internal class ColorSchemeJsonConverter(IAssetService resources) : JsonConverter<ColorScheme>
     {
-        private readonly IResourceService _resources = resources;
+        private readonly IAssetService _resources = resources;
 
         public override ColorScheme Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            ResourceKey<Color> primary = default!;
-            ResourceKey<Color> secondary = default!;
+            AssetKey<Color> primary = default!;
+            AssetKey<Color> secondary = default!;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -25,12 +25,12 @@ namespace VoidHuntersRevived.Domain.Pieces.Serialization.Json
                 {
                     case nameof(ColorScheme.Primary):
                         string primaryKey = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
-                        primary = ResourceKey<Color>.Get(primaryKey);
+                        primary = AssetKey<Color>.Get(primaryKey);
                         reader.Read();
                         break;
                     case nameof(ColorScheme.Secondary):
                         string secondaryKey = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
-                        secondary = ResourceKey<Color>.Get(secondaryKey);
+                        secondary = AssetKey<Color>.Get(secondaryKey);
                         reader.Read();
                         break;
                 }

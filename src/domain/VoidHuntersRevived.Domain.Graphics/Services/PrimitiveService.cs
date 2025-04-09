@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Common.Services;
+﻿using Guppy.Core.Assets.Common.Services;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Domain.Graphics.Common;
 using VoidHuntersRevived.Domain.Graphics.Common.Enums;
@@ -7,7 +7,7 @@ using IVertexType = Microsoft.Xna.Framework.Graphics.IVertexType;
 
 namespace VoidHuntersRevived.Domain.Graphics.Services
 {
-    public class PrimitiveService(IResourceService resourceService, IEnumerable<IPrimitive> primitives) : IPrimitiveService
+    public class PrimitiveService(IAssetService resourceService, IEnumerable<IPrimitive> primitives) : IPrimitiveService
     {
         private readonly IPrimitive[] _primitives = resourceService.GetAll<IPrimitiveType>()
             .Where(x => x.Value is not null)
@@ -38,7 +38,7 @@ namespace VoidHuntersRevived.Domain.Graphics.Services
         private readonly Dictionary<PrimitiveTypeSequenceGroup, IPrimitive<TVertex>> _grouped;
         private readonly IPrimitive<TVertex>[] _all;
 
-        public PrimitiveService(IResourceService resourceService)
+        public PrimitiveService(IAssetService resourceService)
         {
             this._grouped = resourceService.GetAll<IPrimitiveType>()
                 .SelectMany(t => t.Value.Primitives.Select(p => (type: t, primitive: p)))

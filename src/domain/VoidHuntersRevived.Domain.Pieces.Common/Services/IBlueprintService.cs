@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Domain.Pieces.Common.Services
 {
-    public interface IBlueprintService : IEntityResourceService<Blueprint>
+    public interface IBlueprintService : IEntityAssetService<Blueprint>
     {
     }
 }

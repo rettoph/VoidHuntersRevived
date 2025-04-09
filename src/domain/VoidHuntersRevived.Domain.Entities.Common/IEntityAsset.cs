@@ -2,7 +2,7 @@
 
 namespace VoidHuntersRevived.Domain.Entities.Common
 {
-    public interface IEntityResource<T>
+    public interface IEntityAsset<T>
     {
         Id<T> Id { get; }
     }

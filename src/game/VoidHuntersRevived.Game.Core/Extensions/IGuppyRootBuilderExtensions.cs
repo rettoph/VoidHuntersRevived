@@ -2,8 +2,8 @@
 using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
-using Guppy.Core.Resources.Common.Configuration;
-using Guppy.Core.Resources.Common.Extensions;
+using Guppy.Core.Assets.Common.Configuration;
+using Guppy.Core.Assets.Common.Extensions;
 using Guppy.Game.Common.Extensions;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
@@ -46,7 +46,7 @@ namespace VoidHuntersRevived.Game.Core.Extensions
 
                 builder.RegisterPrimitiveType<VertexVisible, VertexStaticVisible, VisibleEffect>("PrimitiveType.Visible");
 
-                builder.RegisterResourcePack(new ResourcePackConfiguration()
+                builder.RegisterAssetPack(new AssetPackConfiguration()
                 {
                     EntryDirectory = DirectoryPath.CurrentDirectory(VoidHuntersPack.Directory)
                 });
@@ -61,9 +61,9 @@ namespace VoidHuntersRevived.Game.Core.Extensions
 
         private static IGuppyRootBuilder RegisterTeamEntityTemplates(this IGuppyRootBuilder builder)
         {
-            builder.RegisterResource(Resources.EntityTemplates.Team.TeamEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Team.TeamEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Team.TeamEntityTemplate,
+                Key = Assets.EntityTemplates.Team.TeamEntityTemplate,
                 Flags = EntityTemplateFlagsEnum.Partial,
                 RequiredComponents = [
                     typeof(Team),
@@ -71,9 +71,9 @@ namespace VoidHuntersRevived.Game.Core.Extensions
                 ]
             });
 
-            builder.RegisterResource(Resources.EntityTemplates.Team.DefaultTeamEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Team.DefaultTeamEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Team.DefaultTeamEntityTemplate,
+                Key = Assets.EntityTemplates.Team.DefaultTeamEntityTemplate,
                 Flags = EntityTemplateFlagsEnum.Partial,
                 Components = [
                     new DefaultTeam()
@@ -83,9 +83,9 @@ namespace VoidHuntersRevived.Game.Core.Extensions
                 ]
             });
 
-            builder.RegisterResource(Resources.EntityTemplates.Team.TeamMemberEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Team.TeamMemberEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
+                Key = Assets.EntityTemplates.Team.TeamMemberEntityTemplate,
                 Flags = EntityTemplateFlagsEnum.Partial,
                 Components = [
                     new TeamMember()
@@ -97,11 +97,11 @@ namespace VoidHuntersRevived.Game.Core.Extensions
 
         private static IGuppyRootBuilder RegisterPhysicsEntityTemplates(this IGuppyRootBuilder builder)
         {
-            builder.RegisterResource(Resources.EntityTemplates.Physics.BodyEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Physics.BodyEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Physics.BodyEntityTemplate,
+                Key = Assets.EntityTemplates.Physics.BodyEntityTemplate,
                 Flags = EntityTemplateFlagsEnum.Partial,
-                Inherit = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
+                Inherit = Assets.EntityTemplates.Team.TeamMemberEntityTemplate,
                 Components = [
                     Body.Default,
                     new Enabled(),
@@ -112,11 +112,11 @@ namespace VoidHuntersRevived.Game.Core.Extensions
                 ]
             });
 
-            builder.RegisterResource(Resources.EntityTemplates.Physics.FixtureEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Physics.FixtureEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Physics.FixtureEntityTemplate,
+                Key = Assets.EntityTemplates.Physics.FixtureEntityTemplate,
                 Flags = EntityTemplateFlagsEnum.Partial,
-                Inherit = Resources.EntityTemplates.Team.TeamMemberEntityTemplate,
+                Inherit = Assets.EntityTemplates.Team.TeamMemberEntityTemplate,
                 Components = [
                     new Fixture()
                 ]
@@ -127,21 +127,21 @@ namespace VoidHuntersRevived.Game.Core.Extensions
 
         private static IGuppyRootBuilder RegisterPiecesEntityTemplates(this IGuppyRootBuilder builder)
         {
-            builder.RegisterResource(Resources.EntityTemplates.Piece.TreeEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Piece.TreeEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Piece.TreeEntityTemplate,
+                Key = Assets.EntityTemplates.Piece.TreeEntityTemplate,
                 Flags = EntityTemplateFlagsEnum.Partial,
-                Inherit = Resources.EntityTemplates.Physics.BodyEntityTemplate,
+                Inherit = Assets.EntityTemplates.Physics.BodyEntityTemplate,
                 Components = [
                     new Tree(),
                 ]
             });
 
-            builder.RegisterResource(Resources.EntityTemplates.Piece.PieceEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Piece.PieceEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Piece.PieceEntityTemplate,
+                Key = Assets.EntityTemplates.Piece.PieceEntityTemplate,
                 Flags = EntityTemplateFlagsEnum.Partial,
-                Inherit = Resources.EntityTemplates.Physics.FixtureEntityTemplate,
+                Inherit = Assets.EntityTemplates.Physics.FixtureEntityTemplate,
                 Components = [
                     Plug.Default,
                     new Coupling(),
@@ -155,21 +155,21 @@ namespace VoidHuntersRevived.Game.Core.Extensions
                 ]
             });
 
-            builder.RegisterResource(Resources.EntityTemplates.Piece.ThrusterEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Piece.ThrusterEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Piece.ThrusterEntityTemplate,
+                Key = Assets.EntityTemplates.Piece.ThrusterEntityTemplate,
                 Flags = EntityTemplateFlagsEnum.Partial,
-                Inherit = Resources.EntityTemplates.Piece.PieceEntityTemplate,
+                Inherit = Assets.EntityTemplates.Piece.PieceEntityTemplate,
                 Components = [
                     new Thrustable()
                 ]
             });
 
-            builder.RegisterResource(Resources.EntityTemplates.Piece.HullEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Piece.HullEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Piece.HullEntityTemplate,
+                Key = Assets.EntityTemplates.Piece.HullEntityTemplate,
                 Flags = EntityTemplateFlagsEnum.Partial,
-                Inherit = Resources.EntityTemplates.Piece.PieceEntityTemplate,
+                Inherit = Assets.EntityTemplates.Piece.PieceEntityTemplate,
                 RequiredComponents = [
                     typeof(Sockets)
                 ]
@@ -180,10 +180,10 @@ namespace VoidHuntersRevived.Game.Core.Extensions
 
         private static IGuppyRootBuilder RegisterShipsEntityTemplates(this IGuppyRootBuilder builder)
         {
-            builder.RegisterResource(Resources.EntityTemplates.Ship.ChainEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Ship.ChainEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Ship.ChainEntityTemplate,
-                Inherit = Resources.EntityTemplates.Piece.TreeEntityTemplate,
+                Key = Assets.EntityTemplates.Ship.ChainEntityTemplate,
+                Inherit = Assets.EntityTemplates.Piece.TreeEntityTemplate,
                 Components = [
                     new Tractorable(),
                     new Collision()
@@ -194,11 +194,11 @@ namespace VoidHuntersRevived.Game.Core.Extensions
                 ]
             });
 
-            builder.RegisterResource(Resources.EntityTemplates.Ship.ShipEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Ship.ShipEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Ship.ShipEntityTemplate,
+                Key = Assets.EntityTemplates.Ship.ShipEntityTemplate,
                 Flags = EntityTemplateFlagsEnum.Partial,
-                Inherit = Resources.EntityTemplates.Piece.TreeEntityTemplate,
+                Inherit = Assets.EntityTemplates.Piece.TreeEntityTemplate,
                 Components = [
                     new PhysicsBubble() {
                         Enabled = false,
@@ -210,10 +210,10 @@ namespace VoidHuntersRevived.Game.Core.Extensions
                 ]
             });
 
-            builder.RegisterResource(Resources.EntityTemplates.Ship.UserShipEntityTemplate.Name, new EntityTemplateFragment()
+            builder.RegisterAsset(Assets.EntityTemplates.Ship.UserShipEntityTemplate.Name, new EntityTemplateFragment()
             {
-                Key = Resources.EntityTemplates.Ship.UserShipEntityTemplate,
-                Inherit = Resources.EntityTemplates.Ship.ShipEntityTemplate,
+                Key = Assets.EntityTemplates.Ship.UserShipEntityTemplate,
+                Inherit = Assets.EntityTemplates.Ship.ShipEntityTemplate,
                 Components = [
                     new UserId(),
                     new Awake(sleepingAllowed: false),

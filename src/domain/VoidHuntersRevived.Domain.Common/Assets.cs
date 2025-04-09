@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Resources.Common;
-using Guppy.Game.Graphics.Common.Resources;
+﻿using Guppy.Core.Assets.Common;
+using Guppy.Game.Graphics.Common.Assets;
 using Guppy.Game.ImGui.Common.Styling;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,46 +8,46 @@ using VoidHuntersRevived.Domain.Entities.Common;
 
 namespace VoidHuntersRevived.Domain.Common
 {
-    public static class Resources
+    public static class Assets
     {
         public static class SpriteFonts
         {
-            public static readonly ResourceKey<SpriteFont> Default = ResourceKey<SpriteFont>.Get($"{nameof(SpriteFont)}.{nameof(Default)}");
+            public static readonly AssetKey<SpriteFont> Default = AssetKey<SpriteFont>.Get($"{nameof(SpriteFont)}.{nameof(Default)}");
         }
 
         public static class EffectCodes
         {
-            public static readonly ResourceKey<IEffectCode> ShaderAntiAliasing = ResourceKey<IEffectCode>.Get($"EffectCode.{nameof(ShaderAntiAliasing)}");
-            public static readonly ResourceKey<IEffectCode> Visible = ResourceKey<IEffectCode>.Get($"EffectCode.{nameof(Visible)}");
+            public static readonly AssetKey<IEffectCode> ShaderAntiAliasing = AssetKey<IEffectCode>.Get($"EffectCode.{nameof(ShaderAntiAliasing)}");
+            public static readonly AssetKey<IEffectCode> Visible = AssetKey<IEffectCode>.Get($"EffectCode.{nameof(Visible)}");
         }
 
         public static class Strings
         {
-            public static readonly ResourceKey<string> TeamZeroName = ResourceKey<string>.Get($"{nameof(String)}.{nameof(TeamZeroName)}");
-            public static readonly ResourceKey<string> TeamOneName = ResourceKey<string>.Get($"{nameof(String)}.{nameof(TeamOneName)}");
+            public static readonly AssetKey<string> TeamZeroName = AssetKey<string>.Get($"{nameof(String)}.{nameof(TeamZeroName)}");
+            public static readonly AssetKey<string> TeamOneName = AssetKey<string>.Get($"{nameof(String)}.{nameof(TeamOneName)}");
         }
 
         public static class Colors
         {
-            public static readonly ResourceKey<Color> None = ResourceKey<Color>.Get($"{nameof(Color)}.{nameof(None)}");
+            public static readonly AssetKey<Color> None = AssetKey<Color>.Get($"{nameof(Color)}.{nameof(None)}");
 
-            public static readonly ResourceKey<Color> HullPrimaryColor = ResourceKey<Color>.Get($"{nameof(Color)}.{nameof(HullPrimaryColor)}");
-            public static readonly ResourceKey<Color> HullSecondaryColor = ResourceKey<Color>.Get($"{nameof(Color)}.{nameof(HullSecondaryColor)}");
+            public static readonly AssetKey<Color> HullPrimaryColor = AssetKey<Color>.Get($"{nameof(Color)}.{nameof(HullPrimaryColor)}");
+            public static readonly AssetKey<Color> HullSecondaryColor = AssetKey<Color>.Get($"{nameof(Color)}.{nameof(HullSecondaryColor)}");
 
-            public static readonly ResourceKey<Color> ThrusterPrimaryColor = ResourceKey<Color>.Get($"{nameof(Color)}.{nameof(ThrusterPrimaryColor)}");
-            public static readonly ResourceKey<Color> ThrusterSecondaryColor = ResourceKey<Color>.Get($"{nameof(Color)}.{nameof(ThrusterSecondaryColor)}");
+            public static readonly AssetKey<Color> ThrusterPrimaryColor = AssetKey<Color>.Get($"{nameof(Color)}.{nameof(ThrusterPrimaryColor)}");
+            public static readonly AssetKey<Color> ThrusterSecondaryColor = AssetKey<Color>.Get($"{nameof(Color)}.{nameof(ThrusterSecondaryColor)}");
 
-            public static readonly ResourceKey<Color> TeamOnePrimaryColor = ResourceKey<Color>.Get($"{nameof(Color)}.{nameof(TeamOnePrimaryColor)}");
-            public static readonly ResourceKey<Color> TeamOneSecondaryColor = ResourceKey<Color>.Get($"{nameof(Color)}.{nameof(TeamOneSecondaryColor)}");
+            public static readonly AssetKey<Color> TeamOnePrimaryColor = AssetKey<Color>.Get($"{nameof(Color)}.{nameof(TeamOnePrimaryColor)}");
+            public static readonly AssetKey<Color> TeamOneSecondaryColor = AssetKey<Color>.Get($"{nameof(Color)}.{nameof(TeamOneSecondaryColor)}");
 
-            public static readonly ResourceKey<Color> TractorBeamHighlight = ResourceKey<Color>.Get($"{nameof(Color)}.{nameof(TractorBeamHighlight)}");
-            public static readonly ResourceKey<Color> ActiveThrustableHighlight = ResourceKey<Color>.Get($"{nameof(Color)}.{nameof(TractorBeamHighlight)}");
+            public static readonly AssetKey<Color> TractorBeamHighlight = AssetKey<Color>.Get($"{nameof(Color)}.{nameof(TractorBeamHighlight)}");
+            public static readonly AssetKey<Color> ActiveThrustableHighlight = AssetKey<Color>.Get($"{nameof(Color)}.{nameof(TractorBeamHighlight)}");
         }
 
         public static class ImGuiStyles
         {
-            public static readonly ResourceKey<ImStyle> ButtonGreen = ResourceKey<ImStyle>.Get($"{nameof(ImStyle)}.{nameof(ButtonGreen)}");
-            public static readonly ResourceKey<ImStyle> ButtonRed = ResourceKey<ImStyle>.Get($"{nameof(ImStyle)}.{nameof(ButtonRed)}");
+            public static readonly AssetKey<ImStyle> ButtonGreen = AssetKey<ImStyle>.Get($"{nameof(ImStyle)}.{nameof(ButtonGreen)}");
+            public static readonly AssetKey<ImStyle> ButtonRed = AssetKey<ImStyle>.Get($"{nameof(ImStyle)}.{nameof(ButtonRed)}");
         }
 
         public static class EntityTemplates

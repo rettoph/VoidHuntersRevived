@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Common;
+﻿using Guppy.Core.Assets.Common;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 using VoidHuntersRevived.Domain.Common;
@@ -23,20 +23,20 @@ namespace VoidHuntersRevived.Tests.Domain.Ships.Extensions
                     Key = Key<IEntityTemplate>.GetByName("Test.DefaultTeam"),
                     Components = [
                         new DefaultTeam(),
-                        new Team(ResourceKey<string>.Get("Test.DefaultTeam"))
+                        new Team(AssetKey<string>.Get("Test.DefaultTeam"))
                     ]
                 },
                 new EntityTemplateFragment()
                 {
                     Key = Key<IEntityTemplate>.GetByName("Test.Team"),
                     Components = [
-                        new Team(ResourceKey<string>.Get("Test.Team")),
-                        new ColorScheme(TestResources.Colors.TestColor, TestResources.Colors.TestColor)
+                        new Team(AssetKey<string>.Get("Test.Team")),
+                        new ColorScheme(TestAssets.Colors.TestColor, TestAssets.Colors.TestColor)
                     ]
                 },
                 new EntityTemplateFragment()
                 {
-                    Key = Resources.EntityTemplates.Ship.ChainEntityTemplate,
+                    Key = Assets.EntityTemplates.Ship.ChainEntityTemplate,
                     Components = [
                         new TeamMember(),
                         new Body(),
@@ -53,15 +53,15 @@ namespace VoidHuntersRevived.Tests.Domain.Ships.Extensions
                 },
                 new EntityTemplateFragment()
                 {
-                    Key = TestResources.TestSquareEntityTemplateKey,
+                    Key = TestAssets.TestSquareEntityTemplateKey,
                     Components = [
                         new TeamMember(),
                         Plug.Default,
                         new Coupling(),
                         new Node(),
                         new Fixture(),
-                        new ColorScheme(TestResources.Colors.TestColor, TestResources.Colors.TestColor),
-                        new Rigid(TestResources.BodyTemplates.TestSquareBodyTemplate),
+                        new ColorScheme(TestAssets.Colors.TestColor, TestAssets.Colors.TestColor),
+                        new Rigid(TestAssets.BodyTemplates.TestSquareBodyTemplate),
                         new Sockets()
                         {
                             Items = new Socket[] {
@@ -72,7 +72,7 @@ namespace VoidHuntersRevived.Tests.Domain.Ships.Extensions
                 },
                 new EntityTemplateFragment()
                 {
-                    Key = Resources.EntityTemplates.Ship.UserShipEntityTemplate,
+                    Key = Assets.EntityTemplates.Ship.UserShipEntityTemplate,
                     Components = [
                         new TeamMember(),
                         new Body(),

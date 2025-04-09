@@ -41,7 +41,7 @@ namespace VoidHuntersRevived.Domain.Ships.Systems
                     sourceId: eventId,
                     globalId: eventId.ToGlobalEntityId(1),
                     team: this._teamService.GetDefaultTeam(),
-                    treeTemplateKey: Resources.EntityTemplates.Ship.ChainEntityTemplate,
+                    treeTemplateKey: Assets.EntityTemplates.Ship.ChainEntityTemplate,
                     nodes: data.TargetData,
                     initializer: (IEntityService entities, in InitializingEntity entity) =>
                     {
@@ -79,7 +79,7 @@ namespace VoidHuntersRevived.Domain.Ships.Systems
                         sourceId: eventId,
                         globalId: eventId.ToGlobalEntityId(2),
                         team: this._teamService.GetDefaultTeam(),
-                        treeTemplateKey: Resources.EntityTemplates.Ship.ChainEntityTemplate,
+                        treeTemplateKey: Assets.EntityTemplates.Ship.ChainEntityTemplate,
                         nodes: data.TargetData,
                         initializer: (IEntityService entities, in InitializingEntity entity) =>
                         {

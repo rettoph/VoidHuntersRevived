@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+﻿using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
+using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Systems;
@@ -37,15 +37,15 @@ namespace VoidHuntersRevived.Game.Client.Systems.Debugging
         private bool _debugViewEnabled;
         private bool _aetherExplorerEnabled;
         private string _filter;
-        private readonly Resource<ImStyle> _buttonRedStyle;
-        private readonly Resource<ImStyle> _buttonGreenStyle;
+        private readonly Asset<ImStyle> _buttonRedStyle;
+        private readonly Asset<ImStyle> _buttonGreenStyle;
 
         public AetherDebugSystem(
             IStrategy strategy,
             IScene scene,
             IImGui imgui,
             IImGuiObjectExplorerService objectExplorer,
-            IResourceService resourceService,
+            IAssetService assetService,
             World world,
             GraphicsDevice graphics,
             ICamera2D camera)
@@ -57,11 +57,11 @@ namespace VoidHuntersRevived.Game.Client.Systems.Debugging
             this._world = world;
             this._debug = new DebugView(world);
             this._camera = camera;
-            this._debug.LoadContent(graphics, resourceService.Get(Resources.SpriteFonts.Default));
+            this._debug.LoadContent(graphics, assetService.Get(Assets.SpriteFonts.Default));
             this._filter = string.Empty;
 
-            this._buttonRedStyle = resourceService.Get(Resources.ImGuiStyles.ButtonRed);
-            this._buttonGreenStyle = resourceService.Get(Resources.ImGuiStyles.ButtonGreen);
+            this._buttonRedStyle = assetService.Get(Assets.ImGuiStyles.ButtonRed);
+            this._buttonGreenStyle = assetService.Get(Assets.ImGuiStyles.ButtonGreen);
         }
 
         [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.Draw)]
@@ -82,7 +82,7 @@ namespace VoidHuntersRevived.Game.Client.Systems.Debugging
             this._imgui.KeyValue("Contacts", this._world.ContactCount.ToString("#,###,##0"), valueColor: Color.Cyan.ToVector4());
 
 
-            Resource<ImStyle> buttonStyle = this._debugViewEnabled ? this._buttonGreenStyle : this._buttonRedStyle;
+            Asset<ImStyle> buttonStyle = this._debugViewEnabled ? this._buttonGreenStyle : this._buttonRedStyle;
 
             using (this._imgui.Apply(buttonStyle))
             {

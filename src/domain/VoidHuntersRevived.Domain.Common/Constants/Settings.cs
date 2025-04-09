@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Common;
+﻿using Guppy.Core.Assets.Common;
 using VoidHuntersRevived.Common.FixedPoint;
 
 namespace VoidHuntersRevived.Domain.Common.Constants

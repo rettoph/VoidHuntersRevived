@@ -1,14 +1,14 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Assets.Common.Services;
 using VoidHuntersRevived.Domain.Entities.Common.Components;
 
 namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
 {
-    public class ResourceComponentConverter(IResourceService resourceService) : JsonConverter<object>
+    public class AssetComponentConverter(IAssetService resourceService) : JsonConverter<object>
     {
 
-        private readonly IResourceService _resourceService = resourceService;
+        private readonly IAssetService _resourceService = resourceService;
 
         public override bool CanConvert(Type typeToConvert)
         {
@@ -17,7 +17,7 @@ namespace VoidHuntersRevived.Domain.Entities.Serialization.Json
                 return false;
             }
 
-            bool result = typeToConvert.GetGenericTypeDefinition() == typeof(ResourceComponent<>);
+            bool result = typeToConvert.GetGenericTypeDefinition() == typeof(AssetComponent<>);
             return result;
         }
 

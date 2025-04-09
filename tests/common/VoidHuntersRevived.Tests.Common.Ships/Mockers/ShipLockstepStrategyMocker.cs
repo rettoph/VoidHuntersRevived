@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Common.Services;
+﻿using Guppy.Core.Assets.Common.Services;
 using Guppy.Tests.Common;
 using VoidHuntersRevived.Domain.Pieces.Serialization.Components;
 using VoidHuntersRevived.Domain.Pieces.Systems;
@@ -18,15 +18,15 @@ namespace VoidHuntersRevived.Tests.Common.Ships.Mockers
         public NodeSocketServiceBuilder NodeSocketServiceBuilder { get; }
         public TractorBeamEmitterServiceBuilder TractorBeamEmitterServiceBuilder { get; }
         public TacticalServiceBuilder TacticalServiceBuilder { get; }
-        public Mocker<IResourceService> ResourceServiceMocker { get; }
+        public Mocker<IAssetService> AssetServiceMocker { get; }
 
         public ShipLockstepStrategyMocker()
         {
-            this.ResourceServiceMocker = new Mocker<IResourceService>();
+            this.AssetServiceMocker = new Mocker<IAssetService>();
             this.BlueprintServiceBuilder = new BlueprintServiceBuilder()
             {
                 Blueprints = [],
-                ResourceServiceMocker = this.ResourceServiceMocker
+                AssetServiceMocker = this.AssetServiceMocker
             };
             this.TreeServiceBuilder = new TreeServiceBuilder()
             {

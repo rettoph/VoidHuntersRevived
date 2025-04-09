@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Messaging.Common;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Assets.Common.Services;
 using Microsoft.Xna.Framework;
 using VoidHuntersRevived.Common;
 using VoidHuntersRevived.Common.FixedPoint;
