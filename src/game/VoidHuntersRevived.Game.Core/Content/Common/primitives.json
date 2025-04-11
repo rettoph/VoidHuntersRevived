@@ -2,9 +2,9 @@
   {
     "type": "PrimitiveType",
     "values": {
-      "Primitive.Visible.Hull.Triangle": "Primitives\\primitive.visible.hull.triangle.json",
-      "Primitive.Visible.Hull.Square": "Primitives\\primitive.visible.hull.square.json",
-      "Primitive.Visible.Thruster": "Primitives\\primitive.visible.thruster.json"
+      "Primitive.Visible.Hull.Triangle": "Primitives/primitive.visible.hull.triangle.json",
+      "Primitive.Visible.Hull.Square": "Primitives/primitive.visible.hull.square.json",
+      "Primitive.Visible.Thruster": "Primitives/primitive.visible.thruster.json"
     }
   }
 ]

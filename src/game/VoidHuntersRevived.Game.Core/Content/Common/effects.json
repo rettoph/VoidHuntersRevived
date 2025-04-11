@@ -2,8 +2,8 @@
   {
     "type": "EffectCode",
     "values": {
-      "EffectCode.ShaderAntiAliasing": "Shaders\\Compiled\\ShaderAntiAliasing.mgfx",
-      "EffectCode.Visible": "Shaders\\Compiled\\Visible.mgfx"
+      "EffectCode.ShaderAntiAliasing": "Shaders/Compiled/ShaderAntiAliasing.mgfx",
+      "EffectCode.Visible": "Shaders/Compiled/Visible.mgfx"
     }
   }
 ]

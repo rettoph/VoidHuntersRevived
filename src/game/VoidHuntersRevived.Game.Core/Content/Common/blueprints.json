@@ -2,7 +2,7 @@
   {
     "type": "Blueprint",
     "values": {
-      "Blueprint.Default": "Blueprints\\default.json"
+      "Blueprint.Default": "Blueprints/default.json"
     }
   }
 ]

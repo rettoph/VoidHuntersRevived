@@ -2,9 +2,9 @@
   {
     "type": "BodyTemplate",
     "values": {
-      "Body.Hull.Triangle": "Bodies\\body.hull.triangle.json",
-      "Body.Hull.Square": "Bodies\\body.hull.square.json",
-      "Body.Thruster": "Bodies\\body.thruster.json"
+      "Body.Hull.Triangle": "Bodies/body.hull.triangle.json",
+      "Body.Hull.Square": "Bodies/body.hull.square.json",
+      "Body.Thruster": "Bodies/body.thruster.json"
     }
   }
 ]
